@@ -19,6 +19,18 @@
             </div>
         </div>
         <div class="row">
+            @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
             @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
@@ -28,6 +40,24 @@
             @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.City, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.PostCode, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PostCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.Street, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Street, new { @class = "form-control" })
             </div>
         </div>
         <div class="row">
