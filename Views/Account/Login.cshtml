@@ -1,55 +1,51 @@
 ﻿@using GuidanceTracker.Models
 @model LoginViewModel
 @{
-    ViewBag.Title = "Log in";
+    ViewBag.Title = "Log In - Guidance Tracker";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 
+<body style="background-color: #ADAEB3; ">
+</body>
+
 <main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <div class="row">
-        <div class="col-md-8">
-            <section id="loginForm">
-                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <h4>Use a local account to log in.</h4>
-                    <hr />
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    <div class="row">
-                        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="row">
-                        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
-                        <div class="col-md-10">
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="offset-md-2 col-md-10">
-                            <div class="checkbox">
-                                @Html.CheckBoxFor(m => m.RememberMe)
-                                @Html.LabelFor(m => m.RememberMe)
+    <section id="loginForm">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12 col-md-8 col-lg-5 col-xl-5">
+                        <div class="card shadow p-5 bg-white text-black" style="border-radius: 1rem;">
+                            <div class="card-body p-3 text-center">
+                                <img src="~/Images/GTLogo.png" alt="Logo" style="max-width: 300px; margin-bottom: 20px;">
+                                <h2 class="fw mb-3">Login</h2>
+                                <p class="text-black-50 mb-4">Please enter your login and password.</p>
+
+                                <div class="mb-3 text-start col-8 mx-auto">
+                                    @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="mb-3 text-start col-8 mx-auto">
+                                    @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                </div>
+
+                                <button class="btn mt-9 w-75" type="submit" style="background-color: #7E3F96; color: white;">Login</button>
+                                <p class="small mb-6 pb-lg-2" style="padding-top: 20px;">
+                                    @Html.ActionLink("Forgot Password?", "ForgotPassword")
+                                </p>
                             </div>
-                        </div>
+                        </div>s
                     </div>
-                    <div class="row">
-                        <div class="offset-md-2 col-md-10">
-                            <input type="submit" value="Log in" class="btn btn-outline-dark" />
-                        </div>
-                    </div>
-                
-                        <p>
-                            @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                        </p>
-                }
-            </section>
-        </div>
-    </div>
+                </div>
+            </div>
+        }
+    </section>
+
 </main>
 
 @section Scripts {
