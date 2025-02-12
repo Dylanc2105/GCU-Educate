@@ -4,9 +4,9 @@
     ViewBag.Title = "Log In - Guidance Tracker";
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
-
+<title>@ViewBag.Title</title>
 <body style="background-color: #ADAEB3; ">
-</body>
+
 
 <main aria-labelledby="title">
     <section id="loginForm">
@@ -19,25 +19,28 @@
                         <div class="card shadow p-5 bg-white text-black" style="border-radius: 1rem;">
                             <div class="card-body p-3 text-center">
                                 <img src="~/Images/GTLogo.png" alt="Logo" style="max-width: 300px; margin-bottom: 20px;">
-                                <h2 class="fw mb-3">Login</h2>
-                                <p class="text-black-50 mb-4">Please enter your login and password.</p>
+                                
 
-                                <div class="mb-3 text-start col-8 mx-auto">
-                                    @Html.LabelFor(m => m.Email, new { @class = "form-label" })
-                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
-                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                                </div>
+                                    <h2 class="mb-3">Login</h2>
+                                    <p class="text-black-50 mb-4">Please enter your email and password.</p>
 
-                                <div class="mb-3 text-start col-8 mx-auto">
-                                    @Html.LabelFor(m => m.Password, new { @class = "form-label" })
-                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
-                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                                </div>
+                                    <div class="mb-4 text-start col-9 mx-auto">
+                                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </div>
 
-                                <button class="btn mt-9 w-75" type="submit" style="background-color: #7E3F96; color: white;">Login</button>
-                                <p class="small mb-6 pb-lg-2" style="padding-top: 20px;">
-                                    @Html.ActionLink("Forgot Password?", "ForgotPassword")
-                                </p>
+                                    <div class="mb-4 text-start col-9 mx-auto">
+                                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <button class="btn mt-3 w-75" type="submit" style="background-color: #7E3F96; color: white; ">Login</button>
+                                    <p class="small mb-3 pb-lg-2" style="padding-top: 20px;">
+                                        @Html.ActionLink("Forgot Password?", "ForgotPassword", null, new { @class = "text-black-50" })
+                                    </p>
+                                
                             </div>
                         </div>
                     </div>
@@ -47,6 +50,7 @@
     </section>
 
 </main>
+    </body>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
