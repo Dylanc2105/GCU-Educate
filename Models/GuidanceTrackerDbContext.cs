@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Sockets;
 using System.Web;
 
 namespace GuidanceTracker.Models
@@ -15,6 +16,15 @@ namespace GuidanceTracker.Models
         {
             Database.SetInitializer(new DatabaseInitializer());
         }
+
+        public DbSet<GuidanceTeacher> GuidanceTeachers { get; set; }
+        public DbSet<Lecturer> Lecturers { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Module> Modules { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+
 
         public static GuidanceTrackerDbContext Create()
         {

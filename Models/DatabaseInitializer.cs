@@ -25,7 +25,7 @@ namespace GuidanceTracker.Models
                 //to create amd store roles we need usermanager
                 RoleManager<IdentityRole> roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-        
+
 
 
                 //if admin role doesnt exist
@@ -51,12 +51,17 @@ namespace GuidanceTracker.Models
                     //then create one
                     roleManager.Create(new IdentityRole("Student"));
                 }
-        
+
                 context.SaveChanges();
             }
 
-  
+
             UserManager<User> userManager = new UserManager<User>(new UserStore<User>(context));
+
+            GuidanceTeacher guidance = null;
+            Lecturer lecturer1 = null;
+            Lecturer lecturer2 = null;
+            Student student1 = null;
 
             //create guidance teacher
             //first check if admin exists in db
@@ -74,7 +79,7 @@ namespace GuidanceTracker.Models
                 };
                 //crate an admin employee
 
-                var guidance = new GuidanceTeacher
+                guidance = new GuidanceTeacher
                 {
                     UserName = "guidance@email.com",
                     Email = "guidance@email.com",
@@ -91,7 +96,7 @@ namespace GuidanceTracker.Models
                 //add admin to users table
                 userManager.Create(guidance, "123");
                 //assign it to the guidance teacher role
-                userManager.AddToRole(guidance.Id, "User");
+                userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
             //add some lecturers
@@ -99,7 +104,7 @@ namespace GuidanceTracker.Models
             if (userManager.FindByName("lecturer@email.com") == null)
             {
                 //if no then create him
-                var lecturer = new Lecturer
+                lecturer1 = new Lecturer
                 {
                     UserName = "lecturer@email.com",
                     Email = "lecturer@email.com",
@@ -112,14 +117,42 @@ namespace GuidanceTracker.Models
                     EmailConfirmed = true,
                 };
                 //add jeff to users table
-                userManager.Create(lecturer, "123");
+                userManager.Create(lecturer1, "123");
                 //assign it to the manager role
-                userManager.AddToRole(lecturer.Id, "Lecturer");
+                userManager.AddToRole(lecturer1.Id, "Lecturer");
             }
+
+            if (userManager.FindByName("lecturer2@email.com") == null)
+            {
+                lecturer2 = new Lecturer
+                {
+                    UserName = "lecturer2@email.com",
+                    Email = "lecturer2@email.com",
+                    FirstName = "Laura",
+                    LastName = "Smith",
+                    Street = "33 Oxford st",
+                    City = "London",
+                    Postcode = "SW1 2AA",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer2, "123");
+                userManager.AddToRole(lecturer2.Id, "Lecturer");
+            }
+
+            // Create a Course
+            var course = new Course
+            {
+                CourseName = "Computer Science",
+                CourseDescription = "Introduction to Computer Science"
+            };
+            context.Courses.Add(course);
+            context.SaveChanges();
+
 
             if (userManager.FindByName("student@emial.com") == null)
             {
-                var student = new Student
+                student1 = new Student
                 {
                     UserName = "student@emial.com",
                     Email = "student@emial.com",
@@ -130,13 +163,54 @@ namespace GuidanceTracker.Models
                     Postcode = "E52 9UP",
                     RegistredAt = DateTime.Now.AddYears(-1),
                     EmailConfirmed = true,
+                    CourseId = course.CourseId
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRoles(student.Id, "Student");
+                userManager.Create(student1, "123");
+                userManager.AddToRoles(student1.Id, "Student");
+
             }
-      
+
+            // Create a Module
+            var module = new Module
+            {
+                ModuleName = "Programming 101",
+                ModuleDescription = "Introduction to Programming",
+                CourseId = course.CourseId,
+                LecturerId = lecturer1.Id
+            };
+            context.Modules.Add(module);
+            context.SaveChanges();
+
+            // Create a Session
+            var session = new Session
+            {
+                SessionDate = DateTime.Now.AddDays(7),
+                SessionStatus = "Pending",
+                SessionNotes = "Initial consultation",
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Sessions.Add(session);
+            context.SaveChanges();
+
+            // Create a Ticket
+            var ticket = new Ticket
+            {
+                TicketTitle = "Attendance Issue",
+                TicketDescription = "Student has missed multiple classes.",
+                TicketStatus = "Open",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Tickets.Add(ticket);
             context.SaveChanges();
         }
+
     }
+    
 
 }
+
