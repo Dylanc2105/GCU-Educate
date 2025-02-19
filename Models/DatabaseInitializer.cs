@@ -150,11 +150,11 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
-            if (userManager.FindByName("student@emial.com") == null)
+            if (userManager.FindByName("student@email.com") == null)
             {
                 student1 = new Student
                 {
-                    UserName = "student@emial.com",
+                    UserName = "student@email.com",
                     Email = "student@emial.com",
                     FirstName = "Emily",
                     LastName = "Davis",
