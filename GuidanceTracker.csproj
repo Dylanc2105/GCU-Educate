@@ -57,54 +57,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNetCore.Authentication.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Authentication.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Authentication.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Authentication.Core.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Authorization, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Authorization.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Authorization.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Authorization.Policy, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Authorization.Policy.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Authorization.Policy.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Hosting.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Hosting.Server.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Http.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Http.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http.Extensions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Http.Extensions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Http.Features.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Mvc.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Mvc.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Mvc.Core.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.ResponseCaching.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.ResponseCaching.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Routing, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Routing.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Routing.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Routing.Abstractions, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.Routing.Abstractions.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.Routing.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNetCore.WebUtilities.2.3.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -287,8 +239,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GuidanceTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LecturerController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ResetPasswordController.cs" />
+    <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -401,6 +357,11 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\Shared\_DashLayout.cshtml" />
+    <Content Include="Views\GuidanceTeacher\GuidanceTeacherDash.cshtml" />
+    <Content Include="Views\Lecturer\LecturerDash.cshtml" />
+    <Content Include="Views\Student\StudentDash.cshtml" />
+    <Content Include="Views\ResetPassword\ResetCodeVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

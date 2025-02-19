@@ -91,7 +91,7 @@ namespace GuidanceTracker.Models
                 //add admin to users table
                 userManager.Create(guidance, "123");
                 //assign it to the guidance teacher role
-                userManager.AddToRole(guidance.Id, "User");
+                userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
             //add some lecturers
@@ -117,12 +117,12 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(lecturer.Id, "Lecturer");
             }
 
-            if (userManager.FindByName("student@emial.com") == null)
+            if (userManager.FindByName("student@email.com") == null)
             {
                 var student = new Student
                 {
-                    UserName = "student@emial.com",
-                    Email = "student@emial.com",
+                    UserName = "student@email.com",
+                    Email = "student@email.com",
                     FirstName = "Emily",
                     LastName = "Davis",
                     Street = "11 New York st",
