@@ -122,7 +122,10 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(lecturer1.Id, "Lecturer");
             }
 
+
             if (userManager.FindByName("lecturer2@email.com") == null)
+
+
             {
                 lecturer2 = new Lecturer
                 {
@@ -155,7 +158,7 @@ namespace GuidanceTracker.Models
                 student1 = new Student
                 {
                     UserName = "student@email.com",
-                    Email = "student@emial.com",
+                    Email = "student@email.com",
                     FirstName = "Emily",
                     LastName = "Davis",
                     Street = "11 New York st",

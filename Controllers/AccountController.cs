@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GuidanceTracker.Models;
+using System.Web.Security;
 //using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace GuidanceTracker.Controllers
@@ -82,6 +83,25 @@ namespace GuidanceTracker.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    //Gets the loggen in user
+                    var user = await UserManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        var roles = await UserManager.GetRolesAsync(user.Id);
+                        //get the roles assigned to the user
+                        if (roles.Contains("Student"))
+                        {
+                            return RedirectToAction("StudentDash", "Student");
+                        }
+                        else if (roles.Contains("Lecturer"))
+                        {
+                            return RedirectToAction("LecturerDash", "Lecturer");
+                        }
+                        else if (roles.Contains("GuidanceTeacher"))
+                        {
+                            return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
+                        }
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

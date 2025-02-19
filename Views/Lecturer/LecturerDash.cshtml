@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Lecturer Dashboard";
+    Layout = "~/Views/Shared/_DashLayout.cshtml";
+}
+
+<title>@ViewBag.Title</title>
+<style>
+    body {
+        background-color: #ADAEB3;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .card {
+        background: white;
+        padding: 30px;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 350px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        background-color: #7E3F96;
+        color: white;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn:hover {
+            background-color: #682d7a;
+        }
+</style>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <img src="~/images/GTLogo.png" alt="Logo" style="max-width: 200px; margin-bottom: 20px;">
+            <h2>Lecturer Dashboard</h2>
+            <p>@Html.Partial("_LoginPartial")</p>
+
+            
+            
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
