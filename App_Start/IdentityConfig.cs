@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using GuidanceTracker.Models;
+using System.Net.Mail;
+using System.Net;
 
 namespace GuidanceTracker
 {
@@ -18,8 +20,44 @@ namespace GuidanceTracker
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            return Task.Run(() =>
+            {
+                try
+                {
+                    Console.WriteLine($"Attempting to send email to {message.Destination}");
+                    // Load SMTP credentials from environment variables
+                    string smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
+                    string smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
+
+                    if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPass))
+                    {
+                        throw new Exception("SMTP credentials are missing.");
+                    }
+
+                    MailMessage mail = new MailMessage
+                    {
+                        From = new MailAddress(smtpUser),
+                        Subject = message.Subject,
+                        Body = message.Body,
+                        IsBodyHtml = true
+                    };
+
+                    mail.To.Add(message.Destination);
+
+                    using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        client.Credentials = new NetworkCredential(smtpUser, smtpPass);
+                        client.EnableSsl = true;
+                        client.Send(mail);
+                    }
+
+                    Console.WriteLine("Email sent successfully!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Email sending failed: " + ex.Message);
+                }
+            });
         }
     }
 

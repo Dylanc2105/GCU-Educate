@@ -61,6 +61,7 @@ namespace GuidanceTracker.Models
             GuidanceTeacher guidance = null;
             Lecturer lecturer1 = null;
             Lecturer lecturer2 = null;
+            Lecturer lecturer3 = null;
             Student student1 = null;
 
             //create guidance teacher
@@ -210,6 +211,26 @@ namespace GuidanceTracker.Models
             };
             context.Tickets.Add(ticket);
             context.SaveChanges();
+
+            if (userManager.FindByName("beno.atagan@gmail.com") == null)
+
+
+            {
+                lecturer3 = new Lecturer
+                {
+                    UserName = "beno.atagan@gmail.com",
+                    Email = "beno.atagan@gmail.com",
+                    FirstName = "Laura",
+                    LastName = "Smith",
+                    Street = "33 Oxford st",
+                    City = "London",
+                    Postcode = "SW1 2AA",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer3, "123");
+                userManager.AddToRole(lecturer3.Id, "Lecturer");
+            }
         }
 
     }
