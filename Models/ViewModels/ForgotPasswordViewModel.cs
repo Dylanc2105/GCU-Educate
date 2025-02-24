@@ -8,8 +8,7 @@ namespace GuidanceTracker.Models.ViewModels
 {
     public class ForgotPasswordViewModel
     {
-        [Required, EmailAddress, Display(Name = "Registered Email Address") ]
+        [Required, EmailAddress]
         public string Email { get; set; }
-        public bool EmailSent { get; set; }
     }
 }

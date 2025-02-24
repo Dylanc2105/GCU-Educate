@@ -26,18 +26,34 @@ namespace GuidanceTracker.Controllers
         [HttpPost]
         public ActionResult VerifyCode(string resetCode, string userEmail)
         {
-            if (resetCode == "1234")
+            // Db contex to access users
+            using (var context = new GuidanceTrackerDbContext())
             {
+                var user = context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+                // Check if the user exists
+                if (user == null)
+                {
+                    ViewBag.ErrorMessage = "User not found.";
+                    return View("ResetCodeVerification");
+                }
+
+                // Validate the reset code: ensure its not empty, hasnt expired, and matches the stored code
+                if (string.IsNullOrEmpty(user.ResetCode) ||
+                    user.ResetCodeExpiry == null || 
+                    user.ResetCodeExpiry < DateTime.UtcNow ||
+                    !string.Equals(user.ResetCode.Trim(), resetCode.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewBag.ErrorMessage = "Invalid or expired reset code.";
+                    return View("ResetCodeVerification");
+                }
+
+                // If reset code is valid, store confirmation in TempData and proceed to reset password page
                 TempData["CodeVerified"] = true;
                 TempData["UserEmail"] = userEmail;
                 return RedirectToAction("ResetPassword");
             }
-            else
-            {
-                ViewBag.ErrorMessage = "Invalid code. Please try again.";
-                ViewBag.UserEmail = userEmail;
-                return View("ResetCodeVerification");
-            }
+
         }
 
         // GET: ResetPassword page. Only accessible after code verification.

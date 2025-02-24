@@ -76,18 +76,15 @@ namespace GuidanceTracker.Controllers
                 return View(model);
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
             switch (result)
             {
                 case SignInStatus.Success:
-                    //Gets the loggen in user
                     var user = await UserManager.FindByEmailAsync(model.Email);
                     if (user != null)
                     {
                         var roles = await UserManager.GetRolesAsync(user.Id);
-                        //get the roles assigned to the user
                         if (roles.Contains("Student"))
                         {
                             return RedirectToAction("StudentDash", "Student");
@@ -102,14 +99,29 @@ namespace GuidanceTracker.Controllers
                         }
                     }
                     return RedirectToLocal(returnUrl);
+
                 case SignInStatus.LockedOut:
                     return View("Lockout");
+
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                    var existingUser = await UserManager.FindByEmailAsync(model.Email);
+
+                    if (existingUser == null)
+                    {
+                        ModelState.AddModelError("", "No account found with this email.");
+                        System.Diagnostics.Debug.WriteLine("⚠️ No account found with this email.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Incorrect password. Please try again.");
+                        System.Diagnostics.Debug.WriteLine("❌ Incorrect password for email: " + model.Email);
+                    }
+
+                    return View(model); // Ensure error is displayed on the page
             }
         }
 
@@ -234,40 +246,48 @@ namespace GuidanceTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            // Validate the form input
             if (!ModelState.IsValid)
             {
-                return View(model); 
+                return View(model);
             }
 
-            // Find the user by email
+            // Find user by email
             var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return View("ForgotPasswordConfirmation");
             }
 
-            // Generate password reset token
-            var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-            
-            // Generate the reset link
-            var resetLink = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, Request.Url.Scheme);
+            // Generate a random 8-digit reset code
+            var random = new Random();
+            string resetCode = random.Next(10000000, 99999999).ToString();
 
-            // Email content
-            string emailBody = $"Click <a href='{resetLink}'>here</a> to reset your password.";
+            // Store the reset code and expiry time in the database
+            user.ResetCode = resetCode;
+            user.ResetCodeExpiry = DateTime.UtcNow.AddMinutes(10);  // Code expires in 10 mins
+            //await UserManager.UpdateAsync(user);
 
+            var result = await UserManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to save reset code. Please try again.");
+                return View(model);
+            }
+
+            // Create reset email
+            string emailBody = $"Your password reset code is: {resetCode}. It expires in 10 minutes.";
             var message = new IdentityMessage
             {
                 Destination = user.Email,
-                Subject = "Reset Password",
+                Subject = "Reset Password Code",
                 Body = emailBody
             };
 
-            // Send the email
             await UserManager.EmailService.SendAsync(message);
 
             return View("ForgotPasswordConfirmation");
         }
+
 
         //
         // GET: /Account/ForgotPasswordConfirmation
@@ -276,6 +296,45 @@ namespace GuidanceTracker.Controllers
         {
             return View();
         }
+
+        //
+        // POST: /Account/VerifyCode
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> VerifyCode(string resetCode, string userEmail)
+        {
+            if (string.IsNullOrEmpty(resetCode) || string.IsNullOrEmpty(userEmail))
+            {
+                ModelState.AddModelError("", "Reset code and email are required.");
+                return View("ResetCodeVerification"); // Ensure this view exists
+            }
+
+            var user = await UserManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View("ResetCodeVerification");
+            }
+
+            if (string.IsNullOrEmpty(user.ResetCode) || user.ResetCodeExpiry == null || user.ResetCodeExpiry < DateTime.UtcNow)
+            {
+                ModelState.AddModelError("", "Invalid or expired reset code. Please request a new one.");
+                return View("ResetCodeVerification");
+            }
+
+            if (user.ResetCode != resetCode)
+            {
+                ModelState.AddModelError("", "Incorrect reset code. Please try again.");
+                return View("ResetCodeVerification");
+            }
+
+            // Reset code is valid, allow user to proceed
+            TempData["CodeVerified"] = true;
+            TempData["UserEmail"] = userEmail;
+            return RedirectToAction("ResetPassword");
+        }
+
 
         //
         // GET: /Account/ResetPassword
@@ -290,26 +349,62 @@ namespace GuidanceTracker.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<ActionResult> ResetPassword(ResetPasswordWithCodeViewModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+
+            // Attempt to find user by email
+            var user = await UserManager.FindByEmailAsync(model.Email.Trim());
             if (user == null)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                ModelState.AddModelError("", "Invalid email.");
+                return View(model);
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-            if (result.Succeeded)
+
+            // Validate the reset code: 
+            // - Ensure the code exists
+            // - Ensure it is not expired
+            // - Ensure it matches the provided input
+            if (string.IsNullOrEmpty(user.ResetCode) ||
+                user.ResetCodeExpiry == null ||
+                user.ResetCodeExpiry < DateTime.UtcNow ||
+                !string.Equals(user.ResetCode.Trim(), model.ResetCode.Trim(), StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                Console.WriteLine("Invalid or expired reset code detected!");
+                ModelState.AddModelError("", "Invalid or expired reset code.");
+                return View(model);
             }
-            AddErrors(result);
-            return View();
+
+            // Remove the old password
+            var removePasswordResult = await UserManager.RemovePasswordAsync(user.Id);
+            if (!removePasswordResult.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to reset password.");
+                return View(model);
+            }
+
+            // Set the new password
+            var addPasswordResult = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+            if (!addPasswordResult.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to set new password.");
+                return View(model);
+            }
+
+            // Clear reset code after successful password reset
+            user.ResetCode = null;
+            user.ResetCodeExpiry = null;
+            await UserManager.UpdateAsync(user);
+
+            return RedirectToAction("Login", "Account");
         }
+
+
+
 
         //
         // GET: /Account/ResetPasswordConfirmation

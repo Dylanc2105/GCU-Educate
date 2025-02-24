@@ -99,7 +99,7 @@ namespace GuidanceTracker.Models
         public string ConfirmPassword { get; set; }
     }
 
-    public class ResetPasswordViewModel
+    public class ResetPasswordWithCodeViewModel2
     {
         [Required]
         [EmailAddress]
