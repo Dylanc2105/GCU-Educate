@@ -12,9 +12,9 @@ namespace GuidanceTracker.Models
     {
 
 
-        public GuidanceTrackerDbContext():base("DefaultConnection", throwIfV1Schema: false)
+        public GuidanceTrackerDbContext():base("guidanceTrackerDB", throwIfV1Schema: false)
         {
-            Database.SetInitializer(new DatabaseInitializer());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<GuidanceTrackerDbContext, Migrations.Configuration>());
         }
 
         public DbSet<GuidanceTeacher> GuidanceTeachers { get; set; }

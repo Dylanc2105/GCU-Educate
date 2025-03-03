@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql2": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/GuidanceTracker20250227222444/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsguidanceTrackerDB_AA852560EF",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/guidancetrackerdbserver/databases/guidanceTrackerDB",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:guidanceTrackerDB"
+    }
+  }
+}
