@@ -112,13 +112,13 @@ namespace GuidanceTracker.Controllers
 
                     if (existingUser == null)
                     {
-                        ModelState.AddModelError("", "No account found with this email.");
-                        System.Diagnostics.Debug.WriteLine("⚠️ No account found with this email.");
+                        ModelState.AddModelError("", "Incorrect login details. Please try again.");
+                        System.Diagnostics.Debug.WriteLine("⚠️ Incorrect login details. Please try again.");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Incorrect password. Please try again.");
-                        System.Diagnostics.Debug.WriteLine("❌ Incorrect password for email: " + model.Email);
+                        ModelState.AddModelError("", "Incorrect login details. Please try again.");
+                        System.Diagnostics.Debug.WriteLine("❌ Incorrect login details. Please try again. " + model.Email);
                     }
 
                     return View(model); // Ensure error is displayed on the page
@@ -535,7 +535,7 @@ namespace GuidanceTracker.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //
