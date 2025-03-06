@@ -2,13 +2,6 @@
   "dependencies": {
     "secrets1": {
       "type": "secrets.user"
-    },
-    "mssql2": {
-      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ServiceLinker/locations/canadacentral/connectors/ConnectionStringsguidanceTrackerDB_AA852560EF",
-      "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/guidancetrackerdbserver/databases/guidanceTrackerDB",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:guidanceTrackerDB"
     }
   }
 }

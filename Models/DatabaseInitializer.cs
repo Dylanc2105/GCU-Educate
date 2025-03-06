@@ -8,8 +8,8 @@ using System.Web;
 
 namespace GuidanceTracker.Models
 {
-    //public class DatabaseInitializer : DropCreateDatabaseAlways<GuidanceTrackerDbContext>
-    public class DatabaseInitializer : DropCreateDatabaseIfModelChanges<GuidanceTrackerDbContext>
+    public class DatabaseInitializer : DropCreateDatabaseAlways<GuidanceTrackerDbContext>
+    //public class DatabaseInitializer : DropCreateDatabaseIfModelChanges<GuidanceTrackerDbContext>
     {
 
 
