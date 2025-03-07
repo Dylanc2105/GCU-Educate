@@ -1,0 +1,286 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Student>
+@{
+    ViewBag.Title = "Student Directory";
+    Layout = "~/Views/Shared/_DashLayout.cshtml";
+}
+
+<!-- CSS Styles for the student directory -->
+<style>
+    /* Grid layout for student cards */
+    .student-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* Main card styling */
+    .student-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    /* Card header with student name and course */
+    .student-card-header {
+        padding: 15px;
+        background-color: #8a4fff;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Student name styling */
+    .student-name {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /* Course name styling */
+    .student-course {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* Collapsible card body with animation */
+    .student-card-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    /* Expanded state for the card body */
+    .student-card.expanded .student-card-body {
+        max-height: 500px;
+    }
+
+    /* Container for student details */
+    .student-details {
+        padding: 15px;
+    }
+
+    /* Styling for each detail group (label + value) */
+    .detail-group {
+        margin-bottom: 10px;
+    }
+
+    /* Style for detail labels */
+    .detail-label {
+        font-weight: bold;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    /* Style for detail values */
+    .detail-value {
+        color: #333;
+    }
+
+    /* Container for action buttons */
+    .card-actions {
+        display: flex;
+        padding: 0 15px 15px;
+        gap: 10px;
+    }
+
+    /* Base style for action links */
+    .action-link {
+        background-color: #f0f0f0;
+        color: #333;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+        /* Hover state for action links */
+        .action-link:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Edit action button styling */
+        .action-link.edit {
+            background-color: #e6f7ff;
+            color: #0066cc;
+        }
+
+        /* Details action button styling */
+        .action-link.details {
+            background-color: #f0f7ea;
+            color: #5cb85c;
+        }
+
+        /* Delete action button styling */
+        .action-link.delete {
+            background-color: #fff0f0;
+            color: #d9534f;
+        }
+
+    /* Animated toggle icon */
+    .toggle-icon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Rotate icon when card is expanded */
+    .student-card.expanded .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Header with title and create button */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* Add new student button */
+    .create-btn {
+        background-color: #8a4fff;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        /* Hover state for create button */
+        .create-btn:hover {
+            background-color: #7a3fef;
+        }
+
+    /* Search box container */
+    .search-box {
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* Search input field */
+    .search-input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+</style>
+
+<!-- Page header with title and create button -->
+<div class="page-header">
+    <h2>Student Directory</h2>
+    @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+    {
+        <a href="@Url.Action("CreateStudent")" class="create-btn">
+            <i class="fas fa-plus"></i> Add New Student
+        </a>
+    }
+</div>
+
+<!-- Search functionality -->
+<div class="search-box">
+    <input type="text" id="studentSearch" class="search-input" placeholder="Search students..." />
+</div>
+
+<!-- Container for all student cards -->
+<div class="student-cards">
+    @foreach (var item in Model)
+    {
+        <!-- Individual student card with data attributes for search functionality -->
+        <div class="student-card" data-student-name="@item.FirstName @item.LastName" data-course="@item.Course.CourseName">
+            <!-- Card header that toggles expansion when clicked -->
+            <div class="student-card-header" onclick="toggleCard(this)">
+                <div>
+                    <div class="student-name">@item.FirstName @item.LastName</div>
+                    <div class="student-course">@item.Course.CourseName</div>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <!-- Expandable card body with student details -->
+            <div class="student-card-body">
+                <div class="student-details">
+                    <!-- Email information -->
+                    <div class="detail-group">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">@item.Email</div>
+                    </div>
+                    <!-- Phone information -->
+                    <div class="detail-group">
+                        <div class="detail-label">Phone</div>
+                        <div class="detail-value">@item.PhoneNumber</div>
+                    </div>
+                    <!-- Address information with line break -->
+                    <div class="detail-group">
+                        <div class="detail-label">Address</div>
+                        <div class="detail-value">
+                            @item.Street<br />
+                            @item.City, @item.Postcode
+                        </div>
+                    </div>
+                    <!-- Registration date with formatted display -->
+                    <div class="detail-group">
+                        <div class="detail-label">Registered</div>
+                        <div class="detail-value">@item.RegistredAt.ToString("d MMMM yyyy")</div>
+                    </div>
+                </div>
+                <!-- Action buttons for each student -->
+                <!--<div class="card-actions">-->
+                    <!-- Edit student link -->
+                    <!--<a href="@Url.Action("Edit", new { id = item.Id })" class="action-link edit">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>-->
+                    <!-- View details link -->
+                    <!--<a href="@Url.Action("Details", new { id = item.Id })" class="action-link details">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>-->
+                    <!-- Delete student link -->
+                    <!--<a href="@Url.Action("Delete", new { id = item.Id })" class="action-link delete">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>-->
+                @*</div>*@
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Scripts section for JavaScript functionality -->
+@section Scripts {
+    <script>
+        // Function to toggle card expansion when header is clicked
+        function toggleCard(header) {
+            const card = header.closest('.student-card');
+            card.classList.toggle('expanded');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('studentSearch');
+            const studentCards = document.querySelectorAll('.student-card');
+
+
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+
+                // Filter cards based on name or course containing search term
+                studentCards.forEach(card => {
+                    const studentName = card.getAttribute('data-student-name').toLowerCase();
+                    const courseName = card.getAttribute('data-course').toLowerCase();
+
+                    // Show/hide cards based on search criteria
+                    if (studentName.includes(searchTerm) || courseName.includes(searchTerm)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}
