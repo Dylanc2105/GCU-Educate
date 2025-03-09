@@ -353,7 +353,6 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
-    <Content Include="Views\Shared\_DashLayout.cshtml" />
     <Content Include="Views\GuidanceTeacher\GuidanceTeacherDash.cshtml" />
     <Content Include="Views\Lecturer\LecturerDash.cshtml" />
     <Content Include="Views\Student\StudentDash.cshtml" />

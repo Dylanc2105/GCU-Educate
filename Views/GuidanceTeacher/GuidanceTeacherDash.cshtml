@@ -1,68 +1,241 @@
 ﻿
 @{
     ViewBag.Title = "Guidance Teacher Dashboard";
-    Layout = "~/Views/Shared/_DashLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <title>@ViewBag.Title</title>
-<style>
-    body {
-        background-color: #ADAEB3;
-        font-family: Arial, sans-serif;
-    }
+<head>
+    <style>
+        /* Main Container Card */
+        /*.dashboard-card {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-left: 50px;
+            justify-content: space-between;
+            gap: 15px;
+            box-sizing: border-box;
+        }*/
 
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .card {
-        background: white;
-        padding: 30px;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 350px;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-
-    .btn {
-        background-color: #7E3F96;
-        color: white;
-        padding: 10px;
-        width: 100%;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-        .btn:hover {
-            background-color: #682d7a;
+        /* Smaller Cards Inside */
+        .dashboard-item {
+            flex: 1;
+            min-width: 250px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            padding: 20px;
         }
-</style>
+
+        /* Flex Container to Auto-fit Cards */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        /* Main ticket card styling */
+        .ticket-card {
+            background: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px;
+            padding: 20px;
+            width: 300px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header of the card with tinted background */
+        .ticket-card-header {
+            background-color: #7F3D98;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            text-align: center;
+            border-bottom: 2px solid #7F3D98;
+        }
+
+            .ticket-card-header a {
+                text-decoration: none;
+                color: #fff;
+            }
+
+                .ticket-card-header a:hover {
+                    color: #985BAF;
+                }
+
+        /* Links (New, In Progress, Create) */
+        .ticket-links {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .ticket-link {
+            color: #7F3D98;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+
+        /* Ticket list styling */
+        .ticket-list {
+            margin-top: 10px;
+        }
+
+        .ticket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+            .ticket-item a {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                text-decoration: none;
+                color: inherit;
+                padding: 10px 15px;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
+
+            .ticket-item:hover {
+                background-color: #e6e6e6;
+            }
+
+        #ticket-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Ticket info styling */
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticket-date {
+            font-weight: bold;
+            color: #7F3D98;
+        }
+
+        .ticket-data {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
 
 <body>
-    <div class="container">
-        <div class="card">
-            <img src="~/images/GTLogo.png" alt="Logo" style="max-width: 200px; margin-bottom: 20px;">
-            <h2>Guidance Teacher Dashboard</h2>
-            <p>@Html.Partial("_LoginPartial")</p>
+    <div class="container mt-4">
+        @*Main Dashboard Card*@
+        @*<div class="card dashboard-card">*@
+        @*<div class="card-body">
+            <h4 class="card-title">Welcome to the Guidance Lecturer Dashboard</h4>*@
+        <!-- Smaller Cards Container -->
+        <div class="cards-container">
+            <div class="ticket-card">
+                <!-- Ticket card header -->
+                <div class="ticket-card-header">
+                    <a href="@Url.Action("Index", "Ticket")" class="text-white">
+                        <h5>Ticket Dashboard</h5>
+                    </a>
+                </div>
 
+                <!-- Links (New, In Progress, Create) -->
+                <div class="ticket-links">
+                    <a href="@Url.Action("Index", "Ticket", new { filter = "New" })" class="ticket-link @(ViewBag.Filter == "New" ? "active" : "")">New</a> |
+                    <a href="@Url.Action("Index", "Ticket", new { filter = "In Progress" })" class="ticket-link @(ViewBag.Filter == "In Progress" ? "active" : "")">In Progress</a> |
+                    <a href="@Url.Action("Index", "Ticket", new {  })" class="ticket-link ">Create</a>
+                </div>
+
+                <!-- Ticket List (this will be dynamically populated) -->
+                <div class="ticket-list">
+                    <ul id="ticket-items">
+                        <!-- Example ticket -->
+                        <li class="ticket-item">
+                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
+                                <div class="ticket-info">
+                                    <span class="ticket-date">[Date] | Lecturer Name</span>
+                                    <span class="ticket-data">Student Name</span>
+                                    <span class="ticket-data">Issue</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ticket-item">
+                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
+                                <div class="ticket-info">
+                                    <span class="ticket-date">[Date] | Lecturer Name</span>
+                                    <span class="ticket-data">Student Name</span>
+                                    <span class="ticket-data">Issue</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ticket-item">
+                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
+                                <div class="ticket-info">
+                                    <span class="ticket-date">[Date] | Lecturer Name</span>
+                                    <span class="ticket-data">Student Name</span>
+                                    <span class="ticket-data">Issue</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ticket-item">
+                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
+                                <div class="ticket-info">
+                                    <span class="ticket-date">[Date] | Lecturer Name</span>
+                                    <span class="ticket-data">Student Name</span>
+                                    <span class="ticket-data">Issue</span>
+                                </div>
+                            </a>
+                        </li>
+                        <!-- More tickets will go here -->
+                        @*@foreach (var ticket in Model)
+                            {
+                                <li class="ticket-item">
+                                    <div class="ticket-info">
+                                <span class="ticket-date">[Date]</span>
+                                        <span class="ticket-lecturer">LecturerName</span>
+                                        <span class="ticket-student">Student Name</span>
+                                        <span class="ticket-issue">Issue</span>
+                                        <span class="ticket-id">#@ticket.Id</span>
+                                        <span class="ticket-title">@ticket.Title</span>
+                                    </div>
+                                </li>
+                            }*@
+                    </ul>
+                </div>
+            </div>
 
 
         </div>
+
+        @*</div>*@
+        @*</div>*@
     </div>
+
+
 </body>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+
 }
