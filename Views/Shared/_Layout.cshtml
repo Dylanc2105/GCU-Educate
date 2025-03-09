@@ -116,7 +116,7 @@
                 }
 
         .main-content {
-            margin-left: 120px;
+            margin-left: 100px;
             margin-top: 60px;
             padding: 20px 30px;
             transition: margin-left 0.3s ease;
@@ -235,11 +235,11 @@
         <!--Only lecturers and guidance lecturers can view tickets-->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Tickets", "GuidanceTeacher")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
+            <a href="@Url.Action("Index", "Tickets")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
         }
         else if (Request.IsAuthenticated && User.IsInRole("Lecturer"))
         {
-            <a href="@Url.Action("Tickets", "Lecturer")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
+            <a href="@Url.Action("Index", "Tickets")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
         }
 
         <!--Ensures only the gudiance or the lecturer can view all student data-->
@@ -257,9 +257,7 @@
     </div>
     <!-- Main content area -->
     <div class="main-content">
-        <h1 class="dashboard-title">Guidance Tracker Dashboard</h1>
-
-        <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students progress, manage tasks, and collaborate with your team.</p>
+        
 
         <div class="content-container">
             @RenderBody()
@@ -267,7 +265,7 @@
         </div>
     </div>
 
-
+    <script src="~/Scripts/site.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
