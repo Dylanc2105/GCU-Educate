@@ -144,26 +144,28 @@
 </head>
 
 <body>
+    <h1 class="dashboard-title">Guidance Lecturer Dashboard</h1>
+
+    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students progress, manage tasks, and collaborate with your team.</p>
     <div class="container mt-4">
         @*Main Dashboard Card*@
         @*<div class="card dashboard-card">*@
-        @*<div class="card-body">
-            <h4 class="card-title">Welcome to the Guidance Lecturer Dashboard</h4>*@
+
         <!-- Smaller Cards Container -->
         <div class="cards-container">
             <div class="ticket-card">
                 <!-- Ticket card header -->
                 <div class="ticket-card-header">
-                    <a href="@Url.Action("Index", "Ticket")" class="text-white">
+                    <a href="@Url.Action("Index", "Tickets")" class="text-white">
                         <h5>Ticket Dashboard</h5>
                     </a>
                 </div>
 
                 <!-- Links (New, In Progress, Create) -->
                 <div class="ticket-links">
-                    <a href="@Url.Action("Index", "Ticket", new { filter = "New" })" class="ticket-link @(ViewBag.Filter == "New" ? "active" : "")">New</a> |
-                    <a href="@Url.Action("Index", "Ticket", new { filter = "In Progress" })" class="ticket-link @(ViewBag.Filter == "In Progress" ? "active" : "")">In Progress</a> |
-                    <a href="@Url.Action("Index", "Ticket", new {  })" class="ticket-link ">Create</a>
+                    <a href="">New</a> |
+                    <a href="">In Progress</a> |
+                    <a href="">Create</a>
                 </div>
 
                 <!-- Ticket List (this will be dynamically populated) -->

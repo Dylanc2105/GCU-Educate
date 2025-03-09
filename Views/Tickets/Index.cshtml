@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewBag.Title = "Ticket Dashboard";
+}
+
+<style>
+    /* Static Group Card */
+    .group-card {
+        max-width: 300px;
+        min-height: 150px;
+        margin: auto;
+        border-radius: 10px;
+    }
+
+    /* Ticket Cards */
+    .ticket-card {
+        min-width: 280px;
+        min-height: 250px;
+        margin-right: 10px;
+        border-radius: 10px;
+        flex-shrink: 0; /* Prevents shrinking */
+    }
+
+    /* Horizontal Scrolling Container */
+    .ticket-container {
+        display: flex;
+        overflow-x: hidden; /* Hide scrollbar */
+        scroll-behavior: smooth;
+        padding: 10px;
+        position: relative;
+        white-space: nowrap; /* Keeps cards in one line */
+    }
+
+    /* Navigation Buttons */
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        z-index: 10;
+        font-size: 20px;
+        border-radius: 50%;
+    }
+
+    .prev-btn {
+        left: 0;
+    }
+
+    .next-btn {
+        right: 0;
+    }
+
+    .carousel-wrapper {
+        position: relative;
+    }
+</style>
+
+<h1 class="dashboard-title">Ticket Dashboard</h1>
+
+<p class="welcome-text">Welcome to the Ticket Dashboard! Here you can monitor your active tickets and view the Archive.</p>
+<!----Once database is sorted and we do the backend will do a for loop to get all the classes and tickets-->
+<div class="container mt-4">
+    <div class="row">
+        <!-- Static Group Info Card -->
+        <div class="col-md-3">
+            <div class="card p-3 shadow text-center">
+                <h4 class="card-title">CRHNDCOMSD2A</h4>
+                <h5 class="card-subtitle">HND Software Development</h5>
+                <p class="card-text">Active Tickets: <strong>6</strong></p>
+            </div>
+        </div>
+
+        <!-- Scrollable Ticket Cards -->
+        <div class="col-md-9">
+            <div class="carousel-wrapper">
+                <!-- Horizontal Scrolling Ticket Row -->
+                <div class="ticket-container" id="ticketRow1">
+                    <!-- Ticket 1 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date1</h5>
+                        <p class="card-text">Lecturer Name1</p>
+                        <p class="card-text">Student Name1</p>
+                        <p class="card-text">Issue1</p>
+                        <p class="card-text">Ticket Description1</p>
+                        <p class="card-text">New</p>
+                    </div>
+
+                    <!-- Ticket 2 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date2</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name22</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description2</p>
+                        <p class="card-text">New</p>
+                    </div>
+
+                    <!-- Ticket 3 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date3</h5>
+                        <p class="card-text">Lecturer Name3</p>
+                        <p class="card-text">Student Name3</p>
+                        <p class="card-text">Issue3</p>
+                        <p class="card-text">Ticket Description3</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+
+                    <!-- Ticket 4 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date4</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name4</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description4</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+
+                    <!-- Ticket 5 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date5</h5>
+                        <p class="card-text">Lecturer Name5</p>
+                        <p class="card-text">Student Name5</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description5</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <button class="carousel-btn prev-btn" id="prevBtn1">&lt;</button>
+                <button class="carousel-btn next-btn" id="nextBtn1">&gt;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Static Group Info Card -->
+        <div class="col-md-3">
+            <div class="card p-3 shadow text-center">
+                <h4 class="card-title">CRHNDCOMCS2A</h4>
+                <h5 class="card-subtitle">HND Computer Science</h5>
+                <p class="card-text">Active Tickets: <strong>5</strong></p>
+            </div>
+        </div>
+
+        <!-- Scrollable Ticket Cards -->
+        <div class="col-md-9">
+            <div class="carousel-wrapper">
+                <!-- Horizontal Scrolling Ticket Row -->
+                <div class="ticket-container" id="ticketRow2">
+                    <!-- Ticket 1 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date1</h5>
+                        <p class="card-text">Lecturer Name1</p>
+                        <p class="card-text">Student Name1</p>
+                        <p class="card-text">Issue1</p>
+                        <p class="card-text">Ticket Description1</p>
+                        <p class="card-text">New</p>
+                    </div>
+
+                    <!-- Ticket 2 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date2</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name22</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description2</p>
+                        <p class="card-text">New</p>
+                    </div>
+
+                    <!-- Ticket 3 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date2</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name2</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description2</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+
+                    <!-- Ticket 4 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date2</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name2</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description2</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+
+                    <!-- Ticket 5 -->
+                    <div class="card p-3 shadow ticket-card">
+                        <h5 class="card-title">Date2</h5>
+                        <p class="card-text">Lecturer Name2</p>
+                        <p class="card-text">Student Name2</p>
+                        <p class="card-text">Issue2</p>
+                        <p class="card-text">Ticket Description2</p>
+                        <p class="card-text">In Progress</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <button class="carousel-btn prev-btn" id="prevBtn2">&lt;</button>
+                <button class="carousel-btn next-btn" id="nextBtn2">&gt;</button>
+            </div>
+        </div>
+    </div>
+</div>
