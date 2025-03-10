@@ -6,17 +6,15 @@ using System.Web.Mvc;
 
 namespace GuidanceTracker.Controllers
 {
-    
-    public class TicketsController : Controller
+    public class AppointmentController : Controller
     {
-        
-        // GET: Ticket
+        // GET: Appointment
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult TicketsDetails()
+        public ActionResult BookAppointment()
         {
             return View();
         }
