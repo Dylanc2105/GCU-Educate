@@ -154,6 +154,55 @@ namespace GuidanceTracker.Models
             context.Courses.Add(course);
             context.SaveChanges();
 
+            // Create a Lecturer for the new units if not already created
+            var lecturer4 = new Lecturer
+            {
+                UserName = "lecturer4@email.com",
+                Email = "lecturer4@email.com",
+                FirstName = "David",
+                LastName = "Brown",
+                Street = "20 Tech Ave",
+                City = "London",
+                Postcode = "E5 7UP",
+                RegistredAt = DateTime.Now.AddYears(-2),
+                EmailConfirmed = true,
+            };
+            userManager.Create(lecturer4, "123");
+            userManager.AddToRole(lecturer4.Id, "Lecturer");
+
+            // Modules for Computer Science
+            var module1 = new Module
+            {
+                ModuleName = "Programming 101",
+                ModuleDescription = "Introduction to Programming",
+                CourseId = course.CourseId,
+                LecturerId = lecturer1.Id
+            };
+            context.Modules.Add(module1);
+
+            // New Module 1
+            var module2 = new Module
+            {
+                ModuleName = "Data Structures & Algorithms",
+                ModuleDescription = "Fundamentals of Data Structures and Algorithms",
+                CourseId = course.CourseId,
+                LecturerId = lecturer2.Id
+            };
+            context.Modules.Add(module2);
+
+            // New Module 2
+            var module3 = new Module
+            {
+                ModuleName = "Database Systems",
+                ModuleDescription = "Introduction to SQL and Database Management",
+                CourseId = course.CourseId,
+                LecturerId = lecturer4.Id
+            };
+            context.Modules.Add(module3);
+
+            context.SaveChanges();
+
+
 
             if (userManager.FindByName("student@email.com") == null)
             {
@@ -175,6 +224,16 @@ namespace GuidanceTracker.Models
 
             }
 
+            // Create a second Course
+            var course2 = new Course
+            {
+                CourseName = "Cyber Security",
+                CourseDescription = "Introduction to Cyber Security"
+            };
+            context.Courses.Add(course2);
+            context.SaveChanges();
+
+
             // Create a Module
             var module = new Module
             {
@@ -185,6 +244,8 @@ namespace GuidanceTracker.Models
             };
             context.Modules.Add(module);
             context.SaveChanges();
+
+
 
             // Create a Session
             var session = new Session
@@ -234,8 +295,9 @@ namespace GuidanceTracker.Models
             }
         }
 
+
+
     }
-    
+
 
 }
-

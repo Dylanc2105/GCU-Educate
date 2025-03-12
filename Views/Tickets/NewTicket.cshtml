@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Create New Ticket";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Ensure jQuery is loaded before anything else -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    .btn-purple {
+        background-color: #7F3D98 !important; /* Purple */
+        color: white !important;
+        border: none;
+        padding: 10px 20px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF !important; /* Lighter Purple */
+        }
+</style>
+
+
+
+<h1>Create a New Ticket</h1>
+
+<!-- Student Info -->
+<div class="form-group">
+    <label><strong>Student:</strong></label>
+    <input type="text" class="form-control" value="@ViewBag.StudentName" readonly />
+</div>
+
+<div class="form-group">
+    <label><strong>Student ID:</strong></label>
+    <input type="text" class="form-control" value="@ViewBag.StudentId" readonly />
+</div>
+
+<div class="form-group">
+    <label><strong>Created At:</strong></label>
+    <input type="text" class="form-control" value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")" readonly />
+</div>
+
+<div class="form-group">
+    <label><strong>Course:</strong></label>
+    <input type="text" class="form-control" value="@ViewBag.CourseName" readonly />
+</div>
+
+<!-- Unit Selection Dropdown -->
+<div class="form-group">
+    <label for="unitSelect"><strong>Select Unit:</strong></label>
+    @Html.DropDownList("unitSelect", ViewBag.Units as List<SelectListItem>, "Select a Unit", new { @class = "form-control" })
+</div>
+
+<h2>Ticket Details</h2>
+<!-- Issue Selection -->
+<div class="form-group">
+    <label><strong>Issue Type:</strong></label>
+    <select id="issueDropdown" name="Issue" class="form-control">
+        <option value="Attendance Issue">Attendance Issue</option>
+        <option value="Behavioral Concern">Behavioral Concern</option>
+        <option value="Academic Concern">Academic Concern</option>
+        <option value="Custom">Custom Issue...</option>
+    </select>
+</div>
+
+<!-- Custom Issue Input (Hidden by default) -->
+<div class="form-group" id="customIssueGroup" style="display: none;">
+    <label for="customIssue"><strong>Custom Issue Title:</strong></label>
+    <input type="text" id="customIssue" name="CustomIssue" class="form-control" placeholder="Enter custom issue" />
+</div>
+
+
+<!-- Description -->
+<div class="form-group">
+    <label><strong>Description:</strong></label>
+    <textarea id="description" name="Description" class="form-control" rows="4" placeholder="Describe what happened..."></textarea>
+</div>
+
+
+<!-- Submit Ticket Button -->
+<button type="submit" class="btn btn-purple mt-3" id="submitTicket">Submit Ticket</button>
+
+<script>
+    $(document).ready(function () {
+        console.log("✅ JavaScript Loaded & jQuery is working!");
+
+        // Debugging: Check if button exists
+        if ($("#submitTicket").length === 0) {
+            console.error("❌ Submit Ticket button is missing from the DOM!");
+        } else {
+            console.log("✅ Submit Ticket button detected.");
+        }
+
+        // Handle Issue Dropdown Selection (Show/Hide Custom Issue Field)
+        $("#issueDropdown").on("change", function () {
+            console.log("🟣 Issue Dropdown Changed:", $(this).val()); // Debugging log
+
+            if ($(this).val() === "Custom") {
+                console.log("✅ Showing custom issue input!");
+                $("#customIssueGroup").slideDown(); // Smoothly show the input field
+            } else {
+                console.log("❌ Hiding custom issue input.");
+                $("#customIssueGroup").slideUp(); // Smoothly hide it
+                $("#customIssue").val(""); // Clear input when hiding
+            }
+        });
+
+        // Ensure jQuery click event works
+        $("#submitTicket").off("click").on("click", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var issueType = $("#issueDropdown").val();
+            var customIssue = $("#customIssue").val();
+            var description = $("#description").val();
+            var unitId = $("#unitSelect").val();
+            var studentId = "@ViewBag.StudentId";
+
+            // Validation
+            if (issueType === "Custom" && customIssue.trim() === "") {
+                alert("❌ Please enter a custom issue title.");
+                return;
+            }
+
+            if (description.trim() === "") {
+                alert("❌ Please provide a description of the issue.");
+                return;
+            }
+
+            // Debugging: Check what is being sent
+            console.log("📌 Sending data:");
+            console.log("🟣 Student ID:", studentId);
+            console.log("🟣 Issue:", issueType === "Custom" ? customIssue : issueType);
+            console.log("🟣 Description:", description);
+            console.log("🟣 Unit ID:", unitId);
+
+            $.ajax({
+                url: "/Tickets/Create",
+                type: "POST",
+                data: {
+                    StudentId: studentId,
+                    IssueType: issueType === "Custom" ? customIssue : issueType,
+                    Description: description,
+                    UnitId: unitId
+                },
+                success: function (response) {
+                    console.log("✅ Ticket successfully submitted!", response);
+                    alert("✅ Ticket successfully submitted!");
+                    window.location.href = "/GuidanceTeacher/GuidanceTeacherDash";
+                },
+
+                error: function (xhr) {
+                    console.error("❌ Error submitting ticket:", xhr.responseText);
+                    alert("❌ Error submitting ticket. Check the console for details.");
+                }
+            });
+        });
+    });
+</script>
+
+
+

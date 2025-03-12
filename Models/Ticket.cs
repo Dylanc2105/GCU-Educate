@@ -5,8 +5,8 @@ using System.Web;
 
 namespace GuidanceTracker.Models
 {
-	public class Ticket
-	{
+    public class Ticket
+    {
         public int TicketId { get; set; }
         public string TicketTitle { get; set; }
         public string TicketDescription { get; set; }
@@ -23,5 +23,9 @@ namespace GuidanceTracker.Models
         public virtual Lecturer Lecturer { get; set; }
         public virtual Student Student { get; set; }
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
+
+        // Comments list
+        public virtual List<Comment> Comments { get; set; } = new List<Comment>();
     }
+
 }
