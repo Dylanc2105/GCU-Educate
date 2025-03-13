@@ -10,11 +10,13 @@ using Microsoft.AspNet.Identity;
 
 namespace GuidanceTracker.Controllers
 {
-    
+
+    [Authorize(Roles = "GuidanceTeacher, Lecturer")]
     public class TicketsController : Controller
     {
         private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
 
+        
         // GET: Ticket
         public ActionResult Index()
         {
