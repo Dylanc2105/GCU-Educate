@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Create New Ticket";
+    ViewBag.Title = "Create New Issue";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!-- Ensure jQuery is loaded before anything else -->
@@ -21,9 +21,7 @@
         }
 </style>
 
-
-
-<h1>Create a New Ticket</h1>
+<h1>Create a New Issue</h1>
 
 <!-- Student Info -->
 <div class="form-group">
@@ -52,7 +50,7 @@
     @Html.DropDownList("unitSelect", ViewBag.Units as List<SelectListItem>, "Select a Unit", new { @class = "form-control" })
 </div>
 
-<h2>Ticket Details</h2>
+<h2>Issue Details</h2>
 <!-- Issue Selection -->
 <div class="form-group">
     <label><strong>Issue Type:</strong></label>
@@ -70,26 +68,24 @@
     <input type="text" id="customIssue" name="CustomIssue" class="form-control" placeholder="Enter custom issue" />
 </div>
 
-
 <!-- Description -->
 <div class="form-group">
     <label><strong>Description:</strong></label>
     <textarea id="description" name="Description" class="form-control" rows="4" placeholder="Describe what happened..."></textarea>
 </div>
 
-
-<!-- Submit Ticket Button -->
-<button type="submit" class="btn btn-purple mt-3" id="submitTicket">Submit Ticket</button>
+<!-- Submit Issue Button -->
+<button type="submit" class="btn btn-purple mt-3" id="submitIssue">Submit Issue</button>
 
 <script>
     $(document).ready(function () {
         console.log("✅ JavaScript Loaded & jQuery is working!");
 
         // Debugging: Check if button exists
-        if ($("#submitTicket").length === 0) {
-            console.error("❌ Submit Ticket button is missing from the DOM!");
+        if ($("#submitIssue").length === 0) {
+            console.error("❌ Submit Issue button is missing from the DOM!");
         } else {
-            console.log("✅ Submit Ticket button detected.");
+            console.log("✅ Submit Issue button detected.");
         }
 
         // Handle Issue Dropdown Selection (Show/Hide Custom Issue Field)
@@ -107,7 +103,7 @@
         });
 
         // Ensure jQuery click event works
-        $("#submitTicket").off("click").on("click", function (e) {
+        $("#submitIssue").off("click").on("click", function (e) {
             e.preventDefault(); // Prevent default form submission
 
             var issueType = $("#issueDropdown").val();
@@ -135,7 +131,7 @@
             console.log("🟣 Unit ID:", unitId);
 
             $.ajax({
-                url: "/Tickets/Create",
+                url: "/Issues/Create",
                 type: "POST",
                 data: {
                     StudentId: studentId,
@@ -144,19 +140,16 @@
                     UnitId: unitId
                 },
                 success: function (response) {
-                    console.log("✅ Ticket successfully submitted!", response);
-                    alert("✅ Ticket successfully submitted!");
+                    console.log("✅ Issue successfully submitted!", response);
+                    alert("✅ Issue successfully submitted!");
                     window.location.href = "/GuidanceTeacher/GuidanceTeacherDash";
                 },
 
                 error: function (xhr) {
-                    console.error("❌ Error submitting ticket:", xhr.responseText);
-                    alert("❌ Error submitting ticket. Check the console for details.");
+                    console.error("❌ Error submitting issue:", xhr.responseText);
+                    alert("❌ Error submitting issue. Check the console for details.");
                 }
             });
         });
     });
 </script>
-
-
-

@@ -1,7 +1,7 @@
 ﻿@model List<GuidanceTracker.Models.ViewModels.CourseViewModel>
 
 @{
-    ViewBag.Title = "Create New Ticket";
+    ViewBag.Title = "Create New Issue";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -26,7 +26,7 @@
     }
 </style>
 
-<h1 class="dashboard-title">Create a New Ticket</h1>
+<h1 class="dashboard-title">Create a New Issue</h1>
 
 <div class="container mt-4">
     <!-- Class Selection Buttons -->
@@ -46,24 +46,23 @@
     <select id="studentSelect" class="form-control" style="max-width: 300px;">
         <option value="">Select a Student</option>
     </select>
-    <a id="createNewTicket" class="btn btn-purple" href="javascript:void(0);">Create New Ticket</a>
+    <a id="createNewIssue" class="btn btn-purple" href="javascript:void(0);">Create New Issue</a>
 </div>
 
-<!-- Student Details & Tickets (Appears when student is selected) -->
+<!-- Student Details & Issues (Appears when student is selected) -->
 <div id="studentDetails" class="mt-4" style="display: none;">
     <h4>Student Details</h4>
     <p><strong>Name:</strong> <span id="studentName"></span></p>
     <p><strong>Student Number:</strong> <span id="studentNumber"></span></p>
 </div>
 
-<!-- Tickets List (Appears if student has existing tickets) -->
-<div id="ticketList" class="mt-4" style="display: none;">
-    <h4>Existing Tickets</h4>
-    <div id="ticketCards" class="row">
-        <!-- Tickets will be dynamically loaded here -->
+<!-- Issues List (Appears if student has existing issues) -->
+<div id="issueList" class="mt-4" style="display: none;">
+    <h4>Existing Issues</h4>
+    <div id="issueCards" class="row">
+        <!-- Issues will be dynamically loaded here -->
     </div>
 </div>
-
 
 <script>
     $(document).ready(function () {
@@ -79,7 +78,7 @@
 
             // Fetch students for the selected class
             $.ajax({
-                url: "/Tickets/GetStudents",
+                url: "/Issues/GetStudents",
                 type: "GET",
                 data: { courseId: courseId },
                 success: function (students) {
@@ -112,39 +111,39 @@
             $("#studentNumber").text(studentNumber);
             $("#studentDetails").show();
 
-            // Fetch tickets for the selected student
+            // Fetch issues for the selected student
             $.ajax({
-                url: "/Tickets/GetStudentTickets",
+                url: "/Issues/GetStudentIssues",
                 type: "GET",
                 data: { studentId: studentId },
-                success: function (tickets) {
-                    console.log("✅ Tickets Loaded:", tickets);
+                success: function (issues) {
+                    console.log("✅ Issues Loaded:", issues);
 
-                    var ticketCards = $("#ticketCards");
-                    ticketCards.empty();
+                    var issueCards = $("#issueCards");
+                    issueCards.empty();
 
-                    if (tickets.length === 0) {
-                        $("#ticketList").hide(); // Hide if no tickets
+                    if (issues.length === 0) {
+                        $("#issueList").hide(); // Hide if no issues
                     } else {
-                        $.each(tickets, function (i, ticket) {
-                            var ticketHtml = `
-                                <div class="card ticket-card shadow-sm p-3 mb-3" style="border-left: 5px solid #7F3D98;">
-                                    <h5 class="card-title">${ticket.Title}</h5>
-                                    <p class="card-text"><strong>Date:</strong> ${ticket.Date}</p>
-                                    <p class="card-text"><strong>Status:</strong> ${ticket.Status}</p>
-                                    <p class="card-text">${ticket.Description}</p>
-                                    <button class="btn btn-sm btn-outline-primary edit-ticket" data-ticketid="${ticket.Id}">Edit Ticket</button>
+                        $.each(issues, function (i, issue) {
+                            var issueHtml = `
+                                <div class="card issue-card shadow-sm p-3 mb-3" style="border-left: 5px solid #7F3D98;">
+                                    <h5 class="card-title">${issue.Title}</h5>
+                                    <p class="card-text"><strong>Date:</strong> ${issue.Date}</p>
+                                    <p class="card-text"><strong>Status:</strong> ${issue.Status}</p>
+                                    <p class="card-text">${issue.Description}</p>
+                                    <button class="btn btn-sm btn-outline-primary edit-issue" data-issueid="${issue.Id}">Edit Issue</button>
                                 </div>
                             `;
-                            ticketCards.append(ticketHtml);
+                            issueCards.append(issueHtml);
                         });
 
-                        $("#ticketList").show();
+                        $("#issueList").show();
                     }
                 },
                 error: function (xhr) {
-                    console.error("❌ Error loading tickets:", xhr.responseText);
-                    alert("Failed to load tickets.");
+                    console.error("❌ Error loading issues:", xhr.responseText);
+                    alert("Failed to load issues.");
                 }
             });
         });
@@ -153,21 +152,19 @@
 
 <script>
     $(document).ready(function () {
-        $("#createNewTicket").click(function (e) {
+        $("#createNewIssue").click(function (e) {
             e.preventDefault(); // Stop default link behavior
 
             var studentId = $("#studentSelect").val();
             var studentName = $("#studentSelect option:selected").text();
 
             if (!studentId) {
-                alert("Please select a student before creating a ticket.");
+                alert("Please select a student before creating an issue.");
                 return;
             }
 
-            // Redirect to NewTicket page with student details
-            window.location.href = "/Tickets/NewTicket?studentId=" + encodeURIComponent(studentId) + "&studentName=" + encodeURIComponent(studentName);
+            // Redirect to NewIssue page with student details
+            window.location.href = "/Issues/NewIssue?studentId=" + encodeURIComponent(studentId) + "&studentName=" + encodeURIComponent(studentName);
         });
     });
 </script>
-
-

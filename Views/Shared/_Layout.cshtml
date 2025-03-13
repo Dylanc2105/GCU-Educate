@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -232,17 +231,17 @@
  }" title="Home">
             <i class="fas fa-home"></i><span class="icon-title">Home</span>
         </a>
-        <!--Only lecturers and guidance lecturers can view tickets-->
+        <!--Only lecturers and guidance lecturers can view issues-->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Index", "Tickets")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
+            <a href="@Url.Action("Index", "Issues")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
         }
         else if (Request.IsAuthenticated && User.IsInRole("Lecturer"))
         {
-            <a href="@Url.Action("Index", "Tickets")" title="Tickets"><i class="fas fa-ticket-alt"></i><span class="icon-title">Tickets</span></a>
+            <a href="@Url.Action("Index", "Issues")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
         }
 
-        <!--Ensures only the gudiance or the lecturer can view all student data-->
+        <!--Ensures only the guidance or the lecturer can view all student data-->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students"><i class="fas fa-user-graduate"></i><span class="icon-title">Students</span></a>
@@ -257,11 +256,8 @@
     </div>
     <!-- Main content area -->
     <div class="main-content">
-        
-
         <div class="content-container">
             @RenderBody()
-
         </div>
     </div>
 

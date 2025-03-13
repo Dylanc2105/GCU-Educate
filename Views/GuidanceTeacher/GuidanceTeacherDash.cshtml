@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Guidance Teacher Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,20 +6,6 @@
 <title>@ViewBag.Title</title>
 <head>
     <style>
-        /* Main Container Card */
-        /*.dashboard-card {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            margin-left: 50px;
-            justify-content: space-between;
-            gap: 15px;
-            box-sizing: border-box;
-        }*/
-
         /* Smaller Cards Inside */
         .dashboard-item {
             flex: 1;
@@ -39,8 +24,9 @@
             justify-content: space-between;
             gap: 15px;
         }
-        /* Main ticket card styling */
-        .ticket-card {
+
+        /* Main issue card styling */
+        .issue-card {
             background: #fff;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
@@ -52,7 +38,7 @@
         }
 
         /* Header of the card with tinted background */
-        .ticket-card-header {
+        .issue-card-header {
             background-color: #7F3D98;
             color: white;
             padding: 10px;
@@ -62,34 +48,33 @@
             border-bottom: 2px solid #7F3D98;
         }
 
-            .ticket-card-header a {
+            .issue-card-header a {
                 text-decoration: none;
                 color: #fff;
             }
 
-                .ticket-card-header a:hover {
+                .issue-card-header a:hover {
                     color: #985BAF;
                 }
 
         /* Links (New, In Progress, Create) */
-        .ticket-links {
+        .issue-links {
             margin: 15px 0;
             text-align: center;
         }
 
-        .ticket-link {
+        .issue-link {
             color: #7F3D98;
             text-decoration: none;
             padding: 5px;
         }
 
-
-        /* Ticket list styling */
-        .ticket-list {
+        /* Issue list styling */
+        .issue-list {
             margin-top: 10px;
         }
 
-        .ticket-item {
+        .issue-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -103,7 +88,7 @@
             box-sizing: border-box;
         }
 
-            .ticket-item a {
+            .issue-item a {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -115,28 +100,28 @@
                 box-sizing: border-box;
             }
 
-            .ticket-item:hover {
+            .issue-item:hover {
                 background-color: #e6e6e6;
             }
 
-        #ticket-items {
+        #issue-items {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        /* Ticket info styling */
-        .ticket-info {
+        /* Issue info styling */
+        .issue-info {
             display: flex;
             flex-direction: column;
         }
 
-        .ticket-title {
+        .issue-title {
             font-weight: bold;
             color: #7F3D98;
         }
 
-        .ticket-data {
+        .issue-data {
             font-size: 14px;
             color: #333;
         }
@@ -146,99 +131,75 @@
 <body>
     <h1 class="dashboard-title">Guidance Lecturer Dashboard</h1>
 
-    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students progress, manage tasks, and collaborate with your team.</p>
+    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students' progress, manage tasks, and collaborate with your team.</p>
     <div class="container mt-4">
-        @*Main Dashboard Card*@
-        @*<div class="card dashboard-card">*@
 
         <!-- Smaller Cards Container -->
         <div class="cards-container">
-            <div class="ticket-card">
-                <!-- Ticket card header -->
-                <div class="ticket-card-header">
-                    <a href="@Url.Action("Index", "Tickets")" class="text-white">
-                        <h5>Ticket Dashboard</h5>
+            <div class="issue-card">
+                <!-- Issue card header -->
+                <div class="issue-card-header">
+                    <a href="@Url.Action("Index", "Issues")" class="text-white">
+                        <h5>Issue Dashboard</h5>
                     </a>
                 </div>
 
                 <!-- Links (New, In Progress, Create) -->
-                <div class="ticket-links">
+                <div class="issue-links">
                     <a href="">New</a> |
                     <a href="">In Progress</a> |
-                    <a href="@Url.Action("CreateTicket", "Tickets")" >Create</a>
-
+                    <a href="@Url.Action("CreateIssue", "Issues")">Create</a>
                 </div>
 
-                <!-- Ticket List (this will be dynamically populated) -->
-                <div class="ticket-list">
-                    <ul id="ticket-items">
-                        <!-- Example ticket -->
-                        <li class="ticket-item">
-                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
-                                <div class="ticket-info">
-                                    <span class="ticket-title">Issue | Student Name</span>
-                                    <span class="ticket-data">Lecturer Name</span>
-                                    <span class="ticket-data">Date</span>
+                <!-- Issue List (this will be dynamically populated) -->
+                <div class="issue-list">
+                    <ul id="issue-items">
+                        <!-- Example issue -->
+                        <li class="issue-item">
+                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
+                                <div class="issue-info">
+                                    <span class="issue-title">Issue | Student Name</span>
+                                    <span class="issue-data">Lecturer Name</span>
+                                    <span class="issue-data">Date</span>
                                 </div>
                             </a>
                         </li>
-                        <li class="ticket-item">
-                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
-                                <div class="ticket-info">
-                                    <span class="ticket-title">Issue | Student Name</span>
-                                    <span class="ticket-data">Lecturer Name</span>
-                                    <span class="ticket-data">Date</span>
+                        <li class="issue-item">
+                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
+                                <div class="issue-info">
+                                    <span class="issue-title">Issue | Student Name</span>
+                                    <span class="issue-data">Lecturer Name</span>
+                                    <span class="issue-data">Date</span>
                                 </div>
                             </a>
                         </li>
-                        <li class="ticket-item">
-                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
-                                <div class="ticket-info">
-                                    <span class="ticket-title">Issue | Student Name</span>
-                                    <span class="ticket-data">Lecturer Name</span>
-                                    <span class="ticket-data">Date</span>
+                        <li class="issue-item">
+                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
+                                <div class="issue-info">
+                                    <span class="issue-title">Issue | Student Name</span>
+                                    <span class="issue-data">Lecturer Name</span>
+                                    <span class="issue-data">Date</span>
                                 </div>
                             </a>
                         </li>
-                        <li class="ticket-item">
-                            <a href="@Url.Action("Details", "Ticket", new { })" class="ticket-link">
-                                <div class="ticket-info">
-                                    <span class="ticket-title">Issue | Student Name</span>
-                                    <span class="ticket-data">Lecturer Name</span>
-                                    <span class="ticket-data">Date</span>
+                        <li class="issue-item">
+                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
+                                <div class="issue-info">
+                                    <span class="issue-title">Issue | Student Name</span>
+                                    <span class="issue-data">Lecturer Name</span>
+                                    <span class="issue-data">Date</span>
                                 </div>
                             </a>
                         </li>
-                        <!-- More tickets will go here -->
-                        @*@foreach (var ticket in Model)
-                            {
-                                <li class="ticket-item">
-                                    <div class="ticket-info">
-                                <span class="ticket-date">[Date]</span>
-                                        <span class="ticket-lecturer">LecturerName</span>
-                                        <span class="ticket-student">Student Name</span>
-                                        <span class="ticket-issue">Issue</span>
-                                        <span class="ticket-id">#@ticket.Id</span>
-                                        <span class="ticket-title">@ticket.Title</span>
-                                    </div>
-                                </li>
-                            }*@
+                        <!-- More issues will go here -->
                     </ul>
                 </div>
             </div>
-
-
         </div>
-
-        @*</div>*@
-        @*</div>*@
     </div>
-
-
 </body>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
-
 }

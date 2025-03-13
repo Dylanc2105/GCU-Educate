@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "Ticket Dashboard";
+﻿@{
+    ViewBag.Title = "Issue Dashboard";
 }
 
 <style>
@@ -12,8 +11,8 @@
         border-radius: 10px;
     }
 
-    /* Ticket Cards */
-    .ticket-card {
+    /* Issue Cards */
+    .issue-card {
         min-width: 280px;
         min-height: 250px;
         margin-right: 10px;
@@ -22,7 +21,7 @@
     }
 
     /* Horizontal Scrolling Container */
-    .ticket-container {
+    .issue-container {
         display: flex;
         overflow-x: hidden; /* Hide scrollbar */
         scroll-behavior: smooth;
@@ -57,6 +56,7 @@
     .carousel-wrapper {
         position: relative;
     }
+
     .create-btn {
         width: 50px;
         height: 50px;
@@ -93,15 +93,14 @@
             background-color: #985BAF;
             color: white;
         }
-
 </style>
 <body>
 
-    <h1 class="dashboard-title">Ticket Dashboard</h1>
+    <h1 class="dashboard-title">Issue Dashboard</h1>
 
-    <p class="welcome-text">Welcome to the Ticket Dashboard! Here you can monitor your active tickets and view the Archive.</p>
+    <p class="welcome-text">Welcome to the Issue Dashboard! Here you can monitor your active issues and view the Archive.</p>
     <div class="d-flex justify-content-end align-items-center mb-3">
-        @using (Html.BeginForm("Index", "Tickets", FormMethod.Get, new { @class = "d-flex" }))
+        @using (Html.BeginForm("Index", "Issues", FormMethod.Get, new { @class = "d-flex" }))
         {
             <div class="input-group" style="max-width: 350px;">
                 @Html.TextBox("searchString", null, new { @class = "form-control", placeholder = "Search..." })
@@ -110,11 +109,11 @@
                 </button>
             </div>
         }
-        <a href="@Url.Action("CreateTicket", "Tickets")" class="btn btn-success create-btn">
+        <a href="@Url.Action("CreateIssue", "Issues")" class="btn btn-success create-btn">
             +
         </a>
     </div>
-    <!----Once database is sorted and we do the backend will do a for loop to get all the classes and tickets-->
+    <!----Once database is sorted and we do the backend will do a for loop to get all the classes and issues-->
     <div class="container mt-4">
         <div class="row">
             <!-- Static Group Info Card -->
@@ -122,69 +121,27 @@
                 <div class="card p-3 shadow text-center">
                     <h4 class="card-title">CRHNDCOMSD252A</h4>
                     <h5 class="card-subtitle">HND Software Development</h5>
-                    <p class="card-text">Active Tickets: <strong>6</strong></p>
+                    <p class="card-text">Active Issues: <strong>6</strong></p>
                 </div>
             </div>
 
-            <!-- Scrollable Ticket Cards -->
+            <!-- Scrollable Issue Cards -->
             <div class="col-md-9">
                 <div class="carousel-wrapper">
-                    <!-- Horizontal Scrolling Ticket Row -->
-                    <div class="ticket-container" id="ticketRow1">
-                        <!-- Ticket 1 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 2 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 3 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 4 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 5 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
+                    <!-- Horizontal Scrolling Issue Row -->
+                    <div class="issue-container" id="issueRow1">
+                        <!-- Issue Cards -->
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <div class="card p-3 shadow issue-card">
+                                <h5 class="card-title">Attendance Issues</h5>
+                                <p class="card-text">Date</p>
+                                <p class="card-text">Student Name</p>
+                                <p class="card-text">Lecturer Name</p>
+                                <p class="card-text">Issue Description</p>
+                                <p class="card-text">New</p>
+                            </div>
+                        }
                     </div>
 
                     <!-- Navigation Buttons -->
@@ -202,69 +159,27 @@
                 <div class="card p-3 shadow text-center">
                     <h4 class="card-title">CRHNDCOMCS2A</h4>
                     <h5 class="card-subtitle">HND Computer Science</h5>
-                    <p class="card-text">Active Tickets: <strong>5</strong></p>
+                    <p class="card-text">Active Issues: <strong>5</strong></p>
                 </div>
             </div>
 
-            <!-- Scrollable Ticket Cards -->
+            <!-- Scrollable Issue Cards -->
             <div class="col-md-9">
                 <div class="carousel-wrapper">
-                    <!-- Horizontal Scrolling Ticket Row -->
-                    <div class="ticket-container" id="ticketRow2">
-                        <!-- Ticket 1 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 2 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 3 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 4 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
-
-                        <!-- Ticket 5 -->
-                        <div class="card p-3 shadow ticket-card">
-                            <h5 class="card-title">Attendance Issues</h5>
-                            <p class="card-text">Date</p>
-                            <p class="card-text">Student Name1</p>
-                            <p class="card-text">Lecturer Name</p>
-                            <p class="card-text">Ticket Description1</p>
-                            <p class="card-text">New</p>
-
-                        </div>
+                    <!-- Horizontal Scrolling Issue Row -->
+                    <div class="issue-container" id="issueRow2">
+                        <!-- Issue Cards -->
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <div class="card p-3 shadow issue-card">
+                                <h5 class="card-title">Attendance Issues</h5>
+                                <p class="card-text">Date</p>
+                                <p class="card-text">Student Name</p>
+                                <p class="card-text">Lecturer Name</p>
+                                <p class="card-text">Issue Description</p>
+                                <p class="card-text">New</p>
+                            </div>
+                        }
                     </div>
 
                     <!-- Navigation Buttons -->

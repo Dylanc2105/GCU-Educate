@@ -1,14 +1,13 @@
-﻿
-@{
-    ViewBag.Title = "Tickets Details";
+﻿@{
+    ViewBag.Title = "Issue Details";
 }
-<h2>Tickets Details</h2>
-<div class="card p-3 shadow ticket-card">
+<h2>Issue Details</h2>
+<div class="card p-3 shadow issue-card">
     <h5 class="card-title">Date</h5>
     <p class="card-text">Lecturer Name</p>
     <p class="card-text">Student Name</p>
     <p class="card-text">Issue</p>
-    <p class="card-text">Ticket Description</p>
+    <p class="card-text">Issue Description</p>
     <p class="card-text">New</p>
 </div>
 <br />
@@ -20,4 +19,3 @@
 <br />
 <br />
 @Html.ActionLink("Book an appointment", "BookAppointment", "AppointmentController", null, htmlAttributes: new { @class = "btn btn-outline-dark" })
-
