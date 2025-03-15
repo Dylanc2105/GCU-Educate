@@ -7,13 +7,13 @@ namespace GuidanceTracker.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class UpdateDatabaseSchema : IMigrationMetadata
+    public sealed partial class AddCommentsProperly : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdateDatabaseSchema));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddCommentsProperly));
         
         string IMigrationMetadata.Id
         {
-            get { return "202503112314198_UpdateDatabaseSchema"; }
+            get { return "202503150146029_AddCommentsProperly"; }
         }
         
         string IMigrationMetadata.Source

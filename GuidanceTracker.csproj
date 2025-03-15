@@ -248,13 +248,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
+    <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LecturerController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ResetPasswordController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
-    <Compile Include="Controllers\TicketsController.cs" />
+    <Compile Include="Controllers\IssueController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -266,9 +267,9 @@
     <Compile Include="Migrations\202502201534276_AddResetCodeToUser.Designer.cs">
       <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202503112314198_UpdateDatabaseSchema.cs" />
-    <Compile Include="Migrations\202503112314198_UpdateDatabaseSchema.Designer.cs">
-      <DependentUpon>202503112314198_UpdateDatabaseSchema.cs</DependentUpon>
+    <Compile Include="Migrations\202503150146029_AddCommentsProperly.cs" />
+    <Compile Include="Migrations\202503150146029_AddCommentsProperly.Designer.cs">
+      <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ViewModels\CourseViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateIssueViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateStudentViewModel.cs" />
     <Compile Include="Models\ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -385,10 +387,6 @@
     <Content Include="Views\resetpassword\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\ViewAllStudents.cshtml" />
     <Content Include="Views\GuidanceTeacher\CreateStudent.cshtml" />
-    <Content Include="Views\Tickets\Index.cshtml" />
-    <Content Include="Views\Tickets\TicketsDetails.cshtml" />
-    <Content Include="Views\Tickets\CreateTicket.cshtml" />
-    <Content Include="Views\Tickets\NewTicket.cshtml" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -397,10 +395,15 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
+    <Content Include="Views\Issue\Index.cshtml" />
+    <Content Include="Views\Issue\StudentIssue.cshtml" />
+    <Content Include="Views\Issue\ViewIssue.cshtml" />
+    <Content Include="Views\Issue\CreateIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Appointment\" />
+    <Folder Include="Views\Comment\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202502201504067_InitialCreate.resx">
@@ -409,8 +412,8 @@
     <EmbeddedResource Include="Migrations\202502201534276_AddResetCodeToUser.resx">
       <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503112314198_UpdateDatabaseSchema.resx">
-      <DependentUpon>202503112314198_UpdateDatabaseSchema.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202503150146029_AddCommentsProperly.resx">
+      <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

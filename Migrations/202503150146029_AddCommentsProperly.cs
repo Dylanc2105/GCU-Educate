@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class UpdateDatabaseSchema : DbMigration
+    public partial class AddCommentsProperly : DbMigration
     {
         public override void Up()
         {
@@ -23,6 +23,7 @@
                 .Index(t => t.UserId)
                 .Index(t => t.TicketId);
             
+            AlterColumn("dbo.Tickets", "TicketDescription", c => c.String(nullable: false));
         }
         
         public override void Down()
@@ -31,6 +32,7 @@
             DropForeignKey("dbo.Comments", "TicketId", "dbo.Tickets");
             DropIndex("dbo.Comments", new[] { "TicketId" });
             DropIndex("dbo.Comments", new[] { "UserId" });
+            AlterColumn("dbo.Tickets", "TicketDescription", c => c.String());
             DropTable("dbo.Comments");
         }
     }

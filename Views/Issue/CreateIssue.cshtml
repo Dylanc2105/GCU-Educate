@@ -1,0 +1,200 @@
+﻿@model GuidanceTracker.Models.ViewModels.CreateIssueViewModel
+
+@{
+    ViewBag.Title = "Create New Issue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h1 class="dashboard-title text-center mb-4">Create New Issue</h1>
+
+<div class="container">
+    <div class="issue-form-container shadow p-4 rounded">
+        <form id="createIssueForm" method="post" action="@Url.Action("CreateIssue", "Issue")">
+            @Html.AntiForgeryToken()
+
+            <!-- Student Information -->
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Student Name</label>
+                    <input type="text" class="form-control" value="@Model.StudentName" readonly>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Student ID</label>
+                    <input type="text" class="form-control" name="StudentId" value="@Model.StudentId" readonly>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label class="form-label">Course</label>
+                    <input type="text" class="form-control" value="@Model.CourseName" readonly>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Select Unit</label>
+                    <select id="unitSelect" name="SelectedUnitId" class="form-control">
+                        <option value="">Select a Unit</option>
+                        @foreach (var unit in Model.Units)
+                        {
+                            <option value="@unit.ModuleId">@unit.ModuleName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label">Issue Type</label>
+                <select id="issueType" name="IssueType" class="form-control">
+                    <option value="Late Attendance">Late Attendance</option>
+                    <option value="Missing Attendance">Missing Attendance</option>
+                    <option value="Behaviour">Behaviour</option>
+                    <option value="Deadlines">Deadlines</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Performance">Performance</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Academic Dishonesty">Academic Dishonesty</option>
+                    <option value="Custom">Custom Issue</option>
+                </select>
+            </div>
+
+            <div class="mt-3" id="customIssueGroup" style="display: none;">
+                <label class="form-label">Custom Issue</label>
+                <input type="text" id="customIssue" name="CustomIssue" class="form-control">
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label">Description</label>
+                <textarea name="IssueDescription" class="form-control" rows="4" placeholder="Describe the issue..."></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="/Issue/StudentIssue" class="btn btn-gray">Change Student</a>
+                <button type="submit" id="submitIssueBtn" class="btn btn-purple">Raise Issue</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log("✅ JavaScript Loaded!");
+
+        // Handle custom issue visibility
+        $("#issueType").change(function () {
+            if ($(this).val() === "Custom") {
+                $("#customIssueGroup").slideDown();
+            } else {
+                $("#customIssueGroup").slideUp();
+                $("#customIssue").val(""); // Reset custom issue input
+            }
+        });
+
+        // Handle Create Issue Form Submission
+        $("#createIssueForm").submit(function (e) {
+            e.preventDefault(); // ✅ Prevent default form submission (page refresh)
+
+            var form = $(this);
+            var formData = form.serialize(); // Collect form data
+            var issueDescription = $("textarea[name='IssueDescription']").val(); // Capture description input
+
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: formData,
+                dataType: "json",
+                success: function (response) {
+                    console.log("🔍 Server Response:", response);
+
+                    if (response.success) {
+                        alert(response.message);
+                        window.location.href = "/Issue/StudentIssue"; // Redirect to Student Issue page
+                        return;
+                    }
+
+                    // If issue already exists
+                    if (!response.success && response.issueId) {
+                        let redirectUrl = "/Issue/ViewIssue/" + response.issueId + "?comment=" + encodeURIComponent(issueDescription);
+
+                        if (response.archived) {
+                            alert(response.error);
+                        } else {
+                            alert(response.error);
+                        }
+
+                        window.location.href = redirectUrl; // Redirect with comment pre-filled
+                        return;
+                    }
+
+                    alert(response.error || "❌ An unknown error occurred.");
+                },
+                error: function (xhr, status, error) {
+                    console.error("❌ Error submitting form:", xhr.responseText);
+                    alert("An error occurred while creating the issue. Please try again.");
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    body {
+        background-color: #F4F4F4;
+        font-family: "Arial", sans-serif;
+    }
+
+    .issue-form-container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        border-radius: 10px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-purple {
+        background-color: #7F3D98 !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 15px !important;
+        font-size: 14px;
+        transition: 0.3s ease-in-out;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF !important;
+            transform: scale(1.03);
+        }
+
+    .btn-gray {
+        background-color: #6c757d !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 15px !important;
+        font-size: 14px;
+        transition: 0.3s ease-in-out;
+    }
+
+        .btn-gray:hover {
+            background-color: #5a6268 !important;
+            transform: scale(1.03);
+        }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        transition: 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: #7F3D98;
+            box-shadow: 0px 0px 5px rgba(127, 61, 152, 0.5);
+            outline: none;
+        }
+</style>

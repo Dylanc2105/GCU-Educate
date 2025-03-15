@@ -12,18 +12,17 @@ namespace GuidanceTracker.Models
         [Required]
         public string Content { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Foreign Keys
         [Required]
         public string UserId { get; set; }
 
-        [Required]
-        public int TicketId { get; set; }
-
-        // Navigation properties
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
+
+        [Required]
+        public int TicketId { get; set; }
 
         [ForeignKey("TicketId")]
         public virtual Ticket Ticket { get; set; }

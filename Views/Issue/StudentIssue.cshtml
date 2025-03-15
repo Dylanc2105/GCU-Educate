@@ -1,0 +1,245 @@
+﻿@model List<GuidanceTracker.Models.ViewModels.CourseViewModel>
+
+@{
+    ViewBag.Title = "Student Issue Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h1 class="dashboard-title">Student Issue Center</h1> <!-- ✅ Updated Heading -->
+
+<div class="container mt-4">
+    <!-- Class Selection Buttons -->
+    <div class="class-selection">
+        <h4>Select a Class:</h4>
+        <div class="btn-group flex-wrap">
+            @foreach (var course in Model)
+            {
+                <button class="btn btn-purple class-btn" data-courseid="@course.CourseId">@course.CourseName</button>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Student Dropdown and Create Button -->
+<div id="studentSelectionRow" class="d-flex align-items-center mt-3 flex-wrap" style="gap: 10px;">
+    <select id="studentSelect" class="form-control" style="max-width: 300px;">
+        <option value="">Select a Student</option>
+    </select>
+    <a id="createNewIssue" class="btn btn-purple" href="javascript:void(0);">Create New Issue</a>
+</div>
+
+<!-- Student Details & Issues (Appears when student is selected) -->
+<div id="studentDetails" class="mt-4" style="display: none;">
+    <h4>Student Details</h4>
+    <p><strong>Name:</strong> <span id="studentName"></span></p>
+    <p><strong>Student Number:</strong> <span id="studentNumber"></span></p>
+</div>
+
+<!-- Toggle for Active/Archived Issues -->
+<div id="issueList" class="mt-4" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h4>Student's Issues</h4> <!-- ✅ Updated Heading -->
+        <div class="form-check form-switch">
+            <input class="form-check-input toggle-purple" type="checkbox" id="toggleArchived">
+            <label class="form-check-label" for="toggleArchived">Show Archived Tickets</label>
+        </div>
+    </div>
+    <div id="issueCards" class="row"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log("✅ JavaScript Loaded!");
+
+        let allIssues = []; // Store all issues for toggling
+
+        // Handle Class Button Click
+        $(document).on("click", ".class-btn", function () {
+            var courseId = $(this).data("courseid");
+
+            if (!courseId) {
+                alert("❌ Invalid Course ID!");
+                return;
+            }
+
+            $(".class-btn").removeClass("btn-selected").addClass("btn-purple"); // Reset all buttons
+            $(this).removeClass("btn-purple").addClass("btn-selected"); // Highlight selected button
+
+            console.log("Fetching students for Course ID:", courseId);
+
+            // ✅ Fetch students for selected course
+            $.ajax({
+                url: "/Issue/GetStudents",
+                type: "GET",
+                data: { courseId: courseId },
+                success: function (response) {
+                    if (response.error) {
+                        console.error("❌ Error:", response.error);
+                        alert(response.error);
+                        return;
+                    }
+
+                    var studentSelect = $("#studentSelect");
+                    studentSelect.empty().append('<option value="">Select a Student</option>');
+
+                    $.each(response, function (i, student) {
+                        studentSelect.append(`<option value="${student.Id}" data-number="${student.StudentNumber}">${student.Name}</option>`);
+                    });
+
+                    $("#studentDropdown").show();
+                },
+                error: function (xhr) {
+                    console.error("❌ AJAX Error:", xhr.responseText);
+                    alert("Failed to load students. Please check the console for details.");
+                }
+            });
+        });
+
+        // Handle Student Selection
+        $(document).on("change", "#studentSelect", function () {
+            var selectedStudent = $(this).find(":selected");
+            var studentId = selectedStudent.val();
+            var studentName = selectedStudent.text();
+            var studentNumber = selectedStudent.data("number");
+
+            $("#studentName").text(studentName);
+            $("#studentNumber").text(studentNumber);
+            $("#studentDetails").show();
+
+            console.log("Fetching issues for Student ID:", studentId);
+
+            // ✅ Fetch issues for selected student
+            $.ajax({
+                url: "/Issue/GetStudentIssues",
+                type: "GET",
+                data: { studentId: studentId },
+                success: function (issues) {
+                    allIssues = issues; // Store all issues for toggling
+                    displayIssues(false); // Show only active tickets by default
+                },
+                error: function (xhr) {
+                    console.error("❌ Error loading issues:", xhr.responseText);
+                    alert("Failed to load issues.");
+                }
+            });
+        });
+
+        // Handle Create New Issue Button Click
+        $(document).on("click", "#createNewIssue", function (e) {
+            e.preventDefault();
+
+            var studentId = $("#studentSelect").val();
+
+            if (!studentId) {
+                alert("❌ Please select a student first!");
+                return;
+            }
+
+            // Redirect to the Create Issue page with the selected student ID
+            window.location.href = "/Issue/CreateIssue?studentId=" + studentId;
+        });
+
+        // Handle Archive Issue
+        $(document).on("click", ".archive-issue", function () {
+            var issueId = $(this).data("issueid");
+
+            $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Archived" })
+                .done(function (response) {
+                    if (response.success) {
+                        alert("✅ Ticket has been archived!");
+                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Archived";
+                        displayIssues(false);
+                    }
+                })
+                .fail(function (xhr) {
+                    console.error("❌ Error archiving issue:", xhr.responseText);
+                    alert("Failed to archive the issue.");
+                });
+        });
+
+        // Handle Reinstate Issue
+        $(document).on("click", ".reinstate-issue", function () {
+            var issueId = $(this).data("issueid");
+
+            $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Open" })
+                .done(function (response) {
+                    if (response.success) {
+                        alert("✅ Ticket has been reinstated!");
+                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Open";
+                        displayIssues(true);
+                    }
+                })
+                .fail(function (xhr) {
+                    console.error("❌ Error reinstating issue:", xhr.responseText);
+                    alert("Failed to reinstate the issue.");
+                });
+        });
+
+        // Handle Toggle for Active/Archived Issues
+        $(document).on("change", "#toggleArchived", function () {
+            displayIssues(this.checked);
+        });
+
+        function displayIssues(showArchived) {
+            var issueCards = $("#issueCards");
+            issueCards.empty();
+
+            var filteredIssues = allIssues.filter(issue => showArchived ? issue.TicketStatus === "Archived" : issue.TicketStatus !== "Archived");
+
+            if (filteredIssues.length === 0) {
+                issueCards.append(`<p>No ${showArchived ? "archived" : "active"} issues found.</p>`);
+                return;
+            }
+
+            $.each(filteredIssues, function (i, issue) {
+                var actionButton = showArchived
+                    ? `<button class="btn btn-purple btn-sm reinstate-issue" data-issueid="${issue.TicketId}" style="width: 100%;">Reinstate Issue</button>`
+                    : `
+                        <div class="btn-group mt-2" style="width: 100%; gap: 10px;">
+                            <a class="btn btn-purple btn-sm add-to-issue" href="/Issue/ViewIssue/${issue.TicketId}" style="width: 48%;">Add to Issue</a>
+                            <button class="btn btn-purple btn-sm archive-issue" data-issueid="${issue.TicketId}" style="width: 48%;">Archive Issue</button>
+                        </div>`;
+
+                var issueHtml = `
+                    <div class="card issue-card shadow-sm p-3 mb-3" style="border-left: 5px solid #7F3D98;">
+                        <h5 class="card-title">${issue.TicketTitle || "No Title"}</h5>
+                        <p class="card-text"><strong>Date Created:</strong> ${issue.CreatedAt || "Unknown Date"}</p>
+                        <p class="card-text"><strong>Status:</strong> ${issue.TicketStatus || "No Status"}</p>
+                        <p class="card-text">${issue.TicketDescription || "No Description Available"}</p>
+                        ${actionButton}
+                    </div>`;
+                issueCards.append(issueHtml);
+            });
+
+            $("#issueList").show();
+        }
+    });
+</script>
+<style>
+    /* 💜 Ensure ALL Buttons are Purple */
+    .btn-purple {
+        background-color: #7F3D98 !important;
+        color: white !important;
+        border: none !important;
+        padding: 8px 15px !important;
+        text-align: center !important;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF !important;
+        }
+
+    .btn-selected {
+        background-color: #5C2D7A !important;
+        color: white !important;
+    }
+
+    /* Ensure Proper Spacing */
+    .flex-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+</style>

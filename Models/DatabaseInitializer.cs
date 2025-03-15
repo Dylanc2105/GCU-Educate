@@ -274,6 +274,34 @@ namespace GuidanceTracker.Models
             context.Tickets.Add(ticket);
             context.SaveChanges();
 
+            var ticket2 = new Ticket
+            {
+                TicketTitle = "Academic Issue",
+                TicketDescription = "Student has failed my class.",
+                TicketStatus = "Open",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Tickets.Add(ticket2);
+            context.SaveChanges();
+
+            var ticket3 = new Ticket
+            {
+                TicketTitle = "Medical Issue",
+                TicketDescription = "Student has fractured there arm and is unable to type ",
+                TicketStatus = "Archived",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Tickets.Add(ticket3);
+            context.SaveChanges();
+
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
 
 

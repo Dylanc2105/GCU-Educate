@@ -1,0 +1,110 @@
+﻿@model GuidanceTracker.Models.Ticket
+
+@{
+    ViewBag.Title = "Issue Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.TicketTitle</h1>
+<p><strong>Inital reason to raise issue:</strong> @Model.TicketDescription</p>
+<p><strong>Status:</strong> @Model.TicketStatus</p>
+<p><strong>Created On:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+
+<h3>Comments</h3>
+<div id="commentsContainer">
+    @if (Model.Comments != null && Model.Comments.Any())
+    {
+        foreach (var comment in Model.Comments)
+        {
+            <div class="comment-box">
+                <p><strong>@comment.User.FirstName @comment.User.LastName</strong> (@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</p>
+                <p>@comment.Content</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No comments yet. Add more information to help flesh out the issue</p>
+    }
+</div>
+
+<!-- Comment Form -->
+<h4>Write a comment...</h4>
+<form id="commentForm">
+    @Html.AntiForgeryToken()
+<textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
+    <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        console.log("✅ ViewIssue Page Loaded");
+
+        // ✅ Pre-fill comment box from URL if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const commentText = urlParams.get("comment");
+
+        if (commentText) {
+            $("#commentInput").val(commentText);
+        }
+
+        // ✅ Handle Comment Submission
+        $("#commentForm").submit(function (e) {
+            e.preventDefault();
+
+            var commentContent = $("#commentInput").val().trim();
+            if (commentContent === "") {
+                alert("❌ Comment cannot be empty.");
+                return;
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddComment", "Issue")",
+                type: "POST",
+                data: {
+                    ticketId: @Model.TicketId,
+                    content: commentContent,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $("#commentsContainer").append(`
+                            <div class="comment-box">
+                                <p><strong>You</strong> (Just now)</p>
+                                <p>${commentContent}</p>
+                            </div>
+                        `);
+                        $("#commentInput").val(""); // ✅ Clear input correctly
+                    } else {
+                        alert("❌ Error: " + response.error);
+                    }
+                },
+                error: function () {
+                    alert("❌ Failed to submit the comment.");
+                }
+            });
+        });
+    });
+</script>
+
+
+<style>
+    .comment-box {
+        background: #f9f9f9;
+        padding: 10px;
+        margin: 10px 0;
+        border-left: 5px solid #7F3D98;
+        border-radius: 5px;
+    }
+
+    .btn-purple {
+        background-color: #7F3D98 !important;
+        color: white !important;
+        border: none !important;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF !important;
+        }
+</style>

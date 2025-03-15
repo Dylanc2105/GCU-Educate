@@ -234,11 +234,11 @@
         <!--Only lecturers and guidance lecturers can view issues-->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Index", "Issues")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
+            <a href="@Url.Action("Index", "Issue")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
         }
         else if (Request.IsAuthenticated && User.IsInRole("Lecturer"))
         {
-            <a href="@Url.Action("Index", "Issues")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
+            <a href="@Url.Action("Index", "Issue")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
         }
 
         <!--Ensures only the guidance or the lecturer can view all student data-->

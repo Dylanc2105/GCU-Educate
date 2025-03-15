@@ -1,0 +1,194 @@
+﻿@model List<GuidanceTracker.Models.Ticket>
+
+@{
+    ViewBag.Title = "Issues Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Ensure jQuery is loaded -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    body {
+        background-color: #F4F4F4;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Left Side Containers (New & In Progress Issues) */
+    .left-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Each container style */
+    .container {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        min-height: 180px;
+    }
+
+    /* Issue Cards */
+    .issue-card {
+        padding: 10px;
+        border-left: 5px solid #7F3D98;
+        margin-bottom: 8px;
+        background: #FAFAFA;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .issue-card:hover {
+            background: #EEE;
+        }
+
+    .issue-main {
+        font-weight: bold;
+        font-size: 14px; /* Smaller font */
+    }
+
+    .issue-update {
+        font-size: 12px; /* Smaller font */
+        color: #555;
+    }
+
+    .issue-date {
+        font-size: 10px; /* Fine print */
+        color: #888;
+    }
+
+    /* Issue Footer */
+    .issue-footer {
+        font-size: 10px; /* Fine print */
+        text-align: right;
+        padding-top: 5px;
+        font-style: italic;
+        color: black;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .quick-btn {
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s ease;
+        background: #7F3D98; /* Purple Buttons */
+    }
+
+        .quick-btn:hover {
+            background: #985BAF;
+        }
+
+    /* Right Container (Quick Actions) */
+    .right-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: 100%;
+    }
+
+    /* Right Container Box (Quick Actions) */
+    .bottom-right-container {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        min-height: 320px;
+    }
+
+    /* Section Titles (Purple and Larger Font) */
+    .section-title {
+        font-size: 22px; /* Slightly smaller */
+        font-weight: bold;
+        color: #7F3D98;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
+
+<h1 class="dashboard-title">Issues Dashboard</h1>
+
+<!-- Dashboard Layout -->
+<div class="dashboard-container">
+
+    <!-- Left Containers (New & In Progress Issues) -->
+    <div class="left-container">
+        <!-- New Issues -->
+        <div class="container">
+            <div class="section-title">New Issues</div>
+
+            @foreach (var ticket in Model.Where(t => t.TicketStatus == "Open").OrderByDescending(t => t.CreatedAt).Take(4))
+            {
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.TicketId })'">
+                    <div class="issue-main">@ticket.Student.FirstName @ticket.Student.LastName</div>
+                    <div class="issue-update">Update to @ticket.TicketTitle</div>
+                    <div class="issue-date">@ticket.CreatedAt.ToString("dd/MM/yyyy")</div>
+                </div>
+            }
+
+            <!-- Footer: Show Total Count -->
+            <div class="issue-footer">
+                Total New Issues: <strong>@Model.Count(t => t.TicketStatus == "Open")</strong>
+            </div>
+        </div>
+
+        <!-- In Progress Issues -->
+        <div class="container">
+            <div class="section-title">In Progress Issues</div>
+
+            @foreach (var ticket in Model.Where(t => t.TicketStatus == "In Progress").OrderByDescending(t => t.CreatedAt).Take(4))
+            {
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.TicketId })'">
+                    <div class="issue-main">@ticket.Student.FirstName @ticket.Student.LastName</div>
+                    <div class="issue-update">Update to @ticket.TicketTitle</div>
+                    <div class="issue-date">@ticket.CreatedAt.ToString("dd/MM/yyyy")</div>
+                </div>
+            }
+
+            <!-- Footer: Show Total Count -->
+            <div class="issue-footer">
+                Total In Progress Issues: <strong>@Model.Count(t => t.TicketStatus == "In Progress")</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Containers (Quick Actions) -->
+    <div class="right-container">
+        <!-- Quick Actions -->
+        <div class="bottom-right-container">
+            <div class="section-title">Quick Actions</div>
+            <div class="quick-actions">
+                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Add Issue</a>
+                <a href="@Url.Action("AllIssue", "Issue")" class="quick-btn">See All Issues</a>
+                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived Issues</a>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GuidanceTracker.Models
 {
     public class Ticket
     {
+        [Key]
         public int TicketId { get; set; }
+
         public string TicketTitle { get; set; }
+
+        [Required]
         public string TicketDescription { get; set; }
-        public string TicketStatus { get; set; } // Open, In Progress, Resolved
-        public DateTime CreatedAt { get; set; }
+
+        public string TicketStatus { get; set; } = "Open";
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
 
         // Foreign keys
@@ -24,8 +30,9 @@ namespace GuidanceTracker.Models
         public virtual Student Student { get; set; }
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
 
-        // Comments list
-        public virtual List<Comment> Comments { get; set; } = new List<Comment>();
-    }
+        // 🔹 Adding a list of comments
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+
+    }
 }
