@@ -1,116 +1,72 @@
-﻿@{
+﻿@model List<GuidanceTracker.Models.Ticket>
+
+@{
     ViewBag.Title = "Guidance Teacher Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<title>@ViewBag.Title</title>
 <head>
     <style>
-        /* Smaller Cards Inside */
-        .dashboard-item {
-            flex: 1;
-            min-width: 250px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            padding: 20px;
-        }
-
-        /* Flex Container to Auto-fit Cards */
-        .cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        /* Main issue card styling */
-        .issue-card {
-            background: #fff;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px;
-            padding: 20px;
-            width: 300px;
+        /* General Styling */
+        body {
             font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Header of the card with tinted background */
-        .issue-card-header {
-            background-color: #7F3D98;
-            color: white;
-            padding: 10px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            text-align: center;
-            border-bottom: 2px solid #7F3D98;
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
         }
 
-            .issue-card-header a {
-                text-decoration: none;
-                color: #fff;
-            }
-
-                .issue-card-header a:hover {
-                    color: #985BAF;
-                }
-
-        /* Links (New, In Progress, Create) */
-        .issue-links {
-            margin: 15px 0;
-            text-align: center;
+        /* Issue Container */
+        .issue-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 33%; /* ✅ Takes up only 1/3 of the page */
+            min-width: 300px;
+            margin-bottom: 15px;
+            position: relative; /* ✅ Needed for floating button */
         }
 
-        .issue-link {
+        /* Section Titles */
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
             color: #7F3D98;
-            text-decoration: none;
-            padding: 5px;
+            margin-bottom: 10px;
+            text-align: left;
         }
 
-        /* Issue list styling */
+        /* Issue List */
         .issue-list {
-            margin-top: 10px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .issue-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
-            background-color: #f9f9f9;
-            margin-bottom: 10px;
+            padding: 10px 12px;
+            background-color: #FAFAFA;
+            margin-bottom: 8px;
             border-radius: 5px;
+            transition: background 0.3s ease;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            box-sizing: border-box;
         }
-
-            .issue-item a {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                text-decoration: none;
-                color: inherit;
-                padding: 10px 15px;
-                border-radius: 5px;
-                box-sizing: border-box;
-            }
 
             .issue-item:hover {
-                background-color: #e6e6e6;
+                background: #EEE;
             }
 
-        #issue-items {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Issue info styling */
         .issue-info {
             display: flex;
             flex-direction: column;
@@ -125,76 +81,77 @@
             font-size: 14px;
             color: #333;
         }
+
+        /* Total Issues */
+        .total-issues {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .no-issues {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Floating Add Button */
+        .add-issue-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #7F3D98;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+        }
+
+            .add-issue-btn:hover {
+                background: #985BAF;
+            }
     </style>
 </head>
 
 <body>
-    <h1 class="dashboard-title">Guidance Lecturer Dashboard</h1>
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">Guidance Teacher Dashboard</h1>
 
-    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students' progress, manage tasks, and collaborate with your team.</p>
-    <div class="container mt-4">
 
-        <!-- Smaller Cards Container -->
-        <div class="cards-container">
-            <div class="issue-card">
-                <!-- Issue card header -->
-                <div class="issue-card-header">
-                    <a href="@Url.Action("Index", "Tickets")" class="text-white">
-                        <h5>Issue Dashboard</h5>
-                    </a>
-                </div>
+        <!-- Issues Section -->
+        <div class="issue-card">
+            <h2 class="section-title">Recent Issues</h2>
 
-                <!-- Links (New, In Progress, Create) -->
-                <div class="issue-links">
-                    <a href="">New</a> |
-                    <a href="">In Progress</a> |
-                    <a href="@Url.Action("CreateIssue", "Tickets")">Create</a>
-                </div>
+            <ul class="issue-list">
+                @if (Model.Any())
+                {
+                    foreach (var issue in Model.OrderByDescending(i => i.CreatedAt).Take(4))
+                    {
+                        <li class="issue-item" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })'">
+                            <div class="issue-info">
+                                <span class="issue-title">@issue.TicketTitle | @issue.Student.FirstName @issue.Student.LastName</span>
+                                <span class="issue-data">@issue.Lecturer.FirstName @issue.Lecturer.LastName</span>
+                                <span class="issue-data">@issue.CreatedAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </li>
+                    }
+                    <p class="total-issues">Total Issues: @Model.Count()</p>
+                }
+                else
+                {
+                    <p class="no-issues">No active issues.</p>
+                }
+            </ul>
 
-                <!-- Issue List (this will be dynamically populated) -->
-                <div class="issue-list">
-                    <ul id="issue-items">
-                        <!-- Example issue -->
-                        <li class="issue-item">
-                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
-                                <div class="issue-info">
-                                    <span class="issue-title">Issue | Student Name</span>
-                                    <span class="issue-data">Lecturer Name</span>
-                                    <span class="issue-data">Date</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="issue-item">
-                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
-                                <div class="issue-info">
-                                    <span class="issue-title">Issue | Student Name</span>
-                                    <span class="issue-data">Lecturer Name</span>
-                                    <span class="issue-data">Date</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="issue-item">
-                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
-                                <div class="issue-info">
-                                    <span class="issue-title">Issue | Student Name</span>
-                                    <span class="issue-data">Lecturer Name</span>
-                                    <span class="issue-data">Date</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="issue-item">
-                            <a href="@Url.Action("Details", "Issue", new { })" class="issue-link">
-                                <div class="issue-info">
-                                    <span class="issue-title">Issue | Student Name</span>
-                                    <span class="issue-data">Lecturer Name</span>
-                                    <span class="issue-data">Date</span>
-                                </div>
-                            </a>
-                        </li>
-                        <!-- More issues will go here -->
-                    </ul>
-                </div>
-            </div>
+            <!-- ✅ Floating Add Button for New Issue -->
+            <a href="@Url.Action("CreateIssue", "Issue")" class="add-issue-btn">+</a>
         </div>
     </div>
 </body>

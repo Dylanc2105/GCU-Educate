@@ -33,7 +33,13 @@ namespace GuidanceTracker.Controllers
         // GET: GuidanceTeacher
         public ActionResult GuidanceTeacherDash()
         {
-            return View("GuidanceTeacherDash");
+            var tickets = db.Tickets
+                .Include("Student")
+                .Include("Lecturer")
+                .OrderByDescending(t => t.CreatedAt)
+                .ToList();
+
+            return View("GuidanceTeacherDash", tickets); 
         }
 
         public ActionResult ViewAllStudents()
