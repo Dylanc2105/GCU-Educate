@@ -26,6 +26,7 @@ namespace GuidanceTracker.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
 
         public static GuidanceTrackerDbContext Create()

@@ -30,8 +30,9 @@ namespace GuidanceTracker.Models
         public virtual Student Student { get; set; }
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
 
-        // 🔹 Adding a list of comments
+        // 🔹 Adding a list of comments & appointments
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
 
     }

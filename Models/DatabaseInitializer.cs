@@ -302,6 +302,29 @@ namespace GuidanceTracker.Models
             context.Tickets.Add(ticket3);
             context.SaveChanges();
 
+
+            //create an appointment
+            var appointment = new Appointment
+            {
+                Time = DateTime.Now.AddDays(3),
+                AppointmentComment = null,
+                Room = "05.004",
+                TicketId = ticket2.TicketId
+            };
+            context.Appointments.Add(appointment);
+            context.SaveChanges();
+
+            var appointment1 = new Appointment
+            {
+                Time = DateTime.Now.AddDays(-3),
+                AppointmentComment = "student started preparing to reassessments",
+                Room = "05.005",
+                TicketId = ticket2.TicketId
+            };
+            context.Appointments.Add(appointment1);
+            context.SaveChanges();
+
+
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
 
 
