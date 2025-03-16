@@ -4,23 +4,38 @@
     ViewBag.Title = "Create";
 }
 
-
-@using (Html.BeginForm()) 
+@*  alert for issues raised in controller *@
+@if (ViewBag.Message != null)
 {
-    @Html.AntiForgeryToken()
-    
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+
+        //student info
 <div class="form-horizontal">
     <h4>Create an appointment for @Model.Ticket.Student.FirstName @Model.Ticket.Student.LastName regarding @Model.Ticket.TicketTitle</h4>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Time, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
-        </div>
-    </div>
 
+    @* date textbox *@
+    <p>Date</p>
+    <input type="text" id="stringDate" name="stringDate" placeholder="dd/mm/year" />
+
+    @* time textbox *@
+    <p>Time</p>
+    <input type="text" id="stringTime" name="stringTime" placeholder="hh:mm" />
+
+
+    @* room textbox *@
     <div class="form-group">
         @Html.LabelFor(model => model.Room, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -29,6 +44,7 @@
         </div>
     </div>
 
+    @* comment text area *@
     <div class="form-group">
         @Html.LabelFor(model => model.AppointmentComment, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -37,14 +53,6 @@
         </div>
     </div>
 
-    @*<br />
-    <div class="form-group">
-        <p>Ticket information</p>
-        <div class="col-md-10">
-            @Html.LabelFor(model => model.TicketId, htmlAttributes: new { @class = "control-label col-md-2" })
-            @Html.EditorFor(model => model.TicketId, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>*@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
@@ -52,12 +60,9 @@
         </div>
     </div>
 </div>
-}
+    }
 
-<div>
-    @*@Html.ActionLink("Back to Issue", "ViewIssue","Issue", new { id = Model.TicketId })*@
-</div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
