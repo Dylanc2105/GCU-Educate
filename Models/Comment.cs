@@ -26,5 +26,8 @@ namespace GuidanceTracker.Models
 
         [ForeignKey("TicketId")]
         public virtual Ticket Ticket { get; set; }
+
+        // Optional reference to an archived comment if this was restored
+        public int? ArchivedCommentId { get; set; }
     }
 }
