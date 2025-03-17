@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.ViewModels.CourseViewModel>
+﻿@model List<GuidanceTracker.Models.ViewModels.ClassViewModel>
 
 @{
     ViewBag.Title = "Student Issue Center";
@@ -14,9 +14,9 @@
     <div class="class-selection">
         <h4>Select a Class:</h4>
         <div class="btn-group flex-wrap">
-            @foreach (var course in Model)
+            @foreach (var classes in Model)
             {
-                <button class="btn btn-purple class-btn" data-courseid="@course.CourseId">@course.CourseName</button>
+                <button class="btn btn-purple class-btn" data-courseid="@classes.ClassId">@classes.ClassName</button>
             }
         </div>
     </div>
@@ -59,8 +59,8 @@
         $(document).on("click", ".class-btn", function () {
             var courseId = $(this).data("courseid");
 
-            if (!courseId) {
-                alert("❌ Invalid Course ID!");
+            if (!classId) {
+                alert("❌ Invalid Class ID!");
                 return;
             }
 
@@ -73,7 +73,7 @@
             $.ajax({
                 url: "/Issue/GetStudents",
                 type: "GET",
-                data: { courseId: courseId },
+                data: { classId: classId },
                 success: function (response) {
                     if (response.error) {
                         console.error("❌ Error:", response.error);
