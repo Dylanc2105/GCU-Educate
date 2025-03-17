@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "CreateStudent";
-    Layout = "~/Views/Shared/_DashLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!-- Page title -->
@@ -90,10 +90,10 @@
 
         <!-- Course selection dropdown populated from Model.Courses -->
         <div class="form-group" style="margin-bottom: 5px;">
-            @Html.LabelFor(model => model.CourseId, "Course", new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ClassId, "Class", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.CourseId, Model.Courses, "-- Select Course --", new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.ClassId, Model.Classes, "-- Select Class --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
             </div>
         </div>
 
