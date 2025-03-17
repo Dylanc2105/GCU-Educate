@@ -56,11 +56,11 @@ namespace GuidanceTracker.Controllers
         {
             CreateStudentViewModel student = new CreateStudentViewModel();
             // Get all courses from the database and convert to SelectListItems
-            student.Courses = db.Courses
+            student.Classes = db.Classes
                 .Select(c => new SelectListItem
                 {
-                    Value = c.CourseId.ToString(), // Use CourseId as the value
-                    Text = c.CourseName
+                    Value = c.ClassId.ToString(), // Use ClassId as the value
+                    Text = c.ClassName
                 })
                 .ToList();
             return View(student);
@@ -70,6 +70,7 @@ namespace GuidanceTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateStudent(CreateStudentViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 //build the student
@@ -85,7 +86,7 @@ namespace GuidanceTracker.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     RegistredAt = DateTime.Now,
-                    CourseId = model.CourseId // Set the CourseId here
+                    ClassId = model.ClassId // Set the ClassId here
                 };
 
                 //create user, and store in the database and pass the password to be hashed
@@ -107,6 +108,15 @@ namespace GuidanceTracker.Controllers
                     }
                 }
             }
+
+            // Repopulate the Classes list before returning the view
+            model.Classes = db.Classes
+                .Select(c => new SelectListItem
+                {
+                    Value = c.ClassId.ToString(),
+                    Text = c.ClassName
+                })
+                .ToList();
             //something is wrong so go back to the create student view
             return View(model);
 
