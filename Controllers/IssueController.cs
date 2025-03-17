@@ -83,27 +83,27 @@ namespace GuidanceTracker.Controllers
         // View for Selecting Student Issue
         public ActionResult StudentIssue()
         {
-            var courses = db.Courses.Select(c => new CourseViewModel
+            var classes = db.Classes.Select(c => new ClassViewModel
             {
-                CourseId = c.CourseId,
-                CourseName = c.CourseName
+                ClassId = c.ClassId,
+                ClassName = c.ClassName
             }).ToList();
 
-            return View(courses);
+            return View(classes);
         }
 
         // ✅ Get Students for a Selected Course
-        public JsonResult GetStudents(int courseId)
+        public JsonResult GetStudents(int classId)
         {
             try
             {
-                if (courseId == 0)
+                if (classId == 0)
                 {
                     return Json(new { error = "Invalid Course ID" }, JsonRequestBehavior.AllowGet);
                 }
 
                 var students = db.Users.OfType<Student>()
-                    .Where(s => s.CourseId == courseId)
+                    .Where(s => s.ClassId == classId)
                     .Select(s => new
                     {
                         Id = s.Id,
@@ -176,14 +176,14 @@ namespace GuidanceTracker.Controllers
                 return RedirectToAction("StudentIssue");
             }
 
-            var course = db.Courses.FirstOrDefault(c => c.CourseId == student.CourseId);
-            var units = db.Modules.Where(m => m.CourseId == student.CourseId).ToList();
+            var classes = db.Classes.FirstOrDefault(c => c.ClassId == student.ClassId);
+            var units = db.Units.Where(m => m.UnitId == student.ClassId).ToList();
 
             var model = new CreateIssueViewModel
             {
                 StudentId = student.Id,
                 StudentName = student.FirstName + " " + student.LastName,
-                CourseName = course?.CourseName ?? "Unknown Course",
+                ClassName = classes?.ClassName ?? "Unknown Course",
                 Units = units
             };
 
@@ -227,7 +227,7 @@ namespace GuidanceTracker.Controllers
             }
 
             // Find the selected unit and its lecturer
-            var selectedUnit = db.Modules.FirstOrDefault(m => m.ModuleId == model.SelectedUnitId);
+            var selectedUnit = db.Units.FirstOrDefault(m => m.UnitId == model.SelectedUnitId);
             var lecturerId = selectedUnit?.LecturerId;
 
             // Create new issue
