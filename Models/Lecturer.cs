@@ -10,7 +10,8 @@ namespace GuidanceTracker.Models
     public class Lecturer:User
     {
         // Navigation properties
-        public virtual ICollection<Module> Modules { get; set; }
+
+        public virtual ICollection<Unit> Units { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; } 
     }
 }
