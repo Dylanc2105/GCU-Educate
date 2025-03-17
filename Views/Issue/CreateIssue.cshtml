@@ -30,7 +30,7 @@
             <div class="row mt-3">
                 <div class="col-md-6">
                     <label class="form-label">Course</label>
-                    <input type="text" class="form-control" value="@Model.CourseName" readonly>
+                    <input type="text" class="form-control" value="@Model.ClassName" readonly>
                 </div>
 
                 <div class="col-md-6">
@@ -39,7 +39,7 @@
                         <option value="">Select a Unit</option>
                         @foreach (var unit in Model.Units)
                         {
-                            <option value="@unit.ModuleId">@unit.ModuleName</option>
+                            <option value="@unit.UnitId">@unit.UnitName</option>
                         }
                     </select>
                 </div>
