@@ -319,10 +319,6 @@
     <Compile Include="Migrations\202502201534276_AddResetCodeToUser.Designer.cs">
       <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202503150146029_AddCommentsProperly.cs" />
-    <Compile Include="Migrations\202503150146029_AddCommentsProperly.Designer.cs">
-      <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\202503160053401_update-database.cs" />
     <Compile Include="Migrations\202503160053401_update-database.Designer.cs">
       <DependentUpon>202503160053401_update-database.cs</DependentUpon>
@@ -2610,9 +2606,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202502201534276_AddResetCodeToUser.resx">
       <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503150146029_AddCommentsProperly.resx">
-      <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202503160053401_update-database.resx">
       <DependentUpon>202503160053401_update-database.cs</DependentUpon>
