@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace GuidanceTracker.Models
+{
+	public class ArchivedTicket
+	{
+        [Key]
+        [ForeignKey("Ticket")]
+        public int TicketId { get; set; }
+        public DateTime ArchivedAt { get; set; } = DateTime.Now;
+        public string ArchivedBy { get; set; }
+
+        public virtual Ticket Ticket { get; set; }
+        public ICollection<ArchivedComment> ArchivedComments { get; set; }
+    }
+}
