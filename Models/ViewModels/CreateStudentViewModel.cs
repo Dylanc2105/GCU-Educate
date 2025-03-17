@@ -10,9 +10,10 @@ namespace GuidanceTracker.Models.ViewModels
 {
     public class CreateStudentViewModel
     {
-        [Display(Name = "Course")]
+
+        [Display(Name = "Class")]
         [Required]
-        public int CourseId { get; set; }
+        public int ClassId { get; set; }
 
         public string CourseName { get; set; }
 
@@ -46,6 +47,7 @@ namespace GuidanceTracker.Models.ViewModels
 
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public IEnumerable<SelectListItem> Classes { get; set; }
         public IEnumerable<SelectListItem> Courses { get; set; }
 
     }
