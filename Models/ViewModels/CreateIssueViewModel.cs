@@ -10,12 +10,12 @@ namespace GuidanceTracker.Models.ViewModels
         public string StudentId { get; set; }
 
         public string StudentName { get; set; }
-        public string CourseName { get; set; }
+        public string ClassName { get; set; }
 
         [Required]
         public int SelectedUnitId { get; set; }
 
-        public List<Module> Units { get; set; }
+        public List<Unit> Units { get; set; }
 
         [Required]
         public string IssueType { get; set; }
