@@ -41,8 +41,9 @@ namespace GuidanceTracker.Models
         // Optional reference to an archived ticket if this was restored
         public int? ArchivedTicketId { get; set; }
 
-        // 🔹 Adding a list of comments
+        // 🔹 Adding a list of comments & appointments
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
 
     }
