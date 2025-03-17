@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<GuidanceTracker.Models.Student>
 @{
     ViewBag.Title = "Student Directory";
-    Layout = "~/Views/Shared/_DashLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!-- CSS Styles for the student directory -->
@@ -195,12 +195,12 @@
     @foreach (var item in Model)
     {
         <!-- Individual student card with data attributes for search functionality -->
-        <div class="student-card" data-student-name="@item.FirstName @item.LastName" data-course="@item.Course.CourseName">
+        <div class="student-card" data-student-name="@item.FirstName @item.LastName" data-course="@item.Class.ClassName">
             <!-- Card header that toggles expansion when clicked -->
             <div class="student-card-header" onclick="toggleCard(this)">
                 <div>
                     <div class="student-name">@item.FirstName @item.LastName</div>
-                    <div class="student-course">@item.Course.CourseName</div>
+                    <div class="student-course">@item.Class.ClassName</div>
                 </div>
                 <i class="fas fa-chevron-down toggle-icon"></i>
             </div>
