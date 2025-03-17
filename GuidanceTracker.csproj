@@ -271,22 +271,51 @@
     <Compile Include="Migrations\202503150146029_AddCommentsProperly.Designer.cs">
       <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202503160053401_update-database.cs" />
+    <Compile Include="Migrations\202503160053401_update-database.Designer.cs">
+      <DependentUpon>202503160053401_update-database.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503160155286_fixedCascadeDelete.cs" />
+    <Compile Include="Migrations\202503160155286_fixedCascadeDelete.Designer.cs">
+      <DependentUpon>202503160155286_fixedCascadeDelete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503160243025_update.cs" />
+    <Compile Include="Migrations\202503160243025_update.Designer.cs">
+      <DependentUpon>202503160243025_update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503160252428_update1.cs" />
+    <Compile Include="Migrations\202503160252428_update1.Designer.cs">
+      <DependentUpon>202503160252428_update1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.cs" />
+    <Compile Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.Designer.cs">
+      <DependentUpon>202503170210386_AddingUnitsCoursesClassesStudents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ArchivedComment.cs" />
+    <Compile Include="Models\ArchivedTicket.cs" />
+    <Compile Include="Models\Class.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\CurriculumHead.cs" />
     <Compile Include="Models\DatabaseInitializer.cs" />
+    <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Enrollment.cs" />
+    <Compile Include="Models\Feedback.cs" />
     <Compile Include="Models\GuidanceTeacher.cs" />
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
-    <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\MessageBoard.cs" />
+    <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
-    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\Timetable.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\ViewModels\CourseViewModel.cs" />
+    <Compile Include="Models\ViewModels\ClassViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateIssueViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateStudentViewModel.cs" />
     <Compile Include="Models\ViewModels\ForgotPasswordViewModel.cs" />
@@ -414,6 +443,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202503150146029_AddCommentsProperly.resx">
       <DependentUpon>202503150146029_AddCommentsProperly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503160053401_update-database.resx">
+      <DependentUpon>202503160053401_update-database.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503160155286_fixedCascadeDelete.resx">
+      <DependentUpon>202503160155286_fixedCascadeDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503160243025_update.resx">
+      <DependentUpon>202503160243025_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503160252428_update1.resx">
+      <DependentUpon>202503160252428_update1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.resx">
+      <DependentUpon>202503170210386_AddingUnitsCoursesClassesStudents.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
