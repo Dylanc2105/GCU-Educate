@@ -311,35 +311,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202502201504067_InitialCreate.cs" />
-    <Compile Include="Migrations\202502201504067_InitialCreate.Designer.cs">
-      <DependentUpon>202502201504067_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202502201534276_AddResetCodeToUser.cs" />
-    <Compile Include="Migrations\202502201534276_AddResetCodeToUser.Designer.cs">
-      <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503160053401_update-database.cs" />
-    <Compile Include="Migrations\202503160053401_update-database.Designer.cs">
-      <DependentUpon>202503160053401_update-database.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503160155286_fixedCascadeDelete.cs" />
-    <Compile Include="Migrations\202503160155286_fixedCascadeDelete.Designer.cs">
-      <DependentUpon>202503160155286_fixedCascadeDelete.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503160243025_update.cs" />
-    <Compile Include="Migrations\202503160243025_update.Designer.cs">
-      <DependentUpon>202503160243025_update.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503160252428_update1.cs" />
-    <Compile Include="Migrations\202503160252428_update1.Designer.cs">
-      <DependentUpon>202503160252428_update1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.cs" />
-    <Compile Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.Designer.cs">
-      <DependentUpon>202503170210386_AddingUnitsCoursesClassesStudents.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ArchivedComment.cs" />
     <Compile Include="Models\ArchivedTicket.cs" />
@@ -2601,27 +2572,6 @@
     <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202502201504067_InitialCreate.resx">
-      <DependentUpon>202502201504067_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502201534276_AddResetCodeToUser.resx">
-      <DependentUpon>202502201534276_AddResetCodeToUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503160053401_update-database.resx">
-      <DependentUpon>202503160053401_update-database.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503160155286_fixedCascadeDelete.resx">
-      <DependentUpon>202503160155286_fixedCascadeDelete.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503160243025_update.resx">
-      <DependentUpon>202503160243025_update.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503160252428_update1.resx">
-      <DependentUpon>202503160252428_update1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503170210386_AddingUnitsCoursesClassesStudents.resx">
-      <DependentUpon>202503170210386_AddingUnitsCoursesClassesStudents.cs</DependentUpon>
-    </EmbeddedResource>
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.3.11.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.3.11.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>

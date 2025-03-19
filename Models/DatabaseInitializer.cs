@@ -202,29 +202,6 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-
-            //create an appointment
-            var appointment = new Appointment
-            {
-                Time = DateTime.Now.AddDays(3),
-                AppointmentComment = null,
-                Room = "05.004",
-                TicketId = ticket2.TicketId
-            };
-            context.Appointments.Add(appointment);
-            context.SaveChanges();
-
-            var appointment1 = new Appointment
-            {
-                Time = DateTime.Now.AddDays(-3),
-                AppointmentComment = "student started preparing to reassessments",
-                Room = "05.005",
-                TicketId = ticket2.TicketId
-            };
-            context.Appointments.Add(appointment1);
-            context.SaveChanges();
-
-
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
             {
                 lecturer3 = new Lecturer
@@ -262,349 +239,6 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(lecturer4.Id, "Lecturer");
             }
             context.SaveChanges();
-
-            // Create classes
-            var classes1 = new Class
-            {
-                ClassId = 1,
-                ClassName = "HNC Computing Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Classes.Add(classes1);
-            context.SaveChanges();
-
-           var classes2 = new Class
-           {
-               ClassId = 2,
-               ClassName = "HNC Computing Class B",
-               MaxCapacity = 24,
-               GuidanceTeacherId = guidance.Id
-           };
-            context.Classes.Add(classes2);
-            context.SaveChanges();
-
-            var classes3 = new Class
-            {
-                ClassId = 3,
-                ClassName = "HNC Software Development Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Classes.Add(classes3);
-            context.SaveChanges();
-
-            var classes4 = new Class
-            {
-                ClassId = 4,
-                ClassName = "HNC Software Development Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Classes.Add(classes4);
-            context.SaveChanges();
-
-            var classes5 = new Class
-            {
-                ClassId = 5,
-                ClassName = "HND Computer Science Class",
-                MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Classes.Add(classes5);
-            context.SaveChanges();
-
-            var classes6 = new Class
-            {
-                ClassId = 6,
-                ClassName = "HND Software Development Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-
-            context.Classes.Add(classes6);
-            context.SaveChanges();
-
-            var classes7 = new Class
-            {
-                ClassId = 7,
-                ClassName = "HND Software Development Class B",
-                MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Classes.Add(classes7);
-            context.SaveChanges();
-
-            var classes8 = new Class
-            {
-                ClassId = 8,
-                ClassName = "NQ Computing Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-
-            context.Classes.Add(classes8);
-            context.SaveChanges();
-
-            var classes9 = new Class
-            {
-                ClassId = 9,
-                ClassName = "NQ Computing Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
-            };
-
-            context.Classes.Add(classes9);
-            context.SaveChanges();
-
-            // Create courses
-
-            var courses1 = new Course
-            {
-                CourseId = 1,
-                CourseName = "HNC Computing / HNC Computer Science",
-                CourseReference = "CRHNCCOMSC/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses1);
-            context.SaveChanges();
-
-            var course2 = new Course
-            {
-                CourseId = 2,
-                CourseName = "HNC Computing / HNC Computer Science",
-                CourseReference = "CRHNCCOMSC/F241B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(course2);
-            context.SaveChanges();
-
-            var courses3 = new Course
-            {
-                CourseId = 3,
-                CourseName = "HNC Computing/HNC Computing: Software Development",
-                CourseReference = "CRHNCCOMSD/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses3);
-            context.SaveChanges();
-
-            var courses4 = new Course
-            {
-                CourseId = 4,
-                CourseName = "HNC Computing/HNC Computing: Software Development",
-                CourseReference = "CRHNCCOMSD/F241B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses4);
-            context.SaveChanges();
-
-            var courses5 = new Course
-            {
-                CourseId = 5,
-                CourseName = "HND Computer Science",
-                CourseReference = "CRHNDCOMSC/F242A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses5);
-            context.SaveChanges();
-
-            var course6 = new Course
-            {
-                CourseId = 6,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-
-            };
-            context.Courses.Add(course6);
-            context.SaveChanges();
-
-            var courses7 = new Course
-            {
-                CourseId = 7,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F242A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses7);
-            context.SaveChanges();
-
-            var courses8 = new Course
-            {
-                CourseId = 8,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F242B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses8);
-            context.SaveChanges();
-
-            var courses9 = new Course
-            {
-                CourseId = 9,
-                CourseName = "NQ Computing",
-                CourseReference = "CRNQUCOMP6/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 6,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses9);
-            context.SaveChanges();
-
-
-            // Create enrollments to link courses with classes
-            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
-            var enrollment1 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses1.CourseId, // CRHNCCOMSC/F241A
-                ClassId = classes1.ClassId // HNC Computing Class A
-            };
-            context.Enrollments.Add(enrollment1);
-            context.SaveChanges();
-
-            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241B with HNC Computing Class B
-            var enrollment2 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = course2.CourseId, // CRHNCCOMSC/F241B
-                ClassId = classes2.ClassId // HNC Computing Class B
-            };
-            context.Enrollments.Add(enrollment2);
-            context.SaveChanges();
-
-            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241A with HNC Software Development Class A
-            var enrollment3 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses3.CourseId, // CRHNCCOMSD/F241A
-                ClassId = classes3.ClassId // HNC Software Development Class A
-            };
-            context.Enrollments.Add(enrollment3);
-            context.SaveChanges();
-
-            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241B with HNC Software Development Class B
-            var enrollment4 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses4.CourseId, // CRHNCCOMSD/F241B
-                ClassId = classes4.ClassId // HNC Software Development Class B
-            };
-            context.Enrollments.Add(enrollment4);
-            context.SaveChanges();
-
-            // HND Computer Science - CRHNDCOMSC/F242A with HND Computer Science Class
-            var enrollment5 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses5.CourseId, // CRHNDCOMSC/F242A
-                ClassId = classes5.ClassId // HND Computer Science Class
-            };
-            context.Enrollments.Add(enrollment5);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F241A with HND Software Development Class A
-            var enrollment6 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = course6.CourseId, // CRHNDCOMSD/F241A
-                ClassId = classes6.ClassId // HND Software Development Class A
-            };
-            context.Enrollments.Add(enrollment6);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F242A with HND Software Development Class A (sharing the same class)
-            var enrollment7 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses7.CourseId, // CRHNDCOMSD/F242A
-                ClassId = classes6.ClassId // HND Software Development Class A
-            };
-            context.Enrollments.Add(enrollment7);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F242B with HND Software Development Class B
-            var enrollment8 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses8.CourseId, // CRHNDCOMSD/F242B
-                ClassId = classes7.ClassId // HND Software Development Class B
-            };
-            context.Enrollments.Add(enrollment8);
-            context.SaveChanges();
-
-            // NQ Computing - CRNQUCOMP6/F241A with NQ Computing Class A
-            var enrollment9 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses9.CourseId, // CRNQUCOMP6/F241A
-                ClassId = classes8.ClassId // NQ Computing Class A
-            };
-            context.Enrollments.Add(enrollment9);
-            context.SaveChanges();
-
 
             // 1. HNC Computing / HNC Computer Science Units
             var computingUnit = new Unit
@@ -989,6 +623,360 @@ namespace GuidanceTracker.Models
             context.Units.Add(structuredMethodsUnit);
             context.SaveChanges();
 
+            // Create classes
+            var classes1 = new Class
+            {
+                ClassId = 1,
+                ClassName = "HNC Computing Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+            };
+            context.Classes.Add(classes1);
+            context.SaveChanges();
+
+            var classes2 = new Class
+            {
+                ClassId = 2,
+                ClassName = "HNC Computing Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+            };
+            context.Classes.Add(classes2);
+            context.SaveChanges();
+
+            var classes3 = new Class
+            {
+                ClassId = 3,
+                ClassName = "HNC Software Development Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+            };
+            context.Classes.Add(classes3);
+            context.SaveChanges();
+
+            var classes4 = new Class
+            {
+                ClassId = 4,
+                ClassName = "HNC Software Development Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+            };
+            context.Classes.Add(classes4);
+            context.SaveChanges();
+
+            var classes5 = new Class
+            {
+                ClassId = 5,
+                ClassName = "HND Computer Science Class",
+                MaxCapacity = 16,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computerScienceUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, webServerUnit, gradedUnit2, aiUnit }
+            };
+            context.Classes.Add(classes5);
+            context.SaveChanges();
+
+            var classes6 = new Class
+            {
+                ClassId = 6,
+                ClassName = "HND Software Development Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+            };
+
+            context.Classes.Add(classes6);
+            context.SaveChanges();
+
+            var classes7 = new Class
+            {
+                ClassId = 7,
+                ClassName = "HND Software Development Class B",
+                MaxCapacity = 16,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+            };
+            context.Classes.Add(classes7);
+            context.SaveChanges();
+
+            var classes8 = new Class
+            {
+                ClassId = 8,
+                ClassName = "NQ Computing Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+            };
+
+            context.Classes.Add(classes8);
+            context.SaveChanges();
+
+            var classes9 = new Class
+            {
+                ClassId = 9,
+                ClassName = "NQ Computing Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+            };
+
+            context.Classes.Add(classes9);
+            context.SaveChanges();
+
+            // Create courses
+
+            var courses1 = new Course
+            {
+                CourseId = 1,
+                CourseName = "HNC Computing / HNC Computer Science",
+                CourseReference = "CRHNCCOMSC/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses1);
+            context.SaveChanges();
+
+            var course2 = new Course
+            {
+                CourseId = 2,
+                CourseName = "HNC Computing / HNC Computer Science",
+                CourseReference = "CRHNCCOMSC/F241B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(course2);
+            context.SaveChanges();
+
+            var courses3 = new Course
+            {
+                CourseId = 3,
+                CourseName = "HNC Computing/HNC Computing: Software Development",
+                CourseReference = "CRHNCCOMSD/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses3);
+            context.SaveChanges();
+
+            var courses4 = new Course
+            {
+                CourseId = 4,
+                CourseName = "HNC Computing/HNC Computing: Software Development",
+                CourseReference = "CRHNCCOMSD/F241B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses4);
+            context.SaveChanges();
+
+            var courses5 = new Course
+            {
+                CourseId = 5,
+                CourseName = "HND Computer Science",
+                CourseReference = "CRHNDCOMSC/F242A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses5);
+            context.SaveChanges();
+
+            var course6 = new Course
+            {
+                CourseId = 6,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+
+            };
+            context.Courses.Add(course6);
+            context.SaveChanges();
+
+            var courses7 = new Course
+            {
+                CourseId = 7,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F242A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses7);
+            context.SaveChanges();
+
+            var courses8 = new Course
+            {
+                CourseId = 8,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F242B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses8);
+            context.SaveChanges();
+
+            var courses9 = new Course
+            {
+                CourseId = 9,
+                CourseName = "NQ Computing",
+                CourseReference = "CRNQUCOMP6/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 6,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses9);
+            context.SaveChanges();
+
+
+            // Create enrollments to link courses with classes
+            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
+            var enrollment1 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses1.CourseId, // CRHNCCOMSC/F241A
+                ClassId = classes1.ClassId // HNC Computing Class A
+            };
+            context.Enrollments.Add(enrollment1);
+            context.SaveChanges();
+
+            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241B with HNC Computing Class B
+            var enrollment2 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = course2.CourseId, // CRHNCCOMSC/F241B
+                ClassId = classes2.ClassId // HNC Computing Class B
+            };
+            context.Enrollments.Add(enrollment2);
+            context.SaveChanges();
+
+            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241A with HNC Software Development Class A
+            var enrollment3 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses3.CourseId, // CRHNCCOMSD/F241A
+                ClassId = classes3.ClassId // HNC Software Development Class A
+            };
+            context.Enrollments.Add(enrollment3);
+            context.SaveChanges();
+
+            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241B with HNC Software Development Class B
+            var enrollment4 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses4.CourseId, // CRHNCCOMSD/F241B
+                ClassId = classes4.ClassId // HNC Software Development Class B
+            };
+            context.Enrollments.Add(enrollment4);
+            context.SaveChanges();
+
+            // HND Computer Science - CRHNDCOMSC/F242A with HND Computer Science Class
+            var enrollment5 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses5.CourseId, // CRHNDCOMSC/F242A
+                ClassId = classes5.ClassId // HND Computer Science Class
+            };
+            context.Enrollments.Add(enrollment5);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F241A with HND Software Development Class A
+            var enrollment6 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = course6.CourseId, // CRHNDCOMSD/F241A
+                ClassId = classes6.ClassId // HND Software Development Class A
+            };
+            context.Enrollments.Add(enrollment6);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F242A with HND Software Development Class A (sharing the same class)
+            var enrollment7 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses7.CourseId, // CRHNDCOMSD/F242A
+                ClassId = classes6.ClassId // HND Software Development Class A
+            };
+            context.Enrollments.Add(enrollment7);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F242B with HND Software Development Class B
+            var enrollment8 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses8.CourseId, // CRHNDCOMSD/F242B
+                ClassId = classes7.ClassId // HND Software Development Class B
+            };
+            context.Enrollments.Add(enrollment8);
+            context.SaveChanges();
+
+            // NQ Computing - CRNQUCOMP6/F241A with NQ Computing Class A
+            var enrollment9 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses9.CourseId, // CRNQUCOMP6/F241A
+                ClassId = classes8.ClassId // NQ Computing Class A
+            };
+            context.Enrollments.Add(enrollment9);
+            context.SaveChanges();
+
+
+
+
 
 
 
@@ -1190,7 +1178,7 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            
+
 
 
             // Create a Session
@@ -1248,9 +1236,9 @@ namespace GuidanceTracker.Models
             context.Tickets.Add(ticket3);
             context.SaveChanges();
 
-                    
-                
-            
+
+
+
         }
     }
 }
