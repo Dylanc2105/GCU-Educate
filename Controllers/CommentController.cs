@@ -26,7 +26,7 @@ namespace GuidanceTracker.Controllers
 
             var comment = new Comment
             {
-                TicketId = ticketId,
+                IssueId = ticketId,
                 UserId = userId,
                 Content = Content,
                 CreatedAt = DateTime.Now
@@ -43,7 +43,7 @@ namespace GuidanceTracker.Controllers
         public JsonResult GetComments(int ticketId)
         {
             var comments = db.Comments
-                .Where(c => c.TicketId == ticketId)
+                .Where(c => c.IssueId == ticketId)
                 .OrderByDescending(c => c.CreatedAt)
                 .Select(c => new
                 {
