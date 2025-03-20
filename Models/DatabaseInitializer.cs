@@ -974,12 +974,6 @@ namespace GuidanceTracker.Models
             context.Enrollments.Add(enrollment9);
             context.SaveChanges();
 
-
-
-
-
-
-
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
             {
@@ -1178,20 +1172,8 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-
-
-
             // Create a Session
-            var session = new Appointment
-            {
-                AppointmentDate = DateTime.Now.AddDays(7),
-                AppointmentStatus = "Pending",
-                AppointmentNotes = "Initial consultation",
-                StudentId = student1.Id,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Appointments.Add(session);
-            context.SaveChanges();
+            
 
             // Create a Ticket
             var ticket = new Ticket
@@ -1235,9 +1217,6 @@ namespace GuidanceTracker.Models
             };
             context.Tickets.Add(ticket3);
             context.SaveChanges();
-
-
-
 
         }
     }
