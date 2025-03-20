@@ -10,7 +10,7 @@ namespace GuidanceTracker.Models
         [Key]
         public int IssueId { get; set; }
 
-        public string IssueTitle { get; set; }
+        public IssueTitle IssueTitle { get; set; }
 
         public string IssueDescription { get; set; }
         public IssueStatus IssueStatus { get; set; }
@@ -47,11 +47,23 @@ namespace GuidanceTracker.Models
 
 
     }
+
+    public enum IssueTitle
+    {
+        LateAttendance,
+        MissingAttendance,
+        Behaviour,
+        Deadlines,
+        Communication,
+        Performance,
+        Medical,
+        AcademicDishonesty,
+        CustomIssue
+    }
     public enum IssueStatus
     {
-        Open,
+        New,
         InProgress,
-        Closed,
         Archived
     }
 }

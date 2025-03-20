@@ -10,8 +10,8 @@ namespace GuidanceTracker.Models
 	public class ArchivedTicket
 	{
         [Key]
-        [ForeignKey("Ticket")]
-        public int TicketId { get; set; }
+        [ForeignKey("Issue")]
+        public int IssueId { get; set; }
         public DateTime ArchivedAt { get; set; } = DateTime.Now;
         public string ArchivedBy { get; set; }
 
