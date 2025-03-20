@@ -1200,7 +1200,7 @@ namespace GuidanceTracker.Models
             // Create a Ticket
             var issue = new Issue
             {
-                IssueTitle = "Attendance Issue",
+                IssueTitle = IssueTitle.LateAttendance,
                 IssueDescription = "Student has missed multiple classes.",
                 IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.Now,
@@ -1214,7 +1214,7 @@ namespace GuidanceTracker.Models
 
             var issue2 = new Issue
             {
-                IssueTitle = "Academic Issue",
+                IssueTitle = IssueTitle.MissingAttendance,
                 IssueDescription = "Student has failed my class.",
                 IssueStatus = IssueStatus.InProgress,
                 CreatedAt = DateTime.Now,
@@ -1228,7 +1228,7 @@ namespace GuidanceTracker.Models
 
             var issue3 = new Issue
             {
-                IssueTitle = "Medical Issue",
+                IssueTitle = IssueTitle.Medical,
                 IssueDescription = "Student has fractured their arm and is unable to type",
                 IssueStatus = IssueStatus.Archived,
                 CreatedAt = DateTime.Now,

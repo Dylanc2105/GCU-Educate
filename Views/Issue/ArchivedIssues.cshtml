@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.Ticket>
+﻿@model List<GuidanceTracker.Models.Issue>
 
 @{
     ViewBag.Title = "Archived Issues";
@@ -20,11 +20,11 @@
     {
         <tr>
             <td>@issue.Student.FirstName @issue.Student.LastName</td>
-            <td>@issue.TicketTitle</td>
-            <td>@issue.TicketStatus</td>
+            <td>@issue.IssueTitle</td>
+            <td>@issue.IssueStatus</td>
             <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
             <td>
-                <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })">View</a>
+                <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })">View</a>
             </td>
         </tr>
     }
