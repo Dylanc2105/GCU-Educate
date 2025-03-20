@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.Ticket>
+﻿@model List<GuidanceTracker.Models.Issue>
 
 @{
     ViewBag.Title = "Guidance Teacher Dashboard";
@@ -134,9 +134,9 @@
                 {
                     foreach (var issue in Model.OrderByDescending(i => i.CreatedAt).Take(4))
                     {
-                        <li class="issue-item" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })'">
+                        <li class="issue-item" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
                             <div class="issue-info">
-                                <span class="issue-title">@issue.TicketTitle | @issue.Student.FirstName @issue.Student.LastName</span>
+                                <span class="issue-title">@issue.IssueTitle | @issue.Student.FirstName @issue.Student.LastName</span>
                                 <span class="issue-data">@issue.Lecturer.FirstName @issue.Lecturer.LastName</span>
                                 <span class="issue-data">@issue.CreatedAt.ToString("dd/MM/yyyy")</span>
                             </div>
