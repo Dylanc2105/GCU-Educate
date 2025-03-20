@@ -26,7 +26,7 @@ namespace GuidanceTracker.Models
         public DbSet<Unit> Units { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Issue> Issues { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<ArchivedTicket> ArchivedTickets { get; set; }
         public DbSet<Class> Classes { get; set; }
@@ -41,22 +41,22 @@ namespace GuidanceTracker.Models
             base.OnModelCreating(modelBuilder);
 
             // Prevent cascade delete for the GuidanceTeacher relationship
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<Issue>()
                 .HasRequired(t => t.GuidanceTeacher)
-                .WithMany(g => g.Tickets)
+                .WithMany(g => g.Issues)
                 .HasForeignKey(t => t.GuidanceTeacherId)
                 .WillCascadeOnDelete(false);
 
             // You may also need to do this for other relationships
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<Issue>()
                 .HasRequired(t => t.Student)
                 .WithMany()
                 .HasForeignKey(t => t.StudentId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<Issue>()
                 .HasRequired(t => t.Lecturer)
-                .WithMany(L => L.Tickets)
+                .WithMany(L => L.Issues)
                 .HasForeignKey(t => t.LecturerId)
                 .WillCascadeOnDelete(false);
 

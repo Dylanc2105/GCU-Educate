@@ -330,7 +330,7 @@
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Student.cs" />
-    <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\Issue.cs" />
     <Compile Include="Models\Timetable.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

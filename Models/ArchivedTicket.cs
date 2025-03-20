@@ -15,7 +15,7 @@ namespace GuidanceTracker.Models
         public DateTime ArchivedAt { get; set; } = DateTime.Now;
         public string ArchivedBy { get; set; }
 
-        public virtual Ticket Ticket { get; set; }
+        public virtual Issue Issue { get; set; }
         public ICollection<ArchivedComment> ArchivedComments { get; set; }
     }
 }

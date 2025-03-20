@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GuidanceTracker.Models
 {
-    public class Ticket
+    public class Issue
     {
         [Key]
-        public int TicketId { get; set; }
+        public int IssueId { get; set; }
 
-        public string TicketTitle { get; set; }
+        public string IssueTitle { get; set; }
 
-        public string TicketDescription { get; set; }
-        public string TicketStatus { get; set; } = "Open";
+        public string IssueDescription { get; set; }
+        public IssueStatus IssueStatus { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
@@ -39,12 +39,19 @@ namespace GuidanceTracker.Models
         public virtual Student Student { get; set; }
 
         // Optional reference to an archived ticket if this was restored
-        public int? ArchivedTicketId { get; set; }
+        public int? ArchivedIssueId { get; set; }
 
         // 🔹 Adding a list of comments & appointments
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
 
+    }
+    public enum IssueStatus
+    {
+        Open,
+        InProgress,
+        Closed,
+        Archived
     }
 }
