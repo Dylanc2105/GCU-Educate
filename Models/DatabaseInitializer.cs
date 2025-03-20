@@ -94,7 +94,7 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "guidance@email.com",
                     Email = "guidance@email.com",
-                    FirstName = "John",
+                    FirstName = "Dana",
                     LastName = "Smith",
                     Street = "35 Washington st",
                     City = "London",
@@ -109,14 +109,14 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
-            if (userManager.FindByName("beno.atagan@gmail.com") == null)
+            if (userManager.FindByName("Asmat.atagan@gmail.com") == null)
             {
                 lecturer3 = new Lecturer
                 {
-                    UserName = "beno.atagan@gmail.com",
-                    Email = "beno.atagan@gmail.com",
-                    FirstName = "Laura",
-                    LastName = "Smith",
+                    UserName = "Asmat.atagan@gmail.com",
+                    Email = "Asmat.atagan@gmail.com",
+                    FirstName = "Asmat",
+                    LastName = "Ullah",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -168,8 +168,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer@email.com",
                     Email = "lecturer@email.com",
-                    FirstName = "Michael",
-                    LastName = "Johnson",
+                    FirstName = "Jamie",
+                    LastName = "Stewart",
                     Street = "25 LA st",
                     City = "London",
                     Postcode = "E52 9UP",
@@ -189,8 +189,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer2@email.com",
                     Email = "lecturer2@email.com",
-                    FirstName = "Laura",
-                    LastName = "Smith",
+                    FirstName = "Dana",
+                    LastName = "Carson",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -208,8 +208,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "beno.atagan@gmail.com",
                     Email = "beno.atagan@gmail.com",
-                    FirstName = "Laura",
-                    LastName = "Smith",
+                    FirstName = "James",
+                    LastName = "Hood",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -227,8 +227,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer4@email.com",
                     Email = "lecturer4@email.com",
-                    FirstName = "David",
-                    LastName = "Brown",
+                    FirstName = "Garry",
+                    LastName = "Kelly",
                     Street = "27 King Street",
                     City = "Manchester",
                     Postcode = "M2 6LE",
@@ -981,8 +981,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student1@email.com",
                     Email = "student1@email.com",
-                    FirstName = "David",
-                    LastName = "Wilson",
+                    FirstName = "Dylan",
+                    LastName = "Campbell",
                     Street = "45 High Street",
                     City = "London",
                     Postcode = "E18 2XP",
@@ -990,7 +990,7 @@ namespace GuidanceTracker.Models
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes1.ClassId, // HNC Computing Class A
-                    StudentNumber = "32657090"
+                    StudentNumber = "30485195"
                 };
                 userManager.Create(student1, "123");
                 userManager.AddToRole(student1.Id, "Student");
@@ -1004,8 +1004,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student2@email.com",
                     Email = "student2@email.com",
-                    FirstName = "Emma",
-                    LastName = "Brown",
+                    FirstName = "Willum",
+                    LastName = "Billy",
                     Street = "78 Park Avenue",
                     City = "Manchester",
                     Postcode = "M1 5QD",
