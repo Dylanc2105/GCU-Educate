@@ -21,18 +21,16 @@
         <!-- Appointments Container (30%) -->
         <div class="appointments-section">
             <h3>Appointments</h3>
-            @if (Model.Appointments != null && Model.Appointments.Any())
+            @if (Model.Student.Appointments != null && Model.Student.Appointments.Any())
             {
-                <ul class="appointment-list">
-                    @foreach (var appointment in Model.Appointments)
-                    {
-                        <li class="appointment-box">
-                            <p><strong>@(appointment.Time > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
-                            <p><strong>Time:</strong> @appointment.Time.ToString("dd/MM/yyyy HH:mm")</p>
+                <ul class="appointment-box">
+                    @foreach (var appointment in Model.Student.Appointments)
+                    {                        
+                            <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
+                            <p><strong>Time:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
                             <p><strong>Room:</strong> @appointment.Room</p>
-                            <p><strong>Comments:</strong> @appointment.AppointmentComment</p>
-                            @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
-                        </li>
+                            <p><strong>Comments:</strong> @appointment.AppointmentNotes</p>
+                            @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })                        
                     }
                 </ul>
             }
@@ -41,7 +39,7 @@
                 <p>No appointments assigned.</p>
             }
 
-            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { ticketId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
+            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
         </div>
     </div>
 
@@ -131,81 +129,6 @@
         height: 90vh; /* Fixed height for a structured layout */
     }
 
-@* appointments info *@
-<br />
-
-
-
-<div>
-    @if (ViewBag.Data != null)
-    {
-        foreach (var appointment in ViewBag.Data)
-        {
-            if (appointment.AppointmentDate > DateTime.Now)
-            {
-                <p><strong>Upcoming appointments</strong></p>
-                <div class="comment-box">
-                    <p>Time: @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm") </p>
-                    <p>Room: @appointment.Room</p>
-                    <p>Comments: @appointment.AppointmentNotes</p>
-                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
-                </div>
-            }
-            else
-            {
-                <p><strong>Past appointments</strong></p>
-                <div class="comment-box">
-                    <p>Time: @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm") </p>
-                    <p>Room: @appointment.Room</p>
-                    <p>Comments: @appointment.AppointmentNotes</p>
-                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
-                </div>
-            }
-        }
-
-    }
-    else
-    {
-        <p><strong> No appointemnts assigned for this student</strong ></p>
-    }
-</div>
-
-
-
-
-
-<div>
-    @*@if (Model.Appointments != null && Model.Appointments.Any())
-    {
-        foreach (var appointment in Model.Appointments)
-        {
-            if (appointment.Time > DateTime.Now)
-            {
-                <p><strong>Upcoming appointments</strong></p>
-                <div class="comment-box">
-                    <p>Time: @appointment.Time.ToString("dd/MM/yyyy HH:mm") </p>
-                    <p>Room: @appointment.Room</p>
-                    <p>Comments: @appointment.AppointmentComment</p>                                                                                
-                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new {@class="btn btn-purple mt-2"})
-                </div>
-            }
-            else
-            {
-                <p><strong>Past appointments</strong></p>
-                <div class="comment-box">
-                    <p>Time: @appointment.Time.ToString("dd/MM/yyyy HH:mm") </p>
-                    <p>Room: @appointment.Room</p>
-                    <p>Comments: @appointment.AppointmentComment</p>
-                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
-                </div>
-            }
-        }
-    }
-    else
-    {
-        <p><strong>No appointemnts assigned</strong></p>
-    }*@
-
     .issue-details {
         background: #ffffff;
         padding: 20px;
@@ -215,8 +138,6 @@
         height: 70%; /* Adjusted to take 70% */
     }
 
-    @Html.ActionLink("Create an appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
-</div>
 
     .right-panel {
         width: 40%;
@@ -254,3 +175,9 @@
         border-left: 5px solid #7F3D98;
     }
 </style>
+
+
+@* appointments info *@
+
+
+<br />
