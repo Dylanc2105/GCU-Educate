@@ -138,7 +138,7 @@
             var studentNumber = selectedStudent.data("number");
 
             $("#studentName").text(studentName);
-            $("#studentNumber").text(studentNumber);
+            $("#studentNumber").text(selectedStudent.data("number"));
             $("#studentDetails").show();
 
             console.log("Fetching issues for Student ID:", studentId);

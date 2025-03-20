@@ -21,6 +21,55 @@ namespace GuidanceTracker.Controllers
             return View(tickets);
         }
 
+        // ✅ Load the Student Issue Selection Page (For Adding Issues)
+        public ActionResult StudentIssue()
+        {
+            var classes = db.Classes.Select(c => new ClassViewModel
+            {
+                ClassId = c.ClassId,
+                ClassName = c.ClassName
+            }).ToList();
+
+            return View(classes);
+        }
+
+        // ✅ View All Issues
+        public ActionResult AllIssue(string sortOrder, string issueType, string searchString)
+        {
+            var issues = db.Issues
+                           .Where(i => i.IssueStatus != IssueStatus.Archived) // Exclude archived issues
+                           .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                issues = issues.Where(i => i.Student.FirstName.Contains(searchString) ||
+                                           i.Student.LastName.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(issueType) && Enum.TryParse(issueType, out IssueTitle selectedIssueType))
+            {
+                issues = issues.Where(i => i.IssueTitle == selectedIssueType);
+            }
+
+            issues = sortOrder == "oldest"
+                ? issues.OrderBy(i => i.CreatedAt)
+                : issues.OrderByDescending(i => i.CreatedAt);
+
+            return View(issues.ToList());
+        }
+
+        // ✅ View Archived Issues
+        public ActionResult ArchivedIssues()
+        {
+            var archivedIssues = db.Issues
+                                   .Where(t => t.IssueStatus == IssueStatus.Archived)
+                                   .OrderByDescending(t => t.CreatedAt)
+                                   .ToList();
+            return View(archivedIssues);
+        }
+
+
+
         public List<Appointment> GetAppointments(string studentId)
         {
             var appointments = db.Appointments.Where(s => s.StudentId == studentId).ToList();
@@ -200,6 +249,71 @@ namespace GuidanceTracker.Controllers
 
             return Json(new { success = true, message = "✅ Issue successfully created!" });
         }
+
+        [HttpGet]
+        public JsonResult GetStudentIssues(string studentId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(studentId))
+                {
+                    return Json(new { error = "Student ID is required" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var issues = db.Issues
+                    .Where(i => i.StudentId == studentId)
+                    .OrderByDescending(i => i.CreatedAt)
+                    .ToList()
+                    .Select(i => new
+                    {
+                        TicketId = i.IssueId,
+                        TicketTitle = i.IssueTitle.ToString(), // Convert Enum to String
+                        TicketDescription = i.IssueDescription ?? "No description available",
+                        TicketStatus = i.IssueStatus.ToString(), // Convert Enum to String
+                        CreatedAt = i.CreatedAt.ToString("dd/MM/yyyy")
+                    })
+                    .ToList();
+
+                if (!issues.Any())
+                {
+                    return Json(new { error = "No issues found for this student." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(issues, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ReinstateIssue(int issueId)
+        {
+            try
+            {
+                var issue = db.Issues.Find(issueId);
+                if (issue == null)
+                {
+                    return Json(new { success = false, error = "Issue not found." });
+                }
+
+                // Set the issue status to "New" or "InProgress"
+                issue.IssueStatus = IssueStatus.New; // Or use InProgress if needed
+                issue.UpdatedAt = DateTime.Now;
+
+                // Save the changes
+                db.SaveChanges();
+
+                return Json(new { success = true, message = "✅ Issue reinstated successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
 
         [HttpPost]
         public JsonResult UpdateIssueStatus(int issueId, string status)

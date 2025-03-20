@@ -10,6 +10,8 @@ namespace GuidanceTracker.Models.ViewModels
         public string StudentId { get; set; }
 
         public string StudentName { get; set; }
+
+        public string StudentNumber { get; set; }
         public string ClassName { get; set; }
 
         [Required]

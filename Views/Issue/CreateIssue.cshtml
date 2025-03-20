@@ -1,4 +1,7 @@
 ﻿@model GuidanceTracker.Models.ViewModels.CreateIssueViewModel
+@using GuidanceTracker.Models
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
 
 @{
     ViewBag.Title = "Create New Issue";
@@ -22,8 +25,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Student ID</label>
-                    <input type="text" class="form-control" name="StudentId" value="@Model.StudentId" readonly>
+                    <label class="form-label">Student Number</label>
+                    <input type="text" class="form-control" name="StudentNumber" value="@Model.StudentNumber" readonly>
                 </div>
             </div>
 
@@ -48,15 +51,10 @@
             <div class="mt-3">
                 <label class="form-label">Issue Type</label>
                 <select id="issueType" name="IssueType" class="form-control">
-                    <option value="Late Attendance">Late Attendance</option>
-                    <option value="Missing Attendance">Missing Attendance</option>
-                    <option value="Behaviour">Behaviour</option>
-                    <option value="Deadlines">Deadlines</option>
-                    <option value="Communication">Communication</option>
-                    <option value="Performance">Performance</option>
-                    <option value="Medical">Medical</option>
-                    <option value="Academic Dishonesty">Academic Dishonesty</option>
-                    <option value="Custom">Custom Issue</option>
+                    @foreach (var issue in Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>())
+                    {
+                        <option value="@issue">@GetEnumDisplayName(issue)</option>
+                    }
                 </select>
             </div>
 
@@ -78,13 +76,22 @@
     </div>
 </div>
 
+@functions {
+    public string GetEnumDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+        return attribute?.Name ?? value.ToString();
+    }
+}
+
 <script>
     $(document).ready(function () {
         console.log("✅ JavaScript Loaded!");
 
         // Handle custom issue visibility
         $("#issueType").change(function () {
-            if ($(this).val() === "Custom") {
+            if ($(this).val() === "CustomIssue") {
                 $("#customIssueGroup").slideDown();
             } else {
                 $("#customIssueGroup").slideUp();
@@ -97,8 +104,8 @@
             e.preventDefault(); // ✅ Prevent default form submission (page refresh)
 
             var form = $(this);
-            var formData = form.serialize(); // Collect form data
-            var issueDescription = $("textarea[name='IssueDescription']").val(); // Capture description input
+            var formData = form.serialize();
+            var issueDescription = $("textarea[name='IssueDescription']").val();
 
             $.ajax({
                 url: form.attr("action"),
@@ -114,23 +121,17 @@
                         return;
                     }
 
-                    // If issue already exists
                     if (!response.success && response.issueId) {
                         let redirectUrl = "/Issue/ViewIssue/" + response.issueId + "?comment=" + encodeURIComponent(issueDescription);
 
-                        if (response.archived) {
-                            alert(response.error);
-                        } else {
-                            alert(response.error);
-                        }
-
-                        window.location.href = redirectUrl; // Redirect with comment pre-filled
+                        alert(response.error);
+                        window.location.href = redirectUrl;
                         return;
                     }
 
                     alert(response.error || "❌ An unknown error occurred.");
                 },
-                error: function (xhr, status, error) {
+                error: function (xhr) {
                     console.error("❌ Error submitting form:", xhr.responseText);
                     alert("An error occurred while creating the issue. Please try again.");
                 }
@@ -195,6 +196,8 @@
         .form-control:focus {
             border-color: #7F3D98;
             box-shadow: 0px 0px 5px rgba(127, 61, 152, 0.5);
-            outline: none;
         }
 </style>
+
+
+

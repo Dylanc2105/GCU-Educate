@@ -10,11 +10,11 @@
     <div class="left-panel">
         <!-- Issue Details Container (70%) -->
         <div class="issue-details">
-            <h1>@Model.TicketTitle</h1>
+            <h1>@Model.IssueTitle</h1>
             <h2>Student Name: @Model.Student.FirstName @Model.Student.LastName</h2>
-            <p><strong>Initial reason to raise issue:</strong> @Model.TicketDescription</p>
+            <p><strong>Initial reason to raise issue:</strong> @Model.IssueDescription</p>
             <p><strong>Issue initiator:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
-            <p><strong>Status:</strong> @Model.TicketStatus</p>
+            <p><strong>Status:</strong> @Model.IssueStatus</p>
             <p><strong>Created On:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
         </div>
 
@@ -41,7 +41,7 @@
                 <p>No appointments assigned.</p>
             }
 
-            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { ticketId = Model.TicketId }, new { @class = "btn btn-purple mt-2" })
+            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { ticketId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
         </div>
     </div>
 
@@ -95,7 +95,7 @@
                 url: "@Url.Action("AddComment", "Issue")",
                 type: "POST",
                 data: {
-                    ticketId: @Model.TicketId,
+                    ticketId: @Model.IssueId,
                     content: commentContent,
                     __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                 },
