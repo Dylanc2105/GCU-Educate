@@ -272,7 +272,7 @@ namespace GuidanceTracker.Controllers
 
             // Create new issue
             var issueTitle = model.IssueType == "Custom" ? model.CustomIssue : model.IssueType;
-            var issue = new Ticket
+            var issue = new Issue
             {
                 TicketTitle = issueTitle,
                 TicketDescription = model.IssueDescription,

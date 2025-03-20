@@ -989,7 +989,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes1.ClassId // HNC Computing Class A
+                    ClassId = classes1.ClassId, // HNC Computing Class A
+                    StudentNumber = "32657090"
                 };
                 userManager.Create(student1, "123");
                 userManager.AddToRole(student1.Id, "Student");
@@ -1011,7 +1012,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes2.ClassId // HNC Computing Class B
+                    ClassId = classes2.ClassId, // HNC Computing Class B
+                    StudentNumber = "34357878"
                 };
                 userManager.Create(student2, "123");
                 userManager.AddToRole(student2.Id, "Student");
@@ -1033,7 +1035,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes3.ClassId // HNC Software Development Class A
+                    ClassId = classes3.ClassId, // HNC Software Development Class A
+                    StudentNumber = "33617898"
                 };
                 userManager.Create(student3, "123");
                 userManager.AddToRole(student3.Id, "Student");
@@ -1055,7 +1058,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes4.ClassId // HNC Software Development Class B
+                    ClassId = classes4.ClassId, // HNC Software Development Class B
+                    StudentNumber = "31654898"
                 };
                 userManager.Create(student4, "123");
                 userManager.AddToRole(student4.Id, "Student");
@@ -1077,7 +1081,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-5),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes5.ClassId // HND Computer Science Class
+                    ClassId = classes5.ClassId, // HND Computer Science Class
+                    StudentNumber = "31257898"
                 };
                 userManager.Create(student5, "123");
                 userManager.AddToRole(student5.Id, "Student");
@@ -1099,7 +1104,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes6.ClassId // HND Software Development Class A
+                    ClassId = classes6.ClassId, // HND Software Development Class A
+                    StudentNumber = "37657898"
                 };
                 userManager.Create(student6, "123");
                 userManager.AddToRole(student6.Id, "Student");
@@ -1121,7 +1127,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes7.ClassId // HND Software Development Class B
+                    ClassId = classes7.ClassId, // HND Software Development Class B
+                    StudentNumber = "34656848"
                 };
                 userManager.Create(student7, "123");
                 userManager.AddToRole(student7.Id, "Student");
@@ -1143,7 +1150,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes8.ClassId // NQ Computing Class A
+                    ClassId = classes8.ClassId, // NQ Computing Class A
+                    StudentNumber = "35653898"
                 };
                 userManager.Create(student8, "123");
                 userManager.AddToRole(student8.Id, "Student");
@@ -1165,7 +1173,8 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes9.ClassId // NQ Computing Class B
+                    ClassId = classes9.ClassId, // NQ Computing Class B
+                    StudentNumber = "34657898"
                 };
                 userManager.Create(student9, "123");
                 userManager.AddToRole(student9.Id, "Student");
@@ -1175,47 +1184,60 @@ namespace GuidanceTracker.Models
             // Create a Session
             
 
+
+            // Create a Session
+            //var session = new Appointment
+            //{
+            //    AppointmentDate = DateTime.Now.AddDays(7),
+            //    AppointmentStatus = "Pending",
+            //    AppointmentNotes = "Initial consultation",
+            //    StudentId = student1.Id,
+            //    GuidanceTeacherId = guidance.Id
+            //};
+            //context.Appointments.Add(session);
+            //context.SaveChanges();
+
             // Create a Ticket
-            var ticket = new Ticket
+            var issue = new Issue
             {
-                TicketTitle = "Attendance Issue",
-                TicketDescription = "Student has missed multiple classes.",
-                TicketStatus = "Open",
+                IssueTitle = "Attendance Issue",
+                IssueDescription = "Student has missed multiple classes.",
+                IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student1.Id
             };
-            context.Tickets.Add(ticket);
+            context.Issues.Add(issue);
             context.SaveChanges();
 
-            var ticket2 = new Ticket
+            var issue2 = new Issue
             {
-                TicketTitle = "Academic Issue",
-                TicketDescription = "Student has failed my class.",
-                TicketStatus = "Open",
+                IssueTitle = "Academic Issue",
+                IssueDescription = "Student has failed my class.",
+                IssueStatus = IssueStatus.InProgress,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student2.Id
             };
-            context.Tickets.Add(ticket2);
+            context.Issues.Add(issue2);
             context.SaveChanges();
 
-            var ticket3 = new Ticket
+            var issue3 = new Issue
             {
-                TicketTitle = "Medical Issue",
-                TicketDescription = "Student has fractured their arm and is unable to type",
-                TicketStatus = "Archived",
+                IssueTitle = "Medical Issue",
+                IssueDescription = "Student has fractured their arm and is unable to type",
+                IssueStatus = IssueStatus.Archived,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student3.Id
             };
-            context.Tickets.Add(ticket3);
+            context.Issues.Add(issue3);
             context.SaveChanges();
 
         }
