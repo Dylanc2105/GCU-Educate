@@ -57,12 +57,45 @@
 
         // Handle Class Button Click
         $(document).on("click", ".class-btn", function () {
-            var courseId = $(this).data("courseid");
+            var courseId = $(this).data("courseid"); // ✅ Correctly get the Class ID
 
-            if (!classId) {
+            if (!courseId) {  // ✅ Use the correct variable
                 alert("❌ Invalid Class ID!");
                 return;
             }
+
+            $(".class-btn").removeClass("btn-selected").addClass("btn-purple"); // Reset all buttons
+            $(this).removeClass("btn-purple").addClass("btn-selected"); // Highlight selected button
+
+            console.log("Fetching students for Course ID:", courseId);
+
+            // ✅ Fetch students for selected course
+            $.ajax({
+                url: "/Issue/GetStudents",
+                type: "GET",
+                data: { classId: courseId }, // ✅ Ensure this matches backend parameter
+                success: function (response) {
+                    if (response.error) {
+                        console.error("❌ Error:", response.error);
+                        alert(response.error);
+                        return;
+                    }
+
+                    var studentSelect = $("#studentSelect");
+                    studentSelect.empty().append('<option value="">Select a Student</option>');
+
+                    $.each(response, function (i, student) {
+                        studentSelect.append(`<option value="${student.Id}" data-number="${student.StudentNumber}">${student.Name}</option>`);
+                    });
+
+                    $("#studentDropdown").show();
+                },
+                error: function (xhr) {
+                    console.error("❌ AJAX Error:", xhr.responseText);
+                    alert("Failed to load students. Please check the console for details.");
+                }
+            });
+        });
 
             $(".class-btn").removeClass("btn-selected").addClass("btn-purple"); // Reset all buttons
             $(this).removeClass("btn-purple").addClass("btn-selected"); // Highlight selected button
@@ -215,10 +248,9 @@
 
             $("#issueList").show();
         }
-    });
 </script>
 <style>
-    /* 💜 Ensure ALL Buttons are Purple */
+    /*  Ensure ALL Buttons are Purple */
     .btn-purple {
         background-color: #7F3D98 !important;
         color: white !important;

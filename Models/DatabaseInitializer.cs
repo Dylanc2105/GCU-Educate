@@ -974,12 +974,6 @@ namespace GuidanceTracker.Models
             context.Enrollments.Add(enrollment9);
             context.SaveChanges();
 
-
-
-
-
-
-
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
             {
@@ -1187,7 +1181,8 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-
+            // Create a Session
+            
 
 
             // Create a Session
@@ -1244,9 +1239,6 @@ namespace GuidanceTracker.Models
             };
             context.Issues.Add(issue3);
             context.SaveChanges();
-
-
-
 
         }
     }

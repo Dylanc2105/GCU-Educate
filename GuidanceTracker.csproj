@@ -1522,6 +1522,13 @@
     <Content Include="Views\resetpassword\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\ViewAllStudents.cshtml" />
     <Content Include="Views\GuidanceTeacher\CreateStudent.cshtml" />
+    <Content Include="Views\Issue\Index.cshtml" />
+    <Content Include="Views\Issue\StudentIssue.cshtml" />
+    <Content Include="Views\Issue\ViewIssue.cshtml" />
+    <Content Include="Views\Issue\CreateIssue.cshtml" />
+    <Content Include="Views\Appointment\Create.cshtml" />
+    <Content Include="Views\Appointment\Edit.cshtml" />
+    <Content Include="Views\Comment\HHH.cshtml" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -1530,12 +1537,6 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
-    <Content Include="Views\Issue\Index.cshtml" />
-    <Content Include="Views\Issue\StudentIssue.cshtml" />
-    <Content Include="Views\Issue\ViewIssue.cshtml" />
-    <Content Include="Views\Issue\CreateIssue.cshtml" />
-    <Content Include="Views\Appointment\Create.cshtml" />
-    <Content Include="Views\Appointment\Edit.cshtml" />
     <Content Include="Scripts\kendo\2025.1.227\messages\kendo.messages.zh-TW.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\messages\kendo.messages.zh-HK.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\messages\kendo.messages.zh-CN.min.js.map" />
@@ -2565,7 +2566,6 @@
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-ET.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-ER.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-DJ.min.js.map" />
-    <Content Include="Views\Comment\HHH.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2607,12 +2607,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
-  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
