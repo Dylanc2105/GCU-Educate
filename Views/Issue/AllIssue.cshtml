@@ -1,0 +1,84 @@
+﻿@model List<GuidanceTracker.Models.Ticket>
+
+@{
+    ViewBag.Title = "All Issues";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>All Issues</h1>
+
+<!-- FILTERS & SEARCH -->
+<div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <!-- Sort Order -->
+    <select id="sortOrder" onchange="updateFilters()">
+        <option value="">Sort By</option>
+        <option value="newest" @(Request.QueryString["sortOrder"] == "newest" ? "selected" : "")>Newest</option>
+        <option value="oldest" @(Request.QueryString["sortOrder"] == "oldest" ? "selected" : "")>Oldest</option>
+    </select>
+
+    <!-- Issue Type Filter -->
+    <select id="issueType" onchange="updateFilters()">
+        <option value="">Filter By Type</option>
+        <option value="Open" @(Request.QueryString["issueType"] == "Open" ? "selected" : "")>Open</option>
+        <option value="In Progress" @(Request.QueryString["issueType"] == "In Progress" ? "selected" : "")>In Progress</option>
+    </select>
+
+    <!-- Search Bar (No Button Needed) -->
+    <input type="text" id="searchInput" placeholder="Search issues..." onkeyup="updateFilters()" value="@Request.QueryString["searchString"]" />
+</div>
+
+<!-- MODERN TABLE -->
+<table style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background: #7F3D98; color: white; text-align: left;">
+            <th style="padding: 10px;">Student Name</th>
+            <th>Issue Title</th>
+            <th>Status</th>
+            <th>Created On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="issuesTable">
+        @if (Model.Any())
+        {
+            foreach (var issue in Model)
+            {
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">@issue.Student.FirstName @issue.Student.LastName</td>
+                    <td>@issue.TicketTitle</td>
+                    <td>@issue.TicketStatus</td>
+                    <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })" style="color: #7F3D98;">View</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 15px;">No issues found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function updateFilters() {
+        var sortOrder = document.getElementById("sortOrder").value;
+        var issueType = document.getElementById("issueType").value;
+        var searchInput = document.getElementById("searchInput").value;
+
+        var queryParams = new URLSearchParams(window.location.search);
+        if (sortOrder) queryParams.set("sortOrder", sortOrder);
+        else queryParams.delete("sortOrder");
+
+        if (issueType) queryParams.set("issueType", issueType);
+        else queryParams.delete("issueType");
+
+        if (searchInput) queryParams.set("searchString", searchInput);
+        else queryParams.delete("searchString");
+
+        window.location.search = queryParams.toString();
+    }
+</script>

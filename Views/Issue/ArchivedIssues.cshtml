@@ -1,0 +1,31 @@
+﻿@model List<GuidanceTracker.Models.Ticket>
+
+@{
+    ViewBag.Title = "Archived Issues";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Archived Issues</h1>
+
+<table border="1">
+    <tr>
+        <th>Student Name</th>
+        <th>Issue Title</th>
+        <th>Status</th>
+        <th>Created On</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var issue in Model)
+    {
+        <tr>
+            <td>@issue.Student.FirstName @issue.Student.LastName</td>
+            <td>@issue.TicketTitle</td>
+            <td>@issue.TicketStatus</td>
+            <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
+            <td>
+                <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })">View</a>
+            </td>
+        </tr>
+    }
+</table>

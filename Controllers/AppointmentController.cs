@@ -22,18 +22,18 @@ namespace GuidanceTracker.Controllers
             var appointment = new Appointment
             {
                 TicketId = ticketId,
-                Ticket = db.Tickets.Where(c => c.TicketId == ticketId).FirstOrDefault(),               
+                Ticket = db.Tickets.Where(c => c.TicketId == ticketId).FirstOrDefault(),
                 Time = DateTime.Now,
                 Room = "",
                 AppointmentComment = ""
-                
+
             };
             return View(appointment);
-                
+
 
         }
 
- 
+
 
 
         [HttpPost]
@@ -47,9 +47,9 @@ namespace GuidanceTracker.Controllers
             ViewBag.Message = "";
 
             //make sure that time and date are not empty
-            if (stringDate == "" || stringTime == "" || stringTime==null || stringDate==null)
+            if (stringDate == "" || stringTime == "" || stringTime == null || stringDate == null)
             {
-                ViewBag.Message = "date field can not be empty";        
+                ViewBag.Message = "date field can not be empty";
             }
 
             //if not empty move on
@@ -61,17 +61,17 @@ namespace GuidanceTracker.Controllers
                 //try to transform string to datetime
                 try
                 {
-                    appointment.Time = DateTime.Parse(stringDate);                    
+                    appointment.Time = DateTime.Parse(stringDate);
                 }
                 //if not successfull return alert
                 catch
                 {
-                    ViewBag.Message = "incorrect input for date";                 
+                    ViewBag.Message = "incorrect input for date";
                 }
 
                 //if room field is empty return error
-                if (model.Room == "" || model.Room==null)
-                {                    
+                if (model.Room == "" || model.Room == null)
+                {
                     ViewBag.Message = "room field can not be empty";
                 }
                 //else assign room
@@ -80,11 +80,11 @@ namespace GuidanceTracker.Controllers
                     appointment.Room = model.Room;
                 }
             }
-       
+
 
             appointment.AppointmentComment = model.AppointmentComment;
             appointment.TicketId = model.TicketId;
-            appointment.Ticket = db.Tickets.Where(c => c.TicketId == model.TicketId).FirstOrDefault(); 
+            appointment.Ticket = db.Tickets.Where(c => c.TicketId == model.TicketId).FirstOrDefault();
 
             //if viewbag has any error message => return them to view
             if (ViewBag.Message != "")
@@ -109,7 +109,7 @@ namespace GuidanceTracker.Controllers
             //get appointemnt from db
             var appointment = db.Appointments.Where(c => c.AppointmentId == id).FirstOrDefault();
             return View(appointment);
-           
+
         }
 
         [HttpPost]
@@ -162,11 +162,11 @@ namespace GuidanceTracker.Controllers
                 return View(appointment);
             }
             else
-            { 
-            appointment.AppointmentComment = model.AppointmentComment;
-            db.SaveChanges();
-            TempData["Success"] = "Appointment edited successfully.";
-            return RedirectToAction("ViewIssue", "Issue", new { id = appointment.TicketId });
+            {
+                appointment.AppointmentComment = model.AppointmentComment;
+                db.SaveChanges();
+                TempData["Success"] = "Appointment edited successfully.";
+                return RedirectToAction("ViewIssue", "Issue", new { id = appointment.TicketId });
             }
         }
     }

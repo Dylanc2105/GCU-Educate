@@ -21,6 +21,46 @@ namespace GuidanceTracker.Controllers
             return View(tickets);
         }
 
+        // View All Issues
+        public ActionResult AllIssue(string sortOrder, string issueType, string searchString)
+        {
+            var issues = db.Tickets
+                           .Where(t => t.TicketStatus != "Archived") // Exclude archived issues
+                           .AsQueryable();
+
+            // Search dynamically by name or title
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                issues = issues.Where(t => t.TicketTitle.Contains(searchString) ||
+                                           t.Student.FirstName.Contains(searchString) ||
+                                           t.Student.LastName.Contains(searchString));
+            }
+
+            // Filter by Issue Type (e.g., Late Attendance, Behaviour, etc.)
+            if (!string.IsNullOrEmpty(issueType))
+            {
+                issues = issues.Where(t => t.IssueType == issueType);
+            }
+
+            // Sorting (Newest first by default)
+            if (sortOrder == "oldest")
+            {
+                issues = issues.OrderBy(t => t.CreatedAt);
+            }
+            else
+            {
+                issues = issues.OrderByDescending(t => t.CreatedAt);
+            }
+
+            return View(issues.ToList());
+        }
+
+        // View Archived Issues
+        public ActionResult ArchivedIssues()
+        {
+            var archivedIssues = db.Tickets.Where(t => t.TicketStatus == "Archived").OrderByDescending(t => t.CreatedAt).ToList();
+            return View(archivedIssues);
+        }
         public ActionResult ViewIssue(int id)
         {
             var ticket = db.Tickets
