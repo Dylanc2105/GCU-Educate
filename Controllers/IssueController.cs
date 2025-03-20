@@ -17,7 +17,7 @@ namespace GuidanceTracker.Controllers
         // GET: Issues Dashboard
         public ActionResult Index()
         {
-            var tickets = db.Tickets.Include("Student").ToList();
+            var tickets = db.Issues.Include("Student").ToList();
             return View(tickets);
         }
 
@@ -29,10 +29,10 @@ namespace GuidanceTracker.Controllers
 
         public ActionResult ViewIssue(int id)
         {
-            var ticket = db.Tickets
+            var ticket = db.Issues
                 .Include("Student")
-                .Include("Comments") // Make sure it includes comments
-                .FirstOrDefault(t => t.TicketId == id);
+                .Include("Comments") // Ensure comments are included
+                .FirstOrDefault(t => t.IssueId == id);
 
             var appointments = GetAppointments(ticket.StudentId);
 
@@ -46,7 +46,7 @@ namespace GuidanceTracker.Controllers
                 return HttpNotFound();
             }
 
-            return View(ticket); // This should return the ViewIssue page
+            return View(ticket);
         }
 
         [HttpPost]
@@ -68,10 +68,10 @@ namespace GuidanceTracker.Controllers
                     return Json(new { success = false, error = "User not found." });
                 }
 
-                var ticket = db.Tickets.Find(ticketId);
+                var ticket = db.Issues.Find(ticketId);
                 if (ticket == null)
                 {
-                    return Json(new { success = false, error = "Ticket not found." });
+                    return Json(new { success = false, error = "Issue not found." });
                 }
 
                 var comment = new Comment
@@ -79,7 +79,7 @@ namespace GuidanceTracker.Controllers
                     Content = content,
                     CreatedAt = DateTime.Now,
                     UserId = userId,
-                    TicketId = ticketId
+                    IssueId = ticketId
                 };
 
                 db.Comments.Add(comment);
@@ -93,19 +93,7 @@ namespace GuidanceTracker.Controllers
             }
         }
 
-        // View for Selecting Student Issue
-        public ActionResult StudentIssue()
-        {
-            var classes = db.Classes.Select(c => new ClassViewModel
-            {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName
-            }).ToList();
-
-            return View(classes);
-        }
-
-        // ✅ Get Students for a Selected Course
+        // Get Students for a Selected Course
         public JsonResult GetStudents(int classId)
         {
             try
@@ -120,15 +108,9 @@ namespace GuidanceTracker.Controllers
                     .Select(s => new
                     {
                         Id = s.Id,
-                        Name = s.FirstName + " " + s.LastName,
-                        StudentNumber = s.Id // Change to actual StudentNumber field if applicable
+                        Name = s.FirstName + " " + s.LastName
                     })
                     .ToList();
-
-                if (!students.Any())
-                {
-                    return Json(new { error = "No students found for this course." }, JsonRequestBehavior.AllowGet);
-                }
 
                 return Json(students, JsonRequestBehavior.AllowGet);
             }
@@ -138,44 +120,7 @@ namespace GuidanceTracker.Controllers
             }
         }
 
-        // ✅ Get Issues for a Selected Student
-        public JsonResult GetStudentIssues(string studentId)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(studentId))
-                {
-                    return Json(new { error = "Student ID is required" }, JsonRequestBehavior.AllowGet);
-                }
-
-                // Retrieve issues from the database
-                var issues = db.Tickets
-                    .Where(t => t.StudentId == studentId)
-                    .ToList() // ✅ Fetch the data first (prevents LINQ to Entities error)
-                    .Select(t => new
-                    {
-                        TicketId = t.TicketId,
-                        TicketTitle = t.TicketTitle ?? "Untitled Issue",
-                        TicketDescription = t.TicketDescription ?? "No description available",
-                        TicketStatus = t.TicketStatus ?? "Unknown",
-                        CreatedAt = t.CreatedAt.ToString("dd/MM/yyyy") // ✅ Format AFTER data is retrieved
-                    })
-                    .ToList();
-
-                if (!issues.Any())
-                {
-                    return Json(new { error = "No issues found for this student." }, JsonRequestBehavior.AllowGet);
-                }
-
-                return Json(issues, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        // ✅ GET: Load the Create Issue Page
+        // GET: Load the Create Issue Page
         public ActionResult CreateIssue(string studentId)
         {
             if (string.IsNullOrEmpty(studentId))
@@ -212,44 +157,37 @@ namespace GuidanceTracker.Controllers
                 return Json(new { success = false, error = "Invalid form submission. Please check all fields." });
             }
 
-            // Check if the issue already exists for the selected student
-            var existingIssue = db.Tickets.FirstOrDefault(t =>
+            // Convert string issue type to enum
+            if (!Enum.TryParse(model.IssueType, out IssueTitle issueTitle))
+            {
+                return Json(new { success = false, error = "Invalid Issue Type." });
+            }
+
+            // Check if the issue already exists
+            var existingIssue = db.Issues.FirstOrDefault(t =>
                 t.StudentId == model.StudentId &&
-                t.TicketTitle == model.IssueType);
+                t.IssueTitle == issueTitle);
 
             if (existingIssue != null)
             {
-                if (existingIssue.TicketStatus == "Archived")
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        archived = true,
-                        issueId = existingIssue.TicketId,
-                        error = "❌ This issue already exists for this student but is archived. Please reinstate and add comments."
-                    });
-                }
-
                 return Json(new
                 {
                     success = false,
-                    archived = false,
-                    issueId = existingIssue.TicketId,
-                    error = "❌ This issue is already active for this student. Please add comments to the existing issue."
+                    issueId = existingIssue.IssueId,
+                    error = "❌ This issue is already active for this student."
                 });
             }
 
-            // Find the selected unit and its lecturer
+            // Find the selected unit and lecturer
             var selectedUnit = db.Units.FirstOrDefault(m => m.UnitId == model.SelectedUnitId);
             var lecturerId = selectedUnit?.LecturerId;
 
             // Create new issue
-            var issueTitle = model.IssueType == "Custom" ? model.CustomIssue : model.IssueType;
-            var issue = new Ticket
+            var issue = new Issue
             {
-                TicketTitle = issueTitle,
-                TicketDescription = model.IssueDescription,
-                TicketStatus = "Open",
+                IssueTitle = issueTitle,
+                IssueDescription = model.IssueDescription,
+                IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 StudentId = model.StudentId,
@@ -257,31 +195,29 @@ namespace GuidanceTracker.Controllers
                 GuidanceTeacherId = User.Identity.GetUserId()
             };
 
-            db.Tickets.Add(issue);
+            db.Issues.Add(issue);
             db.SaveChanges();
 
             return Json(new { success = true, message = "✅ Issue successfully created!" });
         }
-
-
 
         [HttpPost]
         public JsonResult UpdateIssueStatus(int issueId, string status)
         {
             try
             {
-                if (issueId == 0 || string.IsNullOrEmpty(status))
+                if (!Enum.TryParse(status, out IssueStatus newStatus))
                 {
-                    return Json(new { success = false, error = "Invalid Issue ID or Status" });
+                    return Json(new { success = false, error = "Invalid Issue Status" });
                 }
 
-                var issue = db.Tickets.Find(issueId);
+                var issue = db.Issues.Find(issueId);
                 if (issue == null)
                 {
                     return Json(new { success = false, error = "Issue not found" });
                 }
 
-                issue.TicketStatus = status;
+                issue.IssueStatus = newStatus;
                 issue.UpdatedAt = DateTime.Now;
                 db.SaveChanges();
 
@@ -292,9 +228,5 @@ namespace GuidanceTracker.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
-
-
-
-
     }
 }

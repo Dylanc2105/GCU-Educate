@@ -36,11 +36,11 @@ namespace GuidanceTracker.Controllers
                 
             };
             return View(appointment);
-                
+
 
         }
 
- 
+
 
 
         [HttpPost]
@@ -54,9 +54,9 @@ namespace GuidanceTracker.Controllers
             ViewBag.Message = "";
 
             //make sure that time and date are not empty
-            if (stringDate == "" || stringTime == "" || stringTime==null || stringDate==null)
+            if (stringDate == "" || stringTime == "" || stringTime == null || stringDate == null)
             {
-                ViewBag.Message = "date field can not be empty";        
+                ViewBag.Message = "date field can not be empty";
             }
 
             //if not empty move on
@@ -73,12 +73,12 @@ namespace GuidanceTracker.Controllers
                 //if not successfull return alert
                 catch
                 {
-                    ViewBag.Message = "incorrect input for date";                 
+                    ViewBag.Message = "incorrect input for date";
                 }
 
                 //if room field is empty return error
-                if (model.Room == "" || model.Room==null)
-                {                    
+                if (model.Room == "" || model.Room == null)
+                {
                     ViewBag.Message = "room field can not be empty";
                 }
                 //else assign room
@@ -120,7 +120,7 @@ namespace GuidanceTracker.Controllers
             //get appointemnt from db
             var appointment = db.Appointments.Where(c => c.AppointmentId == id).FirstOrDefault();
             return View(appointment);
-           
+
         }
 
         [HttpPost]

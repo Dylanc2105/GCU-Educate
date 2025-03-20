@@ -26,14 +26,14 @@ namespace GuidanceTracker.Models
 
         // Foreign Keys
         [Required]
-        public int ArchivedTicketId { get; set; }
+        public int ArchivedIssueId { get; set; }
 
         // We store the User ID as string to preserve the data even if the original user is deleted
         [Required]
         public string UserId { get; set; }
 
         // Navigation property to ArchivedTicket
-        [ForeignKey("ArchivedTicketId")]
-        public virtual ArchivedTicket ArchivedTicket { get; set; }
+        [ForeignKey("ArchivedIssueId")]
+        public virtual ArchivedTicket ArchivedIssue { get; set; }
     }
 }

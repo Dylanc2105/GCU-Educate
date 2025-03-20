@@ -1,55 +1,85 @@
-﻿@model GuidanceTracker.Models.Ticket
+﻿@model GuidanceTracker.Models.Issue
 
 @{
     ViewBag.Title = "Issue Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@Model.TicketTitle</h1>
-<h2>Student Name: @Model.Student.FirstName @Model.Student.LastName </h2>
-<p><strong>Inital reason to raise issue:</strong> @Model.TicketDescription</p>
-<p><strong>Issue initiator:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
-<p><strong>Status:</strong> @Model.TicketStatus</p>
-<p><strong>Created On:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+<div class="issue-container">
+    <!-- Left Section: Split into Issue Details & Appointments -->
+    <div class="left-panel">
+        <!-- Issue Details Container (70%) -->
+        <div class="issue-details">
+            <h1>@Model.TicketTitle</h1>
+            <h2>Student Name: @Model.Student.FirstName @Model.Student.LastName</h2>
+            <p><strong>Initial reason to raise issue:</strong> @Model.TicketDescription</p>
+            <p><strong>Issue initiator:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
+            <p><strong>Status:</strong> @Model.TicketStatus</p>
+            <p><strong>Created On:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+        </div>
 
-<h3>Comments</h3>
-<div id="commentsContainer">
-    @if (Model.Comments != null && Model.Comments.Any())
-    {
-        foreach (var comment in Model.Comments)
-        {
-            <div class="comment-box">
-                <p><strong>@comment.User.FirstName @comment.User.LastName</strong> (@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</p>
-                <p>@comment.Content</p>
-            </div>
-        }
-    }
-    else
-    {
-        <p>No comments yet. Add more information to help flesh out the issue</p>
-    }
+        <!-- Appointments Container (30%) -->
+        <div class="appointments-section">
+            <h3>Appointments</h3>
+            @if (Model.Appointments != null && Model.Appointments.Any())
+            {
+                <ul class="appointment-list">
+                    @foreach (var appointment in Model.Appointments)
+                    {
+                        <li class="appointment-box">
+                            <p><strong>@(appointment.Time > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
+                            <p><strong>Time:</strong> @appointment.Time.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p><strong>Room:</strong> @appointment.Room</p>
+                            <p><strong>Comments:</strong> @appointment.AppointmentComment</p>
+                            @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No appointments assigned.</p>
+            }
+
+            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { ticketId = Model.TicketId }, new { @class = "btn btn-purple mt-2" })
+        </div>
+    </div>
+
+    <!-- Right Section: Comments -->
+    <div class="right-panel">
+        <h3>Comments</h3>
+        <div id="commentsContainer">
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                foreach (var comment in Model.Comments)
+                {
+                    <div class="comment-box">
+                        <p><strong>@comment.User.FirstName @comment.User.LastName</strong> (@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</p>
+                        <p>@comment.Content</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No comments yet. Add more information to help flesh out the issue.</p>
+            }
+        </div>
+
+        <!-- Comment Form -->
+        <h4>Write a comment...</h4>
+        <form id="commentForm">
+            @Html.AntiForgeryToken()
+            <textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
+            <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
+        </form>
+    </div>
 </div>
 
-<!-- Comment Form -->
-<h4>Write a comment...</h4>
-<form id="commentForm">
-    @Html.AntiForgeryToken()
-<textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
-    <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
-</form>
-
+<!-- ✅ JavaScript for Comment Submission (Now Fixed) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         console.log("✅ ViewIssue Page Loaded");
-
-        // ✅ Pre-fill comment box from URL if available
-        const urlParams = new URLSearchParams(window.location.search);
-        const commentText = urlParams.get("comment");
-
-        if (commentText) {
-            $("#commentInput").val(commentText);
-        }
 
         // ✅ Handle Comment Submission
         $("#commentForm").submit(function (e) {
@@ -90,6 +120,16 @@
     });
 </script>
 
+<!-- ✅ Styles for Fixed Two-Column Layout with 70/30 Split -->
+<style>
+    .issue-container {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 90vh; /* Fixed height for a structured layout */
+    }
 
 @* appointments info *@
 <br />
@@ -166,14 +206,30 @@
         <p><strong>No appointemnts assigned</strong></p>
     }*@
 
+    .issue-details {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto; /* Allow scrolling if needed */
+        height: 70%; /* Adjusted to take 70% */
+    }
 
     @Html.ActionLink("Create an appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
 </div>
 
-
-<style>
-    .comment-box {
+    .right-panel {
+        width: 40%;
         background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        overflow-y: auto; /* Ensures comments don't stretch the page */
+    }
+
+    .comment-box {
+        background: #fff;
         padding: 10px;
         margin: 10px 0;
         border-left: 5px solid #7F3D98;
@@ -183,10 +239,18 @@
     .btn-purple {
         background-color: #7F3D98 !important;
         color: white !important;
-    border: none !important;
+        border: none !important;
     }
 
         .btn-purple:hover {
             background-color: #985BAF !important;
         }
+
+    .appointment-box {
+        background: #f9f9f9;
+        padding: 10px;
+        margin: 10px 5px;
+        border-radius: 5px;
+        border-left: 5px solid #7F3D98;
+    }
 </style>
