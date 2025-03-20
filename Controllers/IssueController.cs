@@ -40,23 +40,34 @@ namespace GuidanceTracker.Controllers
                            .Where(i => i.IssueStatus != IssueStatus.Archived) // Exclude archived issues
                            .AsQueryable();
 
+            // Search dynamically by name or title
             if (!string.IsNullOrEmpty(searchString))
             {
                 issues = issues.Where(i => i.Student.FirstName.Contains(searchString) ||
-                                           i.Student.LastName.Contains(searchString));
+                                           i.Student.LastName.Contains(searchString)); 
             }
 
+            // Filter by Issue Title (IssueType)
             if (!string.IsNullOrEmpty(issueType) && Enum.TryParse(issueType, out IssueTitle selectedIssueType))
             {
                 issues = issues.Where(i => i.IssueTitle == selectedIssueType);
             }
 
-            issues = sortOrder == "oldest"
-                ? issues.OrderBy(i => i.CreatedAt)
-                : issues.OrderByDescending(i => i.CreatedAt);
+            // Sorting (Newest first by default)
+            if (sortOrder == "oldest")
+            {
+                issues = issues.OrderBy(i => i.CreatedAt);
+            }
+            else
+            {
+                issues = issues.OrderByDescending(i => i.CreatedAt);
+            }
 
             return View(issues.ToList());
         }
+
+
+
 
         // ✅ View Archived Issues
         public ActionResult ArchivedIssues()

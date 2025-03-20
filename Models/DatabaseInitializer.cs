@@ -1211,7 +1211,7 @@ namespace GuidanceTracker.Models
             context.Appointments.Add(session);
             context.SaveChanges();
 
-            // Create a Ticket
+            // Create a Issue
             var issue = new Issue
             {
                 IssueTitle = IssueTitle.LateAttendance,
@@ -1253,6 +1253,175 @@ namespace GuidanceTracker.Models
             };
             context.Issues.Add(issue3);
             context.SaveChanges();
+
+            var issue4 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student has been consistently late to class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-3),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student4.Id
+            };
+            context.Issues.Add(issue4);
+            context.SaveChanges();
+
+            var issue5 = new Issue
+            {
+                IssueTitle = IssueTitle.MissingAttendance,
+                IssueDescription = "Student has missed several classes without valid reasons.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddMonths(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student5.Id
+            };
+            context.Issues.Add(issue5);
+            context.SaveChanges();
+
+            var issue6 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student has been disruptive in class.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddDays(-7),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student6.Id
+            };
+            context.Issues.Add(issue6);
+            context.SaveChanges();
+
+            var issue7 = new Issue
+            {
+                IssueTitle = IssueTitle.Deadlines,
+                IssueDescription = "Student has missed multiple assignment deadlines.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-14),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student7.Id
+            };
+            context.Issues.Add(issue7);
+            context.SaveChanges();
+
+            var issue8 = new Issue
+            {
+                IssueTitle = IssueTitle.Communication,
+                IssueDescription = "Student has failed to respond to several important communications.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student8.Id
+            };
+            context.Issues.Add(issue8);
+            context.SaveChanges();
+
+            var issue9 = new Issue
+            {
+                IssueTitle = IssueTitle.Performance,
+                IssueDescription = "Student's performance has been below expectations for the semester.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-1),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student9.Id
+            };
+            context.Issues.Add(issue9);
+            context.SaveChanges();
+
+            var issue10 = new Issue
+            {
+                IssueTitle = IssueTitle.Medical,
+                IssueDescription = "Student has been ill and unable to attend classes.",
+                IssueStatus = IssueStatus.Archived,
+                CreatedAt = DateTime.Now.AddDays(-5),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student1.Id
+            };
+            context.Issues.Add(issue10);
+            context.SaveChanges();
+
+            var issue11 = new Issue
+            {
+                IssueTitle = IssueTitle.AcademicDishonesty,
+                IssueDescription = "Student was caught plagiarizing during the last exam.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-1),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student2.Id
+            };
+            context.Issues.Add(issue11);
+            context.SaveChanges();
+
+            var issue12 = new Issue
+            {
+                IssueTitle = IssueTitle.CustomIssue,
+                IssueDescription = "Student has been requesting extensions for every assignment.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-4),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student3.Id
+            };
+            context.Issues.Add(issue12);
+            context.SaveChanges();
+
+            var issue13 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student arrives late to class almost every session.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-30),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student4.Id
+            };
+            context.Issues.Add(issue13);
+            context.SaveChanges();
+
+            var issue14 = new Issue
+            {
+                IssueTitle = IssueTitle.MissingAttendance,
+                IssueDescription = "Student has missed a significant portion of the semester.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-3),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student5.Id
+            };
+            context.Issues.Add(issue14);
+            context.SaveChanges();
+
+            var issue15 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student has been repeatedly disrespectful to classmates.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-10),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student6.Id
+            };
+            context.Issues.Add(issue15);
+            context.SaveChanges();
+
 
         }
     }
