@@ -1202,7 +1202,7 @@ namespace GuidanceTracker.Models
             {
                 IssueTitle = "Attendance Issue",
                 IssueDescription = "Student has missed multiple classes.",
-                IssueStatus = IssueStatus.Open,
+                IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
@@ -1230,7 +1230,7 @@ namespace GuidanceTracker.Models
             {
                 IssueTitle = "Medical Issue",
                 IssueDescription = "Student has fractured their arm and is unable to type",
-                IssueStatus = IssueStatus.InProgress,
+                IssueStatus = IssueStatus.Archived,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
