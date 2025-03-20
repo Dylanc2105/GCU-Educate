@@ -11,27 +11,28 @@ namespace GuidanceTracker.Models
     {
         [Key]
         public int AppointmentId { get; set; }
+        [Display(Name = "Appointment Date")]
         public DateTime AppointmentDate { get; set; }
-        public string AppointmentStatus { get; set; }/* = Requested;*/
+        [Display(Name = "Appointment Status")]
+        public AppointmentStatus AppointmentStatus { get; set; }/* = Requested;*/
+        [Display(Name = "Appointment Notes")]
         public string AppointmentNotes { get; set; }
 
         [Required]
         public string GuidanceTeacherId { get; set; }
-        public DateTime Time { get; set; }
+
         public string Room { get; set; }
-        [Display(Name = "Appointment Comment")]
-        public string AppointmentComment { get; set; }
+
+
 
         [ForeignKey("GuidanceTeacherId")]
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
 
         [Required]
         public string StudentId { get; set; }
-        //nav props
-        public int TicketId { get; set; }
+
 
         // Navigation properties
-        public virtual Ticket Ticket { get; set; }
 
         [ForeignKey("StudentId")]
         public virtual Student Student { get; set; }

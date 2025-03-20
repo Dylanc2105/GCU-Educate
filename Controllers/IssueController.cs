@@ -21,12 +21,25 @@ namespace GuidanceTracker.Controllers
             return View(tickets);
         }
 
+        public List<Appointment> GetAppointments(string studentId)
+        {
+            var appointments = db.Appointments.Where(s => s.StudentId == studentId).ToList();
+            return appointments;
+        }
+
         public ActionResult ViewIssue(int id)
         {
             var ticket = db.Tickets
                 .Include("Student")
                 .Include("Comments") // Make sure it includes comments
                 .FirstOrDefault(t => t.TicketId == id);
+
+            var appointments = GetAppointments(ticket.StudentId);
+
+            if (appointments != null)
+            {
+                ViewBag.Data = appointments;
+            }
 
             if (ticket == null)
             {

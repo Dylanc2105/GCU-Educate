@@ -93,8 +93,49 @@
 
 @* appointments info *@
 <br />
+
+
+
 <div>
-    @if (Model.Appointments != null && Model.Appointments.Any())
+    @if (ViewBag.Data != null)
+    {
+        foreach (var appointment in ViewBag.Data)
+        {
+            if (appointment.AppointmentDate > DateTime.Now)
+            {
+                <p><strong>Upcoming appointments</strong></p>
+                <div class="comment-box">
+                    <p>Time: @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm") </p>
+                    <p>Room: @appointment.Room</p>
+                    <p>Comments: @appointment.AppointmentNotes</p>
+                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
+                </div>
+            }
+            else
+            {
+                <p><strong>Past appointments</strong></p>
+                <div class="comment-box">
+                    <p>Time: @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm") </p>
+                    <p>Room: @appointment.Room</p>
+                    <p>Comments: @appointment.AppointmentNotes</p>
+                    @Html.ActionLink("Edit appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
+                </div>
+            }
+        }
+
+    }
+    else
+    {
+        <p><strong> No appointemnts assigned for this student</strong ></p>
+    }
+</div>
+
+
+
+
+
+<div>
+    @*@if (Model.Appointments != null && Model.Appointments.Any())
     {
         foreach (var appointment in Model.Appointments)
         {
@@ -123,10 +164,10 @@
     else
     {
         <p><strong>No appointemnts assigned</strong></p>
-    }
+    }*@
 
 
-    @Html.ActionLink("Create an appointment", "Create", "Appointment", new { ticketId = Model.TicketId }, new { @class = "btn btn-purple mt-2" })
+    @Html.ActionLink("Create an appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
 </div>
 
 

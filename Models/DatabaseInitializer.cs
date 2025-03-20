@@ -1185,9 +1185,23 @@ namespace GuidanceTracker.Models
             var session = new Appointment
             {
                 AppointmentDate = DateTime.Now.AddDays(7),
-                AppointmentStatus = "Pending",
+                AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Initial consultation",
+                Room="05.005",
                 StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session);
+            context.SaveChanges();
+
+            // Create a Session
+            var session1 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(7),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Initial consultation",
+                Room = "05.005",
+                StudentId = student2.Id,
                 GuidanceTeacherId = guidance.Id
             };
             context.Appointments.Add(session);

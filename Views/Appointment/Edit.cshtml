@@ -20,18 +20,18 @@
 
     //student info
     <div class="form-horizontal">
-        <h4>Edit appointment for @Model.Ticket.Student.FirstName @Model.Ticket.Student.LastName regarding @Model.Ticket.TicketTitle</h4>
+        <h4>Edit appointment for @Model.Student.FirstName @Model.Student.LastName</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.AppointmentId)
 
         @* date textbox *@
         <p>Date</p>
-        <input type="text" id="stringDate" name="stringDate" value="@Model.Time.ToString("dd/MM/yyyy")" />
+        <input type="text" id="stringDate" name="stringDate" value="@Model.AppointmentDate.ToString("dd/MM/yyyy")" />
 
         @* time text box *@
         <p>Time</p>
-        <input type="text" id="stringTime" name="stringTime" value="@Model.Time.ToString("HH:mm")" />
+        <input type="text" id="stringTime" name="stringTime" value="@Model.AppointmentDate.ToString("HH:mm")" />
 
         @* room text box *@
         <div class="form-group">
@@ -44,10 +44,10 @@
 
         @* comment text area *@
         <div class="form-group">
-            @Html.LabelFor(model => model.AppointmentComment, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.AppointmentNotes, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.AppointmentComment, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AppointmentComment, "", new { @class = "text-danger" })
+                @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
             </div>
         </div>
 

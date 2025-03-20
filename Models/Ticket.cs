@@ -43,7 +43,6 @@ namespace GuidanceTracker.Models
 
         // 🔹 Adding a list of comments & appointments
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
 
     }

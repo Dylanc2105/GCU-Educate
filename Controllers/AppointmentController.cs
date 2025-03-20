@@ -1,5 +1,6 @@
 ﻿using GuidanceTracker.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
@@ -15,17 +16,23 @@ namespace GuidanceTracker.Controllers
         private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
         // GET: Appointment
 
+        public List<Appointment> GetAppointments(string studentId)
+        {
+            var appointments = db.Appointments.Where(s => s.StudentId == studentId).ToList();
+            return appointments;
+        }
 
-        public ActionResult Create(int ticketId)
+
+        public ActionResult Create(string studentId)
         {
             //assign ticket and time before sending appointment to view
             var appointment = new Appointment
             {
-                TicketId = ticketId,
-                Ticket = db.Tickets.Where(c => c.TicketId == ticketId).FirstOrDefault(),               
-                Time = DateTime.Now,
+                StudentId = studentId,
+                Student = db.Students.Find(studentId),      
+                AppointmentDate = DateTime.Now,
                 Room = "",
-                AppointmentComment = ""
+                AppointmentNotes = ""
                 
             };
             return View(appointment);
@@ -61,7 +68,7 @@ namespace GuidanceTracker.Controllers
                 //try to transform string to datetime
                 try
                 {
-                    appointment.Time = DateTime.Parse(stringDate);                    
+                    appointment.AppointmentDate = DateTime.Parse(stringDate);                    
                 }
                 //if not successfull return alert
                 catch
@@ -82,9 +89,13 @@ namespace GuidanceTracker.Controllers
             }
        
 
-            appointment.AppointmentComment = model.AppointmentComment;
-            appointment.TicketId = model.TicketId;
-            appointment.Ticket = db.Tickets.Where(c => c.TicketId == model.TicketId).FirstOrDefault(); 
+            appointment.AppointmentNotes = model.AppointmentNotes;
+            appointment.StudentId = model.StudentId;
+            appointment.Student = db.Students.Where(c => c.Id == model.StudentId).FirstOrDefault(); 
+            appointment.AppointmentStatus = model.AppointmentStatus;
+            appointment.GuidanceTeacherId = User.Identity.GetUserId();
+            appointment.GuidanceTeacher = db.GuidanceTeachers.Find(appointment.GuidanceTeacherId);
+            
 
             //if viewbag has any error message => return them to view
             if (ViewBag.Message != "")
@@ -98,7 +109,7 @@ namespace GuidanceTracker.Controllers
                 db.SaveChanges();
                 TempData["Success"] = "Appointment created successfully.";
                 //redirect to issue page
-                return RedirectToAction("ViewIssue", "Issue", new { id = model.TicketId });
+                return RedirectToAction("Index", "Issue");
             }
         }
 
@@ -138,7 +149,7 @@ namespace GuidanceTracker.Controllers
                 //try to transform string to datetime
                 try
                 {
-                    appointment.Time = DateTime.Parse(stringDate);
+                    appointment.AppointmentDate = DateTime.Parse(stringDate);
                 }
                 //if not successfull return alert
                 catch
@@ -163,10 +174,10 @@ namespace GuidanceTracker.Controllers
             }
             else
             { 
-            appointment.AppointmentComment = model.AppointmentComment;
+            appointment.AppointmentNotes = model.AppointmentNotes;
             db.SaveChanges();
             TempData["Success"] = "Appointment edited successfully.";
-            return RedirectToAction("ViewIssue", "Issue", new { id = appointment.TicketId });
+            return RedirectToAction("Index", "Issue");
             }
         }
     }
