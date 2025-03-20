@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.Ticket>
+﻿@model List<GuidanceTracker.Models.Issue>
 
 @{
     ViewBag.Title = "All Issues";
@@ -19,11 +19,12 @@
     <!-- Issue Type Filter -->
     <select id="issueType" onchange="updateFilters()">
         <option value="">Filter By Type</option>
-        <option value="Open" @(Request.QueryString["issueType"] == "Open" ? "selected" : "")>Open</option>
-        <option value="In Progress" @(Request.QueryString["issueType"] == "In Progress" ? "selected" : "")>In Progress</option>
+        <option value="New" @(Request.QueryString["issueType"] == "New" ? "selected" : "")>New</option>
+        <option value="InProgress" @(Request.QueryString["issueType"] == "InProgress" ? "selected" : "")>In Progress</option>
+        <option value="Archived" @(Request.QueryString["issueType"] == "Archived" ? "selected" : "")>Archived</option>
     </select>
 
-    <!-- Search Bar (No Button Needed) -->
+    <!-- Search Bar -->
     <input type="text" id="searchInput" placeholder="Search issues..." onkeyup="updateFilters()" value="@Request.QueryString["searchString"]" />
 </div>
 
@@ -45,11 +46,11 @@
             {
                 <tr style="border-bottom: 1px solid #ddd;">
                     <td style="padding: 10px;">@issue.Student.FirstName @issue.Student.LastName</td>
-                    <td>@issue.TicketTitle</td>
-                    <td>@issue.TicketStatus</td>
+                    <td>@issue.IssueTitle.ToString()</td> <!-- ✅ FIXED -->
+                    <td>@issue.IssueStatus.ToString()</td> <!-- ✅ FIXED -->
                     <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
                     <td>
-                        <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.TicketId })" style="color: #7F3D98;">View</a>
+                        <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })" style="color: #7F3D98;">View</a>
                     </td>
                 </tr>
             }
