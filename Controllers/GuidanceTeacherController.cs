@@ -19,61 +19,61 @@ namespace GuidanceTracker.Controllers
     public class GuidanceTeacherController : AccountController
     {
         private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
+
         public GuidanceTeacherController() : base()
         {
-
         }
 
         public GuidanceTeacherController(ApplicationUserManager userManager, ApplicationSignInManager signInManager) :
             base(userManager, signInManager)
         {
-
         }
 
-        // GET: GuidanceTeacher
+        // GET: GuidanceTeacher Dashboard
         public ActionResult GuidanceTeacherDash()
         {
-            var tickets = db.Issues
+            var teacherId = User.Identity.GetUserId();
+
+            var issues = db.Issues
                 .Include("Student")
                 .Include("Lecturer")
-                .OrderByDescending(t => t.CreatedAt)
+                .Where(i => i.GuidanceTeacherId == teacherId)
+                .OrderByDescending(i => i.CreatedAt)
                 .ToList();
 
-            return View("GuidanceTeacherDash", tickets); 
+            return View("GuidanceTeacherDash", issues);
         }
 
+        // View all students
         public ActionResult ViewAllStudents()
         {
             var students = db.Students.OrderBy(s => s.RegistredAt).ToList();
-
             return View(students);
         }
 
-        //2: CREATE A NEW Student
-        //***************************************************************************************
-
+        // Create a new student (GET)
         public ActionResult CreateStudent()
         {
-            CreateStudentViewModel student = new CreateStudentViewModel();
-            // Get all courses from the database and convert to SelectListItems
-            student.Classes = db.Classes
-                .Select(c => new SelectListItem
-                {
-                    Value = c.ClassId.ToString(), // Use ClassId as the value
-                    Text = c.ClassName
-                })
-                .ToList();
+            CreateStudentViewModel student = new CreateStudentViewModel
+            {
+                Classes = db.Classes
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.ClassId.ToString(),
+                        Text = c.ClassName
+                    })
+                    .ToList()
+            };
             return View(student);
         }
 
+        // Create a new student (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateStudent(CreateStudentViewModel model)
         {
-
             if (ModelState.IsValid)
             {
-                //build the student
                 Student newStudent = new Student
                 {
                     UserName = model.Email,
@@ -86,22 +86,17 @@ namespace GuidanceTracker.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     RegistredAt = DateTime.Now,
-                    ClassId = model.ClassId // Set the ClassId here
+                    ClassId = model.ClassId
                 };
 
-                //create user, and store in the database and pass the password to be hashed
                 var result = UserManager.Create(newStudent, model.Password);
-                //if user was stored in the database successfully
                 if (result.Succeeded)
                 {
-                    //then add user to the role selected
                     UserManager.AddToRole(newStudent.Id, "Student");
-
                     return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
                 }
                 else
                 {
-                    // Add identity errors to ModelState
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error);
@@ -117,11 +112,8 @@ namespace GuidanceTracker.Controllers
                     Text = c.ClassName
                 })
                 .ToList();
-            //something is wrong so go back to the create student view
+
             return View(model);
-
-
-
         }
     }
 }

@@ -183,11 +183,13 @@
         <div class="bottom-right-container">
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Add Issue</a>
-                <a href="@Url.Action("AllIssue", "Issue")" class="quick-btn">See All Issues</a>
+                <!-- Existing Quick Action Buttons -->
+                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New Issue</a>
+                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Issue Hub</a>
+                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All Issues</a>
                 <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived Issues</a>
             </div>
         </div>
-    </div>
+    </div> 
 
 </div>

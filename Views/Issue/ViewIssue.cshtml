@@ -25,12 +25,12 @@
             {
                 <ul class="appointment-box">
                     @foreach (var appointment in Model.Student.Appointments)
-                    {                        
-                            <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
-                            <p><strong>Time:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
-                            <p><strong>Room:</strong> @appointment.Room</p>
-                            <p><strong>Comments:</strong> @appointment.AppointmentNotes</p>
-                            @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })                        
+                    {
+                        <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
+                        <p><strong>Time:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Room:</strong> @appointment.Room</p>
+                        <p><strong>Comments:</strong> @appointment.AppointmentNotes</p>
+                        @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
                     }
                 </ul>
             }
@@ -49,11 +49,20 @@
         <div id="commentsContainer">
             @if (Model.Comments != null && Model.Comments.Any())
             {
-                foreach (var comment in Model.Comments)
+                foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
                 {
-                    <div class="comment-box">
-                        <p><strong>@comment.User.FirstName @comment.User.LastName</strong> (@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</p>
-                        <p>@comment.Content</p>
+                    bool isGroupComment = comment.Content.StartsWith("This issue was raised as part of a group involving");
+
+                    <div class="comment-box @(isGroupComment ? "group-comment" : "")">
+                        @if (!isGroupComment)
+                        {
+                            <p class="comment-author">
+                                <strong>@comment.User.FirstName @comment.User.LastName</strong>
+                                <span class="comment-date">(@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</span>
+                            </p>
+                        }
+
+                        <p class="comment-text">@comment.Content</p>
                     </div>
                 }
             }
@@ -64,13 +73,14 @@
         </div>
 
         <!-- Comment Form -->
-        <h4>Write a comment...</h4>
+        <h4 class="mt-4">Write a comment...</h4>
         <form id="commentForm">
             @Html.AntiForgeryToken()
             <textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
             <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
         </form>
     </div>
+
 </div>
 
 <!-- ✅ JavaScript for Comment Submission (Now Fixed) -->
@@ -126,41 +136,71 @@
         padding: 20px;
         max-width: 1200px;
         margin: 0 auto;
-        height: 90vh; /* Fixed height for a structured layout */
+        height: 90vh;
     }
 
     .issue-details {
+        flex: 1;
         background: #ffffff;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        overflow-y: auto; /* Allow scrolling if needed */
-        height: 70%; /* Adjusted to take 70% */
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        overflow-y: auto;
     }
-
 
     .right-panel {
         width: 40%;
-        background: #f9f9f9;
+        background: #f9f9ff;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        height: 100%;
-        overflow-y: auto; /* Ensures comments don't stretch the page */
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .comment-box {
         background: #fff;
-        padding: 10px;
-        margin: 10px 0;
+        padding: 12px 15px;
+        margin-bottom: 15px;
         border-left: 5px solid #7F3D98;
-        border-radius: 5px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .group-comment {
+        background-color: #f3f0ff;
+        border-left-color: #985BAF;
+        font-style: italic;
+    }
+
+    .comment-author {
+        font-weight: bold;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+
+    .comment-date {
+        font-size: 12px;
+        color: #777;
+        margin-left: 4px;
+    }
+
+    .comment-text {
+        font-size: 14px;
+        line-height: 1.6;
+        margin-top: 5px;
     }
 
     .btn-purple {
         background-color: #7F3D98 !important;
         color: white !important;
         border: none !important;
+        padding: 10px 18px;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background 0.3s ease;
     }
 
         .btn-purple:hover {
@@ -169,10 +209,32 @@
 
     .appointment-box {
         background: #f9f9f9;
-        padding: 10px;
-        margin: 10px 5px;
+        padding: 12px;
+        margin: 10px 0;
         border-radius: 5px;
         border-left: 5px solid #7F3D98;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    h3, h4 {
+        color: #7F3D98;
+        margin-bottom: 10px;
+    }
+
+    #commentsContainer {
+        flex-grow: 1;
+        margin-bottom: 20px;
+    }
+
+    form#commentForm {
+        margin-top: auto;
     }
 </style>
 

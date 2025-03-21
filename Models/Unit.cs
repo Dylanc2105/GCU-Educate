@@ -14,7 +14,7 @@ namespace GuidanceTracker.Models
         public string UnitDescription { get; set; }
 
         // Foreign keys
-        public ICollection<Class> Classes { get; set; }
+        public virtual ICollection<Class> Classes { get; set; }
 
         [Required]
 

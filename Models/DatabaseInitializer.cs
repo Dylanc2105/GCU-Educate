@@ -1181,8 +1181,193 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            // Student 10 - Overlapping class 1
+            if (userManager.FindByName("student10@email.com") == null)
+            {
+                var student10 = new Student
+                {
+                    UserName = "student10@email.com",
+                    Email = "student10@email.com",
+                    FirstName = "Emily",
+                    LastName = "Stone",
+                    Street = "12 Rose Lane",
+                    City = "London",
+                    Postcode = "E3 4QD",
+                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes1.ClassId,
+                    StudentNumber = "41000010"
+                };
+                userManager.Create(student10, "123");
+                userManager.AddToRole(student10.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 11 - Overlapping class 3
+            if (userManager.FindByName("student11@email.com") == null)
+            {
+                var student11 = new Student
+                {
+                    UserName = "student11@email.com",
+                    Email = "student11@email.com",
+                    FirstName = "Jack",
+                    LastName = "Bennett",
+                    Street = "99 Elm Street",
+                    City = "Newcastle",
+                    Postcode = "NE1 2HQ",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes3.ClassId,
+                    StudentNumber = "41000011"
+                };
+                userManager.Create(student11, "123");
+                userManager.AddToRole(student11.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 12 - Overlapping class 5
+            if (userManager.FindByName("student12@email.com") == null)
+            {
+                var student12 = new Student
+                {
+                    UserName = "student12@email.com",
+                    Email = "student12@email.com",
+                    FirstName = "Gary",
+                    LastName = "Grant",
+                    Street = "48 Main Street",
+                    City = "Aberdeen",
+                    Postcode = "AB11 6XY",
+                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes5.ClassId,
+                    StudentNumber = "41000012"
+                };
+                userManager.Create(student12, "123");
+                userManager.AddToRole(student12.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 13 - Overlapping class 4
+            if (userManager.FindByName("student13@email.com") == null)
+            {
+                var student13 = new Student
+                {
+                    UserName = "student13@email.com",
+                    Email = "student13@email.com",
+                    FirstName = "Amy",
+                    LastName = "Medineli",
+                    Street = "75 Meadow Walk",
+                    City = "Dundee",
+                    Postcode = "DD1 3AB",
+                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes4.ClassId,
+                    StudentNumber = "41000013"
+                };
+                userManager.Create(student13, "123");
+                userManager.AddToRole(student13.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 14 - Overlapping class 6
+            if (userManager.FindByName("student14@email.com") == null)
+            {
+                var student14 = new Student
+                {
+                    UserName = "student14@email.com",
+                    Email = "student14@email.com",
+                    FirstName = "Ross",
+                    LastName = "Gibb",
+                    Street = "20 Mill Lane",
+                    City = "Glasgow",
+                    Postcode = "G3 8TU",
+                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes6.ClassId,
+                    StudentNumber = "41000014"
+                };
+                userManager.Create(student14, "123");
+                userManager.AddToRole(student14.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 15 - Shared with class 7
+            if (userManager.FindByName("student15@email.com") == null)
+            {
+                var student15 = new Student
+                {
+                    UserName = "student15@email.com",
+                    Email = "student15@email.com",
+                    FirstName = "Lucy",
+                    LastName = "Fraser",
+                    Street = "88 Riverside",
+                    City = "Inverness",
+                    Postcode = "IV1 1XA",
+                    RegistredAt = DateTime.Now.AddMonths(-3),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes7.ClassId,
+                    StudentNumber = "41000015"
+                };
+                userManager.Create(student15, "123");
+                userManager.AddToRole(student15.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 16 - Shared with class 8
+            if (userManager.FindByName("student16@email.com") == null)
+            {
+                var student16 = new Student
+                {
+                    UserName = "student16@email.com",
+                    Email = "student16@email.com",
+                    FirstName = "Nathan",
+                    LastName = "Hall",
+                    Street = "17 Willow Gardens",
+                    City = "Perth",
+                    Postcode = "PH1 2NB",
+                    RegistredAt = DateTime.Now.AddMonths(-3),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes8.ClassId,
+                    StudentNumber = "41000016"
+                };
+                userManager.Create(student16, "123");
+                userManager.AddToRole(student16.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student 17 - Shared with class 1 again (more overlap!)
+            if (userManager.FindByName("student17@email.com") == null)
+            {
+                var student17 = new Student
+                {
+                    UserName = "student17@email.com",
+                    Email = "student17@email.com",
+                    FirstName = "Isla",
+                    LastName = "Reid",
+                    Street = "19 Highland View",
+                    City = "Stirling",
+                    Postcode = "FK8 2AB",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes1.ClassId,
+                    StudentNumber = "41000017"
+                };
+                userManager.Create(student17, "123");
+                userManager.AddToRole(student17.Id, "Student");
+            }
+            context.SaveChanges();
+
+
             // Create a Session
-            
+
 
 
             // Create a Session
@@ -1191,7 +1376,7 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(7),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Initial consultation",
-                Room="05.005",
+                Room = "05.005",
                 StudentId = student1.Id,
                 GuidanceTeacherId = guidance.Id
             };

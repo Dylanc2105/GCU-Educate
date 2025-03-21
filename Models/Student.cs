@@ -11,6 +11,10 @@ namespace GuidanceTracker.Models
     public class Student : User
     {
         public string StudentNumber { get; set; }
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
+
         // Foreign key to GuidanceTeacher
         public string GuidanceTeacherId { get; set; }
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }

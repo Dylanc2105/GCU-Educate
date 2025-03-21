@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GuidanceTracker.Models.ViewModels
@@ -7,25 +6,25 @@ namespace GuidanceTracker.Models.ViewModels
     public class CreateIssueViewModel
     {
         [Required]
-        public string StudentId { get; set; }
-
-        public string StudentName { get; set; }
-
-        public string StudentNumber { get; set; }
-        public string ClassName { get; set; }
+        public int SelectedClassId { get; set; }
 
         [Required]
         public int SelectedUnitId { get; set; }
 
-        public List<Unit> Units { get; set; }
+        [Required]
+        public List<string> SelectedStudentIds { get; set; }
 
         [Required]
-        public string IssueType { get; set; }
+        public IssueTitle IssueTitle { get; set; }
 
-        public string CustomIssue { get; set; }
 
         [Required]
-        [StringLength(500, ErrorMessage = "Description must be under 500 characters.")]
-        public string IssueDescription { get; set; }
+        [StringLength(500)]
+        public string Description { get; set; }
+
+        // For dropdowns
+        public IEnumerable<Class> Classes { get; set; }
+        public IEnumerable<Unit> Units { get; set; }
+        public IEnumerable<Student> Students { get; set; }
     }
 }

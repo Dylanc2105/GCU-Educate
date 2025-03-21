@@ -1527,7 +1527,6 @@
     <Content Include="Views\Issue\Index.cshtml" />
     <Content Include="Views\Issue\StudentIssue.cshtml" />
     <Content Include="Views\Issue\ViewIssue.cshtml" />
-    <Content Include="Views\Issue\CreateIssue.cshtml" />
     <Content Include="Views\Appointment\Create.cshtml" />
     <Content Include="Views\Appointment\Edit.cshtml" />
     <Content Include="Views\Comment\HHH.cshtml" />
@@ -2568,8 +2567,9 @@
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-ET.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-ER.min.js.map" />
     <Content Include="Scripts\kendo\2025.1.227\cultures\kendo.culture.aa-DJ.min.js.map" />
-    <Content Include="Views\Issue\AllIssue.cshtml" />
+    <Content Include="Views\Issue\AllIssues.cshtml" />
     <Content Include="Views\Issue\ArchivedIssues.cshtml" />
+    <Content Include="Views\Issue\CreateIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

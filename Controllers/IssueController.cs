@@ -6,6 +6,11 @@ using System.Web;
 using System.Web.Mvc;
 using GuidanceTracker.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity.SqlServer;
+using System.Data.Entity;
+
+
+
 
 namespace GuidanceTracker.Controllers
 {
@@ -21,65 +26,253 @@ namespace GuidanceTracker.Controllers
             return View(tickets);
         }
 
+        // GET: Issue/CreateIssue
+        public ActionResult CreateIssue()
+        {
+            var model = new CreateIssueViewModel
+            {
+                Classes = db.Classes.ToList(),
+                Units = new List<Unit>(),      // default empty so dropdown isn’t populated
+                Students = new List<Student>(), // same here
+                SelectedStudentIds = new List<string>() 
+            };
+
+            return View(model);
+        }
+
+
+        // POST: Issue/CreateIssue
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateIssue(CreateIssueViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var teacherId = User.Identity.GetUserId();
+
+                // Get full names of all selected students (for group comment)
+                var studentNames = db.Students
+                    .Where(s => model.SelectedStudentIds.Contains(s.Id))
+                    .Select(s => s.FirstName + " " + s.LastName)
+                    .ToList();
+
+                var groupComment = "";
+                if (studentNames.Count > 1)
+                {
+                    groupComment = "This issue was raised as part of a group involving: " + string.Join(", ", studentNames) + ".";
+                }
+
+                foreach (var studentId in model.SelectedStudentIds)
+                {
+                    var existingIssue = db.Issues.FirstOrDefault(i =>
+                        i.StudentId == studentId &&
+                        i.IssueStatus != IssueStatus.Archived &&
+                        i.IssueTitle == model.IssueTitle);
+
+                    if (existingIssue != null)
+                    {
+                        existingIssue.Comments.Add(new Comment
+                        {
+                            Content = model.Description,
+                            CreatedAt = DateTime.Now,
+                            UserId = teacherId
+                        });
+
+                        continue; // Skip creating a new issue
+                    }
+
+                    var student = db.Students.Find(studentId);
+
+                    var issue = new Issue
+                    {
+                        StudentId = student.Id,
+                        IssueTitle = model.IssueTitle,
+                        IssueDescription = model.Description,
+                        IssueStatus = IssueStatus.New,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
+                        GuidanceTeacherId = teacherId,
+                        Comments = new List<Comment>()
+                    };
+
+                    // Add the group comment if multiple students are selected
+                    if (!string.IsNullOrEmpty(groupComment))
+                    {
+                        issue.Comments.Add(new Comment
+                        {
+                            Content = groupComment,
+                            CreatedAt = DateTime.Now,
+                            UserId = teacherId
+                        });
+                    }
+
+                    // Add the main description as a comment
+                    issue.Comments.Add(new Comment
+                    {
+                        Content = model.Description,
+                        CreatedAt = DateTime.Now,
+                        UserId = teacherId
+                    });
+
+                    db.Issues.Add(issue);
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("StudentIssue");
+            }
+
+            // Repopulate dropdowns if model is invalid
+            model.Classes = db.Classes.ToList();
+            model.Units = db.Units.ToList();
+            model.Students = db.Students.ToList();
+            return View(model);
+        }
+
+
+
+        // AJAX: Get Units by Class
+        public ActionResult GetUnits(int classId)
+        {
+            // Get the UnitIds manually from the join table (UnitClasses)
+            var unitIds = db.Database.SqlQuery<int>(
+                "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+
+            var units = db.Units
+                .Where(u => unitIds.Contains(u.UnitId))
+                .Select(u => new { u.UnitId, u.UnitName })
+                .ToList();
+
+            return Json(units, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DebugUnits(int classId)
+        {
+            var classEntity = db.Classes
+                .Include(c => c.Units)
+                .FirstOrDefault(c => c.ClassId == classId);
+
+            if (classEntity == null)
+            {
+                return Content("Class not found.");
+            }
+
+            var output = $"Class: {classEntity.ClassName}<br/>Units:<ul>";
+
+            foreach (var unit in classEntity.Units)
+            {
+                output += $"<li>{unit.UnitName} (ID: {unit.UnitId})</li>";
+            }
+
+            output += "</ul>";
+
+            return Content(output);
+        }
+
+
+        // AJAX: Get Students by Class
+        public ActionResult GetStudentsForClass(int classId)
+
+        {
+            var students = db.Students
+                             .Where(s => s.ClassId == classId)
+                             .Select(s => new { s.Id, FullName = s.FirstName + " " + s.LastName });
+
+            return Json(students, JsonRequestBehavior.AllowGet);
+        }
+
+
         // ✅ Load the Student Issue Selection Page (For Adding Issues)
         public ActionResult StudentIssue()
         {
+            // Fetch classes from the database
             var classes = db.Classes.Select(c => new ClassViewModel
             {
                 ClassId = c.ClassId,
                 ClassName = c.ClassName
             }).ToList();
 
-            return View(classes);
+            return View(classes); // Pass the list of classes, not CreateIssueViewModel
         }
 
-        // ✅ View All Issues
-        public ActionResult AllIssue(string sortOrder, string issueType, string searchString)
+        public ActionResult AllIssues(string sortOrder, string issueType, string searchString)
         {
-            var issues = db.Issues
-                           .Where(i => i.IssueStatus != IssueStatus.Archived) // Exclude archived issues
-                           .AsQueryable();
+            var issuesQuery = db.Issues
+                .Include("Lecturer")  // Use string-based Include to load Lecturer
+                .Include("Student")   // Use string-based Include to load Student
+                .AsQueryable();
 
-            // Search dynamically by name or title
             if (!string.IsNullOrEmpty(searchString))
             {
-                issues = issues.Where(i => i.Student.FirstName.Contains(searchString) ||
-                                           i.Student.LastName.Contains(searchString)); 
+                // SQL LIKE pattern with '%' for partial matching
+                var searchPattern = "%" + searchString.ToLower() + "%";
+
+                issuesQuery = issuesQuery.Where(i =>
+                    SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Lecturer.FirstName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Lecturer.LastName.ToLower()) > 0);
             }
 
-            // Filter by Issue Title (IssueType)
-            if (!string.IsNullOrEmpty(issueType) && Enum.TryParse(issueType, out IssueTitle selectedIssueType))
+            // Apply filter for issue type
+            if (!string.IsNullOrEmpty(issueType))
             {
-                issues = issues.Where(i => i.IssueTitle == selectedIssueType);
+                issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
             }
 
-            // Sorting (Newest first by default)
-            if (sortOrder == "oldest")
+            // Sorting
+            if (sortOrder == "newest")
             {
-                issues = issues.OrderBy(i => i.CreatedAt);
+                issuesQuery = issuesQuery.OrderByDescending(i => i.CreatedAt);
             }
-            else
+            else if (sortOrder == "oldest")
             {
-                issues = issues.OrderByDescending(i => i.CreatedAt);
+                issuesQuery = issuesQuery.OrderBy(i => i.CreatedAt);
             }
 
-            return View(issues.ToList());
+            // Execute the query and return the results
+            var issues = issuesQuery.ToList();
+            return View(issues);
         }
-
 
 
 
         // ✅ View Archived Issues
-        public ActionResult ArchivedIssues()
+        public ActionResult ArchivedIssues(string sortOrder, string issueType, string searchString)
         {
-            var archivedIssues = db.Issues
-                                   .Where(t => t.IssueStatus == IssueStatus.Archived)
-                                   .OrderByDescending(t => t.CreatedAt)
-                                   .ToList();
-            return View(archivedIssues);
+            var issuesQuery = db.Issues
+                .Include("Lecturer")
+                .Include("Student")
+                .Where(i => i.IssueStatus == IssueStatus.Archived)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var searchPattern = "%" + searchString.ToLower() + "%";
+
+                issuesQuery = issuesQuery.Where(i =>
+                    SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Lecturer.FirstName.ToLower()) > 0 ||
+                    SqlFunctions.PatIndex(searchPattern, i.Lecturer.LastName.ToLower()) > 0);
+            }
+
+            if (!string.IsNullOrEmpty(issueType))
+            {
+                issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
+            }
+
+            if (sortOrder == "newest")
+            {
+                issuesQuery = issuesQuery.OrderByDescending(i => i.CreatedAt);
+            }
+            else if (sortOrder == "oldest")
+            {
+                issuesQuery = issuesQuery.OrderBy(i => i.CreatedAt);
+            }
+
+            var issues = issuesQuery.ToList();
+            return View(issues);
         }
-
-
 
         public List<Appointment> GetAppointments(string studentId)
         {
@@ -180,86 +373,7 @@ namespace GuidanceTracker.Controllers
             }
         }
 
-        // GET: Load the Create Issue Page
-        public ActionResult CreateIssue(string studentId)
-        {
-            if (string.IsNullOrEmpty(studentId))
-            {
-                return RedirectToAction("StudentIssue");
-            }
-
-            var student = db.Users.OfType<Student>().FirstOrDefault(s => s.Id == studentId);
-            if (student == null)
-            {
-                return RedirectToAction("StudentIssue");
-            }
-
-            var classes = db.Classes.FirstOrDefault(c => c.ClassId == student.ClassId);
-            var units = db.Units.Where(m => m.UnitId == student.ClassId).ToList();
-
-            var model = new CreateIssueViewModel
-            {
-                StudentId = student.Id,
-                StudentName = student.FirstName + " " + student.LastName,
-                ClassName = classes?.ClassName ?? "Unknown Course",
-                Units = units
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult CreateIssue(CreateIssueViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, error = "Invalid form submission. Please check all fields." });
-            }
-
-            // Convert string issue type to enum
-            if (!Enum.TryParse(model.IssueType, out IssueTitle issueTitle))
-            {
-                return Json(new { success = false, error = "Invalid Issue Type." });
-            }
-
-            // Check if the issue already exists
-            var existingIssue = db.Issues.FirstOrDefault(t =>
-                t.StudentId == model.StudentId &&
-                t.IssueTitle == issueTitle);
-
-            if (existingIssue != null)
-            {
-                return Json(new
-                {
-                    success = false,
-                    issueId = existingIssue.IssueId,
-                    error = "❌ This issue is already active for this student."
-                });
-            }
-
-            // Find the selected unit and lecturer
-            var selectedUnit = db.Units.FirstOrDefault(m => m.UnitId == model.SelectedUnitId);
-            var lecturerId = selectedUnit?.LecturerId;
-
-            // Create new issue
-            var issue = new Issue
-            {
-                IssueTitle = issueTitle,
-                IssueDescription = model.IssueDescription,
-                IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                StudentId = model.StudentId,
-                LecturerId = lecturerId,
-                GuidanceTeacherId = User.Identity.GetUserId()
-            };
-
-            db.Issues.Add(issue);
-            db.SaveChanges();
-
-            return Json(new { success = true, message = "✅ Issue successfully created!" });
-        }
+       
 
         [HttpGet]
         public JsonResult GetStudentIssues(string studentId)
@@ -296,7 +410,7 @@ namespace GuidanceTracker.Controllers
             {
                 return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
-        }
+        }// GET: Create New Issue Page (with Class, Unit, and Student Selection)
 
         [HttpPost]
         public JsonResult ReinstateIssue(int issueId)
@@ -321,6 +435,27 @@ namespace GuidanceTracker.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public JsonResult GetUnitsByClass(int classId)
+        {
+            try
+            {
+                var units = db.Units
+                    .Where(u => u.Classes.Any(c => c.ClassId == classId))
+                    .Select(u => new
+                    {
+                        UnitId = u.UnitId,
+                        UnitName = u.UnitName
+                    })
+                    .ToList();
+
+                return Json(units, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
