@@ -5,241 +5,211 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="issue-container">
-    <!-- Left Section: Split into Issue Details & Appointments -->
-    <div class="left-panel">
-        <!-- Issue Details Container (70%) -->
-        <div class="issue-details">
+<div class="issue-page-wrapper">
+    <!-- LEFT SECTION -->
+    <div class="issue-main-panel">
+        <div class="issue-summary">
             <h1>@Model.IssueTitle</h1>
-            <h2>Student Name: @Model.Student.FirstName @Model.Student.LastName</h2>
-            <p><strong>Initial reason to raise issue:</strong> @Model.IssueDescription</p>
-            <p><strong>Issue initiator:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
+            <p><strong>Student:</strong> @Model.Student.FirstName @Model.Student.LastName</p>
+            <p><strong>Raised by:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
             <p><strong>Status:</strong> @Model.IssueStatus</p>
-            <p><strong>Created On:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+            <p><strong>Date Created:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+            <div class="issue-description">
+                <h4>Description</h4>
+                <p>@Model.IssueDescription</p>
+            </div>
         </div>
 
-        <!-- Appointments Container (30%) -->
-        <div class="appointments-section">
-            <h3>Appointments</h3>
+        <div class="appointments-panel">
+            <h4>Appointments</h4>
             @if (Model.Student.Appointments != null && Model.Student.Appointments.Any())
             {
-                <ul class="appointment-box">
-                    @foreach (var appointment in Model.Student.Appointments)
-                    {
-                        <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past") Appointment</strong></p>
-                        <p><strong>Time:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                foreach (var appointment in Model.Student.Appointments)
+                {
+                    <div class="appointment-card">
+                        <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past")</strong></p>
+                        <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
                         <p><strong>Room:</strong> @appointment.Room</p>
-                        <p><strong>Comments:</strong> @appointment.AppointmentNotes</p>
-                        @Html.ActionLink("Edit Appointment", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple mt-2" })
-                    }
-                </ul>
+                        <p><strong>Notes:</strong> @appointment.AppointmentNotes</p>
+                        @Html.ActionLink("Edit", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple small" })
+                    </div>
+                }
             }
             else
             {
-                <p>No appointments assigned.</p>
+                <p>No appointments recorded.</p>
             }
-
-            @Html.ActionLink("Create an Appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
+            @Html.ActionLink("Create Appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
         </div>
     </div>
 
-    <!-- Right Section: Comments -->
-    <div class="right-panel">
+    <!-- RIGHT SECTION -->
+    <div class="issue-comments-panel">
         <h3>Comments</h3>
         <div id="commentsContainer">
             @if (Model.Comments != null && Model.Comments.Any())
             {
                 foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
                 {
-                    bool isGroupComment = comment.Content.StartsWith("This issue was raised as part of a group involving");
-
-                    <div class="comment-box @(isGroupComment ? "group-comment" : "")">
-                        @if (!isGroupComment)
+                    bool isGroup = comment.Content.StartsWith("This issue was raised as part of a group involving");
+                    <div class="comment-box @(isGroup ? "group-comment" : "")">
+                        @if (!isGroup)
                         {
                             <p class="comment-author">
                                 <strong>@comment.User.FirstName @comment.User.LastName</strong>
                                 <span class="comment-date">(@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</span>
                             </p>
                         }
-
                         <p class="comment-text">@comment.Content</p>
                     </div>
                 }
             }
             else
             {
-                <p>No comments yet. Add more information to help flesh out the issue.</p>
+                <p>No comments yet.</p>
             }
         </div>
 
-        <!-- Comment Form -->
-        <h4 class="mt-4">Write a comment...</h4>
         <form id="commentForm">
             @Html.AntiForgeryToken()
             <textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
             <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
         </form>
     </div>
-
 </div>
 
-<!-- ✅ JavaScript for Comment Submission (Now Fixed) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        console.log("✅ ViewIssue Page Loaded");
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $("#commentForm").submit(function (e) {
+                e.preventDefault();
+                const comment = $("#commentInput").val().trim();
+                if (!comment) return alert("Comment cannot be empty.");
 
-        // ✅ Handle Comment Submission
-        $("#commentForm").submit(function (e) {
-            e.preventDefault();
-
-            var commentContent = $("#commentInput").val().trim();
-            if (commentContent === "") {
-                alert("❌ Comment cannot be empty.");
-                return;
-            }
-
-            $.ajax({
-                url: "@Url.Action("AddComment", "Issue")",
-                type: "POST",
-                data: {
+                $.post("@Url.Action("AddComment", "Issue")", {
                     ticketId: @Model.IssueId,
-                    content: commentContent,
+                    content: comment,
                     __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                },
-                success: function (response) {
-                    if (response.success) {
-                        $("#commentsContainer").append(`
-                            <div class="comment-box">
+                }, function (res) {
+                    if (res.success) {
+                        $("#commentsContainer").prepend(`
+                            <div class='comment-box'>
                                 <p><strong>You</strong> (Just now)</p>
-                                <p>${commentContent}</p>
-                            </div>
-                        `);
-                        $("#commentInput").val(""); // ✅ Clear input correctly
+                                <p>${comment}</p>
+                            </div>`);
+                        $("#commentInput").val("");
                     } else {
-                        alert("❌ Error: " + response.error);
+                        alert("Error: " + res.error);
                     }
-                },
-                error: function () {
-                    alert("❌ Failed to submit the comment.");
-                }
+                });
             });
         });
-    });
-</script>
+    </script>
+}
 
-<!-- ✅ Styles for Fixed Two-Column Layout with 70/30 Split -->
 <style>
-    .issue-container {
+    .issue-page-wrapper {
         display: flex;
-        gap: 20px;
+        gap: 30px;
         padding: 20px;
         max-width: 1200px;
-        margin: 0 auto;
-        height: 90vh;
+        margin: auto;
     }
 
-    .issue-details {
-        flex: 1;
-        background: #ffffff;
+    .issue-main-panel {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .issue-summary, .appointments-panel {
+        background: #fff;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-        overflow-y: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.06);
     }
 
-    .right-panel {
-        width: 40%;
+    .issue-description p {
+        margin-top: 10px;
+        font-size: 15px;
+    }
+
+    .appointment-card {
+        padding: 10px;
+        background: #f4f4f4;
+        border-left: 4px solid #7F3D98;
+        margin-bottom: 10px;
+        border-radius: 6px;
+    }
+
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-purple.small {
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+        }
+
+    .issue-comments-panel {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
         background: #f9f9ff;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 0 10px rgba(0,0,0,0.06);
+        max-height: 85vh;
         overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
     }
 
     .comment-box {
-        background: #fff;
-        padding: 12px 15px;
-        margin-bottom: 15px;
-        border-left: 5px solid #7F3D98;
-        border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        background: white;
+        padding: 10px 15px;
+        margin-bottom: 12px;
+        border-left: 4px solid #7F3D98;
+        border-radius: 5px;
     }
 
     .group-comment {
-        background-color: #f3f0ff;
+        background: #f3f0ff;
         border-left-color: #985BAF;
         font-style: italic;
     }
 
     .comment-author {
         font-weight: bold;
-        margin-bottom: 4px;
         font-size: 14px;
     }
 
     .comment-date {
         font-size: 12px;
-        color: #777;
-        margin-left: 4px;
+        color: #888;
+        margin-left: 6px;
     }
 
     .comment-text {
-        font-size: 14px;
-        line-height: 1.6;
         margin-top: 5px;
-    }
-
-    .btn-purple {
-        background-color: #7F3D98 !important;
-        color: white !important;
-        border: none !important;
-        padding: 10px 18px;
-        font-weight: bold;
-        border-radius: 6px;
-        transition: background 0.3s ease;
-    }
-
-        .btn-purple:hover {
-            background-color: #985BAF !important;
-        }
-
-    .appointment-box {
-        background: #f9f9f9;
-        padding: 12px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border-left: 5px solid #7F3D98;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        font-size: 14px;
     }
 
     textarea.form-control {
         resize: vertical;
+        font-size: 14px;
+        padding: 10px;
         border-radius: 6px;
         border: 1px solid #ccc;
-        font-size: 14px;
-    }
-
-    h3, h4 {
-        color: #7F3D98;
-        margin-bottom: 10px;
-    }
-
-    #commentsContainer {
-        flex-grow: 1;
-        margin-bottom: 20px;
-    }
-
-    form#commentForm {
-        margin-top: auto;
     }
 </style>
-
-
-@* appointments info *@
-
-
-<br />
