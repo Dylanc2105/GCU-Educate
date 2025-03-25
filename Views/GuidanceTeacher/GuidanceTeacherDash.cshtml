@@ -32,6 +32,16 @@
             position: relative;
         }
 
+        .appointments-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 33%;
+            min-width: 900px;
+            position: relative;
+        }
+
         .section-title {
             font-size: 20px;
             font-weight: bold;
@@ -135,11 +145,20 @@
         </div>
 
         <!-- Reserved Space for Additional Panels -->
-        <div style="flex: 1;"></div>
+        <div class="appointments-card">
+            <h2 class="section-title">Appointments for week</h2>
+            <div id="partialAppointments">
+
+            </div>
+        </div>
     </div>
 </body>
 
 @section Scripts {
+
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        $('#partialAppointments').load("/GuidanceTeacher/AppointmentsForWeekPartial")
+    </script>
 }

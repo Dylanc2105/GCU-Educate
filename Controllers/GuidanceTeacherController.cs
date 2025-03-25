@@ -115,5 +115,56 @@ namespace GuidanceTracker.Controllers
 
             return View(model);
         }
+
+        public ActionResult Calendar() 
+        {
+            return View();
+        }
+
+
+
+ 
+
+        //partial view with appointments for cselected date
+        public ActionResult GetAppointmentsForDatePartial(DateTime date)
+        {
+            string guidanceTeacherId = User.Identity.GetUserId();
+
+            var appointments = db.Appointments.
+                Include(a => a.Student).
+                Include(a => a.GuidanceTeacher).
+                Where(a => a.GuidanceTeacher.Id == guidanceTeacherId).
+                Where(a=>a.AppointmentDate.Day == date.Day).
+                Where(a => a.AppointmentDate.Month == date.Month).
+                Where(a => a.AppointmentDate.Year == date.Year).
+                ToList();
+
+
+            return PartialView("_AppointmentsForDay", appointments);
+        }
+
+        //partial view with appiontments for current week
+        public ActionResult AppointmentsForWeekPartial()
+        {
+
+
+            string guidanceTeacherId =  User.Identity.GetUserId();
+
+            DateTime baseDate = DateTime.Now;
+            var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
+            var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
+
+            var appointments = db.Appointments.
+                Include(a => a.Student).
+                Include(a => a.GuidanceTeacher).
+                Where(a => a.GuidanceTeacher.Id == guidanceTeacherId).
+                Where(a => a.AppointmentDate > thisWeekStart).
+                Where(a => a.AppointmentDate < thisWeekEnd).
+                OrderBy(a=>a.AppointmentDate).ToList();
+
+
+            return PartialView("_AppointmentsForWeek", appointments);
+        }
+
     }
 }
