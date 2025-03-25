@@ -1,0 +1,77 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+
+
+@if (Model.Count() != 0)
+{
+<table class="table">
+    <tr>
+        <th>
+           <p>Student Name</p>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentNotes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Room)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Student.FirstName)
+            @Html.DisplayFor(modelItem => item.Student.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppointmentDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppointmentStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppointmentNotes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Room)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-purple small" }) 
+        </td>
+    </tr>
+}
+</table>
+}
+else
+            {
+                <p><strong>No appointments assigned for this date</strong></p>
+            }
+
+
+<style>
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-purple.small {
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+        }
+</style>

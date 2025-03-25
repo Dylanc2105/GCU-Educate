@@ -1,0 +1,52 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+
+@{
+    ViewBag.Title = "_AppointmentsForWeek";
+}
+
+<table class="table">
+    <tr>
+        <th>
+            <p><strong>Student Name</strong></p>
+            @*@Html.DisplayNameFor(model => model.Student.FirstName)*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentNotes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Room)
+        </th>
+        <th></th>
+    </tr>
+
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.FirstName)
+                    @Html.DisplayFor(modelItem => item.Student.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentNotes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Room)
+                </td>
+            </tr>
+        }
+
+
+</table>
