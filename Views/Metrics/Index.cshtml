@@ -46,7 +46,7 @@
                     <h6 class="card-title mb-0">Issues by Type</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="issuesChart" height="300"></canvas>
+                    <canvas id="issuesByTypeBarChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -59,10 +59,10 @@
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <h6 class="card-title mb-0">Issues by Class</h6>
+                        <h6 class="card-title mb-0">Issues by Type(Pie)</h6>
                     </div>
                     <div class="card-body">
-                        <canvas id="issuesByClassChart" height="300"></canvas>
+                        <canvas id="issuesByTypePieChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
@@ -72,15 +72,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 <script>
-    var issuesChart;
-    var issuesByClassChart;
+    var issuesByTypeBarChart;
+    var issuesByTypePieChart;
 
     function renderChart(data, labels) {
-        if (issuesChart) {
-            issuesChart.destroy();
+        if (issuesByTypeBarChart) {
+            issuesByTypeBarChart.destroy();
         }
-        var ctx = document.getElementById('issuesChart').getContext('2d');
-        issuesChart = new Chart(ctx, {
+        var ctx = document.getElementById('issuesByTypeBarChart').getContext('2d');
+        issuesByTypeBarChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -88,10 +88,10 @@
                     label: 'Number of Issues',
                     data: data,
                     backgroundColor: [
-                        '#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3',
-                        '#33FFF0', '#FF8C00', '#8CFF00', '#00FF8C', '#8C00FF'
+                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
+                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
                     ], 
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 1
                 }]
             },
@@ -115,20 +115,20 @@
     }
 
     function renderPieChart(data, labels) {
-        if (issuesByClassChart) {
-            issuesByClassChart.destroy();
+        if (issuesByTypePieChart) {
+            issuesByTypePieChart.destroy();
         }
-        var ctx = document.getElementById('issuesByClassChart').getContext('2d');
-        issuesByClassChart = new Chart(ctx, {
+        var ctx = document.getElementById('issuesByTypePieChart').getContext('2d');
+        issuesByTypePieChart = new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Issues by Class',
+                    label: 'Issues by Type(Pie Chart)',
                     data: data,
                     backgroundColor: [
-                        '#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3',
-                        '#33FFF0', '#FF8C00', '#8CFF00', '#00FF8C', '#8C00FF'
+                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
+                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
                     ], 
                     borderColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 1
@@ -168,12 +168,9 @@
             //render the chart
             renderChart(issuesData, issuesLabels);
 
-            // get issues by class
-            var issuesByClassData = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByClass.Select(c => c.IssueCount).ToList()));
-            var issuesByClassLabels = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByClass.Select(c => c.ClassName).ToList()));
-
+            
             //render the chart
-            renderPieChart(issuesByClassData, issuesByClassLabels);
+            renderPieChart(issuesData, issuesLabels);
 
     });
 </script>

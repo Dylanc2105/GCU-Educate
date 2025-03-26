@@ -37,14 +37,7 @@ public class MetricsController : Controller
                     Count = g.Count()
                 }).ToList(),
 
-            // issues by class (filtered)
-            IssuesByClass = db.Classes
-                .Select(c => new IssueByClass
-                {
-                    ClassName = c.ClassName,
-                    IssueCount = issuesQuery
-                        .Count(i => i.Student.ClassId == c.ClassId)
-                }).ToList(),
+            
 
             // populated the class dropdown menu
             Classes = db.Classes.ToList(),
