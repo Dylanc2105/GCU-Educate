@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -49,24 +50,27 @@ namespace GuidanceTracker.Models
 
     public enum IssueTitle
     {
-        [Display(Name = "Late Attendance")]
+        [Description("Late Attendance")]
         LateAttendance,
-        [Display(Name = "Missing Attendance")]
+        [Description("Missing Attendance")]
         MissingAttendance,
         Behaviour,
         Deadlines,
         Communication,
         Performance,
         Medical,
-        [Display(Name = "Academic Dishonesty")]
+        [Description("Academic Dishonesty")]
         AcademicDishonesty,
-        [Display(Name = "Custom Issue")]
+        [Description("Custom Issue")]
         CustomIssue
     }
     public enum IssueStatus
     {
         New,
+        [Description("In Progress")]
         InProgress,
         Archived
     }
+
 }
+    
