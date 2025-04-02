@@ -1,0 +1,198 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Post>
+@{
+    ViewBag.Title = "Posts";
+}
+<style>
+    :root {
+        --primary-color: #7b2cbf;
+        --primary-hover: #6a24a6;
+        --light-bg: #f8f9fa;
+        --border-color: #e0e0e0;
+        --text-dark: #333;
+        --text-medium: #666;
+        --text-light: #888;
+    }
+
+    .posts-dashboard {
+        padding: 20px;
+        background-color: #f3f3f3;
+    }
+
+    .dashboard-title {
+        color: var(--primary-color);
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .post-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 22px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .post-item {
+        display: flex;
+        border-left: 4px solid var(--primary-color);
+        background-color: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        position: relative;
+        transition: transform 0.2s;
+    }
+
+        .post-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+    .post-content-wrapper {
+        flex-grow: 1;
+    }
+
+    .post-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .post-content {
+        color: var(--text-medium);
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .post-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-light);
+        font-size: 14px;
+    }
+
+    .post-date {
+        text-align: right;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+
+    .quick-actions {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        padding: 20px;
+    }
+
+    .action-button {
+        display: block;
+        width: 100%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+        .action-button:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+    .section-count {
+        text-align: right;
+        color: var(--text-light);
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .empty-alert {
+        background-color: #e8eaf6;
+        color: var(--primary-color);
+        padding: 15px;
+        text-align: center;
+        border-radius: 4px;
+    }
+
+    .post-content-truncated {
+        position: relative;
+        max-height: 80px;
+        overflow: hidden;
+    }
+
+        .post-content-truncated:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(transparent, white);
+        }
+</style>
+
+<div class="posts-dashboard">
+    <h1 class="dashboard-title">Posts Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="post-section">
+                <h2 class="section-title">Recent Posts</h2>
+
+                @if (!Model.Any())
+                {
+                    <div class="empty-alert">There are no posts to display.</div>
+                }
+                else
+                {
+                    foreach (var post in Model)
+                    {
+                        <div class="post-item">
+                            <div class="post-content-wrapper">
+                                <div class="post-title">@post.Title</div>
+                                <div class="post-content @(post.Content.Length > 300 ? "post-content-truncated" : "")">
+                                    @if (post.Content.Length > 300)
+                                    {
+                                        @(post.Content.Substring(0, 300) + "...")
+                                    }
+                                    else
+                                    {
+                                        @post.Content
+                                    }
+                                </div>
+                                <div class="post-meta">
+                                    <span>Posted by: @post.Author.FirstName @post.Author.LastName</span>
+                                    <span class="post-date">@post.PostDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="section-count">Total Posts: @Model.Count()</div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="quick-actions">
+                <h2 class="section-title">Quick Actions</h2>
+                <a href="@Url.Action("CreateNewPost", "Post")" class="action-button">Create New Post</a>
+                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button">View My Posts</a>
+            </div>
+        </div>
+    </div>
+</div>

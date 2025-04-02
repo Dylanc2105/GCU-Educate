@@ -1,0 +1,221 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Post>
+@{
+    ViewBag.Title = "My Posts";
+}
+
+<style>
+    :root {
+        --primary-color: #7b2cbf;
+        --primary-hover: #6a24a6;
+        --light-bg: #f8f9fa;
+        --border-color: #e0e0e0;
+        --text-dark: #333;
+        --text-medium: #666;
+        --text-light: #888;
+    }
+
+    .posts-dashboard {
+        padding: 20px;
+        background-color: #f3f3f3;
+    }
+
+    .dashboard-title {
+        color: var(--primary-color);
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .post-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 22px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .post-item {
+        display: flex;
+        border-left: 4px solid var(--primary-color);
+        background-color: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        position: relative;
+        transition: transform 0.2s;
+    }
+
+        .post-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+    .post-content-wrapper {
+        flex-grow: 1;
+    }
+
+    .post-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .post-content {
+        color: var(--text-medium);
+        margin-bottom: 10px;
+        line-height: 1.5;
+        max-height: 100px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .post-content:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(transparent, white);
+        }
+
+    .post-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-light);
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .post-date {
+        color: var(--text-light);
+    }
+
+    .post-visibility {
+        background-color: #e9ecef;
+        color: var(--text-medium);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .action-button {
+        display: block;
+        width: 100%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+        .action-button:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+    .post-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        padding: 2px 8px;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+        .action-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+        }
+
+    .section-count {
+        text-align: right;
+        color: var(--text-light);
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .empty-alert {
+        background-color: #e8eaf6;
+        color: var(--primary-color);
+        padding: 15px;
+        text-align: center;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="posts-dashboard">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="dashboard-title">My Posts</h1>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="@Url.Action("CreateNewPost", "Post")" class="action-button">
+                Create New Post
+            </a>
+        </div>
+    </div>
+
+    <div class="post-section">
+        <h2 class="section-title">My Published Posts</h2>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-alert">You haven't created any posts yet.</div>
+        }
+        else
+        {
+            foreach (var post in Model)
+            {
+                <div class="post-item">
+                    <div class="post-content-wrapper">
+                        <div class="post-title">@post.Title</div>
+                        <div class="post-content">
+                            @if (post.Content.Length > 200)
+                            {
+                                @(post.Content.Substring(0, 200) + "...")
+                            }
+                            else
+                            {
+                                @post.Content
+                            }
+                        </div>
+                        <div class="post-meta">
+                            <div>
+                                <span class="post-date">@post.PostDate.ToString("MMM dd, yyyy")</span>
+                                <span class="post-visibility">@post.Visibility</span>
+                            </div>
+                            <div class="post-actions">
+                                <a href="@Url.Action("Edit", "Post", new { id = post.PostId })" class="action-link">
+                                    Edit
+                                </a>
+                                <a href="@Url.Action("Delete", "Post", new { id = post.PostId })" class="action-link">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="section-count">Total Posts: @Model.Count()</div>
+        }
+    </div>
+</div>
