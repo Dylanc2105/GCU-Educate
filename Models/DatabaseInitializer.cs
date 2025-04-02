@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity.Validation;
 using System.Text;
+using System.Net.Sockets;
 
 namespace GuidanceTracker.Models
 {
@@ -112,6 +113,28 @@ namespace GuidanceTracker.Models
                 //assign it to the guidance teacher role
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
+
+            if (userManager.FindByName("newGuidance@email.com") == null)
+            {
+                newGuidanceTeacher = new GuidanceTeacher
+                {
+                    UserName = "guidance1@email.com",
+                    Email = "guidance1@email.com",
+                    FirstName = "james",
+                    LastName = "dog",
+                    Street = "35 Washington st",
+                    City = "London",
+                    Postcode = "E12 8UP",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+
+                //add admin to users table
+                userManager.Create(newGuidanceTeacher, "123");
+                //assign it to the guidance teacher role
+                userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
+            }
+
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
             {
                 lecturer3 = new Lecturer
@@ -280,8 +303,7 @@ namespace GuidanceTracker.Models
                 ClassId = 10, // Make sure this ID doesn't conflict with existing ones
                 ClassName = "HNC Finance Class A",
                 MaxCapacity = 20,
-                GuidanceTeacherId = newGuidanceTeacher.Id,
-                Units = new List<Unit> { accountingUnit, financeUnit, economicsUnit, investmentUnit, taxationUnit }
+                GuidanceTeacherId = newGuidanceTeacher.Id
             };
             context.Classes.Add(financeClass);
             context.SaveChanges();
@@ -1085,397 +1107,9 @@ namespace GuidanceTracker.Models
             context.Units.Add(structuredMethodsUnit);
             context.SaveChanges();
 
-            // Create a new class for finance students
-            var financeClass = new Class
-            {
-                ClassId = 10, // Make sure this ID doesn't conflict with existing ones
-                ClassName = "HNC Finance Class A",
-                MaxCapacity = 20,
-                GuidanceTeacherId = newGuidanceTeacher.Id,
-                Units = new List<Unit> { accountingUnit, financeUnit, economicsUnit, investmentUnit, taxationUnit }
-            };
-            context.Classes.Add(financeClass);
-            context.SaveChanges();
 
 
-            // Create classes
-            var classes1 = new Class
-            {
-                ClassId = 1,
-                ClassName = "HNC Computing Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
-            };
-            context.Classes.Add(classes1);
-            context.SaveChanges();
 
-            var classes2 = new Class
-            {
-                ClassId = 2,
-                ClassName = "HNC Computing Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
-            };
-            context.Classes.Add(classes2);
-            context.SaveChanges();
-
-            var classes3 = new Class
-            {
-                ClassId = 3,
-                ClassName = "HNC Software Development Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
-            };
-            context.Classes.Add(classes3);
-            context.SaveChanges();
-
-            var classes4 = new Class
-            {
-                ClassId = 4,
-                ClassName = "HNC Software Development Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
-            };
-            context.Classes.Add(classes4);
-            context.SaveChanges();
-
-            var classes5 = new Class
-            {
-                ClassId = 5,
-                ClassName = "HND Computer Science Class",
-                MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computerScienceUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, webServerUnit, gradedUnit2, aiUnit }
-            };
-            context.Classes.Add(classes5);
-            context.SaveChanges();
-
-            var classes6 = new Class
-            {
-                ClassId = 6,
-                ClassName = "HND Software Development Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
-            };
-
-            context.Classes.Add(classes6);
-            context.SaveChanges();
-
-            var classes7 = new Class
-            {
-                ClassId = 7,
-                ClassName = "HND Software Development Class B",
-                MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
-            };
-            context.Classes.Add(classes7);
-            context.SaveChanges();
-
-            var classes8 = new Class
-            {
-                ClassId = 8,
-                ClassName = "NQ Computing Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
-            };
-
-            context.Classes.Add(classes8);
-            context.SaveChanges();
-
-            var classes9 = new Class
-            {
-                ClassId = 9,
-                ClassName = "NQ Computing Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
-            };
-
-            context.Classes.Add(classes9);
-            context.SaveChanges();
-
-            // Create a new course
-            var financeCourse = new Course
-            {
-                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
-                CourseName = "HNC Business & Finance",
-                CourseReference = "BUHNFIN/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "Edinburgh Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = newDepartment.DepartmentId
-            };
-            context.Courses.Add(financeCourse);
-            context.SaveChanges();
-
-            // Create courses
-
-            var courses1 = new Course
-            {
-                CourseId = 1,
-                CourseName = "HNC Computing / HNC Computer Science",
-                CourseReference = "CRHNCCOMSC/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses1);
-            context.SaveChanges();
-
-            var course2 = new Course
-            {
-                CourseId = 2,
-                CourseName = "HNC Computing / HNC Computer Science",
-                CourseReference = "CRHNCCOMSC/F241B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(course2);
-            context.SaveChanges();
-
-            var courses3 = new Course
-            {
-                CourseId = 3,
-                CourseName = "HNC Computing/HNC Computing: Software Development",
-                CourseReference = "CRHNCCOMSD/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses3);
-            context.SaveChanges();
-
-            var courses4 = new Course
-            {
-                CourseId = 4,
-                CourseName = "HNC Computing/HNC Computing: Software Development",
-                CourseReference = "CRHNCCOMSD/F241B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses4);
-            context.SaveChanges();
-
-            var courses5 = new Course
-            {
-                CourseId = 5,
-                CourseName = "HND Computer Science",
-                CourseReference = "CRHNDCOMSC/F242A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses5);
-            context.SaveChanges();
-
-            var course6 = new Course
-            {
-                CourseId = 6,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-
-            };
-            context.Courses.Add(course6);
-            context.SaveChanges();
-
-            var courses7 = new Course
-            {
-                CourseId = 7,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F242A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses7);
-            context.SaveChanges();
-
-            var courses8 = new Course
-            {
-                CourseId = 8,
-                CourseName = "HND Computing: Software Development",
-                CourseReference = "CRHNDCOMSD/F242B",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 8,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses8);
-            context.SaveChanges();
-
-            var courses9 = new Course
-            {
-                CourseId = 9,
-                CourseName = "NQ Computing",
-                CourseReference = "CRNQUCOMP6/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 6,
-                Site = "City Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = department.DepartmentId
-            };
-            context.Courses.Add(courses9);
-            context.SaveChanges();
-
-
-            // Create a new enrollment
-            var financeEnrollment = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = financeCourse.CourseId,
-                ClassId = financeClass.ClassId
-            };
-            context.Enrollments.Add(financeEnrollment);
-            context.SaveChanges();
-
-            // Create enrollments to link courses with classes
-            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
-            var enrollment1 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses1.CourseId, // CRHNCCOMSC/F241A
-                ClassId = classes1.ClassId // HNC Computing Class A
-            };
-            context.Enrollments.Add(enrollment1);
-            context.SaveChanges();
-
-            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241B with HNC Computing Class B
-            var enrollment2 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = course2.CourseId, // CRHNCCOMSC/F241B
-                ClassId = classes2.ClassId // HNC Computing Class B
-            };
-            context.Enrollments.Add(enrollment2);
-            context.SaveChanges();
-
-            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241A with HNC Software Development Class A
-            var enrollment3 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses3.CourseId, // CRHNCCOMSD/F241A
-                ClassId = classes3.ClassId // HNC Software Development Class A
-            };
-            context.Enrollments.Add(enrollment3);
-            context.SaveChanges();
-
-            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241B with HNC Software Development Class B
-            var enrollment4 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses4.CourseId, // CRHNCCOMSD/F241B
-                ClassId = classes4.ClassId // HNC Software Development Class B
-            };
-            context.Enrollments.Add(enrollment4);
-            context.SaveChanges();
-
-            // HND Computer Science - CRHNDCOMSC/F242A with HND Computer Science Class
-            var enrollment5 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses5.CourseId, // CRHNDCOMSC/F242A
-                ClassId = classes5.ClassId // HND Computer Science Class
-            };
-            context.Enrollments.Add(enrollment5);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F241A with HND Software Development Class A
-            var enrollment6 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = course6.CourseId, // CRHNDCOMSD/F241A
-                ClassId = classes6.ClassId // HND Software Development Class A
-            };
-            context.Enrollments.Add(enrollment6);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F242A with HND Software Development Class A (sharing the same class)
-            var enrollment7 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses7.CourseId, // CRHNDCOMSD/F242A
-                ClassId = classes6.ClassId // HND Software Development Class A
-            };
-            context.Enrollments.Add(enrollment7);
-            context.SaveChanges();
-
-            // HND Computing: Software Development - CRHNDCOMSD/F242B with HND Software Development Class B
-            var enrollment8 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses8.CourseId, // CRHNDCOMSD/F242B
-                ClassId = classes7.ClassId // HND Software Development Class B
-            };
-            context.Enrollments.Add(enrollment8);
-            context.SaveChanges();
-
-            // NQ Computing - CRNQUCOMP6/F241A with NQ Computing Class A
-            var enrollment9 = new Enrollment
-            {
-                EnrollmentDate = DateTime.Parse("2024-08-26"),
-                Status = EnrollmentStatus.Active,
-                CourseId = courses9.CourseId, // CRNQUCOMP6/F241A
-                ClassId = classes8.ClassId // NQ Computing Class A
-            };
-            context.Enrollments.Add(enrollment9);
-            context.SaveChanges();
 
             // Create a finance student
             Student financeStudent = null;
@@ -1723,60 +1357,330 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
-            // Create a Session
-            var session = new Appointment
+
+            // Create a Issue
+            var issue = new Issue
             {
-                AppointmentDate = DateTime.Now.AddDays(7),
-                AppointmentStatus = "Pending",
-                AppointmentNotes = "Initial consultation",
-                StudentId = student1.Id,
-                GuidanceTeacherId = guidance.Id
-            };
-            context.Appointments.Add(session);
-            context.SaveChanges();
-            // Create a Ticket
-            var ticket = new Ticket
-            {
-                TicketTitle = "Attendance Issue",
-                TicketDescription = "Student has missed multiple classes.",
-                TicketStatus = "Open",
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student has missed multiple classes.",
+                IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student1.Id
             };
-            context.Tickets.Add(ticket);
+            context.Issues.Add(issue);
             context.SaveChanges();
 
-            var ticket2 = new Ticket
+            var issue2 = new Issue
             {
-                TicketTitle = "Academic Issue",
-                TicketDescription = "Student has failed my class.",
-                TicketStatus = "Open",
+                IssueTitle = IssueTitle.MissingAttendance,
+                IssueDescription = "Student has failed my class.",
+                IssueStatus = IssueStatus.InProgress,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student2.Id
             };
-            context.Tickets.Add(ticket2);
+            context.Issues.Add(issue2);
             context.SaveChanges();
 
-            var ticket3 = new Ticket
+            var issue3 = new Issue
             {
-                TicketTitle = "Medical Issue",
-                TicketDescription = "Student has fractured their arm and is unable to type",
-                TicketStatus = "Archived",
+                IssueTitle = IssueTitle.Medical,
+                IssueDescription = "Student has fractured their arm and is unable to type",
+                IssueStatus = IssueStatus.Archived,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student3.Id
             };
-            context.Tickets.Add(ticket3);
+            context.Issues.Add(issue3);
             context.SaveChanges();
 
+            var issue4 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student has been consistently late to class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-3),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student4.Id
+            };
+            context.Issues.Add(issue4);
+            context.SaveChanges();
+
+            var issue5 = new Issue
+            {
+                IssueTitle = IssueTitle.MissingAttendance,
+                IssueDescription = "Student has missed several classes without valid reasons.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddMonths(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student5.Id
+            };
+            context.Issues.Add(issue5);
+            context.SaveChanges();
+
+            var issue6 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student has been disruptive in class.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddDays(-7),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student6.Id
+            };
+            context.Issues.Add(issue6);
+            context.SaveChanges();
+
+            var issue7 = new Issue
+            {
+                IssueTitle = IssueTitle.Deadlines,
+                IssueDescription = "Student has missed multiple assignment deadlines.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-14),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student7.Id
+            };
+            context.Issues.Add(issue7);
+            context.SaveChanges();
+
+            var issue8 = new Issue
+            {
+                IssueTitle = IssueTitle.Communication,
+                IssueDescription = "Student has failed to respond to several important communications.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student8.Id
+            };
+            context.Issues.Add(issue8);
+            context.SaveChanges();
+
+            var issue9 = new Issue
+            {
+                IssueTitle = IssueTitle.Performance,
+                IssueDescription = "Student's performance has been below expectations for the semester.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-1),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student9.Id
+            };
+            context.Issues.Add(issue9);
+            context.SaveChanges();
+
+            var issue10 = new Issue
+            {
+                IssueTitle = IssueTitle.Medical,
+                IssueDescription = "Student has been ill and unable to attend classes.",
+                IssueStatus = IssueStatus.Archived,
+                CreatedAt = DateTime.Now.AddDays(-5),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student1.Id
+            };
+            context.Issues.Add(issue10);
+            context.SaveChanges();
+
+            var issue11 = new Issue
+            {
+                IssueTitle = IssueTitle.AcademicDishonesty,
+                IssueDescription = "Student was caught plagiarizing during the last exam.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddYears(-1),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student2.Id
+            };
+            context.Issues.Add(issue11);
+            context.SaveChanges();
+
+            var issue12 = new Issue
+            {
+                IssueTitle = IssueTitle.CustomIssue,
+                IssueDescription = "Student has been requesting extensions for every assignment.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-4),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer1.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student3.Id
+            };
+            context.Issues.Add(issue12);
+            context.SaveChanges();
+
+            var issue13 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student arrives late to class almost every session.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-30),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer2.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student4.Id
+            };
+            context.Issues.Add(issue13);
+            context.SaveChanges();
+
+            var issue14 = new Issue
+            {
+                IssueTitle = IssueTitle.MissingAttendance,
+                IssueDescription = "Student has missed a significant portion of the semester.",
+                IssueStatus = IssueStatus.InProgress,
+                CreatedAt = DateTime.Now.AddMonths(-3),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer3.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student5.Id
+            };
+            context.Issues.Add(issue14);
+            context.SaveChanges();
+
+            var issue15 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student has been repeatedly disrespectful to classmates.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-10),
+                UpdatedAt = DateTime.Now,
+                LecturerId = lecturer4.Id,
+                GuidanceTeacherId = guidance.Id,
+                StudentId = student6.Id
+            };
+            context.Issues.Add(issue15);
+            context.SaveChanges();
+
+
+            // Create appointments
+            var session1 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Initial consultation",
+                Room = "05.005",
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session1);
+
+            var session2 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Progress review",
+                Room = "05.002",
+                StudentId = student2.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session2);
+
+            var session3 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Career advice",
+                Room = "05.008",
+                StudentId = student3.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session3);
+
+            var session4 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentNotes = "Academic support",
+                Room = "05.010",
+                StudentId = student4.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session4);
+
+            var session5 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Personal issues",
+                Room = "05.001",
+                StudentId = student5.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session5);
+
+            var session6 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(5),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Study plan",
+                Room = "05.003",
+                StudentId = student6.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session6);
+
+            var session7 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentStatus = AppointmentStatus.Cancelled,
+                AppointmentNotes = "Exam preparation",
+                Room = "05.006",
+                StudentId = student7.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session7);
+
+            var session8 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Course selection",
+                Room = "05.009",
+                StudentId = student8.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session8);
+
+            var session9 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentNotes = "Internship advice",
+                Room = "05.004",
+                StudentId = student9.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session9);
+
+            var session10 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(5),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "General support",
+                Room = "05.007",
+                StudentId = student9.Id,
+                GuidanceTeacherId = guidance.Id
+            };
+            context.Appointments.Add(session10);
+            context.SaveChanges();
 
             // Global posts
             var Post1 = new Post
@@ -1888,4 +1792,6 @@ namespace GuidanceTracker.Models
         }
     }
 }
-
+        }
+    }
+}
