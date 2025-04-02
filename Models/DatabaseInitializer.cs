@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace GuidanceTracker.Models
 {
@@ -60,11 +62,13 @@ namespace GuidanceTracker.Models
             UserManager<User> userManager = new UserManager<User>(new UserStore<User>(context));
 
             GuidanceTeacher guidance = null;
+            GuidanceTeacher newGuidanceTeacher = null;
             CurriculumHead curriculumHead1 = null;
             Lecturer lecturer1 = null;
             Lecturer lecturer2 = null;
             Lecturer lecturer3 = null;
             Lecturer lecturer4 = null;
+            Lecturer financeLecturer = null;
             Student student1 = null;
             Student student2 = null;
             Student student3 = null;
@@ -109,7 +113,32 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
+<<<<<<< Updated upstream
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
+=======
+            if (userManager.FindByName("financeguidance@email.com") == null)
+            {
+                // Very easy password validation already set up above
+                newGuidanceTeacher = new GuidanceTeacher
+                {
+                    UserName = "financeguidance@email.com",
+                    Email = "financeguidance@email.com",
+                    FirstName = "Robert",
+                    LastName = "Davidson",
+                    Street = "17 Accounting Avenue",
+                    City = "Edinburgh",
+                    Postcode = "EH3 9TQ",
+                    RegistredAt = DateTime.Now.AddYears(-3),
+                    EmailConfirmed = true,
+                };
+
+                userManager.Create(newGuidanceTeacher, "123");
+                userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("Asmat.atagan@gmail.com") == null)
+>>>>>>> Stashed changes
             {
                 lecturer3 = new Lecturer
                 {
@@ -148,6 +177,28 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            // Create a new curriculum head for the new department
+            CurriculumHead CurriculumHead2 = null;
+            if (userManager.FindByName("financeHead@email.com") == null)
+            {
+                CurriculumHead2 = new CurriculumHead
+                {
+                    UserName = "financeHead@email.com",
+                    Email = "financeHead@email.com",
+                    FirstName = "Margaret",
+                    LastName = "Thompson",
+                    Street = "42 Finance Street",
+                    City = "Edinburgh",
+                    Postcode = "EH4 7LP",
+                    RegistredAt = DateTime.Now.AddYears(-2),
+                    EmailConfirmed = true,
+                    DepartmentId = "BU-FIN"
+                };
+                userManager.Create(CurriculumHead2, "123");
+                userManager.AddToRole(CurriculumHead2.Id, "CurriculumHead");
+            }
+            context.SaveChanges();
+
             // First create Department
             var department = new Department
             {
@@ -156,6 +207,15 @@ namespace GuidanceTracker.Models
                 CurriculumHead = curriculumHead1
             };
             context.Departments.Add(department);
+            context.SaveChanges();
+
+            var newDepartment = new Department
+            {
+                DepartmentId = "BU-FIN",
+                DepartmentName = "Business & Finance",
+                CurriculumHead = CurriculumHead2
+            };
+            context.Departments.Add(newDepartment);
             context.SaveChanges();
 
 
@@ -221,6 +281,25 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            if (userManager.FindByName("financelect@email.com") == null)
+            {
+                financeLecturer = new Lecturer
+                {
+                    UserName = "financelect@email.com",
+                    Email = "financelect@email.com",
+                    FirstName = "Victoria",
+                    LastName = "Blackwell",
+                    Street = "29 Economics Road",
+                    City = "Edinburgh",
+                    Postcode = "EH5 1RS",
+                    RegistredAt = DateTime.Now.AddYears(-1),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(financeLecturer, "123");
+                userManager.AddToRole(financeLecturer.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
             if (userManager.FindByName("lecturer4@email.com") == null)
             {
                 lecturer4 = new Lecturer
@@ -240,6 +319,7 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+<<<<<<< Updated upstream
             // Create classes
             var classes1 = new Class
             {
@@ -583,6 +663,54 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
+=======
+            // Create units for the new finance program
+            var accountingUnit = new Unit
+            {
+                UnitName = "Principles of Accounting",
+                UnitDescription = "Introduction to accounting concepts and practices",
+                LecturerId = financeLecturer.Id
+            };
+            context.Units.Add(accountingUnit);
+            context.SaveChanges();
+
+            var financeUnit = new Unit
+            {
+                UnitName = "Business Finance",
+                UnitDescription = "Understanding financial management in business contexts",
+                LecturerId = financeLecturer.Id
+            };
+            context.Units.Add(financeUnit);
+            context.SaveChanges();
+
+            var economicsUnit = new Unit
+            {
+                UnitName = "Economics for Business",
+                UnitDescription = "Application of economic principles in business decision-making",
+                LecturerId = financeLecturer.Id
+            };
+            context.Units.Add(economicsUnit);
+            context.SaveChanges();
+
+            var investmentUnit = new Unit
+            {
+                UnitName = "Investment Analysis",
+                UnitDescription = "Methods and principles of investment evaluation",
+                LecturerId = financeLecturer.Id
+            };
+            context.Units.Add(investmentUnit);
+            context.SaveChanges();
+
+            var taxationUnit = new Unit
+            {
+                UnitName = "Taxation",
+                UnitDescription = "Principles of business and personal taxation",
+                LecturerId = financeLecturer.Id
+            };
+            context.Units.Add(taxationUnit);
+            context.SaveChanges();
+
+>>>>>>> Stashed changes
             // 1. HNC Computing / HNC Computer Science Units
             var computingUnit = new Unit
             {
@@ -966,8 +1094,449 @@ namespace GuidanceTracker.Models
             context.Units.Add(structuredMethodsUnit);
             context.SaveChanges();
 
+<<<<<<< Updated upstream
 
 
+=======
+            // Create a new class for finance students
+            var financeClass = new Class
+            {
+                ClassId = 10, // Make sure this ID doesn't conflict with existing ones
+                ClassName = "HNC Finance Class A",
+                MaxCapacity = 20,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                Units = new List<Unit> { accountingUnit, financeUnit, economicsUnit, investmentUnit, taxationUnit }
+            };
+            context.Classes.Add(financeClass);
+            context.SaveChanges();
+
+
+            // Create classes
+            var classes1 = new Class
+            {
+                ClassId = 1,
+                ClassName = "HNC Computing Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+            };
+            context.Classes.Add(classes1);
+            context.SaveChanges();
+
+            var classes2 = new Class
+            {
+                ClassId = 2,
+                ClassName = "HNC Computing Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+            };
+            context.Classes.Add(classes2);
+            context.SaveChanges();
+
+            var classes3 = new Class
+            {
+                ClassId = 3,
+                ClassName = "HNC Software Development Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+            };
+            context.Classes.Add(classes3);
+            context.SaveChanges();
+
+            var classes4 = new Class
+            {
+                ClassId = 4,
+                ClassName = "HNC Software Development Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+            };
+            context.Classes.Add(classes4);
+            context.SaveChanges();
+
+            var classes5 = new Class
+            {
+                ClassId = 5,
+                ClassName = "HND Computer Science Class",
+                MaxCapacity = 16,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { computerScienceUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, webServerUnit, gradedUnit2, aiUnit }
+            };
+            context.Classes.Add(classes5);
+            context.SaveChanges();
+
+            var classes6 = new Class
+            {
+                ClassId = 6,
+                ClassName = "HND Software Development Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+            };
+
+            context.Classes.Add(classes6);
+            context.SaveChanges();
+
+            var classes7 = new Class
+            {
+                ClassId = 7,
+                ClassName = "HND Software Development Class B",
+                MaxCapacity = 16,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+            };
+            context.Classes.Add(classes7);
+            context.SaveChanges();
+
+            var classes8 = new Class
+            {
+                ClassId = 8,
+                ClassName = "NQ Computing Class A",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+            };
+
+            context.Classes.Add(classes8);
+            context.SaveChanges();
+
+            var classes9 = new Class
+            {
+                ClassId = 9,
+                ClassName = "NQ Computing Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id,
+                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+            };
+
+            context.Classes.Add(classes9);
+            context.SaveChanges();
+
+            // Create a new course
+            var financeCourse = new Course
+            {
+                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
+                CourseName = "HNC Business & Finance",
+                CourseReference = "BUHNFIN/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "Edinburgh Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = newDepartment.DepartmentId
+            };
+            context.Courses.Add(financeCourse);
+            context.SaveChanges();
+
+            // Create courses
+
+            var courses1 = new Course
+            {
+                CourseId = 1,
+                CourseName = "HNC Computing / HNC Computer Science",
+                CourseReference = "CRHNCCOMSC/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses1);
+            context.SaveChanges();
+
+            var course2 = new Course
+            {
+                CourseId = 2,
+                CourseName = "HNC Computing / HNC Computer Science",
+                CourseReference = "CRHNCCOMSC/F241B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(course2);
+            context.SaveChanges();
+
+            var courses3 = new Course
+            {
+                CourseId = 3,
+                CourseName = "HNC Computing/HNC Computing: Software Development",
+                CourseReference = "CRHNCCOMSD/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses3);
+            context.SaveChanges();
+
+            var courses4 = new Course
+            {
+                CourseId = 4,
+                CourseName = "HNC Computing/HNC Computing: Software Development",
+                CourseReference = "CRHNCCOMSD/F241B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses4);
+            context.SaveChanges();
+
+            var courses5 = new Course
+            {
+                CourseId = 5,
+                CourseName = "HND Computer Science",
+                CourseReference = "CRHNDCOMSC/F242A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses5);
+            context.SaveChanges();
+
+            var course6 = new Course
+            {
+                CourseId = 6,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+
+            };
+            context.Courses.Add(course6);
+            context.SaveChanges();
+
+            var courses7 = new Course
+            {
+                CourseId = 7,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F242A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses7);
+            context.SaveChanges();
+
+            var courses8 = new Course
+            {
+                CourseId = 8,
+                CourseName = "HND Computing: Software Development",
+                CourseReference = "CRHNDCOMSD/F242B",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 8,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses8);
+            context.SaveChanges();
+
+            var courses9 = new Course
+            {
+                CourseId = 9,
+                CourseName = "NQ Computing",
+                CourseReference = "CRNQUCOMP6/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 6,
+                Site = "City Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = department.DepartmentId
+            };
+            context.Courses.Add(courses9);
+            context.SaveChanges();
+
+
+            // Create a new enrollment
+            var financeEnrollment = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = financeCourse.CourseId,
+                ClassId = financeClass.ClassId
+            };
+            context.Enrollments.Add(financeEnrollment);
+            context.SaveChanges();
+
+            // Create enrollments to link courses with classes
+            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
+            var enrollment1 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses1.CourseId, // CRHNCCOMSC/F241A
+                ClassId = classes1.ClassId // HNC Computing Class A
+            };
+            context.Enrollments.Add(enrollment1);
+            context.SaveChanges();
+
+            // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241B with HNC Computing Class B
+            var enrollment2 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = course2.CourseId, // CRHNCCOMSC/F241B
+                ClassId = classes2.ClassId // HNC Computing Class B
+            };
+            context.Enrollments.Add(enrollment2);
+            context.SaveChanges();
+
+            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241A with HNC Software Development Class A
+            var enrollment3 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses3.CourseId, // CRHNCCOMSD/F241A
+                ClassId = classes3.ClassId // HNC Software Development Class A
+            };
+            context.Enrollments.Add(enrollment3);
+            context.SaveChanges();
+
+            // HNC Computing/HNC Computing: Software Development - CRHNCCOMSD/F241B with HNC Software Development Class B
+            var enrollment4 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses4.CourseId, // CRHNCCOMSD/F241B
+                ClassId = classes4.ClassId // HNC Software Development Class B
+            };
+            context.Enrollments.Add(enrollment4);
+            context.SaveChanges();
+
+            // HND Computer Science - CRHNDCOMSC/F242A with HND Computer Science Class
+            var enrollment5 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses5.CourseId, // CRHNDCOMSC/F242A
+                ClassId = classes5.ClassId // HND Computer Science Class
+            };
+            context.Enrollments.Add(enrollment5);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F241A with HND Software Development Class A
+            var enrollment6 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = course6.CourseId, // CRHNDCOMSD/F241A
+                ClassId = classes6.ClassId // HND Software Development Class A
+            };
+            context.Enrollments.Add(enrollment6);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F242A with HND Software Development Class A (sharing the same class)
+            var enrollment7 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses7.CourseId, // CRHNDCOMSD/F242A
+                ClassId = classes6.ClassId // HND Software Development Class A
+            };
+            context.Enrollments.Add(enrollment7);
+            context.SaveChanges();
+
+            // HND Computing: Software Development - CRHNDCOMSD/F242B with HND Software Development Class B
+            var enrollment8 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses8.CourseId, // CRHNDCOMSD/F242B
+                ClassId = classes7.ClassId // HND Software Development Class B
+            };
+            context.Enrollments.Add(enrollment8);
+            context.SaveChanges();
+
+            // NQ Computing - CRNQUCOMP6/F241A with NQ Computing Class A
+            var enrollment9 = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = courses9.CourseId, // CRNQUCOMP6/F241A
+                ClassId = classes8.ClassId // NQ Computing Class A
+            };
+            context.Enrollments.Add(enrollment9);
+            context.SaveChanges();
+>>>>>>> Stashed changes
+
+            // Create a finance student
+            Student financeStudent = null;
+            if (userManager.FindByName("finstudent@email.com") == null)
+            {
+                financeStudent = new Student
+                {
+                    UserName = "finstudent@email.com",
+                    Email = "finstudent@email.com",
+                    FirstName = "Samantha",
+                    LastName = "Fisher",
+                    Street = "53 Accounting Lane",
+                    City = "Edinburgh",
+                    Postcode = "EH7 4QP",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = newGuidanceTeacher.Id,
+                    ClassId = financeClass.ClassId,
+                    StudentNumber = "42000123"
+                };
+                userManager.Create(financeStudent, "123");
+                userManager.AddToRole(financeStudent.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Create a second finance student
+            if (userManager.FindByName("finstudent2@email.com") == null)
+            {
+                var financeStudent2 = new Student
+                {
+                    UserName = "finstudent2@email.com",
+                    Email = "finstudent2@email.com",
+                    FirstName = "Thomas",
+                    LastName = "Morgan",
+                    Street = "18 Commerce Road",
+                    City = "Edinburgh",
+                    Postcode = "EH6 5LT",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = newGuidanceTeacher.Id,
+                    ClassId = financeClass.ClassId,
+                    StudentNumber = "42000124"
+                };
+                userManager.Create(financeStudent2, "123");
+                userManager.AddToRole(financeStudent2.Id, "Student");
+            }
+            context.SaveChanges();
 
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
@@ -1182,6 +1751,7 @@ namespace GuidanceTracker.Models
             context.Appointments.Add(session);
             context.SaveChanges();
 
+<<<<<<< Updated upstream
             // Create a Ticket
             var ticket = new Ticket
             {
@@ -1228,6 +1798,129 @@ namespace GuidanceTracker.Models
                     
                 
             
+=======
+
+            // Global posts
+            var Post1 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Welcome to the Guidance Tracker System",
+                Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
+                PostDate = DateTime.Now.AddDays(-10),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(Post1);
+
+            var post2 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Welcome to the Guidance Tracker System",
+                Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
+                PostDate = DateTime.Now.AddDays(-10),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(post2);
+
+            var Post3 = new Post
+
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "System Maintenance Notice",
+                Content = "The system will be undergoing maintenance this weekend from Saturday 22:00 to Sunday 02:00. Please save your work before this time to avoid any data loss.",
+                PostDate = DateTime.Now.AddDays(-5),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(Post3);
+
+            // Student-only posts
+            var Post4 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Student Council Meeting",
+                Content = "The next Student Council meeting will be held on Friday at 15:00 in Room 302. All class representatives are required to attend. The agenda includes discussion on upcoming events and academic support services.",
+                PostDate = DateTime.Now.AddDays(-3),
+                AuthorId = guidance.Id,
+                Visibility = VisibilityType.Student
+            };
+            context.Posts.Add(Post4);
+            var Post5 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Study Resources Now Available",
+                Content = "New study resources for all courses have been uploaded to the student portal. These include practice exams, study guides, and video tutorials. Access them through your student dashboard.",
+                PostDate = DateTime.Now.AddDays(-2),
+                AuthorId = lecturer1.Id,
+                Visibility = VisibilityType.Student
+            };
+            context.Posts.Add(Post5);
+
+            // Lecturer-only posts
+            var Post6 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Staff Meeting Reminder",
+                Content = "This is a reminder that we have our monthly staff meeting tomorrow at 14:00 in the conference room. Please prepare your department updates and bring any questions or concerns you'd like to discuss.",
+                PostDate = DateTime.Now.AddDays(-1),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Staff
+            };
+            context.Posts.Add(Post6);
+
+            var Post7 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Grading Policy Update",
+                Content = "Please note that there have been updates to the grading policy for the current semester. All assignments must now include detailed feedback, and final grades must be submitted within 10 days of the assessment date. See the attached document for more details.",
+                PostDate = DateTime.Now.AddHours(-12),
+                AuthorId = guidance.Id,
+                Visibility = VisibilityType.Staff
+            };
+            context.Posts.Add(Post7);
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder errorMessage = new StringBuilder("Entity Validation Failed - Errors: ");
+
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    errorMessage.AppendLine($"\nEntity of type '{validationErrors.Entry.Entity.GetType().Name}' in state '{validationErrors.Entry.State}' has the following validation errors:");
+
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        var propertyValue = validationErrors.Entry.CurrentValues[validationError.PropertyName];
+                        errorMessage.AppendLine($"- Property: '{validationError.PropertyName}', Value: '{propertyValue}', Error: '{validationError.ErrorMessage}'");
+                    }
+                }
+
+                // Output to debug window
+                System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
+
+                // If you're using logging
+                // logger.Error(errorMessage.ToString());
+
+                // You might want to throw a more informative exception or handle it differently
+                throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
+            }
+
+            // Add this after the creation of the first department in the seed method
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
         }
     }
 }
