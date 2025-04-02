@@ -35,6 +35,7 @@ namespace GuidanceTracker.Models
         public DbSet<ArchivedComment> ArchivedComments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Timetable> Timetables { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -69,6 +70,37 @@ namespace GuidanceTracker.Models
             modelBuilder.Entity<Student>()
                 .HasOptional(s => s.Feedback)    // Student can have one optional Feedback
                 .WithRequired(f => f.Student);   // Feedback must have one Student
+
+            // Configure many-to-many relationships
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Departments)
+                .WithMany(d => d.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostDepartments");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("DepartmentId");
+                });
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Courses)
+                .WithMany(c => c.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostCourses");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("CourseId");
+                });
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Classes)
+                .WithMany(c => c.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostClasses");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("ClassId");
+                });
 
         }
 
