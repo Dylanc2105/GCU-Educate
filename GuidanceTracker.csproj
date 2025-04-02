@@ -253,6 +253,11 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LecturerController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+<<<<<<< Updated upstream
+=======
+    <Compile Include="Controllers\MetricsController.cs" />
+    <Compile Include="Controllers\PostController.cs" />
+>>>>>>> Stashed changes
     <Compile Include="Controllers\ResetPasswordController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\IssueController.cs" />
@@ -307,6 +312,7 @@
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
     <Compile Include="Models\MessageBoard.cs" />
+    <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
     <Compile Include="Models\Appointment.cs" />
@@ -317,6 +323,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ViewModels\ClassViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateIssueViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreatePostViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateStudentViewModel.cs" />
     <Compile Include="Models\ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -428,6 +435,18 @@
     <Content Include="Views\Issue\StudentIssue.cshtml" />
     <Content Include="Views\Issue\ViewIssue.cshtml" />
     <Content Include="Views\Issue\CreateIssue.cshtml" />
+<<<<<<< Updated upstream
+=======
+    <Content Include="Views\GuidanceTeacher\Calendar.cshtml" />
+    <Content Include="Views\GuidanceTeacher\_AppointmentsForWeek.cshtml" />
+    <Content Include="Views\GuidanceTeacher\_AppointmentsForDay.cshtml" />
+    <Content Include="Views\Metrics\Index.cshtml" />
+    <Content Include="Views\Post\ViewPosts.cshtml" />
+    <Content Include="Views\Post\CreateNewPost.cshtml" />
+    <Content Include="Views\Post\ViewMyPosts.cshtml" />
+    <Content Include="Views\Post\Delete.cshtml" />
+    <Content Include="Views\Post\Edit.cshtml" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
