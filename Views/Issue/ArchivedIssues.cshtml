@@ -1,0 +1,154 @@
+﻿@model List<GuidanceTracker.Models.Issue>
+@using GuidanceTracker.Models
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
+
+@{
+    ViewBag.Title = "Archived Issues";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Archived Issues</h1>
+
+<!-- SEARCH AND FILTERS -->
+<div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <!-- Sort Order -->
+    <select id="sortOrder" onchange="updateFilters()">
+        <option value="">Sort By</option>
+        <option value="newest" @(Request.QueryString["sortOrder"] == "newest" ? "selected" : "")>Newest</option>
+        <option value="oldest" @(Request.QueryString["sortOrder"] == "oldest" ? "selected" : "")>Oldest</option>
+    </select>
+
+    <!-- Issue Type Filter -->
+    <select id="issueType" onchange="updateFilters()">
+        <option value="">Filter By Type</option>
+        @foreach (var issue in Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>())
+        {
+            <option value="@issue.ToString()" @(Request.QueryString["issueType"] == issue.ToString() ? "selected" : "")>@GetEnumDisplayName(issue)</option>
+        }
+    </select>
+
+    <!-- Search Bar -->
+    <input type="text" id="searchInput" class="search-input" placeholder="Search Students..." onkeyup="updateFilters()" value="@Request.QueryString["searchString"]" />
+</div>
+
+<!-- ARCHIVED ISSUES TABLE -->
+<table style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background: #7F3D98; color: white; text-align: left;">
+            <th style="padding: 10px;">Student Name</th>
+            <th>Issue Title</th>
+            <th>Status</th>
+            <th>Created On</th>
+            <th>Lecturer Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="issuesTable">
+        @if (Model.Any())
+        {
+            foreach (var issue in Model)
+            {
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">@issue.Student.FirstName @issue.Student.LastName</td>
+                    <td>@issue.IssueTitle.ToString()</td>
+                    <td>@issue.IssueStatus.ToString()</td>
+                    <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>@issue.Lecturer.FirstName @issue.Lecturer.LastName</td>
+                    <td>
+                        <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })" class="btn btn-purple btn-sm">View</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 15px;">No archived issues found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    let typingTimeout;
+
+    function updateFilters() {
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(function () {
+            var sortOrder = document.getElementById("sortOrder").value;
+            var issueType = document.getElementById("issueType").value;
+            var searchInput = document.getElementById("searchInput").value;
+
+            var queryParams = new URLSearchParams(window.location.search);
+            if (sortOrder) queryParams.set("sortOrder", sortOrder);
+            else queryParams.delete("sortOrder");
+
+            if (issueType) queryParams.set("issueType", issueType);
+            else queryParams.delete("issueType");
+
+            if (searchInput) queryParams.set("searchString", searchInput);
+            else queryParams.delete("searchString");
+
+            window.location.search = queryParams.toString();
+        }, 500);
+    }
+</script>
+
+@functions {
+    public string GetEnumDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+        return attribute?.Name ?? value.ToString();
+    }
+}
+
+<style>
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+        }
+
+    .btn-sm {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #7F3D98;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table td {
+            vertical-align: middle;
+        }
+</style>

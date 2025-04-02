@@ -57,9 +57,9 @@
 
         // Handle Class Button Click
         $(document).on("click", ".class-btn", function () {
-            var courseId = $(this).data("courseid");
+            var courseId = $(this).data("courseid"); // ✅ Correctly get the Class ID
 
-            if (!classId) {
+            if (!courseId) {  // ✅ Use the correct variable
                 alert("❌ Invalid Class ID!");
                 return;
             }
@@ -73,7 +73,7 @@
             $.ajax({
                 url: "/Issue/GetStudents",
                 type: "GET",
-                data: { classId: classId },
+                data: { classId: courseId }, // ✅ Ensure this matches backend parameter
                 success: function (response) {
                     if (response.error) {
                         console.error("❌ Error:", response.error);
@@ -97,112 +97,145 @@
             });
         });
 
-        // Handle Student Selection
-        $(document).on("change", "#studentSelect", function () {
-            var selectedStudent = $(this).find(":selected");
-            var studentId = selectedStudent.val();
-            var studentName = selectedStudent.text();
-            var studentNumber = selectedStudent.data("number");
+        $(".class-btn").removeClass("btn-selected").addClass("btn-purple"); // Reset all buttons
+        $(this).removeClass("btn-purple").addClass("btn-selected"); // Highlight selected button
 
-            $("#studentName").text(studentName);
-            $("#studentNumber").text(studentNumber);
-            $("#studentDetails").show();
+        console.log("Fetching students for Course ID:", courseId);
 
-            console.log("Fetching issues for Student ID:", studentId);
-
-            // ✅ Fetch issues for selected student
-            $.ajax({
-                url: "/Issue/GetStudentIssues",
-                type: "GET",
-                data: { studentId: studentId },
-                success: function (issues) {
-                    allIssues = issues; // Store all issues for toggling
-                    displayIssues(false); // Show only active tickets by default
-                },
-                error: function (xhr) {
-                    console.error("❌ Error loading issues:", xhr.responseText);
-                    alert("Failed to load issues.");
+        // ✅ Fetch students for selected course
+        $.ajax({
+            url: "/Issue/GetStudents",
+            type: "GET",
+            data: { classId: classId },
+            success: function (response) {
+                if (response.error) {
+                    console.error("❌ Error:", response.error);
+                    alert(response.error);
+                    return;
                 }
+
+                var studentSelect = $("#studentSelect");
+                studentSelect.empty().append('<option value="">Select a Student</option>');
+
+                $.each(response, function (i, student) {
+                    studentSelect.append(`<option value="${student.Id}" data-number="${student.StudentNumber}">${student.Name}</option>`);
+                });
+
+                $("#studentDropdown").show();
+            },
+            error: function (xhr) {
+                console.error("❌ AJAX Error:", xhr.responseText);
+                alert("Failed to load students. Please check the console for details.");
+            }
+        });
+    });
+
+    // Handle Student Selection
+    $(document).on("change", "#studentSelect", function () {
+        var selectedStudent = $(this).find(":selected");
+        var studentId = selectedStudent.val();
+        var studentName = selectedStudent.text();
+        var studentNumber = selectedStudent.data("number");
+
+        $("#studentName").text(studentName);
+        $("#studentNumber").text(selectedStudent.data("number"));
+        $("#studentDetails").show();
+
+        console.log("Fetching issues for Student ID:", studentId);
+
+        // ✅ Fetch issues for selected student
+        $.ajax({
+            url: "/Issue/GetStudentIssues",
+            type: "GET",
+            data: { studentId: studentId },
+            success: function (issues) {
+                allIssues = issues; // Store all issues for toggling
+                displayIssues(false); // Show only active tickets by default
+            },
+            error: function (xhr) {
+                console.error("❌ Error loading issues:", xhr.responseText);
+                alert("Failed to load issues.");
+            }
+        });
+    });
+
+    // Handle Create New Issue Button Click
+    $(document).on("click", "#createNewIssue", function (e) {
+        e.preventDefault();
+
+        var studentId = $("#studentSelect").val();
+
+        if (!studentId) {
+            alert("❌ Please select a student first!");
+            return;
+        }
+
+        // Redirect to the Create Issue page with the selected student ID
+        window.location.href = "/Issue/CreateIssue?studentId=" + studentId;
+    });
+
+    // Handle Archive Issue
+    $(document).on("click", ".archive-issue", function () {
+        var issueId = $(this).data("issueid");
+
+        $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Archived" })
+            .done(function (response) {
+                if (response.success) {
+                    alert("✅ Ticket has been archived!");
+                    allIssues.find(i => i.TicketId == issueId).TicketStatus = "Archived";
+                    displayIssues(false);
+                }
+            })
+            .fail(function (xhr) {
+                console.error("❌ Error archiving issue:", xhr.responseText);
+                alert("Failed to archive the issue.");
             });
-        });
+    });
 
-        // Handle Create New Issue Button Click
-        $(document).on("click", "#createNewIssue", function (e) {
-            e.preventDefault();
+    // Handle Reinstate Issue
+    $(document).on("click", ".reinstate-issue", function () {
+        var issueId = $(this).data("issueid");
 
-            var studentId = $("#studentSelect").val();
+        $.post("/Issue/ReinstateIssue", { issueId: issueId })
+            .done(function (response) {
+                if (response.success) {
+                    alert("✅ Ticket has been reinstated!");
+                    allIssues.find(i => i.TicketId == issueId).TicketStatus = "Open";
+                    displayIssues(true);
+                }
+            })
+            .fail(function (xhr) {
+                console.error("❌ Error reinstating issue:", xhr.responseText);
+                alert("Failed to reinstate the issue.");
+            });
+    });
 
-            if (!studentId) {
-                alert("❌ Please select a student first!");
-                return;
-            }
+    // Handle Toggle for Active/Archived Issues
+    $(document).on("change", "#toggleArchived", function () {
+        displayIssues(this.checked);
+    });
 
-            // Redirect to the Create Issue page with the selected student ID
-            window.location.href = "/Issue/CreateIssue?studentId=" + studentId;
-        });
+    function displayIssues(showArchived) {
+        var issueCards = $("#issueCards");
+        issueCards.empty();
 
-        // Handle Archive Issue
-        $(document).on("click", ".archive-issue", function () {
-            var issueId = $(this).data("issueid");
+        var filteredIssues = allIssues.filter(issue => showArchived ? issue.TicketStatus === "Archived" : issue.TicketStatus !== "Archived");
 
-            $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Archived" })
-                .done(function (response) {
-                    if (response.success) {
-                        alert("✅ Ticket has been archived!");
-                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Archived";
-                        displayIssues(false);
-                    }
-                })
-                .fail(function (xhr) {
-                    console.error("❌ Error archiving issue:", xhr.responseText);
-                    alert("Failed to archive the issue.");
-                });
-        });
+        if (filteredIssues.length === 0) {
+            issueCards.append(`<p>No ${showArchived ? "archived" : "active"} issues found.</p>`);
+            return;
+        }
 
-        // Handle Reinstate Issue
-        $(document).on("click", ".reinstate-issue", function () {
-            var issueId = $(this).data("issueid");
-
-            $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Open" })
-                .done(function (response) {
-                    if (response.success) {
-                        alert("✅ Ticket has been reinstated!");
-                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Open";
-                        displayIssues(true);
-                    }
-                })
-                .fail(function (xhr) {
-                    console.error("❌ Error reinstating issue:", xhr.responseText);
-                    alert("Failed to reinstate the issue.");
-                });
-        });
-
-        // Handle Toggle for Active/Archived Issues
-        $(document).on("change", "#toggleArchived", function () {
-            displayIssues(this.checked);
-        });
-
-        function displayIssues(showArchived) {
-            var issueCards = $("#issueCards");
-            issueCards.empty();
-
-            var filteredIssues = allIssues.filter(issue => showArchived ? issue.TicketStatus === "Archived" : issue.TicketStatus !== "Archived");
-
-            if (filteredIssues.length === 0) {
-                issueCards.append(`<p>No ${showArchived ? "archived" : "active"} issues found.</p>`);
-                return;
-            }
-
-            $.each(filteredIssues, function (i, issue) {
-                var actionButton = showArchived
-                    ? `<button class="btn btn-purple btn-sm reinstate-issue" data-issueid="${issue.TicketId}" style="width: 100%;">Reinstate Issue</button>`
-                    : `
+        $.each(filteredIssues, function (i, issue) {
+            var actionButton = showArchived
+                ? `<button class="btn btn-purple btn-sm reinstate-issue" data-issueid="${issue.TicketId}" style="width: 100%;">Reinstate Issue</button>`
+                : `
                         <div class="btn-group mt-2" style="width: 100%; gap: 10px;">
                             <a class="btn btn-purple btn-sm add-to-issue" href="/Issue/ViewIssue/${issue.TicketId}" style="width: 48%;">Add to Issue</a>
                             <button class="btn btn-purple btn-sm archive-issue" data-issueid="${issue.TicketId}" style="width: 48%;">Archive Issue</button>
                         </div>`;
 
-                var issueHtml = `
+            var issueHtml = `
                     <div class="card issue-card shadow-sm p-3 mb-3" style="border-left: 5px solid #7F3D98;">
                         <h5 class="card-title">${issue.TicketTitle || "No Title"}</h5>
                         <p class="card-text"><strong>Date Created:</strong> ${issue.CreatedAt || "Unknown Date"}</p>
@@ -210,15 +243,14 @@
                         <p class="card-text">${issue.TicketDescription || "No Description Available"}</p>
                         ${actionButton}
                     </div>`;
-                issueCards.append(issueHtml);
-            });
+            issueCards.append(issueHtml);
+        });
 
-            $("#issueList").show();
-        }
-    });
+        $("#issueList").show();
+    }
 </script>
 <style>
-    /* 💜 Ensure ALL Buttons are Purple */
+    /*  Ensure ALL Buttons are Purple */
     .btn-purple {
         background-color: #7F3D98 !important;
         color: white !important;

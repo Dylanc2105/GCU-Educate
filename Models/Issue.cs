@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GuidanceTracker.Models
+{
+    public class Issue
+    {
+        [Key]
+        public int IssueId { get; set; }
+
+        public IssueTitle IssueTitle { get; set; }
+
+        public string IssueDescription { get; set; }
+        public IssueStatus IssueStatus { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; }
+
+        // Foreign keys
+
+        [Required]
+        public string LecturerId { get; set; }
+
+        [ForeignKey("LecturerId")]
+        public virtual Lecturer Lecturer { get; set; }
+
+        [Required]
+        public string GuidanceTeacherId { get; set; }
+
+        [ForeignKey("GuidanceTeacherId")]
+        public virtual GuidanceTeacher GuidanceTeacher { get; set; }
+
+        [Required]
+        public string StudentId { get; set; }
+
+        [ForeignKey("StudentId")]
+        public virtual Student Student { get; set; }
+
+        // Optional reference to an archived ticket if this was restored
+        public int? ArchivedIssueId { get; set; }
+
+        // 🔹 Adding a list of comments & appointments
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+
+    }
+
+    public enum IssueTitle
+    {
+        [Description("Late Attendance")]
+        LateAttendance,
+        [Description("Missing Attendance")]
+        MissingAttendance,
+        Behaviour,
+        Deadlines,
+        Communication,
+        Performance,
+        Medical,
+        [Description("Academic Dishonesty")]
+        AcademicDishonesty,
+        [Description("Custom Issue")]
+        CustomIssue
+    }
+    public enum IssueStatus
+    {
+        New,
+        [Description("In Progress")]
+        InProgress,
+        Archived
+    }
+
+}
+    

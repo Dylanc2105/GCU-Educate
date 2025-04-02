@@ -1,0 +1,176 @@
+﻿@model GuidanceTracker.Models.ViewModels.MetricsViewModel
+@using Newtonsoft.Json;
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- total issues and filter card -->
+        <div class="col-md-4">
+            <!-- total issues -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Issues</h5>
+                    <p class="card-text display-4">@Model.TotalIssues</p>
+                </div>
+            </div>
+
+            <!-- filters -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Filters</h6>
+                </div>
+                <div class="card-body">
+                    <!-- class dropdown -->
+                    <div class="mb-3">
+                        <label for="classSelect" class="form-label">Class</label>
+                        <select class="form-control" id="classSelect" onchange="applyFilters()">
+                            <option value="">All Classes</option>
+                            @foreach (var cls in Model.Classes)
+                            {
+                                <option value="@cls.ClassId"
+                                        @(Request["classId"] == cls.ClassId.ToString() ? "selected" : "")>
+                                    @cls.ClassName
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- bar chart for issues by type -->
+        <div class="col-md-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Issues by Type</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="issuesByTypeBarChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- other metrics row  -->
+    <div class="row mt-3">
+        <!-- pie chart for issues by class -->
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Issues by Type(Pie)</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="issuesByTypePieChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+    var issuesByTypeBarChart;
+    var issuesByTypePieChart;
+
+    function renderChart(data, labels) {
+        if (issuesByTypeBarChart) {
+            issuesByTypeBarChart.destroy();
+        }
+        var ctx = document.getElementById('issuesByTypeBarChart').getContext('2d');
+        issuesByTypeBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Issues',
+                    data: data,
+                    backgroundColor: [
+                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
+                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
+                    ], 
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            // ensures y axis has integers on the side (ticks)
+                            stepSize: 1, // increment between ticks (integer)
+                            callback: function (value) {
+                                return Number.isInteger(value) ? value : ''; // nly show integers
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderPieChart(data, labels) {
+        if (issuesByTypePieChart) {
+            issuesByTypePieChart.destroy();
+        }
+        var ctx = document.getElementById('issuesByTypePieChart').getContext('2d');
+        issuesByTypePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Issues by Type(Pie Chart)',
+                    data: data,
+                    backgroundColor: [
+                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
+                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
+                    ], 
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' Issues';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    function applyFilters() {
+        var classId = document.getElementById('classSelect').value;
+        window.location.href = `?classId=${classId}`;
+    }
+
+    // initialises charts with data
+        document.addEventListener('DOMContentLoaded', function () {
+            // issues by type
+            var issuesData = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.Count).ToList()));
+            var issuesLabels = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.IssueType).ToList()));
+            //render the chart
+            renderChart(issuesData, issuesLabels);
+
+            
+            //render the chart
+            renderPieChart(issuesData, issuesLabels);
+
+    });
+</script>

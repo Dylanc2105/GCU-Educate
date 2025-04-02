@@ -7,21 +7,32 @@ using System.Web;
 
 namespace GuidanceTracker.Models
 {
-	public class Appointment
-	{
+    public class Appointment
+    {
+        [Key]
         public int AppointmentId { get; set; }
+        [Display(Name = "Appointment Date")]
         public DateTime AppointmentDate { get; set; }
-        public string AppointmentStatus { get; set; }/* = Requested;*/
+        [Display(Name = "Appointment Status")]
+        public AppointmentStatus AppointmentStatus { get; set; }/* = Requested;*/
+        [Display(Name = "Appointment Notes")]
         public string AppointmentNotes { get; set; }
 
         [Required]
         public string GuidanceTeacherId { get; set; }
+
+        public string Room { get; set; }
+
+
 
         [ForeignKey("GuidanceTeacherId")]
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
 
         [Required]
         public string StudentId { get; set; }
+
+
+        // Navigation properties
 
         [ForeignKey("StudentId")]
         public virtual Student Student { get; set; }

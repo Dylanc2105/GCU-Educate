@@ -1,4 +1,5 @@
-﻿@model List<GuidanceTracker.Models.Ticket>
+﻿@model List<GuidanceTracker.Models.Issue>
+@using GuidanceTracker.Models
 
 @{
     ViewBag.Title = "Issues Dashboard";
@@ -60,22 +61,22 @@
 
     .issue-main {
         font-weight: bold;
-        font-size: 14px; /* Smaller font */
+        font-size: 14px;
     }
 
     .issue-update {
-        font-size: 12px; /* Smaller font */
+        font-size: 12px;
         color: #555;
     }
 
     .issue-date {
-        font-size: 10px; /* Fine print */
+        font-size: 10px;
         color: #888;
     }
 
     /* Issue Footer */
     .issue-footer {
-        font-size: 10px; /* Fine print */
+        font-size: 10px;
         text-align: right;
         padding-top: 5px;
         font-style: italic;
@@ -98,14 +99,14 @@
         color: white;
         font-weight: bold;
         transition: background 0.3s ease;
-        background: #7F3D98; /* Purple Buttons */
+        background: #7F3D98;
     }
 
         .quick-btn:hover {
             background: #985BAF;
         }
 
-    /* Right Container (Quick Actions) */
+    /* Right Container */
     .right-container {
         display: flex;
         flex-direction: column;
@@ -113,7 +114,7 @@
         height: 100%;
     }
 
-    /* Right Container Box (Quick Actions) */
+    /* Right Container Box */
     .bottom-right-container {
         background: white;
         padding: 15px;
@@ -122,9 +123,9 @@
         min-height: 320px;
     }
 
-    /* Section Titles (Purple and Larger Font) */
+    /* Section Titles */
     .section-title {
-        font-size: 22px; /* Slightly smaller */
+        font-size: 22px;
         font-weight: bold;
         color: #7F3D98;
         margin-bottom: 15px;
@@ -143,18 +144,17 @@
         <div class="container">
             <div class="section-title">New Issues</div>
 
-            @foreach (var ticket in Model.Where(t => t.TicketStatus == "Open").OrderByDescending(t => t.CreatedAt).Take(4))
+            @foreach (var ticket in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt).Take(4))
             {
-                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.TicketId })'">
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.IssueId })'">
                     <div class="issue-main">@ticket.Student.FirstName @ticket.Student.LastName</div>
-                    <div class="issue-update">Update to @ticket.TicketTitle</div>
+                    <div class="issue-update">Update to @ticket.IssueTitle.ToString()</div>
                     <div class="issue-date">@ticket.CreatedAt.ToString("dd/MM/yyyy")</div>
                 </div>
             }
 
-            <!-- Footer: Show Total Count -->
             <div class="issue-footer">
-                Total New Issues: <strong>@Model.Count(t => t.TicketStatus == "Open")</strong>
+                Total New Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.New)</strong>
             </div>
         </div>
 
@@ -162,18 +162,17 @@
         <div class="container">
             <div class="section-title">In Progress Issues</div>
 
-            @foreach (var ticket in Model.Where(t => t.TicketStatus == "In Progress").OrderByDescending(t => t.CreatedAt).Take(4))
+            @foreach (var ticket in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt).Take(4))
             {
-                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.TicketId })'">
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = ticket.IssueId })'">
                     <div class="issue-main">@ticket.Student.FirstName @ticket.Student.LastName</div>
-                    <div class="issue-update">Update to @ticket.TicketTitle</div>
+                    <div class="issue-update">Update to @ticket.IssueTitle.ToString()</div>
                     <div class="issue-date">@ticket.CreatedAt.ToString("dd/MM/yyyy")</div>
                 </div>
             }
 
-            <!-- Footer: Show Total Count -->
             <div class="issue-footer">
-                Total In Progress Issues: <strong>@Model.Count(t => t.TicketStatus == "In Progress")</strong>
+                Total In Progress Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.InProgress)</strong>
             </div>
         </div>
     </div>
@@ -184,11 +183,13 @@
         <div class="bottom-right-container">
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Add Issue</a>
-                <a href="@Url.Action("AllIssue", "Issue")" class="quick-btn">See All Issues</a>
+                <!-- Existing Quick Action Buttons -->
+                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New Issue</a>
+                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Issue Hub</a>
+                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All Issues</a>
                 <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived Issues</a>
             </div>
         </div>
-    </div>
+    </div> 
 
 </div>

@@ -14,19 +14,19 @@ namespace GuidanceTracker.Controllers
         // ✅ Add a Comment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddComment(int ticketId, string Content)
+        public ActionResult AddComment(int issueId, string Content)
         {
             if (string.IsNullOrWhiteSpace(Content))
             {
                 TempData["Error"] = "Comment cannot be empty.";
-                return RedirectToAction("ViewTicket", "Issue", new { id = ticketId });
+                return RedirectToAction("ViewTicket", "Issue", new { id = issueId });
             }
 
             var userId = User.Identity.GetUserId();
 
             var comment = new Comment
             {
-                TicketId = ticketId,
+                IssueId = issueId,
                 UserId = userId,
                 Content = Content,
                 CreatedAt = DateTime.Now
@@ -36,14 +36,14 @@ namespace GuidanceTracker.Controllers
             db.SaveChanges();
 
             TempData["Success"] = "Comment added successfully.";
-            return RedirectToAction("ViewTicket", "Issue", new { id = ticketId });
+            return RedirectToAction("ViewTicket", "Issue", new { id = issueId });
         }
 
         // ✅ Fetch Comments for a Ticket (AJAX)
-        public JsonResult GetComments(int ticketId)
+        public JsonResult GetComments(int issueId)
         {
             var comments = db.Comments
-                .Where(c => c.TicketId == ticketId)
+                .Where(c => c.IssueId == issueId)
                 .OrderByDescending(c => c.CreatedAt)
                 .Select(c => new
                 {

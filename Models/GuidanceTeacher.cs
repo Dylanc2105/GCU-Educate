@@ -11,7 +11,7 @@ namespace GuidanceTracker.Models
     {
         // Navigation properties
         public virtual ICollection<Appointment> Appointments { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Issue> Issues { get; set; }
         public virtual ICollection<Class> Classes { get; set; }
 
     }

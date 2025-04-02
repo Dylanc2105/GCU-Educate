@@ -112,33 +112,7 @@ namespace GuidanceTracker.Models
                 //assign it to the guidance teacher role
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
-
-<<<<<<< Updated upstream
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
-=======
-            if (userManager.FindByName("financeguidance@email.com") == null)
-            {
-                // Very easy password validation already set up above
-                newGuidanceTeacher = new GuidanceTeacher
-                {
-                    UserName = "financeguidance@email.com",
-                    Email = "financeguidance@email.com",
-                    FirstName = "Robert",
-                    LastName = "Davidson",
-                    Street = "17 Accounting Avenue",
-                    City = "Edinburgh",
-                    Postcode = "EH3 9TQ",
-                    RegistredAt = DateTime.Now.AddYears(-3),
-                    EmailConfirmed = true,
-                };
-
-                userManager.Create(newGuidanceTeacher, "123");
-                userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
-            }
-            context.SaveChanges();
-
-            if (userManager.FindByName("Asmat.atagan@gmail.com") == null)
->>>>>>> Stashed changes
             {
                 lecturer3 = new Lecturer
                 {
@@ -281,25 +255,6 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            if (userManager.FindByName("financelect@email.com") == null)
-            {
-                financeLecturer = new Lecturer
-                {
-                    UserName = "financelect@email.com",
-                    Email = "financelect@email.com",
-                    FirstName = "Victoria",
-                    LastName = "Blackwell",
-                    Street = "29 Economics Road",
-                    City = "Edinburgh",
-                    Postcode = "EH5 1RS",
-                    RegistredAt = DateTime.Now.AddYears(-1),
-                    EmailConfirmed = true,
-                };
-                userManager.Create(financeLecturer, "123");
-                userManager.AddToRole(financeLecturer.Id, "Lecturer");
-            }
-            context.SaveChanges();
-
             if (userManager.FindByName("lecturer4@email.com") == null)
             {
                 lecturer4 = new Lecturer
@@ -319,7 +274,18 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-<<<<<<< Updated upstream
+            // Create a new class for finance students
+            var financeClass = new Class
+            {
+                ClassId = 10, // Make sure this ID doesn't conflict with existing ones
+                ClassName = "HNC Finance Class A",
+                MaxCapacity = 20,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                Units = new List<Unit> { accountingUnit, financeUnit, economicsUnit, investmentUnit, taxationUnit }
+            };
+            context.Classes.Add(financeClass);
+            context.SaveChanges();
+
             // Create classes
             var classes1 = new Class
             {
@@ -331,13 +297,13 @@ namespace GuidanceTracker.Models
             context.Classes.Add(classes1);
             context.SaveChanges();
 
-           var classes2 = new Class
-           {
-               ClassId = 2,
-               ClassName = "HNC Computing Class B",
-               MaxCapacity = 24,
-               GuidanceTeacherId = guidance.Id
-           };
+            var classes2 = new Class
+            {
+                ClassId = 2,
+                ClassName = "HNC Computing Class B",
+                MaxCapacity = 24,
+                GuidanceTeacherId = guidance.Id
+            };
             context.Classes.Add(classes2);
             context.SaveChanges();
 
@@ -415,6 +381,23 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
             // Create courses
+
+            // Create a new course
+            var financeCourse = new Course
+            {
+                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
+                CourseName = "HNC Business & Finance",
+                CourseReference = "BUHNFIN/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "Edinburgh Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = newDepartment.DepartmentId
+            };
+            context.Courses.Add(financeCourse);
+            context.SaveChanges();
 
             var courses1 = new Course
             {
@@ -561,6 +544,16 @@ namespace GuidanceTracker.Models
             context.Courses.Add(courses9);
             context.SaveChanges();
 
+            // Create a new enrollment
+            var financeEnrollment = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = financeCourse.CourseId,
+                ClassId = financeClass.ClassId
+            };
+            context.Enrollments.Add(financeEnrollment);
+            context.SaveChanges();
 
             // Create enrollments to link courses with classes
             // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
@@ -663,7 +656,6 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
-=======
             // Create units for the new finance program
             var accountingUnit = new Unit
             {
@@ -710,7 +702,6 @@ namespace GuidanceTracker.Models
             context.Units.Add(taxationUnit);
             context.SaveChanges();
 
->>>>>>> Stashed changes
             // 1. HNC Computing / HNC Computer Science Units
             var computingUnit = new Unit
             {
@@ -1094,10 +1085,6 @@ namespace GuidanceTracker.Models
             context.Units.Add(structuredMethodsUnit);
             context.SaveChanges();
 
-<<<<<<< Updated upstream
-
-
-=======
             // Create a new class for finance students
             var financeClass = new Class
             {
@@ -1489,7 +1476,6 @@ namespace GuidanceTracker.Models
             };
             context.Enrollments.Add(enrollment9);
             context.SaveChanges();
->>>>>>> Stashed changes
 
             // Create a finance student
             Student financeStudent = null;
@@ -1736,8 +1722,6 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            
-
 
             // Create a Session
             var session = new Appointment
@@ -1750,8 +1734,6 @@ namespace GuidanceTracker.Models
             };
             context.Appointments.Add(session);
             context.SaveChanges();
-
-<<<<<<< Updated upstream
             // Create a Ticket
             var ticket = new Ticket
             {
@@ -1795,10 +1777,6 @@ namespace GuidanceTracker.Models
             context.Tickets.Add(ticket3);
             context.SaveChanges();
 
-                    
-                
-            
-=======
 
             // Global posts
             var Post1 = new Post
@@ -1902,25 +1880,12 @@ namespace GuidanceTracker.Models
                 System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
 
                 // If you're using logging
-                // logger.Error(errorMessage.ToString());
 
                 // You might want to throw a more informative exception or handle it differently
                 throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
             }
 
-            // Add this after the creation of the first department in the seed method
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
         }
     }
 }
+

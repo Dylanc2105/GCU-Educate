@@ -22,10 +22,10 @@ namespace GuidanceTracker.Models
         public virtual User User { get; set; }
 
         [Required]
-        public int TicketId { get; set; }
+        public int IssueId { get; set; }
 
-        [ForeignKey("TicketId")]
-        public virtual Ticket Ticket { get; set; }
+        [ForeignKey("IssueId")]
+        public virtual Issue Issue { get; set; }
 
         // Optional reference to an archived comment if this was restored
         public int? ArchivedCommentId { get; set; }
