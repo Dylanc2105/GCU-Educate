@@ -19,5 +19,7 @@ namespace GuidanceTracker.Models
 
         // Navigation properties
         public virtual ICollection<Course> Courses { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

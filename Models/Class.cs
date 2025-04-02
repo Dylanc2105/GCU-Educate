@@ -30,5 +30,7 @@ namespace GuidanceTracker.Models
         public virtual ICollection<Unit> Units { get; set; }
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public virtual ICollection<Student> Students { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }
