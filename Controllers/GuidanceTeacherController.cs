@@ -32,16 +32,22 @@ namespace GuidanceTracker.Controllers
         // GET: GuidanceTeacher Dashboard
         public ActionResult GuidanceTeacherDash()
         {
-            var teacherId = User.Identity.GetUserId();
+            var userId = User.Identity.GetUserId();
+            var user = db.GuidanceTeachers.Find(userId);
+            var today = DateTime.Today;
 
-            var issues = db.Issues
-                .Include("Student")
-                .Include("Lecturer")
-                .Where(i => i.GuidanceTeacherId == teacherId)
-                .OrderByDescending(i => i.CreatedAt)
-                .ToList();
+            var model = new GuidanceDashViewModel
+            {
+                FirstName = user.FirstName,
+                //CurrentDateTime = DateTime.Now,
+                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New).Count(),
+                //NewNotificationsCount = db.Notifications.Where(n => n.IsRead == false).Count(),
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
+                //NewAnnouncementsCount = db.Announcements.Where(a => a.IsRead == false).Count()
 
-            return View("GuidanceTeacherDash", issues);
+
+            };
+            return View(model);
         }
 
         // View all students
