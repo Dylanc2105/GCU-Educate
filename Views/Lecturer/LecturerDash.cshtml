@@ -54,8 +54,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h5 class="card-title" style="color: #7F3D98">New Progress on Issues</h5>
-                        <p class="h2" style="color: #7F3D98">@Model.NewProgressIssuesCount</p>
+                        <h5 class="card-title" style="color: #7F3D98">Active Issues</h5>
+                        <p class="h2" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
@@ -64,8 +64,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h5 class="card-title">New Notifications</h5>
-                        <p class="card-text">[Placeholder]</p>
+                        <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
+                        <p class="h2" style="color: #7F3D98">[0]</p>
                         <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
@@ -74,8 +74,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card" style="text-align:center">
                     <div class="card-body">
-                        <h5 class="card-title">New Announcements</h5>
-                        <p class="card-text">@Model.NewAnnouncementsCount</p>
+                        <h3 class="card-title" style="color: #7F3D98">New Announcements</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
                         <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>

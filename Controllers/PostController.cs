@@ -16,6 +16,7 @@ using Humanizer;
 using Newtonsoft.Json.Linq;
 using static Humanizer.In;
 using System.Web.Services.Description;
+using System.Security.Principal;
 
 namespace GuidanceTracker.Controllers
 {
@@ -39,220 +40,22 @@ namespace GuidanceTracker.Controllers
         public ActionResult ViewPosts()
         {
             var currentUserId = User.Identity.GetUserId();
-            var isStaff = User.IsInRole("Lecturer") || User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead");
-            var isStudent = User.IsInRole("Student");
 
-            // Basic visibility: posts by the current user, global posts, and role-based posts
-            var visiblePosts = db.Posts
-                .Where(p =>
-                    p.AuthorId == currentUserId ||
-                    p.Visibility == VisibilityType.Global ||
-                    (isStaff && p.Visibility == VisibilityType.Staff) ||
-                    (isStudent && p.Visibility == VisibilityType.Student)
-                );
-
-            // For Department visibility
-            if (isStaff && db.Posts.Any(p => p.Visibility == VisibilityType.Department))
-            {
-                if (User.IsInRole("Lecturer"))
-                {
-                    // For lecturers: Get departments of courses that contain classes where the lecturer teaches units
-                    var departmentIds = db.Units
-                        .Where(u => u.LecturerId == currentUserId)
-                        .SelectMany(u => u.Classes)
-                        .SelectMany(c => c.Enrollments)
-                        .Select(e => e.Course.DepartmentId)
-                        .Distinct()
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Department &&
-                            // Check if there's a matching entry in a PostDepartment junction table
-                            // If you don't have this table, you'd need to add it or use a different approach
-                            p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
-                        )
-                    );
-                }
-                else if (User.IsInRole("GuidanceTeacher"))
-                {
-                    // For guidance teachers: Get departments of courses that their assigned classes are enrolled in
-                    var departmentIds = db.Classes
-                        .Where(c => c.GuidanceTeacherId == currentUserId)
-                        .SelectMany(c => c.Enrollments)
-                        .Select(e => e.Course.DepartmentId)
-                        .Distinct()
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Department &&
-                            p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
-                        )
-                    );
-                }
-                else if (User.IsInRole("CurriculumHead"))
-                {
-                    // For curriculum heads: Get departments they're responsible for
-                    var departmentIds = db.Departments
-                        .Where(d => d.CurriculumHead.Id == currentUserId)
-                        .Select(d => d.DepartmentId)
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Department &&
-                            p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
-                        )
-                    );
-                }
-            }
-            else if (isStudent && db.Posts.Any(p => p.Visibility == VisibilityType.Department))
-            {
-                // For students: Get departments of courses they're enrolled in
-                var departmentIds = db.Students
-                    .Where(s => s.Id == currentUserId)
-                    .SelectMany(s => s.Class.Enrollments)
-                    .Select(e => e.Course.DepartmentId)
-                    .Distinct()
-                    .ToList();
-
-                visiblePosts = visiblePosts.Union(
-                    db.Posts.Where(p =>
-                        p.Visibility == VisibilityType.Department &&
-                        p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
-                    )
-                );
-            }
-
-            // For Course visibility
-            if (isStaff && db.Posts.Any(p => p.Visibility == VisibilityType.Course))
-            {
-                if (User.IsInRole("Lecturer"))
-                {
-                    // For lecturers: Get courses that have classes where the lecturer teaches units
-                    var courseIds = db.Units
-                        .Where(u => u.LecturerId == currentUserId)
-                        .SelectMany(u => u.Classes)
-                        .SelectMany(c => c.Enrollments)
-                        .Select(e => e.CourseId)
-                        .Distinct()
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Course &&
-                            p.Courses.Any(c => courseIds.Contains(c.CourseId))
-                        )
-                    );
-                }
-                else if (User.IsInRole("GuidanceTeacher"))
-                {
-                    // For guidance teachers: Get courses that their assigned classes are enrolled in
-                    var courseIds = db.Classes
-                        .Where(c => c.GuidanceTeacherId == currentUserId)
-                        .SelectMany(c => c.Enrollments)
-                        .Select(e => e.CourseId)
-                        .Distinct()
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Course &&
-                            p.Courses.Any(d => courseIds.Contains(d.CourseId))
-                        )
-                    );
-                }
-            }
-            else if (isStudent && db.Posts.Any(p => p.Visibility == VisibilityType.Course))
-            {
-                // For students: Get courses they're enrolled in
-                var courseIds = db.Students
-                    .Where(s => s.Id == currentUserId)
-                    .SelectMany(s => s.Class.Enrollments)
-                    .Select(e => e.CourseId)
-                    .Distinct()
-                    .ToList();
-
-                visiblePosts = visiblePosts.Union(
-                    db.Posts.Where(p =>
-                        p.Visibility == VisibilityType.Course &&
-                        p.Courses.Any(d => courseIds.Contains(d.CourseId))
-                    )
-                );
-            }
-
-            // For Class visibility
-            if (isStaff && db.Posts.Any(p => p.Visibility == VisibilityType.Class))
-            {
-                if (User.IsInRole("Lecturer"))
-                {
-                    // For lecturers: Get classes where they teach units
-                    var classIds = db.Units
-                        .Where(u => u.LecturerId == currentUserId)
-                        .SelectMany(u => u.Classes)
-                        .Select(c => c.ClassId)
-                        .Distinct()
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Class &&
-                            p.Classes.Any(d => classIds.Contains(d.ClassId))
-                        )
-                    );
-                }
-                else if (User.IsInRole("GuidanceTeacher"))
-                {
-                    // For guidance teachers: Get classes they're responsible for
-                    var classIds = db.Classes
-                        .Where(c => c.GuidanceTeacherId == currentUserId)
-                        .Select(c => c.ClassId)
-                        .ToList();
-
-                    visiblePosts = visiblePosts.Union(
-                        db.Posts.Where(p =>
-                            p.Visibility == VisibilityType.Class &&
-                            p.Classes.Any(d => classIds.Contains(d.ClassId))
-                        )
-                    );
-                }
-            }
-            else if (isStudent && db.Posts.Any(p => p.Visibility == VisibilityType.Class))
-            {
-                // For students: Get their class
-                var classId = db.Students
-                    .Where(s => s.Id == currentUserId)
-                    .Select(s => s.ClassId)
-                    .FirstOrDefault();
-
-                visiblePosts = visiblePosts.Union(
-                    db.Posts.Where(p =>
-                        p.Visibility == VisibilityType.Class &&
-                        p.Classes.Any(d => d.ClassId == classId)
-                    )
-                );
-            }
-
-            // Include the author and order by date
-            var posts = visiblePosts
+            // karina: moved the visibility filter to a helper method after the postcontroller class in order to reuse it in other dashboards.
+            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(currentUserId, db, User)
                 .Include(p => p.Author)
                 .OrderByDescending(p => p.PostDate)
                 .ToList();
 
-
-            // this is to check whether the user has read the post or not
             var readPostIds = db.PostReads
                 .Where(pr => pr.UserId == currentUserId)
                 .Select(pr => pr.PostId)
                 .ToList();
 
-            var unreadPosts = posts
+            var unreadPosts = visiblePosts
                 .Where(p => !readPostIds.Contains(p.PostId))
                 .ToList();
-            
 
-            // this loop is to automatically mark the posts as read when user visits the page
             foreach (var unread in unreadPosts)
             {
                 db.PostReads.Add(new PostRead
@@ -262,22 +65,24 @@ namespace GuidanceTracker.Controllers
                     ReadOn = DateTime.Now
                 });
             }
+
             db.SaveChanges();
-            ViewBag.UnreadCount = 0;
+            ViewBag.UnreadCount = unreadPosts.Count;
             ViewBag.ReadPostIds = readPostIds;
 
-            return View(posts);
+            return View(visiblePosts);
         }
+
 
         // GET: Posts/Create
         [HttpGet]
         [Authorize]
         public ActionResult CreateNewPost()
-                {
-                    var viewModel = new CreatePostViewModel();
+        {
+            var viewModel = new CreatePostViewModel();
 
-                    // Set up the visibility dropdown
-                    viewModel.VisibilityOptions = new List<SelectListItem>
+            // Set up the visibility dropdown
+            viewModel.VisibilityOptions = new List<SelectListItem>
             {
                 new SelectListItem { Value = VisibilityType.Global.ToString(), Text = "Global (Everyone)" },
                 new SelectListItem { Value = VisibilityType.Student.ToString(), Text = "Students Only" },
@@ -288,45 +93,45 @@ namespace GuidanceTracker.Controllers
 
             };
 
-                    // Load dropdown data for departments, courses, classes, and units
-                    viewModel.Departments = db.Departments
-                        .OrderBy(d => d.DepartmentName)
-                        .Select(d => new SelectListItem
-                        {
-                            Value = d.DepartmentId.ToString(),
-                            Text = d.DepartmentName
-                        })
-                        .ToList();
+            // Load dropdown data for departments, courses, classes, and units
+            viewModel.Departments = db.Departments
+                .OrderBy(d => d.DepartmentName)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.DepartmentId.ToString(),
+                    Text = d.DepartmentName
+                })
+                .ToList();
 
-                    viewModel.Courses = db.Courses
-                        .OrderBy(c => c.CourseName)
-                        .Select(c => new SelectListItem
-                        {
-                            Value = c.CourseId.ToString(),
-                            Text = c.CourseName
-                        })
-                        .ToList();
+            viewModel.Courses = db.Courses
+                .OrderBy(c => c.CourseName)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseId.ToString(),
+                    Text = c.CourseName
+                })
+                .ToList();
 
-                    viewModel.Classes = db.Classes
-                        .OrderBy(c => c.ClassName)
-                        .Select(c => new SelectListItem
-                        {
-                            Value = c.ClassId.ToString(),
-                            Text = c.ClassName
-                        })
-                        .ToList();
+            viewModel.Classes = db.Classes
+                .OrderBy(c => c.ClassName)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.ClassId.ToString(),
+                    Text = c.ClassName
+                })
+                .ToList();
 
-                    viewModel.Units = db.Units
-                        .OrderBy(u => u.UnitName)
-                        .Select(u => new SelectListItem
-                        {
-                            Value = u.UnitId.ToString(),
-                            Text = u.UnitName
-                        })
-                        .ToList();
+            viewModel.Units = db.Units
+                .OrderBy(u => u.UnitName)
+                .Select(u => new SelectListItem
+                {
+                    Value = u.UnitId.ToString(),
+                    Text = u.UnitName
+                })
+                .ToList();
 
-                    return View(viewModel);
-                }
+            return View(viewModel);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -447,7 +252,7 @@ namespace GuidanceTracker.Controllers
             .ToList();
             return View(viewModel);
         }
-        
+
         [HttpGet]
         [Authorize]
         public ActionResult Edit(string id)
@@ -475,7 +280,7 @@ namespace GuidanceTracker.Controllers
 
             var viewModel = new CreatePostViewModel
             {
- 
+
                 Title = post.Title,
                 Content = post.Content,
                 Visibility = post.Visibility
@@ -778,6 +583,181 @@ namespace GuidanceTracker.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        
+    
+
+
+
+        // karina:
+        // a seperate method for visibility filters written by Billy.
+        // i needed to reuse the filter for other dashboards in order to filter read an unread posts.
+        public static class PostVisibilityHelper
+        {
+            public static IQueryable<Post> GetVisiblePosts(string userId, GuidanceTrackerDbContext dbContext, IPrincipal user)
+            {
+
+                var isStaff = user.IsInRole("Lecturer") || user.IsInRole("GuidanceTeacher") || user.IsInRole("CurriculumHead");
+                var isStudent = user.IsInRole("Student");
+
+                var visiblePosts = dbContext.Posts.Where(p =>
+                    p.AuthorId == userId ||
+                    p.Visibility == VisibilityType.Global ||
+                    (isStaff && p.Visibility == VisibilityType.Staff) ||
+                    (isStudent && p.Visibility == VisibilityType.Student)
+                );
+
+                if (isStaff && dbContext.Posts.Any(p => p.Visibility == VisibilityType.Department))
+                {
+                    List<string> departmentIds = new List<string>();
+
+                    if (user.IsInRole("Lecturer"))
+                    {
+                        departmentIds = dbContext.Units
+                            .Where(u => u.LecturerId == userId)
+                            .SelectMany(u => u.Classes)
+                            .SelectMany(c => c.Enrollments)
+                            .Select(e => e.Course.DepartmentId)
+                            .Distinct()
+                            .ToList();
+                    }
+                    else if (user.IsInRole("GuidanceTeacher"))
+                    {
+                        departmentIds = dbContext.Classes
+                            .Where(c => c.GuidanceTeacherId == userId)
+                            .SelectMany(c => c.Enrollments)
+                            .Select(e => e.Course.DepartmentId)
+                            .Distinct()
+                            .ToList();
+                    }
+                    else if (user.IsInRole("CurriculumHead"))
+                    {
+                        departmentIds = dbContext.Departments
+                            .Where(d => d.CurriculumHead.Id == userId)
+                            .Select(d => d.DepartmentId)
+                            .ToList();
+                    }
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Department &&
+                            p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
+                        )
+                    );
+                }
+                else if (isStudent)
+                {
+                    var departmentIds = dbContext.Students
+                        .Where(s => s.Id == userId)
+                        .SelectMany(s => s.Class.Enrollments)
+                        .Select(e => e.Course.DepartmentId)
+                        .Distinct()
+                        .ToList();
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Department &&
+                            p.Departments.Any(d => departmentIds.Contains(d.DepartmentId))
+                        )
+                    );
+                }
+
+                // Course-level
+                if (isStaff)
+                {
+                    List<int> courseIds = new List<int>();
+
+                    if (user.IsInRole("Lecturer"))
+                    {
+                        courseIds = dbContext.Units
+                            .Where(u => u.LecturerId == userId)
+                            .SelectMany(u => u.Classes)
+                            .SelectMany(c => c.Enrollments)
+                            .Select(e => e.CourseId)
+                            .Distinct()
+                            .ToList();
+                    }
+                    else if (user.IsInRole("GuidanceTeacher"))
+                    {
+                        courseIds = dbContext.Classes
+                            .Where(c => c.GuidanceTeacherId == userId)
+                            .SelectMany(c => c.Enrollments)
+                            .Select(e => e.CourseId)
+                            .Distinct()
+                            .ToList();
+                    }
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Course &&
+                            p.Courses.Any(c => courseIds.Contains(c.CourseId))
+                        )
+                    );
+                }
+                else if (isStudent)
+                {
+                    var courseIds = dbContext.Students
+                        .Where(s => s.Id == userId)
+                        .SelectMany(s => s.Class.Enrollments)
+                        .Select(e => e.CourseId)
+                        .Distinct()
+                        .ToList();
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Course &&
+                            p.Courses.Any(d => courseIds.Contains(d.CourseId))
+                        )
+                    );
+                }
+
+                // Class-level
+                if (isStaff)
+                {
+                    List<int> classIds = new List<int>();
+
+                    if (user.IsInRole("Lecturer"))
+                    {
+                        classIds = dbContext.Units
+                            .Where(u => u.LecturerId == userId)
+                            .SelectMany(u => u.Classes)
+                            .Select(c => c.ClassId)
+                            .Distinct()
+                            .ToList();
+                    }
+                    else if (user.IsInRole("GuidanceTeacher"))
+                    {
+                        classIds = dbContext.Classes
+                            .Where(c => c.GuidanceTeacherId == userId)
+                            .Select(c => c.ClassId)
+                            .ToList();
+                    }
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Class &&
+                            p.Classes.Any(d => classIds.Contains(d.ClassId))
+                        )
+                    );
+                }
+                else if (isStudent)
+                {
+                    var classId = dbContext.Students
+                        .Where(s => s.Id == userId)
+                        .Select(s => s.ClassId)
+                        .FirstOrDefault();
+
+                    visiblePosts = visiblePosts.Union(
+                        dbContext.Posts.Where(p =>
+                            p.Visibility == VisibilityType.Class &&
+                            p.Classes.Any(d => d.ClassId == classId)
+                        )
+                    );
+                }
+
+                return visiblePosts;
+            }
         }
     }
 }

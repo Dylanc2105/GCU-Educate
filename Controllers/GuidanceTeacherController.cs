@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using GuidanceTracker.Models.ViewModels;
 using GuidanceTracker.Models;
 using System.Security.Cryptography.X509Certificates;
+using static GuidanceTracker.Controllers.PostController;
 
 namespace GuidanceTracker.Controllers
 {
@@ -37,7 +38,9 @@ namespace GuidanceTracker.Controllers
             var today = DateTime.Today;
 
             // counts the posts that don't have a row in the PostRead table for the current user
-            var newAnnouncementsCount = db.Posts
+            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
+
+            var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
 
@@ -45,7 +48,7 @@ namespace GuidanceTracker.Controllers
             {
                 FirstName = user.FirstName,
                 NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New).Count(),
-                //NewNotificationsCount = db.Notifications.Where(n => n.IsRead == false).Count(),
+                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
                 AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount
 

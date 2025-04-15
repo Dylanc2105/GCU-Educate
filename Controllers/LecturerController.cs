@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static GuidanceTracker.Controllers.PostController;
 
 namespace GuidanceTracker.Controllers
 {
@@ -23,13 +24,19 @@ namespace GuidanceTracker.Controllers
             var user = db.Lecturers.Find(userId);
             var today = DateTime.Today;
 
+            // counts the posts that don't have a row in the PostRead table for the current user
+            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
+
+            var newAnnouncementsCount = visiblePosts
+                .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId || pr.UserId == userId))
+                .Count();
+
             var model = new LecturerDashViewModel
             {
                 FirstName = user.FirstName,
-                //CurrentDateTime = DateTime.Now,
-                NewProgressIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New).Count(),
-                //NewNotificationsCount = db.Notifications.Where(n => n.IsRead == false).Count(),
-                //NewAnnouncementsCount = db.Announcements.Where(a => a.IsRead == false).Count()
+                ActiveIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.IssueStatus == IssueStatus.InProgress).Count(),
+                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
+                NewAnnouncementsCount = newAnnouncementsCount
 
 
             };

@@ -8,8 +8,8 @@ namespace GuidanceTracker.Models.ViewModels
 	public class LecturerDashViewModel
 	{
         public string FirstName { get; set; }
-        public int NewProgressIssuesCount { get; set; }
-        public int NewNotificationsCount { get; set; }
+        public int ActiveIssuesCount { get; set; }
+        public int NewMessagesCount { get; set; }
         public int NewAnnouncementsCount { get; set; }
     }
 }

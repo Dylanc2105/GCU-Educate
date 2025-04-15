@@ -9,7 +9,7 @@ namespace GuidanceTracker.Models.ViewModels
 	{
 		public string FirstName { get; set; }
 		public int NewIssuesCount { get; set; }
-		public int NewNotificationsCount { get; set; }
+		public int NewMessagesCount { get; set; }
 
         public int AppointmentsTodayCount { get; set; }
 		public int NewAnnouncementsCount { get; set; }
