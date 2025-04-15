@@ -43,18 +43,18 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card" style="background-color: #F4F4F4">
                     <div class="card-body">
-                        <h5 class="card-title">Hi, @Model.FirstName!</h5>
+                        <h3 class="card-title">Hi, @Model.FirstName!</h3>
                         <p class="card-text">Welcome to your Lecturer Dashboard. </p>
                         <p class="text-muted" id="currentDateTime"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- proggress on issues -->
+            <!-- active issues -->
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h5 class="card-title" style="color: #7F3D98">Active Issues</h5>
+                        <h3 class="card-title" style="color: #7F3D98">Active Issues</h3>
                         <p class="h2" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>

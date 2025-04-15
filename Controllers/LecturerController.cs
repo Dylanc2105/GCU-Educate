@@ -34,7 +34,9 @@ namespace GuidanceTracker.Controllers
             var model = new LecturerDashViewModel
             {
                 FirstName = user.FirstName,
-                ActiveIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.IssueStatus == IssueStatus.InProgress).Count(),
+                ActiveIssuesCount = db.Issues.Where(i => (i.IssueStatus == IssueStatus.New && i.IssueStatus == IssueStatus.InProgress)
+                && i.LecturerId == userId)
+                .Count(),
                 //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount
 
