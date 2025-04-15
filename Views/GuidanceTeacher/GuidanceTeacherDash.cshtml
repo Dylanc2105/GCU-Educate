@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.Issue>
+﻿@model GuidanceTracker.Models.ViewModels.GuidanceDashViewModel
 
 @{
     ViewBag.Title = "Guidance Teacher Dashboard";
@@ -21,137 +21,89 @@
             padding: 20px;
             gap: 20px;
         }
-
-        .issue-card {
-            background: white;
-            padding: 15px;
+        .custom-card {
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 33%;
-            min-width: 300px;
-            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
 
-        .appointments-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 33%;
-            min-width: 900px;
-            position: relative;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #7F3D98;
-            margin-bottom: 10px;
-        }
-
-        .issue-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .issue-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            background-color: #FAFAFA;
-            margin-bottom: 10px;
-            padding: 5px;
-            border-left: 4px solid #7F3D98;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-            .issue-item:hover {
-                background-color: #f0f0f0;
+            .custom-card:hover {
+                transform: translateY(-5px);
             }
-
-        .issue-title {
-            font-weight: bold;
-            color: #7F3D98;
-        }
-
-        .issue-sub {
-            font-size: 12px;
-            color: #444;
-        }
-
-        .total-issues {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .no-issues {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .add-issue-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #7F3D98;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            text-decoration: none;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-            transition: background 0.3s ease;
-        }
-
-            .add-issue-btn:hover {
-                background: #985BAF;
-            }
+     
     </style>
 </head>
 
 <body>
     <div class="dashboard-container">
-        <!-- Issues Section (Left 1/3) -->
-        <div class="issue-card">
-            <h2 class="section-title">Recent Issues</h2>
+        <div class="row g-4">
+            <!-- welcome text -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card" style="background-color: #F4F4F4">
+                    <div class="card-body">
+                        <h5 class="card-title">Hi, @Model.FirstName!</h5>
+                        <p class="card-text">Welcome to your Guidance Dashboard. </p>
+                        <p class="text-muted" id="currentDateTime"></p>
+                    </div>
+                </div>
+            </div>
 
-            <ul class="issue-list">
-                @if (Model.Any())
-                {
-                    foreach (var issue in Model.OrderByDescending(i => i.CreatedAt).Take(4))
-                    {
-                        <li class="issue-item" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
-                            <span class="issue-title">@issue.IssueTitle</span>
-                            <span class="issue-sub">@issue.Student.FirstName @issue.Student.LastName</span>
-                            <span class="issue-sub">@issue.CreatedAt.ToString("dd/MM/yyyy")</span>
-                        </li>
-                    }
-                    <p class="total-issues">Total Issues: @Model.Count()</p>
-                }
-                else
-                {
-                    <p class="no-issues">No active issues.</p>
-                }
-            </ul>
+            <!-- new issues -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">New Issues</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewIssuesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
 
-            <a href="@Url.Action("CreateIssue", "Issue")" class="add-issue-btn">+</a>
-        </div>
+            <!-- appointments -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">Appointments Today</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.AppointmentsTodayCount</p>
+                        <p>@Html.ActionLink("View more >", "Calendar", "GuidanceTeacher", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Reserved Space for Additional Panels -->
-        <div class="appointments-card">
-            <h2 class="section-title">Appointments for week</h2>
-            <div id="partialAppointments">
+            <!-- messages -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
+                        <p class="h2" style="color: #7F3D98">[0]</p>
+                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
 
+            <!-- announcements -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card" style="text-align:center">
+                    <div class="card-body">
+                        <h3 class="card-title" style="color: #7F3D98">New Announcements</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- metrics??????? -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">Metrics</h3>
+                        <p class="h2" style="color: #7F3D98">[PlaceHolder]</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Metrics", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        </div>
 </body>
 
 @section Scripts {
@@ -160,5 +112,26 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script>
         $('#partialAppointments').load("/GuidanceTeacher/AppointmentsForWeekPartial")
+
+
+        // script to dynamically show the current date and time on the dash
+        function updateClock() {
+            const now = new Date();
+            const formatted = now.toLocaleString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            document.getElementById('currentDateTime').innerText = formatted;
+        }
+        updateClock();
+
+        // updates the time every second
+        setInterval(updateClock, 1000);
     </script>
 }

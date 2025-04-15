@@ -297,6 +297,28 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            if (userManager.FindByName("financeLecturer@email.com") == null)
+            {
+                //if no then create him
+                financeLecturer = new Lecturer
+                {
+                    UserName = "financeLecturer@email.com",
+                    Email = "financeLecturer@email.com",
+                    FirstName = "Lenny",
+                    LastName = "Morgan",
+                    Street = "25 LA st",
+                    City = "London",
+                    Postcode = "E52 9UP",
+                    RegistredAt = DateTime.Now.AddYears(-3),
+                    EmailConfirmed = true,
+                };
+                //add jeff to users table
+                userManager.Create(financeLecturer, "123");
+                //assign it to the manager role
+                userManager.AddToRole(financeLecturer.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
             // Create a new class for finance students
             var financeClass = new Class
             {
@@ -1792,6 +1814,4 @@ namespace GuidanceTracker.Models
         }
     }
 }
-        }
-    }
-}
+       
