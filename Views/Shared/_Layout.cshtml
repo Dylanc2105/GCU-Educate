@@ -256,8 +256,15 @@
         }
         <a href="#" title="Messages"><i class="fas fa-comments"></i><span class="icon-title">Messages</span></a>
         <a href="@Url.Action("ViewPosts", "Post")" title="Posts"><i class="fas fa-scroll"></i><span class="icon-title">Posts</span></a>
-        <a href="@Url.Action("Calendar", "GuidanceTeacher")" title="Calendar"><i class="fas fa-calendar-alt"></i><span class="icon-title">Calendar</span></a>
-        <a href="@Url.Action("Index", "Metrics")" title="Metrics"><i class="fas fa-chart-bar"></i> <span class="icon-title">Metrics</span></a>
+        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+        {
+           <a href="@Url.Action("Calendar", "GuidanceTeacher")" title="Calendar"><i class="fas fa-calendar-alt"></i><span class="icon-title">Calendar</span></a>
+        }
+        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+        {
+            <a href="@Url.Action("Index", "Metrics")" title="Metrics"><i class="fas fa-chart-bar"></i> <span class="icon-title">Metrics</span></a>
+        }
+
 
     </div>
     <!-- Main content area -->

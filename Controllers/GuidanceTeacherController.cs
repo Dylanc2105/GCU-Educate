@@ -36,14 +36,18 @@ namespace GuidanceTracker.Controllers
             var user = db.GuidanceTeachers.Find(userId);
             var today = DateTime.Today;
 
+            // counts the posts that don't have a row in the PostRead table for the current user
+            var newAnnouncementsCount = db.Posts
+                .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
+                .Count();
+
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
-                //CurrentDateTime = DateTime.Now,
                 NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New).Count(),
                 //NewNotificationsCount = db.Notifications.Where(n => n.IsRead == false).Count(),
                 AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
-                //NewAnnouncementsCount = db.Announcements.Where(a => a.IsRead == false).Count()
+                NewAnnouncementsCount = newAnnouncementsCount
 
 
             };

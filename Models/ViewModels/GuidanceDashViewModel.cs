@@ -8,7 +8,6 @@ namespace GuidanceTracker.Models.ViewModels
 	public class GuidanceDashViewModel
 	{
 		public string FirstName { get; set; }
-		//public DateTime	CurrentDateTime { get; set; }
 		public int NewIssuesCount { get; set; }
 		public int NewNotificationsCount { get; set; }
 

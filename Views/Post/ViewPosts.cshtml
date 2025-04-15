@@ -143,6 +143,15 @@
             height: 20px;
             background: linear-gradient(transparent, white);
         }
+
+    .bg-new {
+        background-color: #7F3D98;
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.25em 0.5em;
+        border-radius: 0.5em;
+        margin-left: 0.5em;
+    }
 </style>
 
 <div class="posts-dashboard">
@@ -163,7 +172,12 @@
                     {
                         <div class="post-item">
                             <div class="post-content-wrapper">
-                                <div class="post-title">@post.Title</div>
+                                <div class="post-title">@post.Title
+                                    @if (!ViewBag.ReadPostIds.Contains(post.PostId))
+                                    {
+                                        <span class="badge bg-new">New</span>
+                                    }
+                                </div>
                                 <div class="post-content @(post.Content.Length > 300 ? "post-content-truncated" : "")">
                                     @if (post.Content.Length > 300)
                                     {

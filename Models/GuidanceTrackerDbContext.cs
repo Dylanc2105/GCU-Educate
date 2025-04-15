@@ -36,7 +36,7 @@ namespace GuidanceTracker.Models
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Timetable> Timetables { get; set; }
         public DbSet<Post> Posts { get; set; }
-
+        public DbSet<PostRead> PostReads { get; set; } 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -147,6 +147,19 @@ namespace GuidanceTracker.Models
                     m.MapLeftKey("PostId");
                     m.MapRightKey("ClassId");
                 });
+
+            // no action on for delete
+            modelBuilder.Entity<PostRead>()
+                .HasRequired(pr => pr.Post)
+                .WithMany()
+                .HasForeignKey(pr => pr.PostId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostRead>()
+                .HasRequired(pr => pr.User)
+                .WithMany()
+                .HasForeignKey(pr => pr.UserId)
+                .WillCascadeOnDelete(false);
 
         }
 

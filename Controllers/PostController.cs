@@ -240,6 +240,32 @@ namespace GuidanceTracker.Controllers
                 .OrderByDescending(p => p.PostDate)
                 .ToList();
 
+
+            // this is to check whether the user has read the post or not
+            var readPostIds = db.PostReads
+                .Where(pr => pr.UserId == currentUserId)
+                .Select(pr => pr.PostId)
+                .ToList();
+
+            var unreadPosts = posts
+                .Where(p => !readPostIds.Contains(p.PostId))
+                .ToList();
+            
+
+            // this loop is to automatically mark the posts as read when user visits the page
+            foreach (var unread in unreadPosts)
+            {
+                db.PostReads.Add(new PostRead
+                {
+                    PostId = unread.PostId,
+                    UserId = currentUserId,
+                    ReadOn = DateTime.Now
+                });
+            }
+            db.SaveChanges();
+            ViewBag.UnreadCount = 0;
+            ViewBag.ReadPostIds = readPostIds;
+
             return View(posts);
         }
 

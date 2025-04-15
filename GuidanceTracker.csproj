@@ -329,6 +329,7 @@
     <Compile Include="Models\Lecturer.cs" />
     <Compile Include="Models\MessageBoard.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\PostRead.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
     <Compile Include="Models\Appointment.cs" />
