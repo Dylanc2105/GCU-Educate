@@ -22,13 +22,12 @@ namespace GuidanceTracker.Controllers
         {
             var userId = User.Identity.GetUserId();
             var user = db.Lecturers.Find(userId);
-            var today = DateTime.Today;
-
+            
             // counts the posts that don't have a row in the PostRead table for the current user
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
 
             var newAnnouncementsCount = visiblePosts
-                .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId || pr.UserId == userId))
+                .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
 
             var model = new LecturerDashViewModel
