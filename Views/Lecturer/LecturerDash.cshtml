@@ -1,4 +1,4 @@
-﻿
+﻿@model GuidanceTracker.Models.ViewModels.LecturerDashViewModel
 @{
     ViewBag.Title = "Lecturer Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -55,7 +55,7 @@
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
                         <h3 class="card-title" style="color: #7F3D98">Active Issues</h3>
-                        <p class="h2" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
+                        <p class="h2" style="color: #7F3D98">[0]@*@Model.ActiveIssuesCount*@</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
@@ -89,9 +89,6 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     <script>
-        $('#partialAppointments').load("/GuidanceTeacher/AppointmentsForWeekPartial")
-
-
         // script to dynamically show the current date and time on the dash
         function updateClock() {
             const now = new Date();
