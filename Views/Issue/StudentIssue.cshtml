@@ -7,7 +7,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<h1 class="dashboard-title">Student Issue Center</h1> <!-- ✅ Updated Heading -->
+<h1 class="dashboard-title">Student Issue Center</h1> <!-- Updated Heading -->
 
 <div class="container mt-4">
     <!-- Class Selection Buttons -->
@@ -40,7 +40,7 @@
 <!-- Toggle for Active/Archived Issues -->
 <div id="issueList" class="mt-4" style="display: none;">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <h4>Student's Issues</h4> <!-- ✅ Updated Heading -->
+        <h4>Student's Issues</h4> <!--  Updated Heading -->
         <div class="form-check form-switch">
             <input class="form-check-input toggle-purple" type="checkbox" id="toggleArchived">
             <label class="form-check-label" for="toggleArchived">Show Archived Tickets</label>
@@ -57,9 +57,9 @@
 
         // Handle Class Button Click
         $(document).on("click", ".class-btn", function () {
-            var courseId = $(this).data("courseid"); // ✅ Correctly get the Class ID
+            var courseId = $(this).data("courseid"); // Correctly get the Class ID
 
-            if (!courseId) {  // ✅ Use the correct variable
+            if (!courseId) {  // Use the correct variable
                 alert("❌ Invalid Class ID!");
                 return;
             }
@@ -69,11 +69,11 @@
 
             console.log("Fetching students for Course ID:", courseId);
 
-            // ✅ Fetch students for selected course
+            // Fetch students for selected course
             $.ajax({
                 url: "/Issue/GetStudents",
                 type: "GET",
-                data: { classId: courseId }, // ✅ Ensure this matches backend parameter
+                data: { classId: courseId }, // Ensure this matches backend parameter
                 success: function (response) {
                     if (response.error) {
                         console.error("❌ Error:", response.error);

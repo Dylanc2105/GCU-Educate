@@ -63,6 +63,7 @@ namespace GuidanceTracker.Models
             UserManager<User> userManager = new UserManager<User>(new UserStore<User>(context));
 
             GuidanceTeacher guidance = null;
+            GuidanceTeacher guidance2 = null;
             GuidanceTeacher newGuidanceTeacher = null;
             CurriculumHead curriculumHead1 = null;
             Lecturer lecturer1 = null;
@@ -79,7 +80,7 @@ namespace GuidanceTracker.Models
             Student student7 = null;
             Student student8 = null;
             Student student9 = null;
-
+            Student financeStudent2 = null;
             //create guidance teacher
             //first check if admin exists in db
             if (userManager.FindByName("guidance@email.com") == null)
@@ -114,7 +115,7 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
-            if (userManager.FindByName("newGuidance@email.com") == null)
+            if (userManager.FindByName("guidance1@email.com") == null)
             {
                 newGuidanceTeacher = new GuidanceTeacher
                 {
@@ -133,6 +134,27 @@ namespace GuidanceTracker.Models
                 userManager.Create(newGuidanceTeacher, "123");
                 //assign it to the guidance teacher role
                 userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
+            }
+
+            if (userManager.FindByName("guidance2@email.com") == null)
+            {
+                guidance2 = new GuidanceTeacher
+                {
+                    UserName = "guidance2@email.com",
+                    Email = "guidance2@email.com",
+                    FirstName = "james",
+                    LastName = "dog",
+                    Street = "35 Washington st",
+                    City = "London",
+                    Postcode = "E12 8UP",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+
+                //add admin to users table
+                userManager.Create(guidance2, "123");
+                //assign it to the guidance teacher role
+                userManager.AddToRole(guidance2.Id, "GuidanceTeacher");
             }
 
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
@@ -1207,9 +1229,10 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
             // Create a second finance student
+            
             if (userManager.FindByName("finstudent2@email.com") == null)
             {
-                var financeStudent2 = new Student
+                financeStudent2 = new Student
                 {
                     UserName = "finstudent2@email.com",
                     Email = "finstudent2@email.com",
@@ -1217,7 +1240,7 @@ namespace GuidanceTracker.Models
                     LastName = "Morgan",
                     Street = "18 Commerce Road",
                     City = "Edinburgh",
-                    Postcode = "EH6 5LT",
+                    Postcode = "EH7 4QP",
                     RegistredAt = DateTime.Now.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = newGuidanceTeacher.Id,
@@ -1228,6 +1251,7 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(financeStudent2.Id, "Student");
             }
             context.SaveChanges();
+            
 
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
@@ -1640,6 +1664,33 @@ namespace GuidanceTracker.Models
             context.Issues.Add(issue15);
             context.SaveChanges();
 
+            var issue16 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student is consistently 40 minutes late to class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = financeLecturer.Id,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                StudentId = financeStudent.Id
+            };
+            context.Issues.Add(issue16);
+            context.SaveChanges();
+
+            var issue17 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student is consistently talking class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = financeLecturer.Id,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                StudentId = financeStudent2.Id
+            };
+            context.Issues.Add(issue17);
+            context.SaveChanges();
 
             // Create appointments
             var session1 = new Appointment

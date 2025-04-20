@@ -47,7 +47,7 @@ namespace GuidanceTracker.Controllers
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
-                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New).Count(),
+                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
                 //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
                 AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount
