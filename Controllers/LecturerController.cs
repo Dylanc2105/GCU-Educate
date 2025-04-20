@@ -25,17 +25,18 @@ namespace GuidanceTracker.Controllers
             
             // counts the posts that don't have a row in the PostRead table for the current user
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
-
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
+                .Count();
+            var activeIssuesCount = db.Issues
+                .Where(i => (i.IssueStatus == IssueStatus.New || i.IssueStatus == IssueStatus.InProgress)
+                && i.LecturerId == userId)
                 .Count();
 
             var model = new LecturerDashViewModel
             {
                 FirstName = user.FirstName,
-                ActiveIssuesCount = db.Issues.Where(i => (i.IssueStatus == IssueStatus.New && i.IssueStatus == IssueStatus.InProgress)
-                && i.LecturerId == userId)
-                .Count(),
+                ActiveIssuesCount = activeIssuesCount,
                 //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount
 
