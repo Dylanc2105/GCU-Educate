@@ -148,7 +148,7 @@
             {
                 <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
                     <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
-                    <div class="issue-update">Update to @issue.IssueTitle.ToString()</div>
+                    <div class="issue-update">@issue.IssueTitle.ToString()</div>
                     <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
                 </div>
             }

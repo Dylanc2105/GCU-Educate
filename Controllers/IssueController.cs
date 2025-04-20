@@ -51,6 +51,10 @@ namespace GuidanceTracker.Controllers
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {
+            // karina: updated the create issue action
+            // so that dropdowns only show the associated classes, units and students
+            var userId = User.Identity.GetUserId();
+
             var model = new CreateIssueViewModel
             {
                 Classes = db.Classes.ToList(),
@@ -59,7 +63,36 @@ namespace GuidanceTracker.Controllers
                 SelectedStudentIds = new List<string>() 
             };
 
+            // check if the user is a lecturer or guidance teacher
+            var lecturer = db.Lecturers
+                .Include(l => l.Units.Select(u => u.Classes))
+                .FirstOrDefault(l => l.Id == userId);
+
+            if (lecturer != null)
+            {
+                // get unique classes from lecturer's units
+                var classIds = lecturer.Units
+                    .SelectMany(u => u.Classes)
+                    .Select(c => c.ClassId)
+                    .Distinct()
+                    .ToList();
+
+                model.Classes = db.Classes
+                    .Where(c => classIds.Contains(c.ClassId))
+                    .ToList();
+            }
+            else
+            {
+                // 
+                var guidanceTeacher = db.GuidanceTeachers
+                    .Include(gt => gt.Classes)
+                    .FirstOrDefault(gt => gt.Id == userId);
+
+                model.Classes = guidanceTeacher?.Classes.ToList() ?? new List<Class>();
+            }
+
             return View(model);
+
         }
 
 
@@ -114,7 +147,7 @@ namespace GuidanceTracker.Controllers
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                         LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
-                        GuidanceTeacherId = student.GuidanceTeacherId,
+                        GuidanceTeacherId = student.GuidanceTeacherId, // karina: issues are correctly assigned to the guidance teacher
                         Comments = new List<Comment>()
                     };
 
