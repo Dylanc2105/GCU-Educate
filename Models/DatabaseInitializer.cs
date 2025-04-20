@@ -114,7 +114,7 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
-            if (userManager.FindByName("newGuidance@email.com") == null)
+            if (userManager.FindByName("guidance1@email.com") == null)
             {
                 newGuidanceTeacher = new GuidanceTeacher
                 {

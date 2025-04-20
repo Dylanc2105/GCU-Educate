@@ -22,8 +22,28 @@ namespace GuidanceTracker.Controllers
         // GET: Issues Dashboard
         public ActionResult Index()
         {
-            var tickets = db.Issues.Include("Student").ToList();
-            return View(tickets);
+            // karina: updated the issue index action
+            // index action shows only issues that the logged in user has raised(lecturer) or has been issued to(guidance teachers)
+            // it also adds the issues that the lecturer leaves comments for, so they can track those too
+            var currentUserId = User.Identity.GetUserId();
+
+            // get all issue IDs the user has commented on
+            var commentedIssueIds = db.Comments
+                .Where(c => c.UserId == currentUserId)
+                .Select(c => c.IssueId);
+
+            // get all issues where the user is the lecturer, guidance teacher, or commented
+            var issues = db.Issues
+                .Include("Student")
+                .Include("Comments")
+                .Where(i =>
+                    i.LecturerId == currentUserId ||
+                    i.GuidanceTeacherId == currentUserId ||
+                    commentedIssueIds.Contains(i.IssueId)
+                )
+                .ToList();
+
+            return View(issues);
         }
 
         // GET: Issue/CreateIssue
