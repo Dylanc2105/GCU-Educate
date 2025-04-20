@@ -35,6 +35,8 @@ namespace GuidanceTracker.Controllers
             // get all issues where the user is the lecturer, guidance teacher, or commented
             var issues = db.Issues
                 .Include("Student")
+                .Include("Lecturer")
+                .Include("GuidanceTeacher")
                 .Include("Comments")
                 .Where(i =>
                     i.LecturerId == currentUserId ||
@@ -112,7 +114,7 @@ namespace GuidanceTracker.Controllers
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                         LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
-                        GuidanceTeacherId = teacherId,
+                        GuidanceTeacherId = student.GuidanceTeacherId,
                         Comments = new List<Comment>()
                     };
 
