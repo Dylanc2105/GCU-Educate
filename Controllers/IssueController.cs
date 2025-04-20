@@ -236,17 +236,56 @@ namespace GuidanceTracker.Controllers
         }
 
 
-        // ✅ Load the Student Issue Selection Page (For Adding Issues)
+        // Load the Student Issue Selection Page (For Adding Issues)
         public ActionResult StudentIssue()
         {
-            // Fetch classes from the database
-            var classes = db.Classes.Select(c => new ClassViewModel
-            {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName
-            }).ToList();
+            // karina: updating the action to load only the classes associated with the logged in user
+            // get classes from the database
+            var userId = User.Identity.GetUserId();
+            List<ClassViewModel> classList = new List<ClassViewModel>();
 
-            return View(classes); // Pass the list of classes, not CreateIssueViewModel
+            // get the lecturer and include the units and classes
+            var lecturer = db.Lecturers
+                .Include(l => l.Units.Select(u => u.Classes))
+                .FirstOrDefault(l => l.Id == userId);
+
+            if (lecturer != null)
+            {
+                // get the classes from the lecturer's units
+                var classIds = lecturer.Units
+                    .SelectMany(u => u.Classes)
+                    .Select(c => c.ClassId)
+                    .Distinct();
+
+                classList = db.Classes
+                    .Where(c => classIds.Contains(c.ClassId))
+                    .Select(c => new ClassViewModel
+                    {
+                        ClassId = c.ClassId,
+                        ClassName = c.ClassName
+                    })
+                    .ToList();
+            }
+            else
+            {
+                // get the logged in guidance teacher and include their classes
+                var guidanceTeacher = db.GuidanceTeachers
+                    .Include(gt => gt.Classes)
+                    .FirstOrDefault(gt => gt.Id == userId);
+
+                if (guidanceTeacher != null)
+                {
+                    classList = guidanceTeacher.Classes
+                        .Select(c => new ClassViewModel
+                        {
+                            ClassId = c.ClassId,
+                            ClassName = c.ClassName
+                        })
+                        .ToList();
+                }
+            }
+
+            return View(classList);
         }
 
         public ActionResult AllIssues(string sortOrder, string issueType, string searchString)
