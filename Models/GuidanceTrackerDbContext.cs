@@ -30,7 +30,15 @@ namespace GuidanceTracker.Models
         public DbSet<Department> Departments { get; set; }
         public DbSet<ArchivedTicket> ArchivedTickets { get; set; }
         public DbSet<Class> Classes { get; set; }
-        
+
+        public DbSet<SimpleFeedback> SimpleFeedbacks { get; set; }
+
+        public DbSet<DetailedFeedback> DetailedFeedbacks { get; set; }
+
+        public DbSet<RequestedDetailedForm> RequestedDetailedForms { get; set; }
+
+        public DbSet<GuidanceSession> GuidanceSessions { get; set; }
+
         public DbSet<MessageBoard> MessageBoards { get; set; }
         public DbSet<ArchivedComment> ArchivedComments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
