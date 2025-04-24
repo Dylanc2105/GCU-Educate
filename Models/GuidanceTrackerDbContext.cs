@@ -30,7 +30,7 @@ namespace GuidanceTracker.Models
         public DbSet<Department> Departments { get; set; }
         public DbSet<ArchivedTicket> ArchivedTickets { get; set; }
         public DbSet<Class> Classes { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
+        
         public DbSet<MessageBoard> MessageBoards { get; set; }
         public DbSet<ArchivedComment> ArchivedComments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
@@ -38,7 +38,7 @@ namespace GuidanceTracker.Models
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostRead> PostReads { get; set; } 
         public DbSet<Message> Messages { get; set; }
-public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -70,9 +70,7 @@ public DbSet<Conversation> Conversations { get; set; }
                 .WithOptionalDependent(c => c.Department);
 
             // Configure Feedback-Student relationship as one-to-one
-            modelBuilder.Entity<Student>()
-                .HasOptional(s => s.Feedback)    // Student can have one optional Feedback
-                .WithRequired(f => f.Student);   // Feedback must have one Student
+             // Feedback must have one Student
                                                  // disables cascade delete for the Appontments and USers relationship
             modelBuilder.Entity<Appointment>()
                 .HasRequired(a => a.Student)

@@ -27,9 +27,7 @@ namespace GuidanceTracker.Models
 
         public string FeedbackId { get; set; }
 
-        [ForeignKey("FeedbackId")]
-
-        public virtual Feedback Feedback { get; set; }
+        
 
         public ICollection<MessageBoard> MessageBoards { get; set; }
         public ICollection<Appointment> Appointments { get; set; }
