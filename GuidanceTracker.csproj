@@ -307,6 +307,7 @@
     <Compile Include="Controllers\LecturerController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MetricsController.cs" />
+    <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\ResetPasswordController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\IssueController.cs" />
@@ -329,6 +330,8 @@
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
     <Compile Include="Models\MessageBoard.cs" />
+    <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\PostRead.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
     <Compile Include="Models\Appointment.cs" />
@@ -339,9 +342,13 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ViewModels\ClassViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateIssueViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreatePostViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateStudentViewModel.cs" />
     <Compile Include="Models\ViewModels\ForgotPasswordViewModel.cs" />
+    <Compile Include="Models\ViewModels\GuidanceDashViewModel.cs" />
+    <Compile Include="Models\ViewModels\LecturerDashViewModel.cs" />
     <Compile Include="Models\ViewModels\MetricsViewModel.cs" />
+    <Compile Include="Models\ViewModels\StudentDashViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -2576,6 +2583,12 @@
     <Content Include="Views\GuidanceTeacher\Calendar.cshtml" />
     <Content Include="Views\GuidanceTeacher\_AppointmentsForWeek.cshtml" />
     <Content Include="Views\GuidanceTeacher\_AppointmentsForDay.cshtml" />
+    <Content Include="Views\Metrics\Index.cshtml" />
+    <Content Include="Views\Post\ViewPosts.cshtml" />
+    <Content Include="Views\Post\CreateNewPost.cshtml" />
+    <Content Include="Views\Post\ViewMyPosts.cshtml" />
+    <Content Include="Views\Post\Delete.cshtml" />
+    <Content Include="Views\Post\Edit.cshtml" />
     <Content Include="Views\GuidanceSession\GuidanceSessionsForWeek.cshtml" />
     <Content Include="Views\Appointment\_AppointmentsForSession.cshtml" />
     <Content Include="Views\Issue\IssuesForClasses.cshtml" />

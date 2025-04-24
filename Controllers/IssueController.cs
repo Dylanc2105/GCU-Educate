@@ -22,8 +22,30 @@ namespace GuidanceTracker.Controllers
         // GET: Issues Dashboard
         public ActionResult Index()
         {
-            var tickets = db.Issues.Include("Student").ToList();
-            return View(tickets);
+            // karina: updated the issue index action
+            // index action shows only issues that the logged in user has raised(lecturer) or has been issued to(guidance teachers)
+            // it also adds the issues that the lecturer leaves comments for, so they can track those too
+            var currentUserId = User.Identity.GetUserId();
+
+            // get all issue IDs the user has commented on
+            var commentedIssueIds = db.Comments
+                .Where(c => c.UserId == currentUserId)
+                .Select(c => c.IssueId);
+
+            // get all issues where the user is the lecturer, guidance teacher, or commented
+            var issues = db.Issues
+                .Include("Student")
+                .Include("Lecturer")
+                .Include("GuidanceTeacher")
+                .Include("Comments")
+                .Where(i =>
+                    i.LecturerId == currentUserId ||
+                    i.GuidanceTeacherId == currentUserId ||
+                    commentedIssueIds.Contains(i.IssueId)
+                )
+                .ToList();
+
+            return View(issues);
         }
 
         public ActionResult IssuesForClasses()
@@ -44,6 +66,10 @@ namespace GuidanceTracker.Controllers
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {
+            // karina: updated the create issue action
+            // so that dropdowns only show the associated classes, units and students
+            var userId = User.Identity.GetUserId();
+
             var model = new CreateIssueViewModel
             {
                 Classes = db.Classes.ToList(),
@@ -52,7 +78,36 @@ namespace GuidanceTracker.Controllers
                 SelectedStudentIds = new List<string>() 
             };
 
+            // check if the user is a lecturer or guidance teacher
+            var lecturer = db.Lecturers
+                .Include(l => l.Units.Select(u => u.Classes))
+                .FirstOrDefault(l => l.Id == userId);
+
+            if (lecturer != null)
+            {
+                // get unique classes from lecturer's units
+                var classIds = lecturer.Units
+                    .SelectMany(u => u.Classes)
+                    .Select(c => c.ClassId)
+                    .Distinct()
+                    .ToList();
+
+                model.Classes = db.Classes
+                    .Where(c => classIds.Contains(c.ClassId))
+                    .ToList();
+            }
+            else
+            {
+                // 
+                var guidanceTeacher = db.GuidanceTeachers
+                    .Include(gt => gt.Classes)
+                    .FirstOrDefault(gt => gt.Id == userId);
+
+                model.Classes = guidanceTeacher?.Classes.ToList() ?? new List<Class>();
+            }
+
             return View(model);
+
         }
 
 
@@ -107,7 +162,7 @@ namespace GuidanceTracker.Controllers
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                         LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
-                        GuidanceTeacherId = teacherId,
+                        GuidanceTeacherId = student.GuidanceTeacherId, // karina: issues are correctly assigned to the guidance teacher
                         Comments = new List<Comment>()
                     };
 
@@ -196,17 +251,56 @@ namespace GuidanceTracker.Controllers
         }
 
 
-        // ✅ Load the Student Issue Selection Page (For Adding Issues)
+        // Load the Student Issue Selection Page (For Adding Issues)
         public ActionResult StudentIssue()
         {
-            // Fetch classes from the database
-            var classes = db.Classes.Select(c => new ClassViewModel
-            {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName
-            }).ToList();
+            // karina: updating the action to load only the classes associated with the logged in user
+            // get classes from the database
+            var userId = User.Identity.GetUserId();
+            List<ClassViewModel> classList = new List<ClassViewModel>();
 
-            return View(classes); // Pass the list of classes, not CreateIssueViewModel
+            // get the lecturer and include the units and classes
+            var lecturer = db.Lecturers
+                .Include(l => l.Units.Select(u => u.Classes))
+                .FirstOrDefault(l => l.Id == userId);
+
+            if (lecturer != null)
+            {
+                // get the classes from the lecturer's units
+                var classIds = lecturer.Units
+                    .SelectMany(u => u.Classes)
+                    .Select(c => c.ClassId)
+                    .Distinct();
+
+                classList = db.Classes
+                    .Where(c => classIds.Contains(c.ClassId))
+                    .Select(c => new ClassViewModel
+                    {
+                        ClassId = c.ClassId,
+                        ClassName = c.ClassName
+                    })
+                    .ToList();
+            }
+            else
+            {
+                // get the logged in guidance teacher and include their classes
+                var guidanceTeacher = db.GuidanceTeachers
+                    .Include(gt => gt.Classes)
+                    .FirstOrDefault(gt => gt.Id == userId);
+
+                if (guidanceTeacher != null)
+                {
+                    classList = guidanceTeacher.Classes
+                        .Select(c => new ClassViewModel
+                        {
+                            ClassId = c.ClassId,
+                            ClassName = c.ClassName
+                        })
+                        .ToList();
+                }
+            }
+
+            return View(classList);
         }
 
         public ActionResult AllIssues(string sortOrder, string issueType, string searchString)
