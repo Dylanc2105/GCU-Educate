@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Feedback Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-inbox"></i> Feedback Dashboard</h2>
+            <p class="text-muted">Manage and view feedback from your students</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4><i class="fas fa-comment"></i> Simple Feedback</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="@Url.Action("ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback")"
+                           class="list-group-item list-group-item-action" style="border-left: 4px solid #7F3D98;">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>Unread Simple Feedback</h5>
+                                <span class="badge badge-pill" style="background-color: #7F3D98; color: white;">@ViewBag.UnreadSimpleFeedbackCount</span>
+                            </div>
+                            <p class="mb-1">View new feedback submitted by students</p>
+                        </a>
+
+                        <a href="@Url.Action("ViewReadReceivedSimpleFeedbacks", "DetailedFeedback")"
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>Previously Read Simple Feedback</h5>
+                                <span class="badge badge-pill" style="background-color: #7F3D98; color: white;">@ViewBag.ReadSimpleFeedbackCount</span>
+                            </div>
+                            <p class="mb-1">Review feedback you've already seen</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4><i class="fas fa-clipboard-list"></i> Detailed Feedback</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="@Url.Action("ViewUnreadReceivedDetailedFeedbacks", "DetailedFeedback")"
+                           class="list-group-item list-group-item-action" style="border-left: 4px solid #7F3D98;">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>Unread Detailed Feedback</h5>
+                                <span class="badge badge-pill" style="background-color: #7F3D98; color: white;">@ViewBag.UnreadDetailedFeedbackCount</span>
+                            </div>
+                            <p class="mb-1">View in-depth feedback you haven't read yet</p>
+                        </a>
+
+                        <a href="@Url.Action("ViewReadReceivedDetailedFeedbacks", "DetailedFeedback")"
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>Previously Read Detailed Feedback</h5>
+                                <span class="badge badge-pill" style="background-color: #7F3D98; color: white;">@ViewBag.ReadDetailedFeedbackCount</span>
+                            </div>
+                            <p class="mb-1">Review detailed feedback you've already seen</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4><i class="fas fa-tools"></i> Actions</h4>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("CreateDetailedFeedbackRequest", "DetailedFeedback")"
+                       class="btn btn-lg" style="background-color: #7F3D98; color: white; width: 100%;">
+                        <i class="fas fa-plus"></i> Request Detailed Feedback
+                    </a>
+                    <p class="text-muted mt-2">Send a request for detailed feedback to a class of students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

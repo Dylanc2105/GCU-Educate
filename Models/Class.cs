@@ -27,6 +27,7 @@ namespace GuidanceTracker.Models
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
         public virtual ICollection<Timetable> Timetables { get; set; }
 
+        public virtual ICollection<RequestedDetailedForm> RequestedDetailedForms { get; set; }
         public virtual ICollection<Unit> Units { get; set; }
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public virtual ICollection<Student> Students { get; set; }
