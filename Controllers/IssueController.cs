@@ -26,6 +26,21 @@ namespace GuidanceTracker.Controllers
             return View(tickets);
         }
 
+        public ActionResult IssuesForClasses()
+        {
+            var teacherId = User.Identity.GetUserId();;
+
+            var issuesByClass = db.Issues
+            .Where(i => i.GuidanceTeacherId == teacherId) // get issues only where guidance techer is guidance teacher
+            .Include(i => i.Student) // Ensure Student is loaded
+            .Include(i => i.Student.Class) // Ensure Class is loaded
+            .GroupBy(i => i.Student.Class)
+            .OrderBy(g => g.Key.ClassName) // Assuming your Class model has a ClassName property
+            .ToList();
+
+            return View(issuesByClass);
+        }
+
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {

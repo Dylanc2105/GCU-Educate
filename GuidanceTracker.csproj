@@ -301,6 +301,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\GuidanceSessionController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LecturerController.cs" />
@@ -323,6 +324,7 @@
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Enrollment.cs" />
     <Compile Include="Models\Feedback.cs" />
+    <Compile Include="Models\GuidanceSession.cs" />
     <Compile Include="Models\GuidanceTeacher.cs" />
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
@@ -1531,7 +1533,6 @@
     <Content Include="Views\Issue\ViewIssue.cshtml" />
     <Content Include="Views\Appointment\Create.cshtml" />
     <Content Include="Views\Appointment\Edit.cshtml" />
-    <Content Include="Views\Comment\HHH.cshtml" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -2575,10 +2576,14 @@
     <Content Include="Views\GuidanceTeacher\Calendar.cshtml" />
     <Content Include="Views\GuidanceTeacher\_AppointmentsForWeek.cshtml" />
     <Content Include="Views\GuidanceTeacher\_AppointmentsForDay.cshtml" />
-    <Content Include="Views\Metrics\Index.cshtml" />
+    <Content Include="Views\GuidanceSession\GuidanceSessionsForWeek.cshtml" />
+    <Content Include="Views\Appointment\_AppointmentsForSession.cshtml" />
+    <Content Include="Views\Issue\IssuesForClasses.cshtml" />
+    <Content Include="Views\Appointment\AppointmentsToBeApproved.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Comment\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+
+@{
+    ViewBag.Title = "Appointments To Be Approved";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
+            <th>Student Name</th>
+            <th>Class</th>
+            <th>@Html.DisplayNameFor(model => model.AppointmentStatus)</th>
+            <th>@Html.DisplayNameFor(model => model.AppointmentNotes)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                <td>@item.Student.FirstName @item.Student.LastName</td>
+                <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
+                <td>@Html.DisplayFor(modelItem => item.AppointmentStatus)</td>
+                <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>
+                <td>
+                    @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
+                    {
+                        @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success" })
+                        <span></span> @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning" })
+                        <span></span> @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger" })
+                    }
+                    else if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Rescheduled)
+                    {
+                        @Html.ActionLink("Reschedule", "RescheduleAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-warning" })
+                        @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger" })
+                    }
+                    else if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Cancelled)
+                    {
+                        @Html.ActionLink("Reinstate", "ReinstateAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-info" })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

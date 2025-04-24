@@ -33,6 +33,7 @@ namespace GuidanceTracker.Models
 
         public ICollection<MessageBoard> MessageBoards { get; set; }
         public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Issue> Issues { get; set; }
 
     }
 }

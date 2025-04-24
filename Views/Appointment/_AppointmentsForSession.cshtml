@@ -1,0 +1,69 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+
+<h4>
+    <strong>@ViewBag.Class</strong>
+</h4>
+<h4>
+    <strong>Time:</strong> @ViewBag.GSTime
+</h4>
+<h4>
+    <strong>Room:</strong> @ViewBag.Room
+</h4>
+
+    @if (Model.Count() != 0)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AppointmentNotes)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Student.FirstName)
+                        @Html.DisplayFor(modelItem => item.Student.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentNotes)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-purple small" })
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p><strong>No appointments assigned for this session</strong></p>
+    }
+
+
+    <style>
+        .btn-purple {
+            background-color: #7F3D98;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-purple.small {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+
+            .btn-purple:hover {
+                background-color: #985BAF;
+            }
+    </style>
+

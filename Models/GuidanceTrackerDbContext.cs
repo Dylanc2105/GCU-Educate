@@ -15,6 +15,7 @@ namespace GuidanceTracker.Models
         public GuidanceTrackerDbContext():base("guidanceTrackerDB", throwIfV1Schema: false)
         {
             Database.SetInitializer(new DatabaseInitializer());
+     
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<GuidanceTrackerDbContext, Migrations.Configuration>());
         }
 
@@ -35,6 +36,7 @@ namespace GuidanceTracker.Models
         public DbSet<ArchivedComment> ArchivedComments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Timetable> Timetables { get; set; }
+        public DbSet<GuidanceSession> GuidanceSessions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
