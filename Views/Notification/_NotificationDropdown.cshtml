@@ -1,0 +1,18 @@
+﻿@model List<GuidanceTracker.Models.Notification>
+
+@foreach (var notification in Model)
+{
+    <div id="notification-@notification.Id" class="dropdown-item d-flex justify-content-between @(notification.IsRead ? "" : "font-weight-bold")">
+        <a href="javascript:void(0);" onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')" class="flex-grow-1 text-truncate">
+            @notification.Message
+        </a>
+        <small class="text-muted ml-2" style="white-space: nowrap;">
+            @notification.CreatedAt.ToString("h:mm tt")
+        </small>
+    </div>
+
+}
+@if (!Model.Any())
+{
+    <span class="dropdown-item text-muted">No notifications</span>
+}

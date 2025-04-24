@@ -187,8 +187,23 @@ namespace GuidanceTracker.Controllers
                 }
 
                 db.Posts.Add(post);
+                // 
+                var users = db.Users.ToList();
                 try
                 {
+                    foreach (var user in users)
+                    {
+                        db.Notifications.Add(new Notification
+                        {
+                            UserId = user.Id,
+                            Type = NotificationType.Announcement,
+                            Message = $"New announcement: {post.Title}",
+                            RedirectUrl = "/Post/ViewPosts",
+                            CreatedAt = DateTime.Now,
+                            IsRead = false
+                        });
+                    }
+
                     db.SaveChanges();
                     return RedirectToAction("ViewPosts");
                 }

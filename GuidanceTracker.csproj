@@ -303,6 +303,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\DetailedFeedbackController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SimpleFeedbackController.cs" />
     <Compile Include="Controllers\GuidanceSessionController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
@@ -335,6 +336,7 @@
     <Compile Include="Models\Lecturer.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageBoard.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostRead.cs" />
     <Compile Include="Models\RequestedDetailedForm.cs" />
@@ -2617,6 +2619,7 @@
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
     <Content Include="Views\Message\Index.cshtml" />
+    <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
