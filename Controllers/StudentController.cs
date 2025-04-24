@@ -22,11 +22,15 @@ namespace GuidanceTracker.Controllers
             var userId = User.Identity.GetUserId();
             var user = db.Students.Find(userId);
 
-            // counts the posts that don't have a row in the PostRead table for the current user
+            // Count unread announcements
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
-
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
+                .Count();
+
+            // ✅ Count unread messages for student
+            var unreadMessagesCount = db.Messages
+                .Where(m => m.ReceiverId == userId && !m.IsRead)
                 .Count();
 
             var model = new StudentDashViewModel
@@ -35,11 +39,10 @@ namespace GuidanceTracker.Controllers
                 AppointmentsTodayCount = db.Appointments
                     .Where(a => a.StudentId == userId && DbFunctions.TruncateTime(a.AppointmentDate) == DateTime.Today)
                     .Count(),
-                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
-                NewAnnouncementsCount = newAnnouncementsCount
-
-
+                NewAnnouncementsCount = newAnnouncementsCount,
+                NewMessagesCount = unreadMessagesCount // ✅ Add this to the view model
             };
+
             return View(model);
         }
 
@@ -126,3 +129,5 @@ namespace GuidanceTracker.Controllers
         }
     }
 }
+
+    

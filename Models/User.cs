@@ -9,6 +9,7 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System.Collections.Generic;
 
 namespace GuidanceTracker.Models
 {
@@ -30,6 +31,12 @@ namespace GuidanceTracker.Models
         public string ResetCode { get; set; } // Stores the 8-digit reset code
         public DateTime? ResetCodeExpiry { get; set; } // Expiration time of reset code
 
+        // Messaging relationships
+        public virtual ICollection<Message> SentMessages { get; set; }
+        public virtual ICollection<Message> ReceivedMessages { get; set; }
+
+        public virtual ICollection<Conversation> ConversationsAsUserOne { get; set; }
+        public virtual ICollection<Conversation> ConversationsAsUserTwo { get; set; }
 
 
         private ApplicationUserManager userManager;

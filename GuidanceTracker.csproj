@@ -302,6 +302,7 @@
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\DetailedFeedbackController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\SimpleFeedbackController.cs" />
     <Compile Include="Controllers\GuidanceSessionController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
@@ -321,6 +322,7 @@
     <Compile Include="Models\ArchivedTicket.cs" />
     <Compile Include="Models\Class.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Conversation.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CurriculumHead.cs" />
     <Compile Include="Models\DatabaseInitializer.cs" />
@@ -331,6 +333,7 @@
     <Compile Include="Models\GuidanceTeacher.cs" />
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageBoard.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostRead.cs" />
@@ -2614,6 +2617,7 @@
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
     <Content Include="Views\Student\RequestAppointment.cshtml" />
+    <Content Include="Views\Message\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

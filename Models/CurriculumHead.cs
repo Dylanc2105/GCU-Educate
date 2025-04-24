@@ -14,8 +14,5 @@ namespace GuidanceTracker.Models
         // Navigation property
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
-
-        // Navigation properties
-        public virtual ICollection<SimpleFeedback> Feedbacks { get; set; }
     }
 }

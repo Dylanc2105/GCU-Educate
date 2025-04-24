@@ -75,8 +75,8 @@
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
                         <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
-                        <p class="h2" style="color: #7F3D98">[0]</p>
-                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                        <p class="h2" style="color: #7F3D98">@Model.UnreadMessagesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
             </div>
