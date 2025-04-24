@@ -1,0 +1,85 @@
+﻿@model GuidanceTracker.Models.SimpleFeedback
+@{
+    ViewBag.Title = "Feedback Details";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Feedback Details</h2>
+            <p class="text-muted">Viewing detailed information about this feedback</p>
+        </div>
+        <div class="col-auto">
+            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7F3D98; ">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header" style="background-color: #7F3D98; color: white;">
+            <h4>@Model.FeedbackTitle</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Student</dt>
+                        <dd class="col-sm-8">@Model.Student.FirstName @Model.Student.LastName</dd>
+
+                        <dt class="col-sm-4">Unit</dt>
+                        <dd class="col-sm-8">@(Model.Unit?.UnitName ?? "Not specified")</dd>
+
+                        <dt class="col-sm-4">Date Submitted</dt>
+                        <dd class="col-sm-8">@Model.DateOfCreation.ToString("MMMM d, yyyy")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Guidance Teacher</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.GuidanceTeacher != null)
+                            {
+                                <span>@Model.GuidanceTeacher.FirstName @Model.GuidanceTeacher.LastName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not sent</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Curriculum Head</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.CurriculumHead != null)
+                            {
+                                <span>@Model.CurriculumHead.FirstName @Model.CurriculumHead.LastName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not sent</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h5>Feedback Content</h5>
+                <div style="background-color: #f2e9ff; padding: 15px; border-radius: 5px;">
+                    <p>@Model.FeedbackContent</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="mt-4 mb-5 text-center">
+        <a href="@Url.Action("Index", "SimpleFeedback")" class="btn btn-outline-secondary mr-2">
+            <i class="fas fa-list"></i> Back to List*@
+        </a>
+        @*<a href="@Url.Action("DeleteSimpleFeedback", "SimpleFeedback", new { id = Model.FeedbackId })"
+           class="btn btn-outline-danger"
+           onclick="return confirm('Are you sure you want to delete this feedback?');">
+            <i class="fas fa-trash"></i> Delete Feedback
+        </a>*@
+    </div>
+@*</div>*@

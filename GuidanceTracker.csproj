@@ -301,6 +301,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\DetailedFeedbackController.cs" />
+    <Compile Include="Controllers\SimpleFeedbackController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LecturerController.cs" />
@@ -322,14 +324,20 @@
     <Compile Include="Models\CurriculumHead.cs" />
     <Compile Include="Models\DatabaseInitializer.cs" />
     <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\DetailedFeedback.cs" />
     <Compile Include="Models\Enrollment.cs" />
-    <Compile Include="Models\Feedback.cs" />
+    <Compile Include="Models\RequestedDetailedForm.cs" />
+    <Compile Include="Models\SimpleFeedback.cs" />
     <Compile Include="Models\GuidanceTeacher.cs" />
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
     <Compile Include="Models\MessageBoard.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostRead.cs" />
+    <Compile Include="Models\ViewModels\FeedbackViewModels\CreateDetailedFeedbackViewModel.cs" />
+    <Compile Include="Models\ViewModels\FeedbackViewModels\ReceivedFeedbackDashViewModel.cs" />
+    <Compile Include="Models\ViewModels\FeedbackViewModels\RequestedDetailedFeedbackViewModel.cs" />
+    <Compile Include="Models\ViewModels\FeedbackViewModels\SimpleStudentFeedbackViewModel.cs" />
     <Compile Include="Models\Unit.cs" />
     <Compile Include="Models\ResetPasswordWithCodeViewModel.cs" />
     <Compile Include="Models\Appointment.cs" />
@@ -2588,6 +2596,19 @@
     <Content Include="Views\Post\ViewMyPosts.cshtml" />
     <Content Include="Views\Post\Delete.cshtml" />
     <Content Include="Views\Post\Edit.cshtml" />
+    <Content Include="Views\SimpleFeedback\CreateSimpleFeedback.cshtml" />
+    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
+    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
+    <Content Include="Views\SimpleFeedback\StudentFeedbackDashboard.cshtml" />
+    <Content Include="Views\DetailedFeedback\CreateDetailedFeedbackRequest.cshtml" />
+    <Content Include="Views\DetailedFeedback\CreateDetailedFeedback.cshtml" />
+    <Content Include="Views\DetailedFeedback\ReceivedFeedbackDash.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedSimpleFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedDetailedFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewDetailedFeedbackDetails.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewSentDetailedFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewreadReceivedDetailedFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewreadReceivedSimpleFeedbacks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

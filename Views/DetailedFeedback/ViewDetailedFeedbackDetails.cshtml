@@ -1,0 +1,139 @@
+﻿@model GuidanceTracker.Models.DetailedFeedback
+
+@{
+    ViewBag.Title = "Detailed Feedback Details";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Detailed Feedback Details</h2>
+            <p class="text-muted">Viewing comprehensive feedback for @Model.Course</p>
+        </div>
+        <div class="col-auto">
+            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7b2cbf;">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Basic Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Student</dt>
+                        <dd class="col-sm-8">@Model.Student.FirstName @Model.Student.LastName</dd>
+
+                        <dt class="col-sm-4">Class</dt>
+                        <dd class="col-sm-8">@Model.Class</dd>
+
+                        <dt class="col-sm-4">Course</dt>
+                        <dd class="col-sm-8">@Model.Course</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Requested By</dt>
+                        <dd class="col-sm-8">
+                            @ViewBag.CreatorName
+                            <div class="small text-muted">@ViewBag.CreatorRole</div>
+                        </dd>
+
+                        <dt class="col-sm-4">Date Created</dt>
+                        <dd class="col-sm-8">@Model.DateCreated.ToString("MMMM d, yyyy")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Overall Comments</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Best Features</dt>
+                <dd class="col-sm-9">@Model.BestFeatures</dd>
+
+                <dt class="col-sm-3">Areas For Improvement</dt>
+                <dd class="col-sm-9">@Model.AreasForImprovement</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Learning & Teaching</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.LearningTeachingKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.LearningTeachingStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.LearningTeachingImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.LearningTeachingComments) ? "None" : Model.LearningTeachingComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Assessment & Progress</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.AssessmentKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.AssessmentStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.AssessmentImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.AssessmentComments) ? "None" : Model.AssessmentComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Resources & Learning Environment</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.ResourcesKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.ResourcesStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.ResourcesImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.ResourcesComments) ? "None" : Model.ResourcesComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    @*<div class="row mt-4 mb-5">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("ViewReceivedDetailedFeedbacks", "DetailedFeedback")" class="btn btn-secondary" style="background-color: #7F3D98; border-color: #7F3D98; ">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>*@
+</div>
