@@ -18,24 +18,30 @@ namespace GuidanceTracker.Models
         [Display(Name = "Appointment Notes")]
         public string AppointmentNotes { get; set; }
 
-        [Required]
-        public string GuidanceTeacherId { get; set; }
-
         public string Room { get; set; }
 
 
 
+        // Navigation properties
+        [Required]
+        public string GuidanceTeacherId { get; set; }
         [ForeignKey("GuidanceTeacherId")]
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }
 
         [Required]
         public string StudentId { get; set; }
-
-
-        // Navigation properties
-
         [ForeignKey("StudentId")]
         public virtual Student Student { get; set; }
+
+        [Required]
+        public int GuidanceSessionId { get; set; }
+        [ForeignKey("GuidanceSessionId")]
+        public virtual GuidanceSession GuidanceSession { get; set; }
+
+
+        public int? IssueId { get; set; }
+        [ForeignKey("IssueId")]
+        public virtual Issue Issue { get; set; }
     }
 
     public enum AppointmentStatus

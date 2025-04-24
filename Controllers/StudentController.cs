@@ -60,8 +60,9 @@ namespace GuidanceTracker.Controllers
                 Student = db.Students.Find(studentId),
                 AppointmentDate = guidanceSession.Day,
                 AppointmentNotes = "",
-                GuidanceSession = guidanceSession,
                 Room = guidanceSession.Room,
+                GuidanceSessionId = guidanceSession.GuidanceSessionId
+
             };
             return View(appointment);
         }
@@ -107,8 +108,9 @@ namespace GuidanceTracker.Controllers
             appointment.AppointmentStatus = AppointmentStatus.Requested;
             appointment.GuidanceTeacherId = student.Class.GuidanceTeacherId;
             appointment.GuidanceTeacher = db.GuidanceTeachers.Find(appointment.GuidanceTeacherId);
-            appointment.GuidanceSession = db.GuidanceSessions.Where(g => g.ClassId == student.ClassId).FirstOrDefault();
             appointment.Room = guidanceSession.Room;
+            appointment.GuidanceSessionId = guidanceSession.GuidanceSessionId;
+            appointment.GuidanceSession = guidanceSession;
 
 
 

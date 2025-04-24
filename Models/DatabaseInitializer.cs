@@ -8,6 +8,7 @@ using System.Web;
 using System.Data.Entity.Validation;
 using System.Text;
 using System.Net.Sockets;
+using GuidanceTracker.Models;
 
 namespace GuidanceTracker.Models
 {
@@ -1201,7 +1202,98 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
+            //create guidance sessions
 
+            var guidanceSession1 = new GuidanceSession
+            {
+                ClassId = 1,
+                Room = "05.005",
+                Time = new TimeSpan(11, 00, 0),
+                Class = classes1,
+                Day = DateTime.Now.AddDays(1),
+            };
+            context.GuidanceSessions.Add(guidanceSession1);
+
+            var guidanceSession2 = new GuidanceSession
+            {
+                ClassId = 2,
+                Room = "05.007",
+                Time = new TimeSpan(13, 00, 0),
+                Class = classes2,
+                Day = DateTime.Now.AddDays(2),
+            };
+            context.GuidanceSessions.Add(guidanceSession2);
+
+            var guidanceSession3 = new GuidanceSession
+            {
+                ClassId = 3,
+                Room = "05.012",
+                Time = new TimeSpan(11, 00, 0),
+                Class = classes3,
+                Day = DateTime.Now.AddDays(1),
+            };
+            context.GuidanceSessions.Add(guidanceSession3);
+
+            var guidanceSession4 = new GuidanceSession
+            {
+                ClassId = 4,
+                Room = "05.005",
+                Time = new TimeSpan(11, 00, 0),
+                Class = classes4,
+                Day = DateTime.Now.AddDays(3),
+            };
+            context.GuidanceSessions.Add(guidanceSession4);
+
+            var guidanceSession5 = new GuidanceSession
+            {
+                ClassId = 5,
+                Room = "05.010",
+                Time = new TimeSpan(13, 00, 0),
+                Class = classes5,
+                Day = DateTime.Now.AddDays(4),
+            };
+            context.GuidanceSessions.Add(guidanceSession5);
+
+            var guidanceSession6 = new GuidanceSession
+            {
+                ClassId = 6,
+                Room = "05.007",
+                Time = new TimeSpan(11, 00, 0),
+                Class = classes6,
+                Day = DateTime.Now.AddDays(5)
+            };
+            context.GuidanceSessions.Add(guidanceSession6);
+
+            var guidanceSession7 = new GuidanceSession
+            {
+                ClassId = 7,
+                Room = "05.009",
+                Time = new TimeSpan(14, 00, 0),
+                Class = classes7,
+                Day = DateTime.Now.AddDays(4)
+            };
+            context.GuidanceSessions.Add(guidanceSession7);
+
+            var guidanceSession8 = new GuidanceSession
+            {
+                ClassId = 7,
+                Room = "05.009",
+                Time = new TimeSpan(14, 00, 0),
+                Class = classes7,
+                Day = DateTime.Now.AddDays(2),
+            };
+            context.GuidanceSessions.Add(guidanceSession8);
+
+            var guidanceSession9 = new GuidanceSession
+            {
+                ClassId = 9,
+                Room = "05.005",
+                Time = new TimeSpan(13, 00, 0),
+                Class = classes9,
+                Day = DateTime.Now.AddDays(3)
+            };
+            context.GuidanceSessions.Add(guidanceSession9);
+            context.SaveChanges();
 
 
             // Create a finance student
@@ -1692,26 +1784,45 @@ namespace GuidanceTracker.Models
             context.Issues.Add(issue17);
             context.SaveChanges();
 
+
+            //add appointemnts
             // Create appointments
             var session1 = new Appointment
             {
                 AppointmentDate = DateTime.Now.AddDays(1),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Initial consultation",
-                Room = "05.005",
                 StudentId = student1.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 1,
+                Room = guidanceSession1.Room,
+                IssueId = null
             };
             context.Appointments.Add(session1);
+
+            var session01 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentStatus = AppointmentStatus.Scheduled,
+                AppointmentNotes = "Initial consultation",
+                StudentId = student1.Id,
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 1,
+                Room = guidanceSession1.Room,
+                IssueId = issue.IssueId
+            };
+            context.Appointments.Add(session01);
 
             var session2 = new Appointment
             {
                 AppointmentDate = DateTime.Now.AddDays(3),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Progress review",
-                Room = "05.002",
                 StudentId = student2.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 2,
+                Room = guidanceSession2.Room,
+                IssueId = null
             };
             context.Appointments.Add(session2);
 
@@ -1720,9 +1831,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(2),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Career advice",
-                Room = "05.008",
                 StudentId = student3.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 1,
+                Room = guidanceSession1.Room,
+                IssueId = null
             };
             context.Appointments.Add(session3);
 
@@ -1731,9 +1844,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(4),
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "Academic support",
-                Room = "05.010",
                 StudentId = student4.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 3,
+                Room = guidanceSession3.Room,
+                IssueId = null
             };
             context.Appointments.Add(session4);
 
@@ -1742,9 +1857,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(1),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Personal issues",
-                Room = "05.001",
                 StudentId = student5.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 4,
+                Room = guidanceSession4.Room,
+                IssueId = null
             };
             context.Appointments.Add(session5);
 
@@ -1753,9 +1870,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(5),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Study plan",
-                Room = "05.003",
                 StudentId = student6.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 5,
+                Room = guidanceSession5.Room,
+                IssueId = null
             };
             context.Appointments.Add(session6);
 
@@ -1764,9 +1883,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(3),
                 AppointmentStatus = AppointmentStatus.Cancelled,
                 AppointmentNotes = "Exam preparation",
-                Room = "05.006",
                 StudentId = student7.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 6,
+                Room = guidanceSession6.Room,
+                IssueId = null
             };
             context.Appointments.Add(session7);
 
@@ -1775,9 +1896,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(2),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Course selection",
-                Room = "05.009",
                 StudentId = student8.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 7,
+                Room = guidanceSession7.Room,
+                IssueId = null
             };
             context.Appointments.Add(session8);
 
@@ -1786,9 +1909,11 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(4),
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "Internship advice",
-                Room = "05.004",
                 StudentId = student9.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 8,
+                Room = guidanceSession8.Room,
+                IssueId = null
             };
             context.Appointments.Add(session9);
 
@@ -1797,11 +1922,53 @@ namespace GuidanceTracker.Models
                 AppointmentDate = DateTime.Now.AddDays(5),
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "General support",
-                Room = "05.007",
                 StudentId = student9.Id,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 1,
+                Room = guidanceSession1.Room,
+                IssueId = null
             };
             context.Appointments.Add(session10);
+
+            var requested1 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentNotes = "Requesting help with essay writing.",
+                StudentId = student3.Id,
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 3,
+                Room = guidanceSession3.Room,
+                IssueId = null
+            };
+            context.Appointments.Add(requested1);
+
+            var requested2 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentNotes = "need help with calculus.",
+                StudentId = student3.Id,
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 3,
+                Room = guidanceSession3.Room,
+                IssueId = null
+            };
+            context.Appointments.Add(requested2);
+
+            var requested3 = new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentNotes = "need help with coding.",
+                StudentId = student3.Id,
+                GuidanceTeacherId = guidance.Id,
+                GuidanceSessionId = 3,
+                Room = guidanceSession3.Room,
+                IssueId = null
+            };
+            context.Appointments.Add(requested3);
+
             context.SaveChanges();
 
             // Global posts
