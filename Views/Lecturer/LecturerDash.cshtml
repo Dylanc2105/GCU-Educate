@@ -1,4 +1,4 @@
-﻿
+﻿@model GuidanceTracker.Models.ViewModels.LecturerDashViewModel
 @{
     ViewBag.Title = "Lecturer Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,12 +7,106 @@
 <title>@ViewBag.Title</title>
 
 
-<body>
-    <h1 class="dashboard-title">Lecturer Dashboard</h1>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
 
-    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor students progress, manage tasks, and collaborate with your team.</p>
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <div class="row g-4">
+            <!-- welcome text -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card" style="background-color: #F4F4F4">
+                    <div class="card-body">
+                        <h3 class="card-title">Hi, @Model.FirstName!</h3>
+                        <p class="card-text">Welcome to your Lecturer Dashboard. </p>
+                        <p class="text-muted" id="currentDateTime"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- active issues -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">Active Issues</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+            <!-- notifications -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
+                        <p class="h2" style="color: #7F3D98">[0]</p>
+                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+            <!-- announcements -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card" style="text-align:center">
+                    <div class="card-body">
+                        <h3 class="card-title" style="color: #7F3D98">New Announcements</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 @section Scripts {
+
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        // script to dynamically show the current date and time on the dash
+        function updateClock() {
+            const now = new Date();
+            const formatted = now.toLocaleString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            document.getElementById('currentDateTime').innerText = formatted;
+        }
+        updateClock();
+
+        // updates the time every second
+        setInterval(updateClock, 1000);
+    </script>
 }

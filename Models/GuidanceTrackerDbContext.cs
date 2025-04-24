@@ -35,7 +35,8 @@ namespace GuidanceTracker.Models
         public DbSet<ArchivedComment> ArchivedComments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Timetable> Timetables { get; set; }
-
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostRead> PostReads { get; set; } 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -114,6 +115,50 @@ namespace GuidanceTracker.Models
                 .HasRequired(t => t.Class)
                 .WithMany(c => c.Timetables)
                 .HasForeignKey(t => t.ClassId)
+                .WillCascadeOnDelete(false);
+
+            // Configure many-to-many relationships
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Departments)
+                .WithMany(d => d.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostDepartments");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("DepartmentId");
+                });
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Courses)
+                .WithMany(c => c.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostCourses");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("CourseId");
+                });
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Classes)
+                .WithMany(c => c.Posts)
+                .Map(m =>
+                {
+                    m.ToTable("PostClasses");
+                    m.MapLeftKey("PostId");
+                    m.MapRightKey("ClassId");
+                });
+
+            // no action on for delete
+            modelBuilder.Entity<PostRead>()
+                .HasRequired(pr => pr.Post)
+                .WithMany()
+                .HasForeignKey(pr => pr.PostId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostRead>()
+                .HasRequired(pr => pr.User)
+                .WithMany()
+                .HasForeignKey(pr => pr.UserId)
                 .WillCascadeOnDelete(false);
 
         }

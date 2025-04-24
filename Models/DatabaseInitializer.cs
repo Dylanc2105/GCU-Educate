@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Data.Entity.Validation;
+using System.Text;
+using System.Net.Sockets;
 
 namespace GuidanceTracker.Models
 {
@@ -60,11 +63,14 @@ namespace GuidanceTracker.Models
             UserManager<User> userManager = new UserManager<User>(new UserStore<User>(context));
 
             GuidanceTeacher guidance = null;
+            GuidanceTeacher guidance2 = null;
+            GuidanceTeacher newGuidanceTeacher = null;
             CurriculumHead curriculumHead1 = null;
             Lecturer lecturer1 = null;
             Lecturer lecturer2 = null;
             Lecturer lecturer3 = null;
             Lecturer lecturer4 = null;
+            Lecturer financeLecturer = null;
             Student student1 = null;
             Student student2 = null;
             Student student3 = null;
@@ -74,7 +80,7 @@ namespace GuidanceTracker.Models
             Student student7 = null;
             Student student8 = null;
             Student student9 = null;
-
+            Student financeStudent2 = null;
             //create guidance teacher
             //first check if admin exists in db
             if (userManager.FindByName("guidance@email.com") == null)
@@ -94,7 +100,7 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "guidance@email.com",
                     Email = "guidance@email.com",
-                    FirstName = "Dana",
+                    FirstName = "John",
                     LastName = "Smith",
                     Street = "35 Washington st",
                     City = "London",
@@ -109,14 +115,56 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
-            if (userManager.FindByName("Asmat.atagan@gmail.com") == null)
+            if (userManager.FindByName("guidance1@email.com") == null)
+            {
+                newGuidanceTeacher = new GuidanceTeacher
+                {
+                    UserName = "guidance1@email.com",
+                    Email = "guidance1@email.com",
+                    FirstName = "james",
+                    LastName = "dog",
+                    Street = "35 Washington st",
+                    City = "London",
+                    Postcode = "E12 8UP",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+
+                //add admin to users table
+                userManager.Create(newGuidanceTeacher, "123");
+                //assign it to the guidance teacher role
+                userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
+            }
+
+            if (userManager.FindByName("guidance2@email.com") == null)
+            {
+                guidance2 = new GuidanceTeacher
+                {
+                    UserName = "guidance2@email.com",
+                    Email = "guidance2@email.com",
+                    FirstName = "james",
+                    LastName = "dog",
+                    Street = "35 Washington st",
+                    City = "London",
+                    Postcode = "E12 8UP",
+                    RegistredAt = DateTime.Now.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+
+                //add admin to users table
+                userManager.Create(guidance2, "123");
+                //assign it to the guidance teacher role
+                userManager.AddToRole(guidance2.Id, "GuidanceTeacher");
+            }
+
+            if (userManager.FindByName("beno.atagan@gmail.com") == null)
             {
                 lecturer3 = new Lecturer
                 {
-                    UserName = "Asmat.atagan@gmail.com",
-                    Email = "Asmat.atagan@gmail.com",
-                    FirstName = "Asmat",
-                    LastName = "Ullah",
+                    UserName = "beno.atagan@gmail.com",
+                    Email = "beno.atagan@gmail.com",
+                    FirstName = "Laura",
+                    LastName = "Smith",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -148,6 +196,28 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            // Create a new curriculum head for the new department
+            CurriculumHead CurriculumHead2 = null;
+            if (userManager.FindByName("financeHead@email.com") == null)
+            {
+                CurriculumHead2 = new CurriculumHead
+                {
+                    UserName = "financeHead@email.com",
+                    Email = "financeHead@email.com",
+                    FirstName = "Margaret",
+                    LastName = "Thompson",
+                    Street = "42 Finance Street",
+                    City = "Edinburgh",
+                    Postcode = "EH4 7LP",
+                    RegistredAt = DateTime.Now.AddYears(-2),
+                    EmailConfirmed = true,
+                    DepartmentId = "BU-FIN"
+                };
+                userManager.Create(CurriculumHead2, "123");
+                userManager.AddToRole(CurriculumHead2.Id, "CurriculumHead");
+            }
+            context.SaveChanges();
+
             // First create Department
             var department = new Department
             {
@@ -156,6 +226,15 @@ namespace GuidanceTracker.Models
                 CurriculumHead = curriculumHead1
             };
             context.Departments.Add(department);
+            context.SaveChanges();
+
+            var newDepartment = new Department
+            {
+                DepartmentId = "BU-FIN",
+                DepartmentName = "Business & Finance",
+                CurriculumHead = CurriculumHead2
+            };
+            context.Departments.Add(newDepartment);
             context.SaveChanges();
 
 
@@ -168,8 +247,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer@email.com",
                     Email = "lecturer@email.com",
-                    FirstName = "Jamie",
-                    LastName = "Stewart",
+                    FirstName = "Michael",
+                    LastName = "Johnson",
                     Street = "25 LA st",
                     City = "London",
                     Postcode = "E52 9UP",
@@ -189,8 +268,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer2@email.com",
                     Email = "lecturer2@email.com",
-                    FirstName = "Dana",
-                    LastName = "Carson",
+                    FirstName = "Laura",
+                    LastName = "Smith",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -208,8 +287,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "beno.atagan@gmail.com",
                     Email = "beno.atagan@gmail.com",
-                    FirstName = "James",
-                    LastName = "Hood",
+                    FirstName = "Laura",
+                    LastName = "Smith",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -227,8 +306,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "lecturer4@email.com",
                     Email = "lecturer4@email.com",
-                    FirstName = "Garry",
-                    LastName = "Kelly",
+                    FirstName = "David",
+                    LastName = "Brown",
                     Street = "27 King Street",
                     City = "Manchester",
                     Postcode = "M2 6LE",
@@ -240,387 +319,37 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            // 1. HNC Computing / HNC Computer Science Units
-            var computingUnit = new Unit
+            if (userManager.FindByName("financeLecturer@email.com") == null)
             {
-                UnitName = "Computing",
-                UnitDescription = "Core Computing unit for HNC",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(computingUnit);
+                //if no then create him
+                financeLecturer = new Lecturer
+                {
+                    UserName = "financeLecturer@email.com",
+                    Email = "financeLecturer@email.com",
+                    FirstName = "Lenny",
+                    LastName = "Morgan",
+                    Street = "25 LA st",
+                    City = "London",
+                    Postcode = "E52 9UP",
+                    RegistredAt = DateTime.Now.AddYears(-3),
+                    EmailConfirmed = true,
+                };
+                //add jeff to users table
+                userManager.Create(financeLecturer, "123");
+                //assign it to the manager role
+                userManager.AddToRole(financeLecturer.Id, "Lecturer");
+            }
             context.SaveChanges();
 
-            var databaseDesignUnit = new Unit
+            // Create a new class for finance students
+            var financeClass = new Class
             {
-                UnitName = "Database Design Fundamentals",
-                UnitDescription = "Introduction to database design and implementation",
-                LecturerId = lecturer2.Id
+                ClassId = 10, // Make sure this ID doesn't conflict with existing ones
+                ClassName = "HNC Finance Class A",
+                MaxCapacity = 20,
+                GuidanceTeacherId = newGuidanceTeacher.Id
             };
-            context.Units.Add(databaseDesignUnit);
-            context.SaveChanges();
-
-            var developingSoftwareUnit = new Unit
-            {
-                UnitName = "Developing Software: Introduction",
-                UnitDescription = "Introduction to software development principles",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(developingSoftwareUnit);
-            context.SaveChanges();
-
-            var computerSystemsUnit = new Unit
-            {
-                UnitName = "Computer Systems Fundamentals",
-                UnitDescription = "Basic computer architecture and operating systems",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(computerSystemsUnit);
-            context.SaveChanges();
-
-            var troubleshootingUnit = new Unit
-            {
-                UnitName = "Troubleshooting Computing Problems",
-                UnitDescription = "Practical problem-solving in computing environments",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(troubleshootingUnit);
-            context.SaveChanges();
-
-            var teamWorkingUnit = new Unit
-            {
-                UnitName = "Team Working in Computing",
-                UnitDescription = "Collaborative work in computing projects",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(teamWorkingUnit);
-            context.SaveChanges();
-
-            var ethicsUnit = new Unit
-            {
-                UnitName = "Professionalism and Ethics in Computing",
-                UnitDescription = "Ethical considerations in computing industry",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(ethicsUnit);
-            context.SaveChanges();
-
-            var bigDataUnit = new Unit
-            {
-                UnitName = "Big Data",
-                UnitDescription = "Introduction to big data concepts and technologies",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(bigDataUnit);
-            context.SaveChanges();
-
-            var webDevUnit = new Unit
-            {
-                UnitName = "Software Development: Developing Websites",
-                UnitDescription = "Web development fundamentals",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(webDevUnit);
-            context.SaveChanges();
-
-            var gradedUnit1 = new Unit
-            {
-                UnitName = "Computing: Graded Unit 1",
-                UnitDescription = "Integration of knowledge across the HNC",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(gradedUnit1);
-            context.SaveChanges();
-
-            var dataScienceUnit = new Unit
-            {
-                UnitName = "Data Science",
-                UnitDescription = "Introduction to data science principles and practices",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(dataScienceUnit);
-            context.SaveChanges();
-
-            var statisticsUnit = new Unit
-            {
-                UnitName = "Statistics for Science 1",
-                UnitDescription = "Statistical methods for scientific applications",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(statisticsUnit);
-            context.SaveChanges();
-
-            var mobileWebUnit = new Unit
-            {
-                UnitName = "Developing Mobile Web Based Applications",
-                UnitDescription = "Mobile app development principles",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(mobileWebUnit);
-            context.SaveChanges();
-
-            // 2. HNC Software Development specific units
-            var systemsDevUnit = new Unit
-            {
-                UnitName = "Systems Development: Introduction",
-                UnitDescription = "Introduction to systems analysis and design",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(systemsDevUnit);
-            context.SaveChanges();
-
-            var testingUnit = new Unit
-            {
-                UnitName = "Systems Development: Testing Software",
-                UnitDescription = "Software testing methodologies",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(testingUnit);
-            context.SaveChanges();
-
-            var emergingTechUnit = new Unit
-            {
-                UnitName = "Emerging Technologies and Experiences",
-                UnitDescription = "Current trends in software development",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(emergingTechUnit);
-            context.SaveChanges();
-
-            // 3. HND Computer Science units
-            var computerScienceUnit = new Unit
-            {
-                UnitName = "Computer Science",
-                UnitDescription = "Advanced computing principles",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(computerScienceUnit);
-            context.SaveChanges();
-
-            var rdbmsUnit = new Unit
-            {
-                UnitName = "Relational Database Management Systems",
-                UnitDescription = "Advanced database design and management",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(rdbmsUnit);
-            context.SaveChanges();
-
-            var oopUnit = new Unit
-            {
-                UnitName = "Software Development: Object Oriented Programming",
-                UnitDescription = "OOP techniques and patterns",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(oopUnit);
-            context.SaveChanges();
-
-            var ooadUnit = new Unit
-            {
-                UnitName = "Systems Development: Object Oriented Analysis & Design",
-                UnitDescription = "OO analysis methodologies",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(ooadUnit);
-            context.SaveChanges();
-
-            var dataStructuresUnit = new Unit
-            {
-                UnitName = "Software Development: Data Structures",
-                UnitDescription = "Advanced data structures and algorithms",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(dataStructuresUnit);
-            context.SaveChanges();
-
-            var devApplicationsUnit = new Unit
-            {
-                UnitName = "Software Development: Developing Applications",
-                UnitDescription = "Enterprise application development",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(devApplicationsUnit);
-            context.SaveChanges();
-
-            var webServerUnit = new Unit
-            {
-                UnitName = "Managing a Web Server",
-                UnitDescription = "Web server administration and optimization",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(webServerUnit);
-            context.SaveChanges();
-
-            var gradedUnit2 = new Unit
-            {
-                UnitName = "Computer Science: Graded Unit 2",
-                UnitDescription = "Project-based assessment for HND",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(gradedUnit2);
-            context.SaveChanges();
-
-            var aiUnit = new Unit
-            {
-                UnitName = "Artificial Intelligence",
-                UnitDescription = "AI concepts and applications",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(aiUnit);
-            context.SaveChanges();
-
-            // 4. HND Software Development specific units
-            var softwareDevUnit = new Unit
-            {
-                UnitName = "Computing: Software Development",
-                UnitDescription = "Advanced software development concepts",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(softwareDevUnit);
-            context.SaveChanges();
-
-            var multiUserOsUnit = new Unit
-            {
-                UnitName = "Multi User Operating Systems",
-                UnitDescription = "Operating systems for software developers",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(multiUserOsUnit);
-            context.SaveChanges();
-
-            var projectMgmtUnit = new Unit
-            {
-                UnitName = "Project Management for IT",
-                UnitDescription = "IT project management methodologies",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(projectMgmtUnit);
-            context.SaveChanges();
-
-            var softwareDevGradedUnit = new Unit
-            {
-                UnitName = "Computing: Software Development Graded Unit",
-                UnitDescription = "Project-based assessment",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(softwareDevGradedUnit);
-            context.SaveChanges();
-
-            // 5. NQ Computing units
-            var introToProgrammingUnit = new Unit
-            {
-                UnitName = "Introduction to Computer Programming",
-                UnitDescription = "Fundamentals of programming",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(introToProgrammingUnit);
-            context.SaveChanges();
-
-            var digitalMediaUnit = new Unit
-            {
-                UnitName = "Computing: Digital Media Elements",
-                UnitDescription = "Working with digital media",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(digitalMediaUnit);
-            context.SaveChanges();
-
-            var compSysArchUnit = new Unit
-            {
-                UnitName = "Computer Systems Architecture",
-                UnitDescription = "Understanding computer hardware and systems",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(compSysArchUnit);
-            context.SaveChanges();
-
-            var networkingUnit = new Unit
-            {
-                UnitName = "Computing: Networking Technologies",
-                UnitDescription = "Introduction to computer networks",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(networkingUnit);
-            context.SaveChanges();
-
-            var desktopTroubleshootUnit = new Unit
-            {
-                UnitName = "Computing: Troubleshoot Desktop Problems",
-                UnitDescription = "Basic computer troubleshooting",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(desktopTroubleshootUnit);
-            context.SaveChanges();
-
-            var dataSecurityUnit = new Unit
-            {
-                UnitName = "Data Security",
-                UnitDescription = "Introduction to cybersecurity",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(dataSecurityUnit);
-            context.SaveChanges();
-
-            var numeracyUnit = new Unit
-            {
-                UnitName = "Numeracy",
-                UnitDescription = "Essential math for computing",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(numeracyUnit);
-            context.SaveChanges();
-
-            var hardwareUnit = new Unit
-            {
-                UnitName = "Computing: Installing and Maintaining Hardware",
-                UnitDescription = "Hardware maintenance fundamentals",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(hardwareUnit);
-            context.SaveChanges();
-
-            var authoringWebsiteUnit = new Unit
-            {
-                UnitName = "Computing: Authoring a Website",
-                UnitDescription = "Basic web development",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(authoringWebsiteUnit);
-            context.SaveChanges();
-
-            var greenITUnit = new Unit
-            {
-                UnitName = "Green IT",
-                UnitDescription = "Sustainable computing practices",
-                LecturerId = lecturer3.Id
-            };
-            context.Units.Add(greenITUnit);
-            context.SaveChanges();
-
-            var computingProjectUnit = new Unit
-            {
-                UnitName = "Computing: Project",
-                UnitDescription = "Practical computing project",
-                LecturerId = lecturer4.Id
-            };
-            context.Units.Add(computingProjectUnit);
-            context.SaveChanges();
-
-            var appDevUnit = new Unit
-            {
-                UnitName = "Computing: Applications Development",
-                UnitDescription = "Introduction to app development",
-                LecturerId = lecturer1.Id
-            };
-            context.Units.Add(appDevUnit);
-            context.SaveChanges();
-
-            var structuredMethodsUnit = new Unit
-            {
-                UnitName = "Develop Software Using Structured Methods",
-                UnitDescription = "Structured programming approaches",
-                LecturerId = lecturer2.Id
-            };
-            context.Units.Add(structuredMethodsUnit);
+            context.Classes.Add(financeClass);
             context.SaveChanges();
 
             // Create classes
@@ -629,8 +358,7 @@ namespace GuidanceTracker.Models
                 ClassId = 1,
                 ClassName = "HNC Computing Class A",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes1);
             context.SaveChanges();
@@ -640,8 +368,7 @@ namespace GuidanceTracker.Models
                 ClassId = 2,
                 ClassName = "HNC Computing Class B",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes2);
             context.SaveChanges();
@@ -651,8 +378,7 @@ namespace GuidanceTracker.Models
                 ClassId = 3,
                 ClassName = "HNC Software Development Class A",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes3);
             context.SaveChanges();
@@ -662,8 +388,7 @@ namespace GuidanceTracker.Models
                 ClassId = 4,
                 ClassName = "HNC Software Development Class B",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes4);
             context.SaveChanges();
@@ -673,8 +398,7 @@ namespace GuidanceTracker.Models
                 ClassId = 5,
                 ClassName = "HND Computer Science Class",
                 MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computerScienceUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, webServerUnit, gradedUnit2, aiUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes5);
             context.SaveChanges();
@@ -684,8 +408,7 @@ namespace GuidanceTracker.Models
                 ClassId = 6,
                 ClassName = "HND Software Development Class A",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+                GuidanceTeacherId = guidance.Id
             };
 
             context.Classes.Add(classes6);
@@ -696,8 +419,7 @@ namespace GuidanceTracker.Models
                 ClassId = 7,
                 ClassName = "HND Software Development Class B",
                 MaxCapacity = 16,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { softwareDevUnit, rdbmsUnit, oopUnit, ooadUnit, dataStructuresUnit, devApplicationsUnit, multiUserOsUnit, projectMgmtUnit, softwareDevGradedUnit, aiUnit }
+                GuidanceTeacherId = guidance.Id
             };
             context.Classes.Add(classes7);
             context.SaveChanges();
@@ -707,8 +429,7 @@ namespace GuidanceTracker.Models
                 ClassId = 8,
                 ClassName = "NQ Computing Class A",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+                GuidanceTeacherId = guidance.Id
             };
 
             context.Classes.Add(classes8);
@@ -719,14 +440,30 @@ namespace GuidanceTracker.Models
                 ClassId = 9,
                 ClassName = "NQ Computing Class B",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
+                GuidanceTeacherId = guidance.Id
             };
 
             context.Classes.Add(classes9);
             context.SaveChanges();
 
             // Create courses
+
+            // Create a new course
+            var financeCourse = new Course
+            {
+                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
+                CourseName = "HNC Business & Finance",
+                CourseReference = "BUHNFIN/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "Edinburgh Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = newDepartment.DepartmentId
+            };
+            context.Courses.Add(financeCourse);
+            context.SaveChanges();
 
             var courses1 = new Course
             {
@@ -873,6 +610,16 @@ namespace GuidanceTracker.Models
             context.Courses.Add(courses9);
             context.SaveChanges();
 
+            // Create a new enrollment
+            var financeEnrollment = new Enrollment
+            {
+                EnrollmentDate = DateTime.Parse("2024-08-26"),
+                Status = EnrollmentStatus.Active,
+                CourseId = financeCourse.CourseId,
+                ClassId = financeClass.ClassId
+            };
+            context.Enrollments.Add(financeEnrollment);
+            context.SaveChanges();
 
             // Create enrollments to link courses with classes
             // HNC Computing / HNC Computer Science - CRHNCCOMSC/F241A with HNC Computing Class A
@@ -974,6 +721,538 @@ namespace GuidanceTracker.Models
             context.Enrollments.Add(enrollment9);
             context.SaveChanges();
 
+
+            // Create units for the new finance program
+            var accountingUnit = new Unit
+            {
+                UnitName = "Principles of Accounting",
+                UnitDescription = "Introduction to accounting concepts and practices",
+                LecturerId = financeLecturer.Id,
+                Classes = new List<Class> { financeClass } // Link to HNC Finance Class A
+            };
+            context.Units.Add(accountingUnit);
+            context.SaveChanges();
+
+            var financeUnit = new Unit
+            {
+                UnitName = "Business Finance",
+                UnitDescription = "Understanding financial management in business contexts",
+                LecturerId = financeLecturer.Id,
+                Classes = new List<Class> { financeClass } // Link to HNC Finance Class A
+            };
+            context.Units.Add(financeUnit);
+            context.SaveChanges();
+
+            var economicsUnit = new Unit
+            {
+                UnitName = "Economics for Business",
+                UnitDescription = "Application of economic principles in business decision-making",
+                LecturerId = financeLecturer.Id,
+                Classes = new List<Class> { financeClass } // Link to HNC Finance Class A
+            };
+            context.Units.Add(economicsUnit);
+            context.SaveChanges();
+
+            var investmentUnit = new Unit
+            {
+                UnitName = "Investment Analysis",
+                UnitDescription = "Methods and principles of investment evaluation",
+                LecturerId = financeLecturer.Id,
+                Classes = new List<Class> { financeClass } // Link to HNC Finance Class A
+            };
+            context.Units.Add(investmentUnit);
+            context.SaveChanges();
+
+            var taxationUnit = new Unit
+            {
+                UnitName = "Taxation",
+                UnitDescription = "Principles of business and personal taxation",
+                LecturerId = financeLecturer.Id,
+                Classes = new List<Class> { financeClass } // Link to HNC Finance Class A
+            };
+            context.Units.Add(taxationUnit);
+            context.SaveChanges();
+
+            // 1. HNC Computing / HNC Computer Science Units
+            var computingUnit = new Unit
+            {
+                UnitName = "Computing",
+                UnitDescription = "Core Computing unit for HNC",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(computingUnit);
+            context.SaveChanges();
+
+            var databaseDesignUnit = new Unit
+            {
+                UnitName = "Database Design Fundamentals",
+                UnitDescription = "Introduction to database design and implementation",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(databaseDesignUnit);
+            context.SaveChanges();
+
+            var developingSoftwareUnit = new Unit
+            {
+                UnitName = "Developing Software: Introduction",
+                UnitDescription = "Introduction to software development principles",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(developingSoftwareUnit);
+            context.SaveChanges();
+
+            var computerSystemsUnit = new Unit
+            {
+                UnitName = "Computer Systems Fundamentals",
+                UnitDescription = "Basic computer architecture and operating systems",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(computerSystemsUnit);
+            context.SaveChanges();
+
+            var troubleshootingUnit = new Unit
+            {
+                UnitName = "Troubleshooting Computing Problems",
+                UnitDescription = "Practical problem-solving in computing environments",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(troubleshootingUnit);
+            context.SaveChanges();
+
+            var teamWorkingUnit = new Unit
+            {
+                UnitName = "Team Working in Computing",
+                UnitDescription = "Collaborative work in computing projects",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(teamWorkingUnit);
+            context.SaveChanges();
+
+            var ethicsUnit = new Unit
+            {
+                UnitName = "Professionalism and Ethics in Computing",
+                UnitDescription = "Ethical considerations in computing industry",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(ethicsUnit);
+            context.SaveChanges();
+
+            var bigDataUnit = new Unit
+            {
+                UnitName = "Big Data",
+                UnitDescription = "Introduction to big data concepts and technologies",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(bigDataUnit);
+            context.SaveChanges();
+
+            var webDevUnit = new Unit
+            {
+                UnitName = "Software Development: Developing Websites",
+                UnitDescription = "Web development fundamentals",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(webDevUnit);
+            context.SaveChanges();
+
+            var gradedUnit1 = new Unit
+            {
+                UnitName = "Computing: Graded Unit 1",
+                UnitDescription = "Integration of knowledge across the HNC",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(gradedUnit1);
+            context.SaveChanges();
+
+            var dataScienceUnit = new Unit
+            {
+                UnitName = "Data Science",
+                UnitDescription = "Introduction to data science principles and practices",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+
+            };
+            context.Units.Add(dataScienceUnit);
+            context.SaveChanges();
+
+            var statisticsUnit = new Unit
+            {
+                UnitName = "Statistics for Science 1",
+                UnitDescription = "Statistical methods for scientific applications",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(statisticsUnit);
+            context.SaveChanges();
+
+            var mobileWebUnit = new Unit
+            {
+                UnitName = "Developing Mobile Web Based Applications",
+                UnitDescription = "Mobile app development principles",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
+            };
+            context.Units.Add(mobileWebUnit);
+            context.SaveChanges();
+
+            // 2. HNC Software Development specific units
+            var systemsDevUnit = new Unit
+            {
+                UnitName = "Systems Development: Introduction",
+                UnitDescription = "Introduction to systems analysis and design",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
+            };
+            context.Units.Add(systemsDevUnit);
+            context.SaveChanges();
+
+            var testingUnit = new Unit
+            {
+                UnitName = "Systems Development: Testing Software",
+                UnitDescription = "Software testing methodologies",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
+            };
+            context.Units.Add(testingUnit);
+            context.SaveChanges();
+
+            var emergingTechUnit = new Unit
+            {
+                UnitName = "Emerging Technologies and Experiences",
+                UnitDescription = "Current trends in software development",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
+            };
+            context.Units.Add(emergingTechUnit);
+            context.SaveChanges();
+
+            // 3. HND Computer Science units
+            var computerScienceUnit = new Unit
+            {
+                UnitName = "Computer Science",
+                UnitDescription = "Advanced computing principles",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(computerScienceUnit);
+            context.SaveChanges();
+
+            var rdbmsUnit = new Unit
+            {
+                UnitName = "Relational Database Management Systems",
+                UnitDescription = "Advanced database design and management",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(rdbmsUnit);
+            context.SaveChanges();
+
+            var oopUnit = new Unit
+            {
+                UnitName = "Software Development: Object Oriented Programming",
+                UnitDescription = "OOP techniques and patterns",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(oopUnit);
+            context.SaveChanges();
+
+            var ooadUnit = new Unit
+            {
+                UnitName = "Systems Development: Object Oriented Analysis & Design",
+                UnitDescription = "OO analysis methodologies",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(ooadUnit);
+            context.SaveChanges();
+
+            var dataStructuresUnit = new Unit
+            {
+                UnitName = "Software Development: Data Structures",
+                UnitDescription = "Advanced data structures and algorithms",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(dataStructuresUnit);
+            context.SaveChanges();
+
+            var devApplicationsUnit = new Unit
+            {
+                UnitName = "Software Development: Developing Applications",
+                UnitDescription = "Enterprise application development",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(devApplicationsUnit);
+            context.SaveChanges();
+
+            var webServerUnit = new Unit
+            {
+                UnitName = "Managing a Web Server",
+                UnitDescription = "Web server administration and optimization",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(webServerUnit);
+            context.SaveChanges();
+
+            var gradedUnit2 = new Unit
+            {
+                UnitName = "Computer Science: Graded Unit 2",
+                UnitDescription = "Project-based assessment for HND",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(gradedUnit2);
+            context.SaveChanges();
+
+            var aiUnit = new Unit
+            {
+                UnitName = "Artificial Intelligence",
+                UnitDescription = "AI concepts and applications",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
+            };
+            context.Units.Add(aiUnit);
+            context.SaveChanges();
+
+            // 4. HND Software Development specific units
+            var softwareDevUnit = new Unit
+            {
+                UnitName = "Computing: Software Development",
+                UnitDescription = "Advanced software development concepts",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes6, classes7 } // Link to HNC Software Development Class A and B
+            };
+            context.Units.Add(softwareDevUnit);
+            context.SaveChanges();
+
+            var multiUserOsUnit = new Unit
+            {
+                UnitName = "Multi User Operating Systems",
+                UnitDescription = "Operating systems for software developers",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
+            };
+            context.Units.Add(multiUserOsUnit);
+            context.SaveChanges();
+
+            var projectMgmtUnit = new Unit
+            {
+                UnitName = "Project Management for IT",
+                UnitDescription = "IT project management methodologies",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
+            };
+            context.Units.Add(projectMgmtUnit);
+            context.SaveChanges();
+
+            var softwareDevGradedUnit = new Unit
+            {
+                UnitName = "Computing: Software Development Graded Unit",
+                UnitDescription = "Project-based assessment",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
+            };
+            context.Units.Add(softwareDevGradedUnit);
+            context.SaveChanges();
+
+            // 5. NQ Computing units
+            var introToProgrammingUnit = new Unit
+            {
+                UnitName = "Introduction to Computer Programming",
+                UnitDescription = "Fundamentals of programming",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(introToProgrammingUnit);
+            context.SaveChanges();
+
+            var digitalMediaUnit = new Unit
+            {
+                UnitName = "Computing: Digital Media Elements",
+                UnitDescription = "Working with digital media",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(digitalMediaUnit);
+            context.SaveChanges();
+
+            var compSysArchUnit = new Unit
+            {
+                UnitName = "Computer Systems Architecture",
+                UnitDescription = "Understanding computer hardware and systems",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(compSysArchUnit);
+            context.SaveChanges();
+
+            var networkingUnit = new Unit
+            {
+                UnitName = "Computing: Networking Technologies",
+                UnitDescription = "Introduction to computer networks",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(networkingUnit);
+            context.SaveChanges();
+
+            var desktopTroubleshootUnit = new Unit
+            {
+                UnitName = "Computing: Troubleshoot Desktop Problems",
+                UnitDescription = "Basic computer troubleshooting",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(desktopTroubleshootUnit);
+            context.SaveChanges();
+
+            var dataSecurityUnit = new Unit
+            {
+                UnitName = "Data Security",
+                UnitDescription = "Introduction to cybersecurity",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+
+            };
+            context.Units.Add(dataSecurityUnit);
+            context.SaveChanges();
+
+            var numeracyUnit = new Unit
+            {
+                UnitName = "Numeracy",
+                UnitDescription = "Essential math for computing",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(numeracyUnit);
+            context.SaveChanges();
+
+            var hardwareUnit = new Unit
+            {
+                UnitName = "Computing: Installing and Maintaining Hardware",
+                UnitDescription = "Hardware maintenance fundamentals",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(hardwareUnit);
+            context.SaveChanges();
+
+            var authoringWebsiteUnit = new Unit
+            {
+                UnitName = "Computing: Authoring a Website",
+                UnitDescription = "Basic web development",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(authoringWebsiteUnit);
+            context.SaveChanges();
+
+            var greenITUnit = new Unit
+            {
+                UnitName = "Green IT",
+                UnitDescription = "Sustainable computing practices",
+                LecturerId = lecturer3.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(greenITUnit);
+            context.SaveChanges();
+
+            var computingProjectUnit = new Unit
+            {
+                UnitName = "Computing: Project",
+                UnitDescription = "Practical computing project",
+                LecturerId = lecturer4.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(computingProjectUnit);
+            context.SaveChanges();
+
+            var appDevUnit = new Unit
+            {
+                UnitName = "Computing: Applications Development",
+                UnitDescription = "Introduction to app development",
+                LecturerId = lecturer1.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(appDevUnit);
+            context.SaveChanges();
+
+            var structuredMethodsUnit = new Unit
+            {
+                UnitName = "Develop Software Using Structured Methods",
+                UnitDescription = "Structured programming approaches",
+                LecturerId = lecturer2.Id,
+                Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
+            };
+            context.Units.Add(structuredMethodsUnit);
+            context.SaveChanges();
+
+
+
+
+
+            // Create a finance student
+            Student financeStudent = null;
+            if (userManager.FindByName("finstudent@email.com") == null)
+            {
+                financeStudent = new Student
+                {
+                    UserName = "finstudent@email.com",
+                    Email = "finstudent@email.com",
+                    FirstName = "Samantha",
+                    LastName = "Fisher",
+                    Street = "53 Accounting Lane",
+                    City = "Edinburgh",
+                    Postcode = "EH7 4QP",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = newGuidanceTeacher.Id,
+                    ClassId = financeClass.ClassId,
+                    StudentNumber = "42000123"
+                };
+                userManager.Create(financeStudent, "123");
+                userManager.AddToRole(financeStudent.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Create a second finance student
+            
+            if (userManager.FindByName("finstudent2@email.com") == null)
+            {
+                financeStudent2 = new Student
+                {
+                    UserName = "finstudent2@email.com",
+                    Email = "finstudent2@email.com",
+                    FirstName = "Thomas",
+                    LastName = "Morgan",
+                    Street = "18 Commerce Road",
+                    City = "Edinburgh",
+                    Postcode = "EH7 4QP",
+                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = newGuidanceTeacher.Id,
+                    ClassId = financeClass.ClassId,
+                    StudentNumber = "42000124"
+                };
+                userManager.Create(financeStudent2, "123");
+                userManager.AddToRole(financeStudent2.Id, "Student");
+            }
+            context.SaveChanges();
+            
+
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
             {
@@ -981,16 +1260,15 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student1@email.com",
                     Email = "student1@email.com",
-                    FirstName = "Dylan",
-                    LastName = "Campbell",
+                    FirstName = "David",
+                    LastName = "Wilson",
                     Street = "45 High Street",
                     City = "London",
                     Postcode = "E18 2XP",
                     RegistredAt = DateTime.Now.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes1.ClassId, // HNC Computing Class A
-                    StudentNumber = "30485195"
+                    ClassId = classes1.ClassId // HNC Computing Class A
                 };
                 userManager.Create(student1, "123");
                 userManager.AddToRole(student1.Id, "Student");
@@ -1004,16 +1282,15 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student2@email.com",
                     Email = "student2@email.com",
-                    FirstName = "Willum",
-                    LastName = "Billy",
+                    FirstName = "Emma",
+                    LastName = "Brown",
                     Street = "78 Park Avenue",
                     City = "Manchester",
                     Postcode = "M1 5QD",
                     RegistredAt = DateTime.Now.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes2.ClassId, // HNC Computing Class B
-                    StudentNumber = "34357878"
+                    ClassId = classes2.ClassId // HNC Computing Class B
                 };
                 userManager.Create(student2, "123");
                 userManager.AddToRole(student2.Id, "Student");
@@ -1035,8 +1312,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes3.ClassId, // HNC Software Development Class A
-                    StudentNumber = "33617898"
+                    ClassId = classes3.ClassId // HNC Software Development Class A
                 };
                 userManager.Create(student3, "123");
                 userManager.AddToRole(student3.Id, "Student");
@@ -1058,8 +1334,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes4.ClassId, // HNC Software Development Class B
-                    StudentNumber = "31654898"
+                    ClassId = classes4.ClassId // HNC Software Development Class B
                 };
                 userManager.Create(student4, "123");
                 userManager.AddToRole(student4.Id, "Student");
@@ -1081,8 +1356,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-5),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes5.ClassId, // HND Computer Science Class
-                    StudentNumber = "31257898"
+                    ClassId = classes5.ClassId // HND Computer Science Class
                 };
                 userManager.Create(student5, "123");
                 userManager.AddToRole(student5.Id, "Student");
@@ -1104,8 +1378,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes6.ClassId, // HND Software Development Class A
-                    StudentNumber = "37657898"
+                    ClassId = classes6.ClassId // HND Software Development Class A
                 };
                 userManager.Create(student6, "123");
                 userManager.AddToRole(student6.Id, "Student");
@@ -1127,8 +1400,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes7.ClassId, // HND Software Development Class B
-                    StudentNumber = "34656848"
+                    ClassId = classes7.ClassId // HND Software Development Class B
                 };
                 userManager.Create(student7, "123");
                 userManager.AddToRole(student7.Id, "Student");
@@ -1150,8 +1422,7 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes8.ClassId, // NQ Computing Class A
-                    StudentNumber = "35653898"
+                    ClassId = classes8.ClassId // NQ Computing Class A
                 };
                 userManager.Create(student8, "123");
                 userManager.AddToRole(student8.Id, "Student");
@@ -1173,195 +1444,10 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Now.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes9.ClassId, // NQ Computing Class B
-                    StudentNumber = "34657898"
+                    ClassId = classes9.ClassId // NQ Computing Class B
                 };
                 userManager.Create(student9, "123");
                 userManager.AddToRole(student9.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 10 - Overlapping class 1
-            if (userManager.FindByName("student10@email.com") == null)
-            {
-                var student10 = new Student
-                {
-                    UserName = "student10@email.com",
-                    Email = "student10@email.com",
-                    FirstName = "Emily",
-                    LastName = "Stone",
-                    Street = "12 Rose Lane",
-                    City = "London",
-                    Postcode = "E3 4QD",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes1.ClassId,
-                    StudentNumber = "41000010"
-                };
-                userManager.Create(student10, "123");
-                userManager.AddToRole(student10.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 11 - Overlapping class 3
-            if (userManager.FindByName("student11@email.com") == null)
-            {
-                var student11 = new Student
-                {
-                    UserName = "student11@email.com",
-                    Email = "student11@email.com",
-                    FirstName = "Jack",
-                    LastName = "Bennett",
-                    Street = "99 Elm Street",
-                    City = "Newcastle",
-                    Postcode = "NE1 2HQ",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes3.ClassId,
-                    StudentNumber = "41000011"
-                };
-                userManager.Create(student11, "123");
-                userManager.AddToRole(student11.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 12 - Overlapping class 5
-            if (userManager.FindByName("student12@email.com") == null)
-            {
-                var student12 = new Student
-                {
-                    UserName = "student12@email.com",
-                    Email = "student12@email.com",
-                    FirstName = "Gary",
-                    LastName = "Grant",
-                    Street = "48 Main Street",
-                    City = "Aberdeen",
-                    Postcode = "AB11 6XY",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes5.ClassId,
-                    StudentNumber = "41000012"
-                };
-                userManager.Create(student12, "123");
-                userManager.AddToRole(student12.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 13 - Overlapping class 4
-            if (userManager.FindByName("student13@email.com") == null)
-            {
-                var student13 = new Student
-                {
-                    UserName = "student13@email.com",
-                    Email = "student13@email.com",
-                    FirstName = "Amy",
-                    LastName = "Medineli",
-                    Street = "75 Meadow Walk",
-                    City = "Dundee",
-                    Postcode = "DD1 3AB",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes4.ClassId,
-                    StudentNumber = "41000013"
-                };
-                userManager.Create(student13, "123");
-                userManager.AddToRole(student13.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 14 - Overlapping class 6
-            if (userManager.FindByName("student14@email.com") == null)
-            {
-                var student14 = new Student
-                {
-                    UserName = "student14@email.com",
-                    Email = "student14@email.com",
-                    FirstName = "Ross",
-                    LastName = "Gibb",
-                    Street = "20 Mill Lane",
-                    City = "Glasgow",
-                    Postcode = "G3 8TU",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes6.ClassId,
-                    StudentNumber = "41000014"
-                };
-                userManager.Create(student14, "123");
-                userManager.AddToRole(student14.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 15 - Shared with class 7
-            if (userManager.FindByName("student15@email.com") == null)
-            {
-                var student15 = new Student
-                {
-                    UserName = "student15@email.com",
-                    Email = "student15@email.com",
-                    FirstName = "Lucy",
-                    LastName = "Fraser",
-                    Street = "88 Riverside",
-                    City = "Inverness",
-                    Postcode = "IV1 1XA",
-                    RegistredAt = DateTime.Now.AddMonths(-3),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes7.ClassId,
-                    StudentNumber = "41000015"
-                };
-                userManager.Create(student15, "123");
-                userManager.AddToRole(student15.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 16 - Shared with class 8
-            if (userManager.FindByName("student16@email.com") == null)
-            {
-                var student16 = new Student
-                {
-                    UserName = "student16@email.com",
-                    Email = "student16@email.com",
-                    FirstName = "Nathan",
-                    LastName = "Hall",
-                    Street = "17 Willow Gardens",
-                    City = "Perth",
-                    Postcode = "PH1 2NB",
-                    RegistredAt = DateTime.Now.AddMonths(-3),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes8.ClassId,
-                    StudentNumber = "41000016"
-                };
-                userManager.Create(student16, "123");
-                userManager.AddToRole(student16.Id, "Student");
-            }
-            context.SaveChanges();
-
-            // Student 17 - Shared with class 1 again (more overlap!)
-            if (userManager.FindByName("student17@email.com") == null)
-            {
-                var student17 = new Student
-                {
-                    UserName = "student17@email.com",
-                    Email = "student17@email.com",
-                    FirstName = "Isla",
-                    LastName = "Reid",
-                    Street = "19 Highland View",
-                    City = "Stirling",
-                    Postcode = "FK8 2AB",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
-                    EmailConfirmed = true,
-                    GuidanceTeacherId = guidance.Id,
-                    ClassId = classes1.ClassId,
-                    StudentNumber = "41000017"
-                };
-                userManager.Create(student17, "123");
-                userManager.AddToRole(student17.Id, "Student");
             }
             context.SaveChanges();
 
@@ -1578,6 +1664,33 @@ namespace GuidanceTracker.Models
             context.Issues.Add(issue15);
             context.SaveChanges();
 
+            var issue16 = new Issue
+            {
+                IssueTitle = IssueTitle.LateAttendance,
+                IssueDescription = "Student is consistently 40 minutes late to class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = financeLecturer.Id,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                StudentId = financeStudent.Id
+            };
+            context.Issues.Add(issue16);
+            context.SaveChanges();
+
+            var issue17 = new Issue
+            {
+                IssueTitle = IssueTitle.Behaviour,
+                IssueDescription = "Student is consistently talking class.",
+                IssueStatus = IssueStatus.New,
+                CreatedAt = DateTime.Now.AddDays(-2),
+                UpdatedAt = DateTime.Now,
+                LecturerId = financeLecturer.Id,
+                GuidanceTeacherId = newGuidanceTeacher.Id,
+                StudentId = financeStudent2.Id
+            };
+            context.Issues.Add(issue17);
+            context.SaveChanges();
 
             // Create appointments
             var session1 = new Appointment
@@ -1690,6 +1803,115 @@ namespace GuidanceTracker.Models
             };
             context.Appointments.Add(session10);
             context.SaveChanges();
+
+            // Global posts
+            var Post1 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Welcome to the Guidance Tracker System",
+                Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
+                PostDate = DateTime.Now.AddDays(-10),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(Post1);
+
+            var post2 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Welcome to the Guidance Tracker System",
+                Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
+                PostDate = DateTime.Now.AddDays(-10),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(post2);
+
+            var Post3 = new Post
+
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "System Maintenance Notice",
+                Content = "The system will be undergoing maintenance this weekend from Saturday 22:00 to Sunday 02:00. Please save your work before this time to avoid any data loss.",
+                PostDate = DateTime.Now.AddDays(-5),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Global
+            };
+            context.Posts.Add(Post3);
+
+            // Student-only posts
+            var Post4 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Student Council Meeting",
+                Content = "The next Student Council meeting will be held on Friday at 15:00 in Room 302. All class representatives are required to attend. The agenda includes discussion on upcoming events and academic support services.",
+                PostDate = DateTime.Now.AddDays(-3),
+                AuthorId = guidance.Id,
+                Visibility = VisibilityType.Student
+            };
+            context.Posts.Add(Post4);
+            var Post5 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Study Resources Now Available",
+                Content = "New study resources for all courses have been uploaded to the student portal. These include practice exams, study guides, and video tutorials. Access them through your student dashboard.",
+                PostDate = DateTime.Now.AddDays(-2),
+                AuthorId = lecturer1.Id,
+                Visibility = VisibilityType.Student
+            };
+            context.Posts.Add(Post5);
+
+            // Lecturer-only posts
+            var Post6 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Staff Meeting Reminder",
+                Content = "This is a reminder that we have our monthly staff meeting tomorrow at 14:00 in the conference room. Please prepare your department updates and bring any questions or concerns you'd like to discuss.",
+                PostDate = DateTime.Now.AddDays(-1),
+                AuthorId = curriculumHead1.Id,
+                Visibility = VisibilityType.Staff
+            };
+            context.Posts.Add(Post6);
+
+            var Post7 = new Post
+            {
+                PostId = Guid.NewGuid().ToString(),
+                Title = "Grading Policy Update",
+                Content = "Please note that there have been updates to the grading policy for the current semester. All assignments must now include detailed feedback, and final grades must be submitted within 10 days of the assessment date. See the attached document for more details.",
+                PostDate = DateTime.Now.AddHours(-12),
+                AuthorId = guidance.Id,
+                Visibility = VisibilityType.Staff
+            };
+            context.Posts.Add(Post7);
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder errorMessage = new StringBuilder("Entity Validation Failed - Errors: ");
+
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    errorMessage.AppendLine($"\nEntity of type '{validationErrors.Entry.Entity.GetType().Name}' in state '{validationErrors.Entry.State}' has the following validation errors:");
+
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        var propertyValue = validationErrors.Entry.CurrentValues[validationError.PropertyName];
+                        errorMessage.AppendLine($"- Property: '{validationError.PropertyName}', Value: '{propertyValue}', Error: '{validationError.ErrorMessage}'");
+                    }
+                }
+
+                // Output to debug window
+                System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
+
+                // If you're using logging
+
+                // You might want to throw a more informative exception or handle it differently
+                throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
+            }
+
         }
     }
 }
+       

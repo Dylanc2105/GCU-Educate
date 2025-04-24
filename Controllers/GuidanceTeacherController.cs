@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using GuidanceTracker.Models.ViewModels;
 using GuidanceTracker.Models;
 using System.Security.Cryptography.X509Certificates;
+using static GuidanceTracker.Controllers.PostController;
 
 namespace GuidanceTracker.Controllers
 {
@@ -32,16 +33,28 @@ namespace GuidanceTracker.Controllers
         // GET: GuidanceTeacher Dashboard
         public ActionResult GuidanceTeacherDash()
         {
-            var teacherId = User.Identity.GetUserId();
+            var userId = User.Identity.GetUserId();
+            var user = db.GuidanceTeachers.Find(userId);
+            var today = DateTime.Today;
 
-            var issues = db.Issues
-                .Include("Student")
-                .Include("Lecturer")
-                .Where(i => i.GuidanceTeacherId == teacherId)
-                .OrderByDescending(i => i.CreatedAt)
-                .ToList();
+            // counts the posts that don't have a row in the PostRead table for the current user
+            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
 
-            return View("GuidanceTeacherDash", issues);
+            var newAnnouncementsCount = visiblePosts
+                .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
+                .Count();
+
+            var model = new GuidanceDashViewModel
+            {
+                FirstName = user.FirstName,
+                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
+                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
+                NewAnnouncementsCount = newAnnouncementsCount
+
+
+            };
+            return View(model);
         }
 
         // View all students

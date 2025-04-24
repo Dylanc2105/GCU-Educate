@@ -1,4 +1,4 @@
-﻿
+﻿@model GuidanceTracker.Models.ViewModels.StudentDashViewModel
 @{
     ViewBag.Title = "Student Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,12 +6,120 @@
 
 <title>@ViewBag.Title</title>
 
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+    </style>
+</head>
 
 <body>
-    <h1 class="dashboard-title">Student Dashboard</h1>
+    <div class="dashboard-container">
+        <div class="row g-4">
+            <!-- welcome text -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card" style="background-color: #F4F4F4">
+                    <div class="card-body">
+                        <h5 class="card-title">Hi, @Model.FirstName!</h5>
+                        <p class="card-text">Welcome to your Student Dashboard. </p>
+                        <p class="text-muted" id="currentDateTime"></p>
+                    </div>
+                </div>
+            </div>
 
-    <p class="welcome-text">Welcome to the guidance tracker! Here you can monitor you progress, book appointemnts and collaborate with fellow students..</p>
+            <!--  appointments -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">Appointments</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.AppointmentsTodayCount</p>
+                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- messages -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewMessagesCount</p>
+                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- announcements -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card" style="text-align:center">
+                    <div class="card-body">
+                        <h3 class="card-title" style="color: #7F3D98">New Announcements</h3>
+                        <p class="h2" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--  for other stuffs -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <h3 class="card-title" style="color: #7F3D98">Placeholder</h3>
+                        <p class="h2" style="color: #7F3D98">[0] </p>
+                        <p>@Html.ActionLink("View more >", "", "", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 @section Scripts {
+
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+
+        // script to dynamically show the current date and time on the dash
+        function updateClock() {
+            const now = new Date();
+            const formatted = now.toLocaleString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            document.getElementById('currentDateTime').innerText = formatted;
+        }
+        updateClock();
+
+        // updates the time every second
+        setInterval(updateClock, 1000);
+    </script>
 }
