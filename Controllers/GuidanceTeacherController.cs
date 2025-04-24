@@ -49,6 +49,16 @@ namespace GuidanceTracker.Controllers
                 .Where(m => m.ReceiverId == userId && !m.IsRead)
                 .Count();
 
+            //count appointments with requested status for this user
+            var appointmentsToBeApprovedCount = db.Appointments
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Requested && a.GuidanceTeacherId == userId)
+                .Count();
+
+            //count guidance sessions for this week for this user
+            var guidanceSessionsForWeekCount = db.GuidanceSessions
+    .Where(g=>g.Class.GuidanceTeacherId == userId)
+    .Count();
+
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
@@ -58,7 +68,9 @@ namespace GuidanceTracker.Controllers
                 UnreadMessagesCount = unreadMessagesCount,
                 NewFeedbackCount = db.SimpleFeedbacks
                     .Where(fb => fb.IsReadByGuidanceTeacher == false && fb.GuidanceTeacherId == userId)
-                    .Count()
+                    .Count(),
+                AppointmentsToBeApprovedCount = appointmentsToBeApprovedCount,
+                GuidanceSessionsForWeekCount = guidanceSessionsForWeekCount
             };
 
             return View(model);

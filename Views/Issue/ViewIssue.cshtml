@@ -39,7 +39,7 @@
             {
                 <p>No appointments recorded.</p>
             }
-            @Html.ActionLink("Create Appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
+            @Html.ActionLink("Create Appointment", "CreateAppointmentWithIssue", "Appointment", new { issueId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
         </div>
     </div>
 

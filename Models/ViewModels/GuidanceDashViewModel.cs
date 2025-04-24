@@ -13,6 +13,8 @@ namespace GuidanceTracker.Models.ViewModels
         public int AppointmentsTodayCount { get; set; }
 		public int NewAnnouncementsCount { get; set; }
 		public int NewFeedbackCount { get; set; }
+		public int AppointmentsToBeApprovedCount { get; set; }
+        public int GuidanceSessionsForWeekCount { get; set; }
 
 
     }

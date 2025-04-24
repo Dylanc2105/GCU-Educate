@@ -2621,6 +2621,7 @@
     <Content Include="Views\Student\RequestAppointment.cshtml" />
     <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
+    <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
