@@ -2613,6 +2613,7 @@
     <Content Include="Views\SimpleFeedback\StudentFeedbackDashboard.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
+    <Content Include="Views\Student\RequestAppointment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -30,7 +30,7 @@ namespace GuidanceTracker.Controllers
             var student = db.Students.Find(studentId);
             GuidanceSession guidanceSession = db.GuidanceSessions.Where(g => g.ClassId == student.ClassId).FirstOrDefault();
 
-            //assign ticket and time before sending appointment to view
+            //assign time before sending appointment to view
             var appointment = new Appointment
             {
                 StudentId = studentId,

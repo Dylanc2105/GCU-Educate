@@ -42,5 +42,87 @@ namespace GuidanceTracker.Controllers
             };
             return View(model);
         }
+
+        public ActionResult RequestAppointment()
+        {
+            var studentId = User.Identity.GetUserId();
+            var student = db.Students.Find(studentId);
+            GuidanceSession guidanceSession = db.GuidanceSessions.
+                Where(g => g.ClassId == student.ClassId).
+                FirstOrDefault();
+
+            Appointment appointment = new Appointment
+            {
+                StudentId = studentId,
+                Student = db.Students.Find(studentId),
+                AppointmentDate = guidanceSession.Day,
+                AppointmentNotes = "",
+                GuidanceSession = guidanceSession,
+                Room = guidanceSession.Room,
+            };
+            return View(appointment);
+        }
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RequestAppointment(Appointment model)
+        {
+            var studentId = User.Identity.GetUserId();
+            var student = db.Students.Find(studentId);
+            GuidanceSession guidanceSession = db.GuidanceSessions.Where(g => g.ClassId == student.ClassId).FirstOrDefault();
+
+            var appointment = new Appointment { };
+
+            //no ViewBag message by default
+            ViewBag.Message = "";
+
+            string stringDate = guidanceSession.Day.ToString("dd/MM/yyyy");
+            string stringTime = guidanceSession.Time.ToString();
+
+            //make datetime string from date and time
+            stringDate = stringDate + " " + stringTime;
+
+            //try to transform string to datetime
+            try
+            {
+                appointment.AppointmentDate = DateTime.Parse(stringDate);
+            }
+            //if not successfull return alert
+            catch
+            {
+                ViewBag.Message = "incorrect input for date";
+            }
+
+
+            appointment.AppointmentNotes = model.AppointmentNotes;            
+            appointment.StudentId = studentId;
+            appointment.Student = db.Students.Where(c => c.Id == model.StudentId).FirstOrDefault();
+            appointment.AppointmentStatus = AppointmentStatus.Requested;
+            appointment.GuidanceTeacherId = student.Class.GuidanceTeacherId;
+            appointment.GuidanceTeacher = db.GuidanceTeachers.Find(appointment.GuidanceTeacherId);
+            appointment.GuidanceSession = db.GuidanceSessions.Where(g => g.ClassId == student.ClassId).FirstOrDefault();
+            appointment.Room = guidanceSession.Room;
+
+
+
+            //if viewbag has any error message => return them to view
+            if (ViewBag.Message != "")
+            {
+                return View(appointment);
+            }
+            else
+            {
+                //add Appointment to db
+                db.Appointments.Add(appointment);
+                db.SaveChanges();
+                TempData["Success"] = "Appointment created successfully.";
+                //redirect to issue page
+                return RedirectToAction("StudentDash", "Student");
+            }
+        }
     }
 }
