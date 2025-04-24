@@ -55,7 +55,10 @@ namespace GuidanceTracker.Controllers
                 NewIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
                 AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount,
-                UnreadMessagesCount = unreadMessagesCount 
+                UnreadMessagesCount = unreadMessagesCount,
+                NewFeedbackCount = db.SimpleFeedbacks
+                    .Where(fb => fb.IsReadByGuidanceTeacher == false && fb.GuidanceTeacherId == userId)
+                    .Count()
             };
 
             return View(model);
