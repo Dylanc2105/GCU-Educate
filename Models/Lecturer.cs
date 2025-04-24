@@ -12,8 +12,6 @@ namespace GuidanceTracker.Models
         // Navigation properties
 
         public virtual ICollection<Unit> Units { get; set; }
-        public virtual ICollection<Issue> Issues { get; set; }
-
-        public virtual ICollection<SimpleFeedback> Feedbacks { get; set; }
+        public virtual ICollection<Issue> Issues { get; set; } 
     }
 }

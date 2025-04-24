@@ -565,6 +565,50 @@ namespace GuidanceTracker.Controllers
 
             base.Dispose(disposing);
         }
+        public ActionResult GetAvailableChatUsers()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var currentUser = new GuidanceTrackerDbContext().Users.Find(currentUserId);
+            var db = new GuidanceTrackerDbContext();
+
+            var users = db.Users
+                .Where(u => u.Id != currentUserId)
+                .ToList()
+                .Where(u => CanMessage(currentUser, u)) // Apply access rules
+                .Select(u => new
+                {
+                    u.Id,
+                    Name = u.FirstName + " " + u.LastName,
+                    Role = db.Roles.FirstOrDefault(r => r.Users.Any(x => x.UserId == u.Id))?.Name ?? "Unknown"
+                })
+                .OrderBy(u => u.Name)
+                .ToList();
+
+            return Json(users, JsonRequestBehavior.AllowGet);
+        }
+
+        private bool CanMessage(User current, User target)
+        {
+            bool isStudent = current is Student;
+            bool isLecturer = current is Lecturer;
+            bool isGuidance = current is GuidanceTeacher;
+
+            bool targetIsStudent = target is Student;
+            bool targetIsLecturer = target is Lecturer;
+            bool targetIsGuidance = target is GuidanceTeacher;
+
+            if (isStudent)
+                return targetIsGuidance && ((Student)current).GuidanceTeacherId == target.Id;
+
+            if (isLecturer)
+                return targetIsLecturer || targetIsGuidance;
+
+            if (isGuidance)
+                return targetIsStudent || targetIsLecturer || targetIsGuidance;
+
+            return false;
+        }
+
 
 
         #region Helpers

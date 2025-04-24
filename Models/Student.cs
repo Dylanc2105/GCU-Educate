@@ -25,14 +25,14 @@ namespace GuidanceTracker.Models
         [ForeignKey("ClassId")]
         public virtual Class Class { get; set; }
 
-        public ICollection<SimpleFeedback> Feedbacks { get; set; }
+        public string FeedbackId { get; set; }
 
-        public ICollection<DetailedFeedback> DetailedFeedbacks { get; set; }
+        [ForeignKey("FeedbackId")]
+
+        public virtual Feedback Feedback { get; set; }
 
         public ICollection<MessageBoard> MessageBoards { get; set; }
         public ICollection<Appointment> Appointments { get; set; }
-        public ICollection<Issue> Issues { get; set; }
-
 
     }
 }
