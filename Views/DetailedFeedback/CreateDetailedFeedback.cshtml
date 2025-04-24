@@ -1,0 +1,248 @@
+﻿@model GuidanceTracker.Models.ViewModels.FeedbackViewModels.CreateDetailedFeedbackViewModel
+
+@{
+    ViewBag.Title = "Submit Detailed Feedback";
+}
+
+<div class="container mt-4 mb-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Detailed Feedback Form</h2>
+            <p class="text-muted">Your feedback is valuable for improving teaching and learning.</p>
+        </div>
+        <div class="col-auto">
+            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7b2cbf; border-color: #7b2cbf;">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Hidden fields -->
+        @Html.HiddenFor(model => model.RequestId)
+        @Html.HiddenFor(model => model.FeedbackId)
+        @Html.HiddenFor(model => model.ClassId)
+        @Html.HiddenFor(model => model.StudentId)
+        @Html.HiddenFor(model => model.CreatorId)
+        @Html.HiddenFor(model => model.IsSubmitted)
+        @Html.HiddenFor(model => model.FeedbackDate)
+
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h3 class="card-title">Course Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Course</label>
+                            <p class="form-control-static">@Model.Course</p>
+                            @Html.HiddenFor(model => model.Course)
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Class</label>
+                            <p class="form-control-static">@Model.Class</p>
+                            @Html.HiddenFor(model => model.Class)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h3 class="card-title">Overall Comments</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>What are the best features about your programme? <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(model => model.BestFeatures, new { @class = "form-control", rows = 5, required = "required" })
+                    @Html.ValidationMessageFor(model => model.BestFeatures, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>What are the areas for improvement? <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(model => model.AreasForImprovement, new { @class = "form-control", rows = 5, required = "required" })
+                    @Html.ValidationMessageFor(model => model.AreasForImprovement, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h3 class="card-title">Learning & Teaching Approaches</h3>
+            </div>
+            <div class="card-body">
+                <div style="background-color: #f2e9ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <p><strong>Discussion points:</strong> Does your Lecturer:</p>
+                    <ul>
+                        <li>Prepare well for the lesson</li>
+                        <li>Explain the material clearly</li>
+                        <li>Answer questions well</li>
+                        <li>Show genuine concern for student learning</li>
+                        <li>Adjust the pace of the class appropriately</li>
+                        <li>Make use of good quality materials</li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Key Issues <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.LearningTeachingKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.LearningTeachingKeyIssues, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Area of Strength <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.LearningTeachingStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.LearningTeachingStrengths, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Actions for Improvement <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.LearningTeachingImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.LearningTeachingImprovements, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Other Comments</label>
+                    @Html.TextAreaFor(model => model.LearningTeachingComments, new { @class = "form-control", rows = 3 })
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h3 class="card-title">Student Assessment & Progress</h3>
+            </div>
+            <div class="card-body">
+                <div style="background-color: #f2e9ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <p><strong>Discussion points:</strong></p>
+                    <ul>
+                        <li>Do you receive prompt and effective feedback?</li>
+                        <li>Are assessment criteria clear in advance?</li>
+                        <li>Are assessment arrangements and marking fair?</li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Key Issues <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AssessmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.AssessmentKeyIssues, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Area of Strength <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AssessmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.AssessmentStrengths, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Actions for Improvement <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AssessmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.AssessmentImprovements, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Other Comments</label>
+                    @Html.TextAreaFor(model => model.AssessmentComments, new { @class = "form-control", rows = 3 })
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h3 class="card-title">Resources & Learning Environment</h3>
+            </div>
+            <div class="card-body">
+                <div style="background-color: #f2e9ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <p><strong>Discussion points:</strong></p>
+                    <ul>
+                        <li>Are course materials available electronically?</li>
+                        <li>Are classrooms and labs fit for purpose?</li>
+                        <li>Are comprehensive course materials provided?</li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Key Issues <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ResourcesKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.ResourcesKeyIssues, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Area of Strength <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ResourcesStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.ResourcesStrengths, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Actions for Improvement <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ResourcesImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                            @Html.ValidationMessageFor(model => model.ResourcesImprovements, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Other Comments</label>
+                    @Html.TextAreaFor(model => model.ResourcesComments, new { @class = "form-control", rows = 3 })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group text-center mb-5">
+            <button type="submit" class="btn btn-lg" style="background-color: #7F3D98; color: white;">
+                <i class="fas fa-paper-plane"></i> Submit Feedback
+            </button>
+            <a href="@Url.Action("StudentDash", "Student")" class="btn btn-lg btn-outline-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            // Custom validation to ensure required fields are not empty
+            $("form").submit(function (e) {
+                var isValid = true;
+                $("textarea[required]").each(function () {
+                    if ($.trim($(this).val()) === '') {
+                        $(this).addClass("input-validation-error");
+                        $(this).next(".text-danger").text("This field is required.");
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    $('html, body').animate({
+                        scrollTop: $(".input-validation-error:first").offset().top - 100
+                    }, 200);
+                }
+            });
+        });
+    </script>
+}

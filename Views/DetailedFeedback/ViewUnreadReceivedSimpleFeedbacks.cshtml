@@ -1,0 +1,80 @@
+﻿@model IEnumerable<GuidanceTracker.Models.SimpleFeedback>
+@{
+    ViewBag.Title = "Simple Feedback";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-comment"></i> Simple Feedback</h2>
+            <p class="text-muted">Simple feedback received from students</p>
+        </div>
+        <div class="col-auto">
+            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7F3D98; ">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">
+            <i class="fas fa-info-circle"></i> You haven't received any simple feedback yet.
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header" style="background-color: #7F3D98; color: white;">
+                <h4>Received Feedback</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead style="background-color: #f2e9ff;">
+                            <tr>
+                                <th>Student</th>
+                                <th>Title</th>
+                                <th>Unit</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderByDescending(f => f.DateOfCreation))
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.Student != null)
+                                        {
+                                            <span>@item.Student.FirstName @item.Student.LastName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Unknown</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@item.FeedbackTitle</strong>
+                                    </td>
+                                    <td>
+                                        @(item.Unit?.UnitName ?? "N/A")
+                                    </td>
+                                    <td>
+                                        @item.DateOfCreation.ToString("MMM d, yyyy")
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("ViewSimpleFeedbackDetails", "SimpleFeedback", new { id = item.FeedbackId })"
+                                           class="btn btn-sm" style="background-color: #7F3D98; color: white;">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

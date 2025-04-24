@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Student Feedback Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-bullhorn"></i> Feedback Dashboard</h2>
+            <p class="text-muted">Submit and manage your feedback</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4><i class="fas fa-comment"></i> Simple Feedback</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="@Url.Action("CreateSimpleFeedback", "SimpleFeedback")"
+                           class="list-group-item list-group-item-action" style="border-left: 4px solid #7F3D98;">
+                            <h5><i class="fas fa-plus"></i> Create New Simple Feedback</h5>
+                            <p class="mb-1">Submit quick feedback about a unit to relevant staff members</p>
+                        </a>
+
+                        <a href="@Url.Action("ViewSimpleFeedbacks", "SimpleFeedback")"
+                           class="list-group-item list-group-item-action">
+                            <h5><i class="fas fa-list"></i> View My Simple Feedback</h5>
+                            <p class="mb-1">See all simple feedback you've submitted previously</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4><i class="fas fa-clipboard-list"></i> Detailed Feedback</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="@Url.Action("ViewSentDetailedFeedbacks", "DetailedFeedback")"
+                           class="list-group-item list-group-item-action">
+                            <h5><i class="fas fa-list"></i> View My Detailed Feedback</h5>
+                            <p class="mb-1">See all detailed feedback you've submitted previously</p>
+                        </a>
+
+                        @if (ViewBag.HasDetailedFeedbackRequest == true)
+                        {
+                            <a href="@Url.Action("CreateDetailedFeedback", "DetailedFeedback", new { requestId = ViewBag.FirstRequestId })"
+                               class="list-group-item list-group-item-action" style="background-color: #f2e9ff; border-left: 4px solid #7b2cbf;">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5><i class="fas fa-edit"></i> Complete Detailed Feedback</h5>
+                                    <span class="badge" style="background-color: #7F3D98; color: white;">New</span>
+                                </div>
+                                <p class="mb-1">You have a new detailed feedback form to complete</p>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

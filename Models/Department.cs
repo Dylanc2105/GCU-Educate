@@ -15,6 +15,8 @@ namespace GuidanceTracker.Models
         [Required]
         [StringLength(100)]
         public string DepartmentName { get; set; }
+
+        public string CurriculumHeadId { get; set; }
         public virtual CurriculumHead CurriculumHead { get; set; }
 
         // Navigation properties

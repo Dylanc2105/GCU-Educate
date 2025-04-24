@@ -71,6 +71,7 @@ namespace GuidanceTracker.Models
             Lecturer lecturer4 = null;
             Lecturer financeLecturer = null;
             Student student1 = null;
+            Student studentA = null;
             Student student2 = null;
             Student student3 = null;
             Student student4 = null;
@@ -1413,6 +1414,28 @@ namespace GuidanceTracker.Models
                 };
                 userManager.Create(student1, "123");
                 userManager.AddToRole(student1.Id, "Student");
+            }
+            context.SaveChanges();
+
+            // Student for HNC Computing Class A
+            if (userManager.FindByName("studentA@email.com") == null)
+            {
+                studentA = new Student
+                {
+                    UserName = "studentA@email.com",
+                    Email = "studentA@email.com",
+                    FirstName = "Bill",
+                    LastName = "Whales",
+                    Street = "45 Low Street",
+                    City = "Glesga",
+                    Postcode = "G34 2XP",
+                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes1.ClassId // HNC Computing Class A
+                };
+                userManager.Create(studentA, "123");
+                userManager.AddToRole(studentA.Id, "Student");
             }
             context.SaveChanges();
 
