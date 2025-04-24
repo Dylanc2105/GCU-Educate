@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Text;
+using System.Data;
+
 
 namespace GuidanceTracker.Models
 {
@@ -440,7 +443,8 @@ namespace GuidanceTracker.Models
                 ClassId = 9,
                 ClassName = "NQ Computing Class B",
                 MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id
+                GuidanceTeacherId = guidance.Id,
+
             };
 
             context.Classes.Add(classes9);
@@ -1200,42 +1204,6 @@ namespace GuidanceTracker.Models
             context.Units.Add(structuredMethodsUnit);
             context.SaveChanges();
 
-            // Create classes
-            var classes1 = new Class
-            {
-                ClassId = 1,
-                ClassName = "HNC Computing Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
-            };
-            context.Classes.Add(classes1);
-            context.SaveChanges();
-
-            var classes2 = new Class
-            {
-                ClassId = 2,
-                ClassName = "HNC Computing Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, dataScienceUnit, statisticsUnit, mobileWebUnit }
-            };
-            context.Classes.Add(classes2);
-            context.SaveChanges();
-
-            var classes3 = new Class
-            {
-                ClassId = 3,
-                ClassName = "HNC Software Development Class A",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { computingUnit, databaseDesignUnit, developingSoftwareUnit, computerSystemsUnit, troubleshootingUnit, teamWorkingUnit, ethicsUnit, bigDataUnit, webDevUnit, gradedUnit1, mobileWebUnit, systemsDevUnit, testingUnit, emergingTechUnit }
-            };
-            context.Classes.Add(classes3);
-            context.SaveChanges();
-
-
-
 
             // Create a finance student
             Student financeStudent = null;
@@ -1259,18 +1227,6 @@ namespace GuidanceTracker.Models
                 userManager.Create(financeStudent, "123");
                 userManager.AddToRole(financeStudent.Id, "Student");
             }
-            context.SaveChanges();
-
-            var classes9 = new Class
-            {
-                ClassId = 9,
-                ClassName = "NQ Computing Class B",
-                MaxCapacity = 24,
-                GuidanceTeacherId = guidance.Id,
-                Units = new List<Unit> { introToProgrammingUnit, digitalMediaUnit, compSysArchUnit, networkingUnit, desktopTroubleshootUnit, dataSecurityUnit, numeracyUnit, hardwareUnit, authoringWebsiteUnit, greenITUnit, computingProjectUnit, appDevUnit, structuredMethodsUnit }
-            };
-
-            context.Classes.Add(classes9);
             context.SaveChanges();
 
 
@@ -1370,10 +1326,7 @@ namespace GuidanceTracker.Models
 
 
 
-            // Create courses
 
-            var courses1 = new Course
-            {
                 financeStudent2 = new Student
                 {
                     UserName = "finstudent2@email.com",
@@ -1391,8 +1344,8 @@ namespace GuidanceTracker.Models
                 };
                 userManager.Create(financeStudent2, "123");
                 userManager.AddToRole(financeStudent2.Id, "Student");
-            }
-            context.SaveChanges();
+                context.SaveChanges();        
+            
             
 
             // Student for HNC Computing Class A
@@ -2120,33 +2073,33 @@ namespace GuidanceTracker.Models
                 Visibility = VisibilityType.Staff
             };
             context.Posts.Add(Post7);
-            try
-            {
-                context.SaveChanges();
-            }
-            catch (DbEntityValidationException ex)
-            {
-                StringBuilder errorMessage = new StringBuilder("Entity Validation Failed - Errors: ");
+            //try
+            //{
+            //    context.SaveChanges();
+            //}
+            //catch (DbEntityValidationException ex)
+            //{
+            //    StringBuilder errorMessage = new StringBuilder("Entity Validation Failed - Errors: ");
 
-                foreach (var validationErrors in ex.EntityValidationErrors)
-                {
-                    errorMessage.AppendLine($"\nEntity of type '{validationErrors.Entry.Entity.GetType().Name}' in state '{validationErrors.Entry.State}' has the following validation errors:");
+            //    foreach (var validationErrors in ex.EntityValidationErrors)
+            //    {
+            //        errorMessage.AppendLine($"\nEntity of type '{validationErrors.Entry.Entity.GetType().Name}' in state '{validationErrors.Entry.State}' has the following validation errors:");
 
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        var propertyValue = validationErrors.Entry.CurrentValues[validationError.PropertyName];
-                        errorMessage.AppendLine($"- Property: '{validationError.PropertyName}', Value: '{propertyValue}', Error: '{validationError.ErrorMessage}'");
-                    }
-                }
+            //        foreach (var validationError in validationErrors.ValidationErrors)
+            //        {
+            //            var propertyValue = validationErrors.Entry.CurrentValues[validationError.PropertyName];
+            //            errorMessage.AppendLine($"- Property: '{validationError.PropertyName}', Value: '{propertyValue}', Error: '{validationError.ErrorMessage}'");
+            //        }
+            //    }
 
-                // Output to debug window
-                System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
+            //    // Output to debug window
+            //    System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
 
-                // If you're using logging
+            //    // If you're using logging
 
-                // You might want to throw a more informative exception or handle it differently
-                throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
-            }
+            //    // You might want to throw a more informative exception or handle it differently
+            //    throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
+            //}
 
         }
     }
