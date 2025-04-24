@@ -37,23 +37,27 @@ namespace GuidanceTracker.Controllers
             var user = db.GuidanceTeachers.Find(userId);
             var today = DateTime.Today;
 
-            // counts the posts that don't have a row in the PostRead table for the current user
+            // Get unread announcements
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
 
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
 
+            // COUNT UNREAD MESSAGES FOR THIS USER
+            var unreadMessagesCount = db.Messages
+                .Where(m => m.ReceiverId == userId && !m.IsRead)
+                .Count();
+
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
-                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
-                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
-                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
-                NewAnnouncementsCount = newAnnouncementsCount
-
-
+                NewIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today).Count(),
+                NewAnnouncementsCount = newAnnouncementsCount,
+                UnreadMessagesCount = unreadMessagesCount 
             };
+
             return View(model);
         }
 

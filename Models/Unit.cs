@@ -15,8 +15,6 @@ namespace GuidanceTracker.Models
 
         // Foreign keys
         public virtual ICollection<Class> Classes { get; set; }
-        public virtual ICollection<RequestedDetailedForm> RequestedDetailedForms { get; set; }
-        public virtual ICollection<SimpleFeedback> Feedbacks { get; set; }
 
         [Required]
 

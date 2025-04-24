@@ -14,8 +14,6 @@ namespace GuidanceTracker.Models
         public virtual ICollection<Issue> Issues { get; set; }
         public virtual ICollection<Class> Classes { get; set; }
 
-        public virtual ICollection<SimpleFeedback> Feedbacks { get; set; }
-
     }
     
 }
