@@ -20,6 +20,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.AppointmentNotes)
             </th>
+            <th>
+                Meeting type
+            </th>
             <th></th>
         </tr>
 
@@ -34,7 +37,25 @@
                     @Html.DisplayFor(modelItem => item.AppointmentNotes)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-purple small" })
+                    @if (item.IssueId == null)
+                    {
+                        <p>Progress meeting</p>
+                    }
+                    else
+                    {
+                        <p>Issue Discussion</p>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit small" })
+                    @if (item.IssueId == null)
+                    {
+                        <span></span>@Html.ActionLink("Start Meeting", "ProgressMeetingForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit small" })
+                    }
+                    else
+                    {
+                        <span></span>@Html.ActionLink("Start Meeting", "AppointmentForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit small" })
+                    }
                 </td>
             </tr>
         }
@@ -47,22 +68,16 @@ else
 
 
 <style>
-    .btn-purple {
-        background-color: #7F3D98;
+    .btn {
         color: white;
         border: none;
-        border-radius: 6px;
-        padding: 8px 14px;
-        font-weight: 600;
+        border-radius: 20px;
+        padding: 8px 16px;
         cursor: pointer;
+        font-size: 14px;
     }
 
-        .btn-purple.small {
-            font-size: 12px;
-            padding: 4px 10px;
-        }
-
-        .btn-purple:hover {
-            background-color: #985BAF;
-        }
+    .btn-edit {
+        background: #7F3D98;
+    }
 </style>

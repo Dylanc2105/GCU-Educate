@@ -1,0 +1,106 @@
+﻿@model GuidanceTracker.Models.ProgressMeetingFeedbackForm
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Progress Meeting Feedback Form</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.GuidanceTeacherId)
+    @Html.HiddenFor(model => model.AppointmentId)
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.StudentId)
+    <div class="form-group">
+        <strong>Student information:</strong>
+        <br />
+        Student Name: @Model.Student.FirstName @Model.Student.LastName
+        <br />
+        Class: @Model.Student.Class.ClassName
+    </div>
+    <p></p>
+    <div class="form-group">
+        <strong>Appointment information:</strong>
+        <br />
+        Room: @Model.Appointment.Room
+        <br />
+        Appointment Notes: @Model.Appointment.AppointmentNotes
+        <br />
+    </div>
+    <p></p>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CourseFeedback, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EnumDropDownListFor(model => model.CourseFeedback, "Select rating", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.CourseFeedback, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CourseFeedbackComments, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.CourseFeedbackComments, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.CourseFeedbackComments, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Strengths, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Strengths, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Strengths, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ToBeImproved, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.ToBeImproved, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ToBeImproved, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Goals, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Goals, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Goals, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.GuidanceTeacherNotes, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.GuidanceTeacherNotes, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.GuidanceTeacherNotes, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-back" />
+        </div>
+    </div>
+</div>
+}
+<br />
+<p>
+    @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
+</p>
+
+<style>
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-back {
+        background: #7F3D98;
+    }
+</style>

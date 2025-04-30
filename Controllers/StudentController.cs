@@ -36,9 +36,9 @@ namespace GuidanceTracker.Controllers
             var model = new StudentDashViewModel
             {
                 FirstName = user.FirstName,
-                AppointmentsTodayCount = db.Appointments
-                    .Where(a => a.StudentId == userId && DbFunctions.TruncateTime(a.AppointmentDate) == DateTime.Today)
-                    .Count(),
+                UpcomingAppointmentsCount = db.Appointments
+                .Where(a => a.StudentId == userId && a.AppointmentDate >= DateTime.Today)
+                .Count(),
                 NewAnnouncementsCount = newAnnouncementsCount,
                 NewMessagesCount = unreadMessagesCount // ✅ Add this to the view model
             };
@@ -46,88 +46,139 @@ namespace GuidanceTracker.Controllers
             return View(model);
         }
 
+        public ActionResult UpcomingAppoinments()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var appointments = db.Appointments
+                .Where(a => a.StudentId == userId && a.AppointmentDate >= DateTime.Today)
+                .ToList();
+            return View(appointments);
+        }
+
         public ActionResult RequestAppointment()
         {
             var studentId = User.Identity.GetUserId();
             var student = db.Students.Find(studentId);
-            GuidanceSession guidanceSession = db.GuidanceSessions.
-                Where(g => g.ClassId == student.ClassId).
-                FirstOrDefault();
 
-            Appointment appointment = new Appointment
+            if (student == null)
+            {
+                return HttpNotFound("Student not found");
+            }
+
+            // Get the guidance session with appointments to check availability
+            GuidanceSession guidanceSession = db.GuidanceSessions
+                .Include(g => g.Appointments)
+                .Where(g => g.ClassId == student.ClassId)
+                .FirstOrDefault();
+
+            if (guidanceSession == null)
+            {
+                return HttpNotFound("No guidance session found for this student's class");
+            }
+
+            // Create view model with only available time slots
+            var viewModel = new AppointmentViewModel
             {
                 StudentId = studentId,
-                Student = db.Students.Find(studentId),
+                StudentName = $"{student.FirstName} {student.LastName}",
                 AppointmentDate = guidanceSession.Day,
-                AppointmentNotes = "",
+                GuidanceSessionId = guidanceSession.GuidanceSessionId,
                 Room = guidanceSession.Room,
-                GuidanceSessionId = guidanceSession.GuidanceSessionId
-
+                AppointmentStatus = AppointmentStatus.Requested,
+                // Only include available time slots
+                AvailableTimeSlots = GetOnlyAvailableTimeSlots(guidanceSession)
             };
-            return View(appointment);
+
+            return View(viewModel);
         }
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RequestAppointment(Appointment model)
+        public ActionResult RequestAppointment(AppointmentViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                // Reload available time slots
+                var session = db.GuidanceSessions
+                    .Include(g => g.Appointments)
+                    .FirstOrDefault(g => g.GuidanceSessionId == model.GuidanceSessionId);
+
+                model.AvailableTimeSlots = GetOnlyAvailableTimeSlots(session);
+                return View(model);
+            }
+
             var studentId = User.Identity.GetUserId();
             var student = db.Students.Find(studentId);
-            GuidanceSession guidanceSession = db.GuidanceSessions.Where(g => g.ClassId == student.ClassId).FirstOrDefault();
 
-            var appointment = new Appointment { };
-
-            //no ViewBag message by default
-            ViewBag.Message = "";
-
-            string stringDate = guidanceSession.Day.ToString("dd/MM/yyyy");
-            string stringTime = guidanceSession.Time.ToString();
-
-            //make datetime string from date and time
-            stringDate = stringDate + " " + stringTime;
-
-            //try to transform string to datetime
-            try
+            if (student == null)
             {
-                appointment.AppointmentDate = DateTime.Parse(stringDate);
-            }
-            //if not successfull return alert
-            catch
-            {
-                ViewBag.Message = "incorrect input for date";
+                return HttpNotFound("Student not found");
             }
 
+            var guidanceSession = db.GuidanceSessions
+                .Include(g => g.Appointments)
+                .FirstOrDefault(g => g.GuidanceSessionId == model.GuidanceSessionId);
 
-            appointment.AppointmentNotes = model.AppointmentNotes;            
-            appointment.StudentId = studentId;
-            appointment.Student = db.Students.Where(c => c.Id == model.StudentId).FirstOrDefault();
-            appointment.AppointmentStatus = AppointmentStatus.Requested;
-            appointment.GuidanceTeacherId = student.Class.GuidanceTeacherId;
-            appointment.GuidanceTeacher = db.GuidanceTeachers.Find(appointment.GuidanceTeacherId);
-            appointment.Room = guidanceSession.Room;
-            appointment.GuidanceSessionId = guidanceSession.GuidanceSessionId;
-            appointment.GuidanceSession = guidanceSession;
-
-
-
-            //if viewbag has any error message => return them to view
-            if (ViewBag.Message != "")
+            if (guidanceSession == null)
             {
-                return View(appointment);
+                return HttpNotFound("Guidance session not found");
             }
-            else
+
+            // Double-check that the time slot is still available (for concurrent submissions)
+            if (!guidanceSession.IsTimeSlotAvailable(model.StartTime))
             {
-                //add Appointment to db
-                db.Appointments.Add(appointment);
-                db.SaveChanges();
-                TempData["Success"] = "Appointment created successfully.";
-                //redirect to issue page
-                return RedirectToAction("StudentDash", "Student");
+                ModelState.AddModelError("StartTime", "This time slot is no longer available");
+                model.AvailableTimeSlots = GetOnlyAvailableTimeSlots(guidanceSession);
+                return View(model);
             }
+
+            // Create the appointment
+            var appointment = new Appointment
+            {
+                StudentId = studentId,
+                GuidanceSessionId = model.GuidanceSessionId,
+                AppointmentDate = model.AppointmentDate,
+                StartTime = model.StartTime,
+                AppointmentNotes = model.AppointmentNotes,
+                AppointmentStatus = AppointmentStatus.Requested,
+                GuidanceTeacherId = student.Class.GuidanceTeacherId,
+                Room = model.Room
+            };
+
+            db.Appointments.Add(appointment);
+            db.SaveChanges();
+
+            TempData["Success"] = "Appointment requested successfully.";
+            return RedirectToAction("StudentDash");
+        }
+
+        // Helper method to get ONLY available time slots for the view
+        private List<TimeSlotViewModel> GetOnlyAvailableTimeSlots(GuidanceSession session)
+        {
+            if (session == null)
+                return new List<TimeSlotViewModel>();
+
+            var timeSlots = new List<TimeSlotViewModel>();
+
+            foreach (var slot in session.AllTimeSlots)
+            {
+                // Check if slot is available
+                bool isAvailable = session.IsTimeSlotAvailable(slot);
+
+                // Only add available time slots to the list
+                if (isAvailable)
+                {
+                    timeSlots.Add(new TimeSlotViewModel
+                    {
+                        StartTime = slot,
+                        EndTime = slot.Add(TimeSpan.FromMinutes(10)),
+                        IsAvailable = true
+                    });
+                }
+            }
+
+            return timeSlots;
         }
     }
 }

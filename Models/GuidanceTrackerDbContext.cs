@@ -48,6 +48,8 @@ namespace GuidanceTracker.Models
         public DbSet<Message> Messages { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ProgressMeetingFeedbackForm> ProgressMeetingFeedbackForms { get; set; }
+        public DbSet<AppointmentFeedbackForm> AppointmentFeedbackForms { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

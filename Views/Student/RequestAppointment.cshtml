@@ -1,47 +1,81 @@
-﻿@model GuidanceTracker.Models.Appointment
-
+﻿@model GuidanceTracker.Models.ViewModels.AppointmentViewModel
 @{
-    ViewBag.Title = "RequestAppointment";
+    ViewBag.Title = "Request Appointment";
 }
-@if (ViewBag.Message != null)
+
+@if (TempData["Message"] != null)
 {
-    <script type="text/javascript">
-            window.onload = function () {
-                alert("@ViewBag.Message");
-            };
-    </script>
-}
-<h2>Request Appointment</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <h4>Appointment</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AppointmentNotes, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AppointmentNotes, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <p>Request appointemnt for next guidance session which is @Model.AppointmentDate at @Model.Room</p>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
+    <div class="alert alert-info">
+        @TempData["Message"]
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to Dashboard", "StudentDash", "Student")
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Request appointment for next guidance session on @Model.AppointmentDate.ToShortDateString() at Room @Model.Room</h3>
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.StudentId)
+            @Html.HiddenFor(model => model.GuidanceSessionId)
+            @Html.HiddenFor(model => model.AppointmentDate)
+            @Html.HiddenFor(model => model.Room)
+            @Html.HiddenFor(model => model.AppointmentStatus)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartTime, "Select Available Time", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @if (Model.AvailableTimeSlots != null && Model.AvailableTimeSlots.Any())
+                    {
+                        <select name="StartTime" id="StartTime" class="form-control">
+                            @foreach (var slot in Model.AvailableTimeSlots)
+                            {
+                                <option value="@slot.StartTime">@slot.StartTime.ToString() - @slot.EndTime.ToString()</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No available time slots found for this guidance session.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AppointmentNotes, "Notes (Optional)", htmlAttributes: new { @class = "control-label" })
+                <div>
+                    @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control", rows = 3 })
+                    @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <div>
+                    <input type="submit" value="Request Appointment" class="btn btn-back" />
+                    <p></p>
+                    @Html.ActionLink("Back to Dashboard", "StudentDash", "Student", null, new { @class = "btn btn-back" })
+                </div>
+            </div>
+        }
+    </div>
 </div>
+<style>
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-back {
+        background: #7F3D98;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

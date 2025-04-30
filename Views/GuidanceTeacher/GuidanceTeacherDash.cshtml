@@ -4,7 +4,14 @@
     ViewBag.Title = "Guidance Teacher Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
 
+    <script type="text/javascript">
+        var msg = "@ViewBag.Message";
+        alert(msg);
+    </script>
+}
 <head>
     <style>
         body {
@@ -21,6 +28,7 @@
             padding: 20px;
             gap: 20px;
         }
+
         .custom-card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -30,7 +38,6 @@
             .custom-card:hover {
                 transform: translateY(-5px);
             }
-     
     </style>
 </head>
 
@@ -125,7 +132,7 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 </body>
 
 @section Scripts {
