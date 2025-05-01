@@ -9,7 +9,7 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
+            <th>Date & Time</th>
             <th>Student Name</th>
             <th>Class</th>
             <th>@Html.DisplayNameFor(model => model.AppointmentNotes)</th>
@@ -20,7 +20,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime</td>
                 <td>@item.Student.FirstName @item.Student.LastName</td>
                 <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
                 <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>

@@ -1210,7 +1210,7 @@ namespace GuidanceTracker.Models
                 Room = "05.005",
                 Time = new TimeSpan(11, 00, 0),
                 Class = classes1,
-                Day = DateTime.Now.AddDays(1),
+                Day = DateTime.Now,
             };
             context.GuidanceSessions.Add(guidanceSession1);
 
@@ -1785,187 +1785,216 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
 
+
+
             //add appointemnts
-            // Create appointments
+            // First appointment for student1
             var session1 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentDate = guidanceSession1.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Initial consultation",
                 StudentId = student1.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 1,
+                GuidanceSessionId = 1, // Original value
                 Room = guidanceSession1.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession1.Time
             };
             context.Appointments.Add(session1);
 
+            // Second appointment for student1 (with issue)
             var session01 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentDate = guidanceSession1.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Initial consultation",
                 StudentId = student1.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 1,
+                GuidanceSessionId = 1, // Original value
                 Room = guidanceSession1.Room,
-                IssueId = issue.IssueId
+                IssueId = issue.IssueId,
+                StartTime = guidanceSession1.Time.Add(TimeSpan.FromMinutes(10))
             };
             context.Appointments.Add(session01);
 
+            // Appointment for student2
             var session2 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentDate = guidanceSession2.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Progress review",
                 StudentId = student2.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 2,
+                GuidanceSessionId = 2, // Original value
                 Room = guidanceSession2.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession2.Time
             };
             context.Appointments.Add(session2);
 
+            // Appointment for student3
             var session3 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentDate = guidanceSession1.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Career advice",
                 StudentId = student3.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 1,
+                GuidanceSessionId = 1, // Original value
                 Room = guidanceSession1.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession1.Time.Add(TimeSpan.FromMinutes(20))
             };
             context.Appointments.Add(session3);
 
+            // Appointment for student4
             var session4 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentDate = guidanceSession3.Day,
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "Academic support",
                 StudentId = student4.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 3,
+                GuidanceSessionId = 3, // Original value
                 Room = guidanceSession3.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession3.Time.Add(TimeSpan.FromMinutes(10))
             };
             context.Appointments.Add(session4);
 
+            // Appointment for student5
             var session5 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentDate = guidanceSession4.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Personal issues",
                 StudentId = student5.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 4,
+                GuidanceSessionId = 4, // Original value
                 Room = guidanceSession4.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession4.Time
             };
             context.Appointments.Add(session5);
 
+            // Appointment for student6
             var session6 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(5),
+                AppointmentDate = guidanceSession5.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Study plan",
                 StudentId = student6.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 5,
+                GuidanceSessionId = 5, // Original value
                 Room = guidanceSession5.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession5.Time.Add(TimeSpan.FromMinutes(20))
             };
             context.Appointments.Add(session6);
 
+            // Appointment for student7
             var session7 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentDate = guidanceSession6.Day,
                 AppointmentStatus = AppointmentStatus.Cancelled,
                 AppointmentNotes = "Exam preparation",
                 StudentId = student7.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 6,
+                GuidanceSessionId = 6, // Original value
                 Room = guidanceSession6.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession6.Time.Add(TimeSpan.FromMinutes(30))
             };
             context.Appointments.Add(session7);
 
+            // Appointment for student8
             var session8 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentDate = guidanceSession7.Day, // Using Day from guidanceSession7 to match GuidanceSessionId
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "Course selection",
                 StudentId = student8.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 7,
+                GuidanceSessionId = 7, // Original value
                 Room = guidanceSession7.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession7.Time.Add(TimeSpan.FromMinutes(10))
             };
             context.Appointments.Add(session8);
 
+            // Appointment for student9
             var session9 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentDate = guidanceSession8.Day,
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "Internship advice",
                 StudentId = student9.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 8,
+                GuidanceSessionId = 8, // Original value
                 Room = guidanceSession8.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession8.Time.Add(TimeSpan.FromMinutes(20))
             };
             context.Appointments.Add(session9);
 
+            // Another appointment for student9
             var session10 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(5),
+                AppointmentDate = guidanceSession1.Day,
                 AppointmentStatus = AppointmentStatus.Scheduled,
                 AppointmentNotes = "General support",
                 StudentId = student9.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 1,
+                GuidanceSessionId = 1, // Original value
                 Room = guidanceSession1.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession1.Time.Add(TimeSpan.FromMinutes(30))
             };
             context.Appointments.Add(session10);
 
+            // Requested appointment for student3
             var requested1 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(2),
+                AppointmentDate = guidanceSession3.Day,
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "Requesting help with essay writing.",
                 StudentId = student3.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 3,
+                GuidanceSessionId = 3, // Original value
                 Room = guidanceSession3.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession3.Time.Add(TimeSpan.FromMinutes(20))
             };
             context.Appointments.Add(requested1);
 
+            // Another requested appointment for student3
             var requested2 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(3),
+                AppointmentDate = guidanceSession3.Day,
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "need help with calculus.",
                 StudentId = student3.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 3,
+                GuidanceSessionId = 3, // Original value
                 Room = guidanceSession3.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession3.Time.Add(TimeSpan.FromMinutes(30))
             };
             context.Appointments.Add(requested2);
 
+            // Another requested appointment for student3
             var requested3 = new Appointment
             {
-                AppointmentDate = DateTime.Now.AddDays(4),
+                AppointmentDate = guidanceSession3.Day,
                 AppointmentStatus = AppointmentStatus.Requested,
                 AppointmentNotes = "need help with coding.",
                 StudentId = student3.Id,
                 GuidanceTeacherId = guidance.Id,
-                GuidanceSessionId = 3,
+                GuidanceSessionId = 3, // Original value
                 Room = guidanceSession3.Room,
-                IssueId = null
+                IssueId = null,
+                StartTime = guidanceSession3.Time.Add(TimeSpan.FromMinutes(40))
             };
             context.Appointments.Add(requested3);
 
