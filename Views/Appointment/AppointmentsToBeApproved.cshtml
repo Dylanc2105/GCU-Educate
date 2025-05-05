@@ -20,7 +20,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime</td>
+                <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime.ToString("hh\\:mm")</td>
                 <td>@item.Student.FirstName @item.Student.LastName</td>
                 <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
                 <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>
@@ -42,6 +42,10 @@
 </p>
 
 <style>
+
+    .btn-back {
+        background: #7F3D98;
+    }
     .btn {
         color: white;
         border: none;
@@ -49,8 +53,11 @@
         padding: 8px 16px;
         cursor: pointer;
         font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
     }
-    .btn-back {
-        background: #7F3D98;
+
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
     }
 </style>

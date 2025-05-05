@@ -51,6 +51,10 @@ else
     @Html.ActionLink("Request New Appointment", "RequestAppointment", "Student", null, new { @class = "btn btn-back" })
 </div>
 <style>
+    .btn-back {
+        background: #7F3D98;
+    }
+
     .btn {
         color: white;
         border: none;
@@ -58,9 +62,11 @@ else
         padding: 8px 16px;
         cursor: pointer;
         font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
     }
 
-    .btn-back {
-        background: #7F3D98;
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
     }
 </style>

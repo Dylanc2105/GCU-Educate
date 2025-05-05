@@ -20,14 +20,14 @@
                             {
                                 <li class="guidance-item" data-session-id="@session.GuidanceSessionId">
                                     <p class="card-title"> @session.Class.ClassName</p>
-                                    <strong>Time:</strong> @session.Time.ToString()<br />
+                                    <strong>Time:</strong> @session.Time.ToString("hh\\:mm")<br />
                                     <strong>Room:</strong> @session.Room<br />
                                     <p>
                                         @if (session.Appointments.Count() == 1)
                                         {
-                                        <p>1 apoointment for this session </p>}
+                                        <p class="btn">1 apoointment for this session </p>}
                                     else
-                                    {<p>@session.Appointments.Count() apoointments for this session </p>}
+                                    {<p class="btn">@session.Appointments.Count() apoointments for this session </p>}
 
                                     </li>
                                     <hr />
@@ -55,6 +55,21 @@
 <script src="~/js/your-custom-script.js"></script>
 
 <style>
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #7F3D98; /* Original background color */
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+        .btn:hover {
+            background-color: #5c2b70; /* A darker shade of your original purple */
+            color: white;
+        }
     .accordion-button:not(.collapsed) {
         color: #000;
         background-color: #f8f9fa;
