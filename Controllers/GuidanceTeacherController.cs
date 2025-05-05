@@ -73,6 +73,8 @@ namespace GuidanceTracker.Controllers
                 GuidanceSessionsForWeekCount = guidanceSessionsForWeekCount
             };
 
+            ViewBag.Message = TempData["Message"] as string; // Retrieve the message from TempData
+
             return View(model);
         }
 

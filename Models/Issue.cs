@@ -50,24 +50,24 @@ namespace GuidanceTracker.Models
 
     public enum IssueTitle
     {
-        [Description("Late Attendance")]
+        [Display (Name="Late Attendance")]
         LateAttendance,
-        [Description("Missing Attendance")]
+        [Display (Name="Missing Attendance")]
         MissingAttendance,
         Behaviour,
         Deadlines,
         Communication,
         Performance,
         Medical,
-        [Description("Academic Dishonesty")]
+        [Display(Name = "Academic Dishonesty")]
         AcademicDishonesty,
-        [Description("Custom Issue")]
+        [Display(Name = "Custom Issue")]
         CustomIssue
     }
     public enum IssueStatus
     {
         New,
-        [Description("In Progress")]
+        [Display(Name = "In Progress")]
         InProgress,
         Archived
     }

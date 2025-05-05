@@ -319,6 +319,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AppointmentFeedbackForm.cs" />
     <Compile Include="Models\ArchivedComment.cs" />
     <Compile Include="Models\ArchivedTicket.cs" />
     <Compile Include="Models\Class.cs" />
@@ -339,8 +340,10 @@
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostRead.cs" />
+    <Compile Include="Models\ProgressMeetingFeedbackForm.cs" />
     <Compile Include="Models\RequestedDetailedForm.cs" />
     <Compile Include="Models\SimpleFeedback.cs" />
+    <Compile Include="Models\ViewModels\AppointmentViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\CreateDetailedFeedbackViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\ReceivedFeedbackDashViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\RequestedDetailedFeedbackViewModel.cs" />
@@ -2622,6 +2625,9 @@
     <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
     <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
+    <Content Include="Views\Student\UpcomingAppoinments.cshtml" />
+    <Content Include="Views\Appointment\ProgressMeetingForm.cshtml" />
+    <Content Include="Views\Appointment\AppointmentForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
