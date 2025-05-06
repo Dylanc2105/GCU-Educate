@@ -9,10 +9,9 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
+            <th>Date & Time</th>
             <th>Student Name</th>
             <th>Class</th>
-            <th>@Html.DisplayNameFor(model => model.AppointmentStatus)</th>
             <th>@Html.DisplayNameFor(model => model.AppointmentNotes)</th>
             <th>Actions</th>
         </tr>
@@ -21,29 +20,44 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime.ToString("hh\\:mm")</td>
                 <td>@item.Student.FirstName @item.Student.LastName</td>
                 <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
-                <td>@Html.DisplayFor(modelItem => item.AppointmentStatus)</td>
                 <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>
                 <td>
                     @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
                     {
-                        @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success" })
-                        <span></span> @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning" })
-                        <span></span> @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger" })
-                    }
-                    else if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Rescheduled)
-                    {
-                        @Html.ActionLink("Reschedule", "RescheduleAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-warning" })
-                        @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger" })
-                    }
-                    else if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Cancelled)
-                    {
-                        @Html.ActionLink("Reinstate", "ReinstateAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-info" })
+                        @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action" })
+                        <span></span> @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action" })
+                        <span></span> @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger btn-action" })
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<br />
+<p>
+    @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
+</p>
+
+<style>
+
+    .btn-back {
+        background: #7F3D98;
+    }
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
+    }
+</style>

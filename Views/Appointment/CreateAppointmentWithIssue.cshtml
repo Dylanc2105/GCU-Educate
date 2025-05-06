@@ -1,82 +1,105 @@
-﻿@model GuidanceTracker.Models.Appointment
-
+﻿@model GuidanceTracker.Models.ViewModels.AppointmentViewModel
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Appointment for Issue";
 }
 
-@*  alert for issues raised in controller *@
-@if (ViewBag.Message != null)
-{
-    <script type="text/javascript">
-            window.onload = function () {
-                alert("@ViewBag.Message");
-            };
-    </script>
-}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Schedule an Appointment for Issue</h3>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.StudentId)
+                        @Html.HiddenFor(model => model.GuidanceSessionId)
+                        @Html.HiddenFor(model => model.AppointmentDate)
+                        @Html.HiddenFor(model => model.Room)
+                        @Html.HiddenFor(model => model.AppointmentStatus)
+                        @Html.HiddenFor(model => model.IssueId)
 
+                        <div class="form-group">
+                            <strong>Student:</strong>
+                            <div class="form-control-static">
+                                @Model.StudentName
+                            </div>
+                        </div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <strong>Issue:</strong>
+                            <div class="form-control-static">
+                                <p>@Model.IssueDescription</p>
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            <strong>Appointment Date:</strong>
+                            <div class="form-control-static">
+                                @Model.AppointmentDate.ToShortDateString()
+                            </div>
+                        </div>
 
-    //student info
-<div class="form-horizontal">
-    <h4>Create an appointment for @Model.Student.FirstName @Model.Student.LastName about @Model.Issue.IssueTitle</h4>
-    <hr />
-    <p>@Model.Issue.IssueDescription</p>
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <strong>Room:</strong>
+                            <div class="form-control-static">
+                                @Model.Room
+                            </div>
+                        </div>
 
-    @Html.HiddenFor(model => model.StudentId)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StartTime, "Select Time Slot", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.StartTime,
+                                                         new SelectList(Model.AvailableTimeSlots.Where(s => s.IsAvailable), "StartTime", "DisplayText"),
+                                                         "-- Select a time slot --",
+                                                         new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                        </div>
 
-    @* date textbox *@
-    <p>Date</p>
-    <input type="text" id="stringDate" name="stringDate" value="@Model.GuidanceSession.Day.ToString("dd/MM/yyyy")" />
-
-    @*placeholder="dd/mm/year"  placeholder="hh:mm"*@
-
-    @* time textbox *@
-    <p>Time</p>
-    <input type="text" id="stringTime" name="stringTime" value="@Model.GuidanceSession.Time" />
-
-
-    @* room textbox *@
-    <div class="form-group">
-        @Html.LabelFor(model => model.Room, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Room, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Room, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    @* comment text area *@
-    <div class="form-group">
-        @Html.LabelFor(model => model.AppointmentNotes, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextAreaFor(model => model.AppointmentNotes, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    @* status area *@
-    <div class="form-group">
-        @Html.LabelFor(model => model.AppointmentStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EnumDropDownListFor(model => model.AppointmentStatus, "Select Status", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.AppointmentStatus, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-purple mt-2" />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AppointmentNotes, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control", rows = 4 })
+                            @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="submit" value="Schedule Appointment" class="btn btn-back" />
+                        </div>
+                        <br />
+                        <p>
+                            @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
+                        </p>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
-}
 
 
+<style>
+    .btn-back {
+        background: #7F3D98;
+    }
+
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
+    }
+</style>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

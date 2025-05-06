@@ -4,7 +4,14 @@
     ViewBag.Title = "Guidance Teacher Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
 
+    <script type="text/javascript">
+        var msg = "@ViewBag.Message";
+        alert(msg);
+    </script>
+}
 <head>
     <style>
         body {
@@ -139,7 +146,7 @@
 
 
         </div>
-        </div>
+    </div>
 </body>
 
 @section Scripts {

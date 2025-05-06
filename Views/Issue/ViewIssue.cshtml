@@ -47,7 +47,8 @@
                 {
                     <div class="appointment-card">
                         <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past")</strong></p>
-                        <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Time:</strong> @appointment.StartTime</p>
                         <p><strong>Room:</strong> @appointment.Room</p>
                         <p><strong>Notes:</strong> @appointment.AppointmentNotes</p>
                         @Html.ActionLink("Edit", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple small" })
