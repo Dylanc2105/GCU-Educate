@@ -54,8 +54,9 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h3 class="card-title" style="color: #7F3D98">Upcoming Appointments</h3>
-                        <p class="h2" style="color: #7F3D98">@Model.UpcomingAppointmentsCount</p>
+                        <i class="fa-solid fa-calendar-week" style="color: #7F3D98; font-size: 80px;"></i>
+                        <p class="card-title" style="color: #7F3D98">Upcoming Appointments</p>
+                        <p class="h3" style="color: #7F3D98">@Model.UpcomingAppointmentsCount</p>
                         <p>@Html.ActionLink("View more >", "UpcomingAppoinments", "Student", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
