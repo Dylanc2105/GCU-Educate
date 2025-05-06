@@ -34,6 +34,8 @@
                 transform: translateY(-5px);
             }
     </style>
+    <!-- link for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -54,18 +56,21 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h3 class="card-title" style="color: #7F3D98">Active Issues</h3>
-                        <p class="h2" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
+                        <i class="fa-solid fa-file" style="color: #7F3D98; font-size: 80px;"></i>
+                        <p class="card-title" style="color: #7F3D98">Active Issues</p>
+                        <p class="h3" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
             </div>
+
             <!-- new messages -->
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card">
                     <div class="card-body" style="text-align:center">
-                        <h3 class="card-title" style="color: #7F3D98">New Messages</h3>
-                        <p class="h2" style="color: #7F3D98">@Model.NewMessagesCount</p>
+                        <i class="fa-solid fa-comments" style="color: #7F3D98; font-size: 80px;"></i>
+                        <p class="card-title" style="color: #7F3D98">New Messages</p>
+                        <p class="h3" style="color: #7F3D98">@Model.NewMessagesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>
@@ -75,8 +80,9 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card custom-card" style="text-align:center">
                     <div class="card-body">
-                        <h3 class="card-title" style="color: #7F3D98">New Announcements</h3>
-                        <p class="h2" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
+                        <i class="fa-solid fa-scroll" style="color: #7F3D98; font-size: 80px;"></i>
+                        <p class="card-title" style="color: #7F3D98">New Posts</p>
+                        <p class="h3" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
                         <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
                     </div>
                 </div>

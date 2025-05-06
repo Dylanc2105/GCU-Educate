@@ -63,7 +63,7 @@ namespace GuidanceTracker.Controllers
             {
                 FirstName = user.FirstName,
                 NewIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
-                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today).Count(),
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today && a.GuidanceTeacherId == userId).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount,
                 UnreadMessagesCount = unreadMessagesCount,
                 NewFeedbackCount = db.SimpleFeedbacks
