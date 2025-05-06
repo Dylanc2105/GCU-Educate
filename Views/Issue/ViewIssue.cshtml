@@ -13,13 +13,25 @@
             <p><strong>Student:</strong> @Model.Student.FirstName @Model.Student.LastName</p>
             <p><strong>Raised by:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
             <!-- karina: added a dropdown so status can be changed -->
-            <select id="statusDropdown" class="form-control status-select">
-                @foreach (var status in Enum.GetValues(typeof(GuidanceTracker.Models.IssueStatus)))
-                {
-                    <option value="@status" @(Model.IssueStatus.ToString() == status.ToString() ? "selected" : "")>@status</option>
-                }
-            </select>
-            <button id="updateStatusBtn" class="btn btn-purple btn-sm">Update Status</button>
+            @if (User.IsInRole("GuidanceTeacher"))
+            {
+                <!-- status dropdown for guidance only -->
+                <div class="status-control-group">
+                    <p><strong>Status:</strong></p>
+                    <select id="statusDropdown" class="form-control status-select">
+                        @foreach (var status in Enum.GetValues(typeof(GuidanceTracker.Models.IssueStatus)))
+                        {
+                            <option value="@status" @(Model.IssueStatus.ToString() == status.ToString() ? "selected" : "")>@status</option>
+                        }
+                    </select>
+                    <button id="updateStatusBtn" class="btn btn-purple btn-sm">Update Status</button>
+                </div>
+            }
+            else
+            {
+                <!-- lecturers only see the status -->
+                <p><strong>Status:</strong> <span class="status-badge status-@Model.IssueStatus.ToString().ToLower()">@Model.IssueStatus.ToString()</span></p>
+            }
             <p><strong>Date Created:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
             <div class="issue-description">
                 <h4>Description</h4>
