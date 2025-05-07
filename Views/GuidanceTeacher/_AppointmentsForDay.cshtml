@@ -9,7 +9,7 @@
            <p>Student Name</p>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AppointmentDate)
+            Appointment Time
         </th>
         <th>
             @Html.DisplayNameFor(model => model.AppointmentStatus)
@@ -31,7 +31,7 @@
             @Html.DisplayFor(modelItem => item.Student.LastName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.AppointmentDate)
+            @item.StartTime.ToString("hh\\:mm")
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.AppointmentStatus)
@@ -43,7 +43,7 @@
             @Html.DisplayFor(modelItem => item.Room)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-purple small" }) 
+            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn small" }) 
         </td>
     </tr>
 }
@@ -56,22 +56,22 @@ else
 
 
 <style>
-    .btn-purple {
-        background-color: #7F3D98;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 14px;
-        font-weight: 600;
-        cursor: pointer;
+    .btn-back {
+        background: #7F3D98;
     }
 
-        .btn-purple.small {
-            font-size: 12px;
-            padding: 4px 10px;
-        }
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
 
-        .btn-purple:hover {
-            background-color: #985BAF;
-        }
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
+    }
 </style>

@@ -37,23 +37,44 @@ namespace GuidanceTracker.Controllers
             var user = db.GuidanceTeachers.Find(userId);
             var today = DateTime.Today;
 
-            // counts the posts that don't have a row in the PostRead table for the current user
+            // Get unread announcements
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
 
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
 
+            // COUNT UNREAD MESSAGES FOR THIS USER
+            var unreadMessagesCount = db.Messages
+                .Where(m => m.ReceiverId == userId && !m.IsRead)
+                .Count();
+
+            //count appointments with requested status for this user
+            var appointmentsToBeApprovedCount = db.Appointments
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Requested && a.GuidanceTeacherId == userId)
+                .Count();
+
+            //count guidance sessions for this week for this user
+            var guidanceSessionsForWeekCount = db.GuidanceSessions
+    .Where(g=>g.Class.GuidanceTeacherId == userId)
+    .Count();
+
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
                 NewIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
-                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
-                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today).Count(),
-                NewAnnouncementsCount = newAnnouncementsCount
-
-
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today && a.GuidanceTeacherId == userId).Count(),
+                NewAnnouncementsCount = newAnnouncementsCount,
+                UnreadMessagesCount = unreadMessagesCount,
+                NewFeedbackCount = db.SimpleFeedbacks
+                    .Where(fb => fb.IsReadByGuidanceTeacher == false && fb.GuidanceTeacherId == userId)
+                    .Count(),
+                AppointmentsToBeApprovedCount = appointmentsToBeApprovedCount,
+                GuidanceSessionsForWeekCount = guidanceSessionsForWeekCount
             };
+
+            ViewBag.Message = TempData["Message"] as string; // Retrieve the message from TempData
+
             return View(model);
         }
 

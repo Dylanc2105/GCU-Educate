@@ -1,0 +1,226 @@
+﻿@model IEnumerable<IGrouping<DayOfWeek, GuidanceTracker.Models.GuidanceSession>>
+
+<h2>Weekly Guidance Sessions</h2>
+
+<div class="accordion">
+    @foreach (var dayGroup in Model)
+    {
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="heading-@dayGroup.Key">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@dayGroup.Key" aria-expanded="false" aria-controls="collapse-@dayGroup.Key">
+                    @dayGroup.Key.ToString()
+                </button>
+            </h3>
+            <div id="collapse-@dayGroup.Key" class="accordion-collapse collapse" aria-labelledby="heading-@dayGroup.Key" data-bs-parent=".accordion">
+                <div class="accordion-body">
+                    @if (dayGroup.Any())
+                    {
+                        <ul>
+                            @foreach (var session in dayGroup)
+                            {
+                                <li class="guidance-item" data-session-id="@session.GuidanceSessionId">
+                                    <p class="card-title"> @session.Class.ClassName</p>
+                                    <strong>Time:</strong> @session.Time.ToString("hh\\:mm")<br />
+                                    <strong>Room:</strong> @session.Room<br />
+                                    <p>
+                                        @if (session.Appointments.Count() == 1)
+                                        {
+                                        <p class="btn">1 apoointment for this session </p>}
+                                    else
+                                    {<p class="btn">@session.Appointments.Count() apoointments for this session </p>}
+
+                                    </li>
+                                    <hr />
+                                }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No guidance sessions scheduled for this day.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+     
+<div id="partialAppointments"></div>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="~/js/your-custom-script.js"></script>
+
+<style>
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #7F3D98; /* Original background color */
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+        .btn:hover {
+            background-color: #5c2b70; /* A darker shade of your original purple */
+            color: white;
+        }
+    .accordion-button:not(.collapsed) {
+        color: #000;
+        background-color: #f8f9fa;
+    }
+
+    .accordion-button:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+
+
+
+<script>
+        $(document).ready(function () {
+            $(".guidance-item").click(function () {
+                var sessionId = $(this).data("session-id");
+                var url = '@Url.Action("AppointmentsForSessionPartial", "Appointment")';
+
+                $.get(url, { id: sessionId }, function (data) {
+                    $("#partialAppointments").html(data);
+                });
+            });
+
+        });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+@*@using GuidanceTracker.Models;
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="~/js/your-custom-script.js"></script>
+
+    @{
+
+        ViewBag.Title = "GuidanceSessionsForWeek";
+        var sessionsByDay = ViewBag.SessionsByDay as Dictionary<DayOfWeek, List<GuidanceSession>>;
+        var daysOfWeek = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+    }
+
+
+    <h1>Weekly Guidance Schedule</h1>
+
+    <div class="guidance-schedule">
+        <div class="weekly-schedule">
+            @foreach (var day in daysOfWeek.OrderBy(d => d))
+            {
+                <div class="day-container">
+                    <h2>@day</h2>
+
+                    @if (sessionsByDay != null && sessionsByDay.ContainsKey(day))
+                    {
+                        <ul>
+                            @foreach (var session in sessionsByDay[day].OrderBy(s => s.Time))
+                            {
+                                <li class="guidance-item" data-session-id="@session.GuidanceSessionId">
+                                    <p class="card-title"> @session.Class.ClassName</p>
+                                    <strong>Time:</strong> @session.Time.ToString() <br />
+                                    <strong>Room:</strong> @session.Room
+                                    <p>
+                                        @if (session.Appointments.Count() == 1)
+                                        {
+                                        <p>1 apoointment for this session </p>}
+                                    else
+                                    {<p>@session.Appointments.Count() apoointments for this session </p>}
+                                    </li>
+                                }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No guidance sessions scheduled for @day.</p>
+                    }
+                </div>
+            }
+        </div>
+        <div id="partialAppointments"></div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $(".guidance-item").click(function () {
+                var sessionId = $(this).data("session-id");
+                var url = '@Url.Action("AppointmentsForSessionPartial", "Appointment")';
+
+                $.get(url, { id: sessionId }, function (data) {
+                    $("#partialAppointments").html(data);
+                });
+            });
+
+        });
+    </script>
+
+    <style>
+        .guidance-schedule {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .weekly-schedule {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .day-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 33%;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #7F3D98;
+        }
+
+        .card-line {
+            font-size: 20px;
+        }
+
+        .appointments-container {
+            position: fixed; /* Or absolute, if you want it relative to a positioned parent */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centers the container */
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000; /* Ensure it's above other content */
+            max-height: 80vh; /* Optional: limit height and add scroll */
+            overflow-y: auto;
+        }
+    </style>*@

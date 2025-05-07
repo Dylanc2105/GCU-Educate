@@ -18,32 +18,41 @@ namespace GuidanceTracker.Controllers
 
         [Authorize(Roles = "Lecturer")]
         // GET: Lecturer
+        [Authorize(Roles = "Lecturer")]
         public ActionResult LecturerDash()
         {
             var userId = User.Identity.GetUserId();
             var user = db.Lecturers.Find(userId);
-            
-            // counts the posts that don't have a row in the PostRead table for the current user
+
+            // Count unread announcements
             var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
+
+            // Count active issues
             var activeIssuesCount = db.Issues
                 .Where(i => (i.IssueStatus == IssueStatus.New || i.IssueStatus == IssueStatus.InProgress)
                 && i.LecturerId == userId)
+                .Count();
+
+            //  Count unread messages
+            var unreadMessagesCount = db.Messages
+                .Where(m => m.ReceiverId == userId && !m.IsRead)
                 .Count();
 
             var model = new LecturerDashViewModel
             {
                 FirstName = user.FirstName,
                 ActiveIssuesCount = activeIssuesCount,
-                //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
-                NewAnnouncementsCount = newAnnouncementsCount
-
+                NewAnnouncementsCount = newAnnouncementsCount,
+                NewMessagesCount = unreadMessagesCount 
 
             };
+
             return View(model);
         }
+
 
         public ActionResult ViewAllStudents()
         {

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -55,10 +55,10 @@
       <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.14.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>packages\Humanizer.Core.2.14.1\lib\netstandard2.0\Humanizer.dll</HintPath>
@@ -302,7 +302,10 @@
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\DetailedFeedbackController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SimpleFeedbackController.cs" />
+    <Compile Include="Controllers\GuidanceSessionController.cs" />
     <Compile Include="Controllers\GuidanceTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LecturerController.cs" />
@@ -316,24 +319,31 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AppointmentFeedbackForm.cs" />
     <Compile Include="Models\ArchivedComment.cs" />
     <Compile Include="Models\ArchivedTicket.cs" />
     <Compile Include="Models\Class.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Conversation.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CurriculumHead.cs" />
     <Compile Include="Models\DatabaseInitializer.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\DetailedFeedback.cs" />
     <Compile Include="Models\Enrollment.cs" />
-    <Compile Include="Models\RequestedDetailedForm.cs" />
-    <Compile Include="Models\SimpleFeedback.cs" />
+    <Compile Include="Models\GuidanceSession.cs" />
     <Compile Include="Models\GuidanceTeacher.cs" />
     <Compile Include="Models\GuidanceTrackerDbContext.cs" />
     <Compile Include="Models\Lecturer.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageBoard.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostRead.cs" />
+    <Compile Include="Models\ProgressMeetingFeedbackForm.cs" />
+    <Compile Include="Models\RequestedDetailedForm.cs" />
+    <Compile Include="Models\SimpleFeedback.cs" />
+    <Compile Include="Models\ViewModels\AppointmentViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\CreateDetailedFeedbackViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\ReceivedFeedbackDashViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\RequestedDetailedFeedbackViewModel.cs" />
@@ -1547,7 +1557,6 @@
     <Content Include="Views\Issue\ViewIssue.cshtml" />
     <Content Include="Views\Appointment\Create.cshtml" />
     <Content Include="Views\Appointment\Edit.cshtml" />
-    <Content Include="Views\Comment\HHH.cshtml" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -2597,23 +2606,34 @@
     <Content Include="Views\Post\ViewMyPosts.cshtml" />
     <Content Include="Views\Post\Delete.cshtml" />
     <Content Include="Views\Post\Edit.cshtml" />
-    <Content Include="Views\SimpleFeedback\CreateSimpleFeedback.cshtml" />
-    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
-    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
-    <Content Include="Views\SimpleFeedback\StudentFeedbackDashboard.cshtml" />
-    <Content Include="Views\DetailedFeedback\CreateDetailedFeedbackRequest.cshtml" />
+    <Content Include="Views\Appointment\AppointmentsToBeApproved.cshtml" />
+    <Content Include="Views\Appointment\_AppointmentsForSession.cshtml" />
     <Content Include="Views\DetailedFeedback\CreateDetailedFeedback.cshtml" />
+    <Content Include="Views\DetailedFeedback\CreateDetailedFeedbackRequest.cshtml" />
     <Content Include="Views\DetailedFeedback\ReceivedFeedbackDash.cshtml" />
-    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedSimpleFeedbacks.cshtml" />
-    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedDetailedFeedbacks.cshtml" />
     <Content Include="Views\DetailedFeedback\ViewDetailedFeedbackDetails.cshtml" />
-    <Content Include="Views\DetailedFeedback\ViewSentDetailedFeedbacks.cshtml" />
     <Content Include="Views\DetailedFeedback\ViewreadReceivedDetailedFeedbacks.cshtml" />
     <Content Include="Views\DetailedFeedback\ViewreadReceivedSimpleFeedbacks.cshtml" />
     <Content Include="Views\GuidanceTeacher\StudentDetails.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewSentDetailedFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedDetailedFeedbacks.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewUnreadReceivedSimpleFeedbacks.cshtml" />
+    <Content Include="Views\GuidanceSession\GuidanceSessionsForWeek.cshtml" />
+    <Content Include="Views\SimpleFeedback\CreateSimpleFeedback.cshtml" />
+    <Content Include="Views\SimpleFeedback\StudentFeedbackDashboard.cshtml" />
+    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
+    <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
+    <Content Include="Views\Student\RequestAppointment.cshtml" />
+    <Content Include="Views\Message\Index.cshtml" />
+    <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
+    <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
+    <Content Include="Views\Student\UpcomingAppoinments.cshtml" />
+    <Content Include="Views\Appointment\ProgressMeetingForm.cshtml" />
+    <Content Include="Views\Appointment\AppointmentForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Comment\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
@@ -2653,11 +2673,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

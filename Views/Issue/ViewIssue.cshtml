@@ -12,7 +12,26 @@
             <h1>@Model.IssueTitle</h1>
             <p><strong>Student:</strong> @Model.Student.FirstName @Model.Student.LastName</p>
             <p><strong>Raised by:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
-            <p><strong>Status:</strong> @Model.IssueStatus</p>
+            <!-- karina: added a dropdown so status can be changed -->
+            @if (User.IsInRole("GuidanceTeacher"))
+            {
+                <!-- status dropdown for guidance only -->
+                <div class="status-control-group">
+                    <p><strong>Status:</strong></p>
+                    <select id="statusDropdown" class="form-control status-select">
+                        @foreach (var status in Enum.GetValues(typeof(GuidanceTracker.Models.IssueStatus)))
+                        {
+                            <option value="@status" @(Model.IssueStatus.ToString() == status.ToString() ? "selected" : "")>@status</option>
+                        }
+                    </select>
+                    <button id="updateStatusBtn" class="btn btn-purple btn-sm">Update Status</button>
+                </div>
+            }
+            else
+            {
+                <!-- lecturers only see the status -->
+                <p><strong>Status:</strong> <span class="status-badge status-@Model.IssueStatus.ToString().ToLower()">@Model.IssueStatus.ToString()</span></p>
+            }
             <p><strong>Date Created:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
             <div class="issue-description">
                 <h4>Description</h4>
@@ -28,7 +47,8 @@
                 {
                     <div class="appointment-card">
                         <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past")</strong></p>
-                        <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Time:</strong> @appointment.StartTime</p>
                         <p><strong>Room:</strong> @appointment.Room</p>
                         <p><strong>Notes:</strong> @appointment.AppointmentNotes</p>
                         @Html.ActionLink("Edit", "Edit", "Appointment", new { id = appointment.AppointmentId }, new { @class = "btn btn-purple small" })
@@ -39,7 +59,7 @@
             {
                 <p>No appointments recorded.</p>
             }
-            @Html.ActionLink("Create Appointment", "Create", "Appointment", new { studentId = Model.StudentId }, new { @class = "btn btn-purple mt-2" })
+            @Html.ActionLink("Create Appointment", "CreateAppointmentWithIssue", "Appointment", new { issueId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
         </div>
     </div>
 
@@ -103,6 +123,23 @@
                         alert("Error: " + res.error);
                     }
                 });
+            });
+        });
+
+        // karina: javascript to handle the update status button
+        $("#updateStatusBtn").click(function(e) {
+            e.preventDefault();
+            const newStatus = $("#statusDropdown").val();
+
+            $.post("@Url.Action("UpdateIssueStatus", "Issue")", {
+                issueId: @Model.IssueId,
+                status: newStatus
+            }, function(res) {
+                if (res.success) {
+                    alert("Status updated successfully!");
+                } else {
+                    alert("Error: " + res.error);
+                }
             });
         });
     </script>
@@ -211,5 +248,17 @@
         padding: 10px;
         border-radius: 6px;
         border: 1px solid #ccc;
+
+
+    }
+    .status-select {
+        display: inline-block;
+        width: auto;
+        margin-right: 10px;
+        padding: 4px 8px;
+    }
+
+    #updateStatusBtn {
+        vertical-align: middle;
     }
 </style>

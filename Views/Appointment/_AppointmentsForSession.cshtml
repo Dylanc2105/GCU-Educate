@@ -1,0 +1,86 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+
+<h4>
+    <strong>@ViewBag.Class</strong>
+</h4>
+<h4>
+    <strong>Time:</strong> @ViewBag.GSTime.ToString("hh\\:mm")
+</h4>
+<h4>
+    <strong>Room:</strong> @ViewBag.Room
+</h4>
+
+@if (Model.Count() != 0)
+{
+    <table class="table">
+        <tr>
+            <th>
+                Student Name
+            </th>
+            <th>
+                Meeting Type
+            </th>
+            <th>
+                Start Time
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.FirstName)
+                    @Html.DisplayFor(modelItem => item.Student.LastName)
+                </td>
+                <td>
+                    @if (item.IssueId == null)
+                    {
+                        <p>Progress meeting</p>
+                    }
+                    else
+                    {
+                        <p>Issue Discussion</p>
+                    }
+                </td>
+                <td>
+                    @item.StartTime.ToString("hh\\:mm")
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit small" })
+                    @if (item.IssueId == null)
+                    {
+                        <span></span>@Html.ActionLink("Start Meeting", "ProgressMeetingForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn" })
+                    }
+                    else
+                    {
+                        <span></span>@Html.ActionLink("Start Meeting", "AppointmentForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn" })
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p><strong>No appointments assigned for this session</strong></p>
+}
+
+
+<style>
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #7F3D98; /* Original background color */
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+        .btn:hover {
+            background-color: #5c2b70; /* A darker shade of your original purple */
+            color: white;
+        }
+</style>
