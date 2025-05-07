@@ -2,17 +2,16 @@
 @{
     ViewBag.Title = "Your Detailed Feedback";
 }
-
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col">
             <h2>Your Detailed Feedback</h2>
             <p class="text-muted">View the detailed feedback you have submitted</p>
             <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7F3D98; ">
-                <i class="fas fa-arrow-left"></i> Back </a>
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
         </div>
     </div>
-
     @if (!Model.Any())
     {
         <div class="alert alert-info" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">

@@ -358,13 +358,15 @@ namespace GuidanceTracker.Controllers
 
         public ActionResult CreateDetailedFeedbackRequest(RequestedDetailedFeedbackViewModel viewModel)
         {
-            var studentsInClass = db.Students.Where(s => s.ClassId == viewModel.ClassId).ToList();
+            var classRepStudents = db.Students
+              .Where(s => s.ClassId == viewModel.ClassId && s.IsClassRep == true)
+              .ToList();
             if (ModelState.IsValid)
             {
                 var currentUserId = User.Identity.GetUserId();
 
                 // Create a request for each student
-                foreach (var student in studentsInClass)
+                foreach (var student in classRepStudents)
                 {
                     var request = new RequestedDetailedForm
                     {
@@ -419,7 +421,7 @@ namespace GuidanceTracker.Controllers
             return View(viewModel);
         }
 
-            
+
 
         [HttpGet]
         [Authorize(Roles = "Student")]
@@ -427,15 +429,12 @@ namespace GuidanceTracker.Controllers
         {
             // Get the feedback request
             var request = db.RequestedDetailedForms.Find(requestId);
-
             var studentId = User.Identity.GetUserId();
             var student = db.Students.FirstOrDefault(s => s.Id == studentId);
-
             student = db.Students
                     .Include(s => s.GuidanceTeacher)
                     .Include(s => s.Class.Enrollments.Select(e => e.Course.Department.CurriculumHead))
                     .FirstOrDefault(s => s.Id == studentId);
-
             var targetClass = db.Classes.Find(request.ClassId);
             var course = targetClass.Enrollments.FirstOrDefault()?.Course;
 
@@ -448,7 +447,101 @@ namespace GuidanceTracker.Controllers
                 Course = course?.CourseName,
                 FeedbackDate = DateTime.Now,
                 StudentId = studentId,
-                CreatorId = request.CreatorId
+                CreatorId = request.CreatorId,
+
+                //all ratings with default value 5
+                OverallRating = 5,
+                LearningExperienceRating = 5,
+                LearningTeachingRating = 5,
+                AssessmentRating = 5,
+                ResourcesRating = 5,
+                SupportEffectivenessRating = 5,
+                SkillsDevelopmentRating = 5,
+
+                // Yes/No questions with null values to start
+
+                MeetsExpectations = null,
+                WouldRecommend = null,
+                WorkloadManageable = null,
+                ConceptsPresented = null,
+                MaterialsAvailable = null,
+                AccommodatesStyles = null,
+                LecturerResponsive = null,
+                AssessmentConfidence = null,
+                TimelyFeedback = null,
+                SpecificFeedback = null,
+                AssessmentsAligned = null,
+                SufficientTime = null,
+                MaterialsAccessible = null,
+                PlatformOrganised = null,
+                EquipmentWorking = null,
+                SupplementaryResources = null,
+                SpecializedEquipment = null,
+                LibraryResources = null,
+                StaffResponsive = null,
+                AdditionalHelpAvailable = null,
+                AccommodationsProvided = null,
+                ClearPointsOfContact = null,
+                DevelopingCriticalThinking = null,
+                EnhancingProblemSolving = null,
+                GainingPracticalSkills = null,
+                ImprovingCommunication = null,
+                DevelopingResearchSkills = null,
+
+                //  text areas with empty strings
+                MeetsExpectationsNotes = string.Empty,
+                WouldRecommendNotes = string.Empty,
+                WorkloadManageableNotes = string.Empty,
+                LearningExperienceKeyIssues = string.Empty,
+                LearningExperienceStrengths = string.Empty,
+                LearningExperienceImprovements = string.Empty,
+                LearningExperienceComments = string.Empty,
+                ConceptsPresentedNotes = string.Empty,
+                MaterialsAvailableNotes = string.Empty,
+                AccommodatesStylesNotes = string.Empty,
+                LecturerResponsiveNotes = string.Empty,
+                LearningTeachingKeyIssues = string.Empty,
+                LearningTeachingStrengths = string.Empty,
+                LearningTeachingImprovements = string.Empty,
+                LearningTeachingComments = string.Empty,
+                AssessmentConfidenceNotes = string.Empty,
+                TimelyFeedbackNotes = string.Empty,
+                SpecificFeedbackNotes = string.Empty,
+                AssessmentsAlignedNotes = string.Empty,
+                SufficientTimeNotes = string.Empty,
+                AssessmentKeyIssues = string.Empty,
+                AssessmentStrengths = string.Empty,
+                AssessmentImprovements = string.Empty,
+                AssessmentComments = string.Empty,
+                MaterialsAccessibleNotes = string.Empty,
+                PlatformOrganisedNotes = string.Empty,
+                EquipmentWorkingNotes = string.Empty,
+                SupplementaryResourcesNotes = string.Empty,
+                SpecializedEquipmentNotes = string.Empty,
+                LibraryResourcesNotes = string.Empty,
+                ResourcesKeyIssues = string.Empty,
+                ResourcesStrengths = string.Empty,
+                ResourcesImprovements = string.Empty,
+                ResourcesComments = string.Empty,
+                StaffResponsiveNotes = string.Empty,
+                AdditionalHelpAvailableNotes = string.Empty,
+                AccommodationsProvidedNotes = string.Empty,
+                ClearPointsOfContactNotes = string.Empty,
+                SupportEffectivenesssKeyIssues = string.Empty,
+                SupportEffectivenessStrengths = string.Empty,
+                SupportEffectivenessImprovements = string.Empty,
+                SupportEffectivenessComments = string.Empty,
+                DevelopingCriticalThinkingNotes = string.Empty,
+                EnhancingProblemSolvingNotes = string.Empty,
+                GainingPracticalSkillsNotes = string.Empty,
+                ImprovingCommunicationNotes = string.Empty,
+                DevelopingResearchSkillsNotes = string.Empty,
+                SkillsDevelopmentKeyIssues = string.Empty,
+                SkillsDevelopmentStrengths = string.Empty,
+                SkillsDevelopmentImprovements = string.Empty,
+                SkillsDevelopmentComments = string.Empty,
+                BestFeatures = string.Empty,
+                AreasForImprovement = string.Empty
             };
 
             return View(viewModel);
@@ -480,28 +573,108 @@ namespace GuidanceTracker.Controllers
                     // Creator information
                     CreatorId = viewModel.CreatorId,
 
-                    // Overall comments
-                    BestFeatures = viewModel.BestFeatures,
-                    AreasForImprovement = viewModel.AreasForImprovement,
+                    // Current Learning Experience
+                    MeetsExpectations = viewModel.MeetsExpectations,
+                    MeetsExpectationsNotes = viewModel.MeetsExpectationsNotes,
+                    WouldRecommend = viewModel.WouldRecommend,
+                    WouldRecommendNotes = viewModel.WouldRecommendNotes,
+                    WorkloadManageable = viewModel.WorkloadManageable,
+                    WorkloadManageableNotes = viewModel.WorkloadManageableNotes,
+                    LearningExperienceKeyIssues = viewModel.LearningExperienceKeyIssues,
+                    LearningExperienceStrengths = viewModel.LearningExperienceStrengths,
+                    LearningExperienceImprovements = viewModel.LearningExperienceImprovements,
+                    LearningExperienceComments = viewModel.LearningExperienceComments,
+                    LearningExperienceRating = viewModel.LearningExperienceRating,
 
-                    // Learning & Teaching
+                    // Teaching & Learning Methods
+                    ConceptsPresented = viewModel.ConceptsPresented,
+                    ConceptsPresentedNotes = viewModel.ConceptsPresentedNotes,
+                    MaterialsAvailable = viewModel.MaterialsAvailable,
+                    MaterialsAvailableNotes = viewModel.MaterialsAvailableNotes,
+                    AccommodatesStyles = viewModel.AccommodatesStyles,
+                    AccommodatesStylesNotes = viewModel.AccommodatesStylesNotes,
+                    LecturerResponsive = viewModel.LecturerResponsive,
+                    LecturerResponsiveNotes = viewModel.LecturerResponsiveNotes,
                     LearningTeachingKeyIssues = viewModel.LearningTeachingKeyIssues,
                     LearningTeachingStrengths = viewModel.LearningTeachingStrengths,
                     LearningTeachingImprovements = viewModel.LearningTeachingImprovements,
                     LearningTeachingComments = viewModel.LearningTeachingComments,
+                    LearningTeachingRating = viewModel.LearningTeachingRating,
 
-                    // Assessment
+                    // Assessment & Progress Tracking
+                    AssessmentConfidence = viewModel.AssessmentConfidence,
+                    AssessmentConfidenceNotes = viewModel.AssessmentConfidenceNotes,
+                    TimelyFeedback = viewModel.TimelyFeedback,
+                    TimelyFeedbackNotes = viewModel.TimelyFeedbackNotes,
+                    SpecificFeedback = viewModel.SpecificFeedback,
+                    SpecificFeedbackNotes = viewModel.SpecificFeedbackNotes,
+                    AssessmentsAligned = viewModel.AssessmentsAligned,
+                    AssessmentsAlignedNotes = viewModel.AssessmentsAlignedNotes,
+                    SufficientTime = viewModel.SufficientTime,
+                    SufficientTimeNotes = viewModel.SufficientTimeNotes,
                     AssessmentKeyIssues = viewModel.AssessmentKeyIssues,
                     AssessmentStrengths = viewModel.AssessmentStrengths,
                     AssessmentImprovements = viewModel.AssessmentImprovements,
                     AssessmentComments = viewModel.AssessmentComments,
+                    AssessmentRating = viewModel.AssessmentRating,
 
-                    // Resources
+                    // Learning Resources & Environment
+                    MaterialsAccessible = viewModel.MaterialsAccessible,
+                    MaterialsAccessibleNotes = viewModel.MaterialsAccessibleNotes,
+                    PlatformOrganised = viewModel.PlatformOrganised,
+                    PlatformOrganisedNotes = viewModel.PlatformOrganisedNotes,
+                    EquipmentWorking = viewModel.EquipmentWorking,
+                    EquipmentWorkingNotes = viewModel.EquipmentWorkingNotes,
+                    SupplementaryResources = viewModel.SupplementaryResources,
+                    SupplementaryResourcesNotes = viewModel.SupplementaryResourcesNotes,
+                    SpecializedEquipment = viewModel.SpecializedEquipment,
+                    SpecializedEquipmentNotes = viewModel.SpecializedEquipmentNotes,
+                    LibraryResources = viewModel.LibraryResources,
+                    LibraryResourcesNotes = viewModel.LibraryResourcesNotes,
                     ResourcesKeyIssues = viewModel.ResourcesKeyIssues,
                     ResourcesStrengths = viewModel.ResourcesStrengths,
                     ResourcesImprovements = viewModel.ResourcesImprovements,
                     ResourcesComments = viewModel.ResourcesComments,
+                    ResourcesRating = viewModel.ResourcesRating,
 
+                    // Communication & Support
+                    StaffResponsive = viewModel.StaffResponsive,
+                    StaffResponsiveNotes = viewModel.StaffResponsiveNotes,
+                    AdditionalHelpAvailable = viewModel.AdditionalHelpAvailable,
+                    AdditionalHelpAvailableNotes = viewModel.AdditionalHelpAvailableNotes,
+                    AccommodationsProvided = viewModel.AccommodationsProvided,
+                    AccommodationsProvidedNotes = viewModel.AccommodationsProvidedNotes,
+                    ClearPointsOfContact = viewModel.ClearPointsOfContact,
+                    ClearPointsOfContactNotes = viewModel.ClearPointsOfContactNotes,
+                    SupportEffectivenesssKeyIssues = viewModel.SupportEffectivenesssKeyIssues,
+                    SupportEffectivenessStrengths = viewModel.SupportEffectivenessStrengths,
+                    SupportEffectivenessImprovements = viewModel.SupportEffectivenessImprovements,
+                    SupportEffectivenessComments = viewModel.SupportEffectivenessComments,
+                    SupportEffectivenessRating = viewModel.SupportEffectivenessRating,
+
+                    // Skills Development
+                    DevelopingCriticalThinking = viewModel.DevelopingCriticalThinking,
+                    DevelopingCriticalThinkingNotes = viewModel.DevelopingCriticalThinkingNotes,
+                    EnhancingProblemSolving = viewModel.EnhancingProblemSolving,
+                    EnhancingProblemSolvingNotes = viewModel.EnhancingProblemSolvingNotes,
+                    GainingPracticalSkills = viewModel.GainingPracticalSkills,
+                    GainingPracticalSkillsNotes = viewModel.GainingPracticalSkillsNotes,
+                    ImprovingCommunication = viewModel.ImprovingCommunication,
+                    ImprovingCommunicationNotes = viewModel.ImprovingCommunicationNotes,
+                    DevelopingResearchSkills = viewModel.DevelopingResearchSkills,
+                    DevelopingResearchSkillsNotes = viewModel.DevelopingResearchSkillsNotes,
+                    SkillsDevelopmentKeyIssues = viewModel.SkillsDevelopmentKeyIssues,
+                    SkillsDevelopmentStrengths = viewModel.SkillsDevelopmentStrengths,
+                    SkillsDevelopmentImprovements = viewModel.SkillsDevelopmentImprovements,
+                    SkillsDevelopmentComments = viewModel.SkillsDevelopmentComments,
+                    SkillsDevelopmentRating = viewModel.SkillsDevelopmentRating,
+
+                    // Overall comments
+                    BestFeatures = viewModel.BestFeatures,
+                    AreasForImprovement = viewModel.AreasForImprovement,
+                    OverallRating = viewModel.OverallRating,
+
+                    // Status properties
                     DateCreated = DateTime.Now,
                     IsSubmitted = true,
                 };
@@ -512,16 +685,13 @@ namespace GuidanceTracker.Controllers
                 // Find and delete only this student's request
                 var requestToDelete = db.RequestedDetailedForms
                     .FirstOrDefault(r => r.RequestId == viewModel.RequestId && r.StudentId == studentId);
-
                 if (requestToDelete != null)
                 {
                     db.RequestedDetailedForms.Remove(requestToDelete);
                 }
-
                 db.SaveChanges();
                 return RedirectToAction("StudentDash", "Student");
             }
-
             return View(viewModel);
         }
     }

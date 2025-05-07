@@ -232,20 +232,20 @@
                     </div>
                 </div>
                 <!-- Action buttons for each student -->
-                <!--<div class="card-actions">-->
-                    <!-- Edit student link -->
-                    <!--<a href="@Url.Action("Edit", new { id = item.Id })" class="action-link edit">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>-->
-                    <!-- View details link -->
-                    <!--<a href="@Url.Action("Details", new { id = item.Id })" class="action-link details">
+                <div class="card-actions">
+                    <!-- Student Details link -->
+                    <a href="@Url.Action("StudentDetails", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
                         <i class="fas fa-info-circle"></i> Details
-                    </a>-->
-                    <!-- Delete student link -->
-                    <!--<a href="@Url.Action("Delete", new { id = item.Id })" class="action-link delete">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>-->
-                @*</div>*@
+                    </a>
+                    <!-- Elect As Student Rep -->
+                    <a href="@Url.Action("ElectStudentRep", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
+                        <i class="fas fa-user-check"></i> Elect as Student Rep
+                    </a>
+                    <!-- Elect As Deputy Rep -->
+                    <a href="@Url.Action("ElectDeputyStudentRep", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
+                        <i class="fas fa-user-check"></i> Elect as Deputy Rep
+                    </a>
+                </div>
             </div>
         </div>
     }

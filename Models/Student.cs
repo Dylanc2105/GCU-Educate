@@ -15,6 +15,10 @@ namespace GuidanceTracker.Models
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
 
+        public bool IsClassRep { get; set; }
+
+        public bool IsDeputyClassRep { get; set; }
+
         // Foreign key to GuidanceTeacher
         public string GuidanceTeacherId { get; set; }
         public virtual GuidanceTeacher GuidanceTeacher { get; set; }

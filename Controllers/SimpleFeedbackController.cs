@@ -18,9 +18,13 @@ namespace GuidanceTracker.Controllers
         {
             var studentId = User.Identity.GetUserId();
 
+            var currentStudent = db.Students.FirstOrDefault(s => s.Id == studentId);
+
             // Check if there are any requests for this specific student
             var hasRequest = db.RequestedDetailedForms
                 .Any(r => r.StudentId == studentId);
+
+            ViewBag.IsClassRep = currentStudent?.IsClassRep ?? false;
 
             if (hasRequest)
             {

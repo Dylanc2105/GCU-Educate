@@ -4,6 +4,51 @@
     ViewBag.Title = "Detailed Feedback Details";
 }
 
+<style>
+    .yes-no-response {
+        font-weight: bold;
+    }
+
+    .yes-response {
+        color: #28a745;
+    }
+
+    .no-response {
+        color: #dc3545;
+    }
+
+    .explanation-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #7F3D98;
+        padding: 10px;
+        margin-top: 8px;
+        width: 100%;
+    }
+
+    .rating-display {
+        font-size: 18px;
+        font-weight: bold;
+        color: #7F3D98;
+        margin-bottom: 15px;
+    }
+
+    .section-header {
+        margin-top: 15px;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .question-container {
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .question-text {
+        font-weight: 500;
+    }
+</style>
+
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col">
@@ -51,26 +96,167 @@
         </div>
     </div>
 
+    <!-- Current Learning Experience Section -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
-            <h4>Overall Comments</h4>
+            <h4>Current Learning Experience</h4>
         </div>
         <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Best Features</dt>
-                <dd class="col-sm-9">@Model.BestFeatures</dd>
+            <div class="rating-display">Rating: @Model.LearningExperienceRating / 10</div>
 
-                <dt class="col-sm-3">Areas For Improvement</dt>
-                <dd class="col-sm-9">@Model.AreasForImprovement</dd>
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the course currently meeting your expectations?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.MeetsExpectations == true ? "yes-response" : "no-response")">
+                                @(Model.MeetsExpectations == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.MeetsExpectations == false && !string.IsNullOrEmpty(Model.MeetsExpectationsNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.MeetsExpectationsNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Would you recommend this course to others at this stage?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.WouldRecommend == true ? "yes-response" : "no-response")">
+                                @(Model.WouldRecommend == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.WouldRecommend == false && !string.IsNullOrEmpty(Model.WouldRecommendNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.WouldRecommendNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the current workload manageable?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.WorkloadManageable == true ? "yes-response" : "no-response")">
+                                @(Model.WorkloadManageable == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.WorkloadManageable == false && !string.IsNullOrEmpty(Model.WorkloadManageableNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.WorkloadManageableNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.LearningExperienceKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.LearningExperienceStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.LearningExperienceImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.LearningExperienceComments) ? "None" : Model.LearningExperienceComments)</dd>
             </dl>
         </div>
     </div>
 
+    <!-- Teaching & Learning Methods Section -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
-            <h4>Learning & Teaching</h4>
+            <h4>Learning & Teaching Methods</h4>
         </div>
         <div class="card-body">
+            <div class="rating-display">Rating: @Model.LearningTeachingRating / 10</div>
+
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are concepts being presented in a clear and organised manner?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.ConceptsPresented == true ? "yes-response" : "no-response")">
+                                @(Model.ConceptsPresented == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.ConceptsPresented == false && !string.IsNullOrEmpty(Model.ConceptsPresentedNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.ConceptsPresentedNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are learning materials being made available?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.MaterialsAvailable == true ? "yes-response" : "no-response")">
+                                @(Model.MaterialsAvailable == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.MaterialsAvailable == false && !string.IsNullOrEmpty(Model.MaterialsAvailableNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.MaterialsAvailableNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the teaching approach accommodating different learning styles?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.AccommodatesStyles == true ? "yes-response" : "no-response")">
+                                @(Model.AccommodatesStyles == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.AccommodatesStyles == false && !string.IsNullOrEmpty(Model.AccommodatesStylesNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.AccommodatesStylesNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the lecturer responsive to questions and clarification requests?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.LecturerResponsive == true ? "yes-response" : "no-response")">
+                                @(Model.LecturerResponsive == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.LecturerResponsive == false && !string.IsNullOrEmpty(Model.LecturerResponsiveNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.LecturerResponsiveNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
             <dl class="row">
                 <dt class="col-sm-3">Key Issues</dt>
                 <dd class="col-sm-9">@Model.LearningTeachingKeyIssues</dd>
@@ -87,11 +273,104 @@
         </div>
     </div>
 
+    <!-- Assessment & Progress Section -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
-            <h4>Assessment & Progress</h4>
+            <h4>Assessment & Progress Tracking</h4>
         </div>
         <div class="card-body">
+            <div class="rating-display">Rating: @Model.AssessmentRating / 10</div>
+
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are you confident about upcoming assessments?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.AssessmentConfidence == true ? "yes-response" : "no-response")">
+                                @(Model.AssessmentConfidence == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.AssessmentConfidence == false && !string.IsNullOrEmpty(Model.AssessmentConfidenceNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.AssessmentConfidenceNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is feedback being returned promptly?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.TimelyFeedback == true ? "yes-response" : "no-response")">
+                                @(Model.TimelyFeedback == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.TimelyFeedback == false && !string.IsNullOrEmpty(Model.TimelyFeedbackNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.TimelyFeedbackNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the feedback specific enough to help you improve?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.SpecificFeedback == true ? "yes-response" : "no-response")">
+                                @(Model.SpecificFeedback == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.SpecificFeedback == false && !string.IsNullOrEmpty(Model.SpecificFeedbackNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.SpecificFeedbackNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Do the assessments align with what's being taught in class?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.AssessmentsAligned == true ? "yes-response" : "no-response")">
+                                @(Model.AssessmentsAligned == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.AssessmentsAligned == false && !string.IsNullOrEmpty(Model.AssessmentsAlignedNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.AssessmentsAlignedNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is sufficient time being provided to complete assigned work?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.SufficientTime == true ? "yes-response" : "no-response")">
+                                @(Model.SufficientTime == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.SufficientTime == false && !string.IsNullOrEmpty(Model.SufficientTimeNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.SufficientTimeNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
             <dl class="row">
                 <dt class="col-sm-3">Key Issues</dt>
                 <dd class="col-sm-9">@Model.AssessmentKeyIssues</dd>
@@ -108,11 +387,121 @@
         </div>
     </div>
 
+    <!-- Resources & Learning Environment Section -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
             <h4>Resources & Learning Environment</h4>
         </div>
         <div class="card-body">
+            <div class="rating-display">Rating: @Model.ResourcesRating / 10</div>
+
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are the required materials easily accessible?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.MaterialsAccessible == true ? "yes-response" : "no-response")">
+                                @(Model.MaterialsAccessible == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.MaterialsAccessible == false && !string.IsNullOrEmpty(Model.MaterialsAccessibleNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.MaterialsAccessibleNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the Canvas organised in a helpful way?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.PlatformOrganised == true ? "yes-response" : "no-response")">
+                                @(Model.PlatformOrganised == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.PlatformOrganised == false && !string.IsNullOrEmpty(Model.PlatformOrganisedNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.PlatformOrganisedNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the necessary equipment available and working properly?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.EquipmentWorking == true ? "yes-response" : "no-response")">
+                                @(Model.EquipmentWorking == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.EquipmentWorking == false && !string.IsNullOrEmpty(Model.EquipmentWorkingNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.EquipmentWorkingNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are additional resources being provided for challenging topics?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.SupplementaryResources == true ? "yes-response" : "no-response")">
+                                @(Model.SupplementaryResources == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.SupplementaryResources == false && !string.IsNullOrEmpty(Model.SupplementaryResourcesNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.SupplementaryResourcesNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Do you have sufficient access to specialised equipment?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.SpecializedEquipment == true ? "yes-response" : "no-response")">
+                                @(Model.SpecializedEquipment == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.SpecializedEquipment == false && !string.IsNullOrEmpty(Model.SpecializedEquipmentNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.SpecializedEquipmentNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are library resources adequate?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.LibraryResources == true ? "yes-response" : "no-response")">
+                                @(Model.LibraryResources == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.LibraryResources == false && !string.IsNullOrEmpty(Model.LibraryResourcesNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.LibraryResourcesNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
             <dl class="row">
                 <dt class="col-sm-3">Key Issues</dt>
                 <dd class="col-sm-9">@Model.ResourcesKeyIssues</dd>
@@ -129,11 +518,232 @@
         </div>
     </div>
 
-    @*<div class="row mt-4 mb-5">
-        <div class="col-12 text-center">
-            <a href="@Url.Action("ViewReceivedDetailedFeedbacks", "DetailedFeedback")" class="btn btn-secondary" style="background-color: #7F3D98; border-color: #7F3D98; ">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
+    <!-- Communication & Support Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Communication & Support</h4>
         </div>
-    </div>*@
+        <div class="card-body">
+            <div class="rating-display">Rating: @Model.SupportEffectivenessRating / 10</div>
+
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are staff responding to queries in a timely manner?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.StaffResponsive == true ? "yes-response" : "no-response")">
+                                @(Model.StaffResponsive == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.StaffResponsive == false && !string.IsNullOrEmpty(Model.StaffResponsiveNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.StaffResponsiveNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is additional help available when needed?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.AdditionalHelpAvailable == true ? "yes-response" : "no-response")">
+                                @(Model.AdditionalHelpAvailable == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.AdditionalHelpAvailable == false && !string.IsNullOrEmpty(Model.AdditionalHelpAvailableNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.AdditionalHelpAvailableNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are accommodations being provided for students who require them?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.AccommodationsProvided == true ? "yes-response" : "no-response")">
+                                @(Model.AccommodationsProvided == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.AccommodationsProvided == false && !string.IsNullOrEmpty(Model.AccommodationsProvidedNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.AccommodationsProvidedNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is it clear who to approach with specific questions or concerns?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.ClearPointsOfContact == true ? "yes-response" : "no-response")">
+                                @(Model.ClearPointsOfContact == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.ClearPointsOfContact == false && !string.IsNullOrEmpty(Model.ClearPointsOfContactNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.ClearPointsOfContactNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.SupportEffectivenesssKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.SupportEffectivenessStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.SupportEffectivenessImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.SupportEffectivenessComments) ? "None" : Model.SupportEffectivenessComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Skills Development Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Skills Development</h4>
+        </div>
+        <div class="card-body">
+            <div class="rating-display">Rating: @Model.SkillsDevelopmentRating / 10</div>
+
+            <div class="yes-no-questions mb-4">
+                <h5 class="section-header">Student Responses</h5>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are you developing critical thinking skills in this course?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.DevelopingCriticalThinking == true ? "yes-response" : "no-response")">
+                                @(Model.DevelopingCriticalThinking == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.DevelopingCriticalThinking == false && !string.IsNullOrEmpty(Model.DevelopingCriticalThinkingNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.DevelopingCriticalThinkingNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are you enhancing your problem-solving abilities through the coursework?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.EnhancingProblemSolving == true ? "yes-response" : "no-response")">
+                                @(Model.EnhancingProblemSolving == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.EnhancingProblemSolving == false && !string.IsNullOrEmpty(Model.EnhancingProblemSolvingNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.EnhancingProblemSolvingNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are you gaining practical skills relevant to your intended career?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.GainingPracticalSkills == true ? "yes-response" : "no-response")">
+                                @(Model.GainingPracticalSkills == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.GainingPracticalSkills == false && !string.IsNullOrEmpty(Model.GainingPracticalSkillsNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.GainingPracticalSkillsNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Is the course helping improve your communication abilities?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.ImprovingCommunication == true ? "yes-response" : "no-response")">
+                                @(Model.ImprovingCommunication == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.ImprovingCommunication == false && !string.IsNullOrEmpty(Model.ImprovingCommunicationNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.ImprovingCommunicationNotes</div>
+                    }
+                </div>
+
+                <div class="question-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="question-text col-9">
+                            Are your research skills developing through the current assignments?
+                        </div>
+                        <div class="response-text col-3 text-right">
+                            <span class="yes-no-response @(Model.DevelopingResearchSkills == true ? "yes-response" : "no-response")">
+                                @(Model.DevelopingResearchSkills == true ? "Yes" : "No")
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.DevelopingResearchSkills == false && !string.IsNullOrEmpty(Model.DevelopingResearchSkillsNotes))
+                    {
+                        <div class="explanation-box w-100 mt-2">@Model.DevelopingResearchSkillsNotes</div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="section-header">Detailed Feedback</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Key Issues</dt>
+                <dd class="col-sm-9">@Model.SkillsDevelopmentKeyIssues</dd>
+
+                <dt class="col-sm-3">Strengths</dt>
+                <dd class="col-sm-9">@Model.SkillsDevelopmentStrengths</dd>
+
+                <dt class="col-sm-3">Improvements</dt>
+                <dd class="col-sm-9">@Model.SkillsDevelopmentImprovements</dd>
+
+                <dt class="col-sm-3">Comments</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.SkillsDevelopmentComments) ? "None" : Model.SkillsDevelopmentComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Overall Comments Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white" style="background-color: #7F3D98 !important;">
+            <h4>Overall Comments</h4>
+        </div>
+        <div class="card-body">
+            <div class="rating-display">Overall Rating: @Model.OverallRating / 10</div>
+
+            <dl class="row">
+                <dt class="col-sm-3">Best Features</dt>
+                <dd class="col-sm-9">@Model.BestFeatures</dd>
+
+                <dt class="col-sm-3">Areas For Improvement</dt>
+                <dd class="col-sm-9">@Model.AreasForImprovement</dd>
+            </dl>
+        </div>
+    </div>
 </div>

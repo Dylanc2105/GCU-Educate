@@ -47,9 +47,9 @@ namespace GuidanceTracker.Controllers
             var model = new GuidanceDashViewModel
             {
                 FirstName = user.FirstName,
-                NewIssuesCount = db.Issues.Where(i =>i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
+                NewIssuesCount = db.Issues.Where(i => i.IssueStatus == IssueStatus.New && i.GuidanceTeacherId == userId).Count(),
                 //NewMessagesCount = db.Messages.Where(n => n.IsRead == false).Count(),
-                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) ==today).Count(),
+                AppointmentsTodayCount = db.Appointments.Where(a => DbFunctions.TruncateTime(a.AppointmentDate) == today).Count(),
                 NewAnnouncementsCount = newAnnouncementsCount
 
 
@@ -129,14 +129,14 @@ namespace GuidanceTracker.Controllers
             return View(model);
         }
 
-        public ActionResult Calendar() 
+        public ActionResult Calendar()
         {
             return View();
         }
 
 
 
- 
+
 
         //partial view with appointments for cselected date
         public ActionResult GetAppointmentsForDatePartial(DateTime date)
@@ -147,7 +147,7 @@ namespace GuidanceTracker.Controllers
                 Include(a => a.Student).
                 Include(a => a.GuidanceTeacher).
                 Where(a => a.GuidanceTeacher.Id == guidanceTeacherId).
-                Where(a=>a.AppointmentDate.Day == date.Day).
+                Where(a => a.AppointmentDate.Day == date.Day).
                 Where(a => a.AppointmentDate.Month == date.Month).
                 Where(a => a.AppointmentDate.Year == date.Year).
                 ToList();
@@ -161,7 +161,7 @@ namespace GuidanceTracker.Controllers
         {
 
 
-            string guidanceTeacherId =  User.Identity.GetUserId();
+            string guidanceTeacherId = User.Identity.GetUserId();
 
             DateTime baseDate = DateTime.Now;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
@@ -173,11 +173,142 @@ namespace GuidanceTracker.Controllers
                 Where(a => a.GuidanceTeacher.Id == guidanceTeacherId).
                 Where(a => a.AppointmentDate > thisWeekStart).
                 Where(a => a.AppointmentDate < thisWeekEnd).
-                OrderBy(a=>a.AppointmentDate).ToList();
+                OrderBy(a => a.AppointmentDate).ToList();
 
 
             return PartialView("_AppointmentsForWeek", appointments);
         }
 
+
+        public ActionResult StudentDetails(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Student student = db.Students.Find(id);
+            User user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Count current issues
+            var currentIssues = db.Issues
+                .Where(i => i.StudentId == id)
+                .Count();
+
+            // Count archived issues
+            var archivedIssues = db.ArchivedTickets
+                .Include(at => at.Issue)
+                .Where(at => at.Issue.StudentId == id)
+                .Count();
+
+            // Count appointments by status
+            var scheduledAppointments = db.Appointments
+                .Where(a => a.StudentId == id &&
+                       (a.AppointmentStatus == AppointmentStatus.Scheduled ||
+                       a.AppointmentStatus == AppointmentStatus.Requested ||
+                       a.AppointmentStatus == AppointmentStatus.Rescheduled))
+                .Count();
+
+            var completedAppointments = db.Appointments
+                .Where(a => a.StudentId == id && a.AppointmentStatus == AppointmentStatus.Completed)
+                .Count();
+
+            var cancelledAppointments = db.Appointments
+                .Where(a => a.StudentId == id && a.AppointmentStatus == AppointmentStatus.Cancelled)
+                .Count();
+
+            var totalAppointments = db.Appointments
+                .Where(a => a.StudentId == id)
+                .Count();
+
+            // Set ViewBag properties
+            ViewBag.CurrentIssueCount = currentIssues;
+            ViewBag.ArchivedIssueCount = archivedIssues;
+            ViewBag.TotalIssueCount = currentIssues + archivedIssues;
+
+            ViewBag.ScheduledAppointments = scheduledAppointments;
+            ViewBag.CompletedAppointments = completedAppointments;
+            ViewBag.CancelledAppointments = cancelledAppointments;
+            ViewBag.TotalAppointments = totalAppointments;
+
+            var model = new Student
+            {
+                StudentNumber = student.StudentNumber,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Street = student.Street,
+                City = student.City,
+                Postcode = student.Postcode,
+                PhoneNumber = student.PhoneNumber,
+                Email = student.Email,
+                Class = student.Class,
+                IsClassRep = student.IsClassRep,
+                IsDeputyClassRep = student.IsDeputyClassRep,
+                GuidanceTeacher = student.GuidanceTeacher,
+            };
+
+            return View(model);
+        }
+
+        public ActionResult ElectStudentRep(string id)
+        {
+            Student student = db.Students.Find(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            User user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            if (student.IsClassRep == false)
+            {
+                student.IsClassRep = true;
+                db.Entry(student).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id);
+            foreach (var otherStudent in otherStudents)
+            {
+                otherStudent.IsClassRep = false;
+                db.Entry(otherStudent).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
+
+        }
+
+        public ActionResult ElectDeputyStudentRep(string id)
+        {
+            Student student = db.Students.Find(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            User user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            if (student.IsDeputyClassRep == false)
+            {
+                student.IsDeputyClassRep = true;
+                db.Entry(student).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id);
+            foreach (var otherStudent in otherStudents)
+            {
+                otherStudent.IsDeputyClassRep = false;
+                db.Entry(otherStudent).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
+        }
     }
 }

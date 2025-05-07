@@ -1268,6 +1268,7 @@ namespace GuidanceTracker.Models
                     Postcode = "E18 2XP",
                     RegistredAt = DateTime.Now.AddMonths(-2),
                     EmailConfirmed = true,
+                    IsClassRep = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes1.ClassId // HNC Computing Class A
                 };
