@@ -46,13 +46,16 @@ public class MetricsController : Controller
             .ToList();
         // group issues by type
         var issuesByType = issuesQuery
-                .GroupBy(i => i.IssueTitle.ToString())
-                .Select(g => new IssueByType
-                {
-                    IssueType = g.Key,
-                    Count = g.Count()
-                }).ToList();
-
+            .GroupBy(i => i.IssueTitle.ToString())
+            .Select(g => new IssueByType
+            {
+                IssueType = g.Key,
+                Count = g.Count()
+            }).ToList();
+        var allIssueTypes = db.Issues
+            .Select(i => i.IssueTitle.ToString())
+            .Distinct()
+            .ToList();
         var model = new MetricsViewModel
         {
             // total number of issues
@@ -65,7 +68,8 @@ public class MetricsController : Controller
             SelectedClassId = classId,
             StartDate = startDate,
             EndDate = endDate,
-            IssuesOverTime = issuesOverTime
+            IssuesOverTime = issuesOverTime,
+            AllIssueTypes = allIssueTypes
         };
 
         return View(model);
