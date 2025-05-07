@@ -331,7 +331,7 @@
         }
 
         <!--Ensures only the CurriculumHead can view all student data-->
-        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead"))
+        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead") || User.IsInRole("GuidanceTeacher"))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students"><i class="fas fa-user-graduate"></i><span class="icon-title">Students</span></a>
         }

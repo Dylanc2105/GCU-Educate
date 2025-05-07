@@ -217,7 +217,7 @@ namespace GuidanceTracker.Controllers
                 AppointmentStatus = model.AppointmentStatus,
                 GuidanceTeacherId = User.Identity.GetUserId(),
                 Room = model.Room,
-                IssueId = model.IssueId
+                IssueId = model.IssueId 
             };
 
             db.Appointments.Add(appointment);

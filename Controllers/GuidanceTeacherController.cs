@@ -283,16 +283,14 @@ namespace GuidanceTracker.Controllers
             if (student.IsClassRep == false)
             {
                 student.IsClassRep = true;
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
             }
-            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id);
+            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id)
+                .ToList();
             foreach (var otherStudent in otherStudents)
             {
                 otherStudent.IsClassRep = false;
-                db.Entry(otherStudent).State = EntityState.Modified;
-                db.SaveChanges();
             }
+            db.SaveChanges();
             return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
 
         }
@@ -312,16 +310,14 @@ namespace GuidanceTracker.Controllers
             if (student.IsDeputyClassRep == false)
             {
                 student.IsDeputyClassRep = true;
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
             }
-            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id);
+            var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id)
+                .ToList();
             foreach (var otherStudent in otherStudents)
             {
                 otherStudent.IsDeputyClassRep = false;
-                db.Entry(otherStudent).State = EntityState.Modified;
-                db.SaveChanges();
             }
+            db.SaveChanges();
             return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
         }
     }

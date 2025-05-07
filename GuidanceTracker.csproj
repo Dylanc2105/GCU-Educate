@@ -320,6 +320,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AppointmentFeedbackForm.cs" />
+    <Compile Include="Models\ArchivedAppointment.cs" />
     <Compile Include="Models\ArchivedComment.cs" />
     <Compile Include="Models\ArchivedTicket.cs" />
     <Compile Include="Models\Class.cs" />

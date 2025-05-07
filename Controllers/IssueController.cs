@@ -8,6 +8,7 @@ using GuidanceTracker.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 
 
@@ -569,6 +570,7 @@ namespace GuidanceTracker.Controllers
                 if (issue == null)
                 {
                     return Json(new { success = false, error = "Issue not found" });
+                
                 }
 
                 issue.IssueStatus = newStatus;

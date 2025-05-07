@@ -51,6 +51,9 @@ namespace GuidanceTracker.Models
         public DbSet<ProgressMeetingFeedbackForm> ProgressMeetingFeedbackForms { get; set; }
         public DbSet<AppointmentFeedbackForm> AppointmentFeedbackForms { get; set; }
 
+        public DbSet<ArchivedAppointment> ArchivedAppointments { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
