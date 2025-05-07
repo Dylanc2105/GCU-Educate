@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -56,8 +56,8 @@ namespace GuidanceTracker.Controllers
 
             //count guidance sessions for this week for this user
             var guidanceSessionsForWeekCount = db.GuidanceSessions
-    .Where(g=>g.Class.GuidanceTeacherId == userId)
-    .Count();
+                .Where(g => g.Class.GuidanceTeacherId == userId)
+                .Count();
 
             var model = new GuidanceDashViewModel
             {
@@ -155,10 +155,6 @@ namespace GuidanceTracker.Controllers
             return View();
         }
 
-
-
-
-
         //partial view with appointments for cselected date
         public ActionResult GetAppointmentsForDatePartial(DateTime date)
         {
@@ -180,8 +176,6 @@ namespace GuidanceTracker.Controllers
         //partial view with appiontments for current week
         public ActionResult AppointmentsForWeekPartial()
         {
-
-
             string guidanceTeacherId = User.Identity.GetUserId();
 
             DateTime baseDate = DateTime.Now;
@@ -199,7 +193,6 @@ namespace GuidanceTracker.Controllers
 
             return PartialView("_AppointmentsForWeek", appointments);
         }
-
 
         public ActionResult StudentDetails(string id)
         {
