@@ -101,6 +101,8 @@
         border-radius: 5px;
         margin-bottom: 20px;
     }
+
+
 </style>
 
 <div class="container mt-4 mb-4">
@@ -216,27 +218,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Learning Experience: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningExperienceKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningExperienceKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Learning Experience: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningExperienceKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningExperienceKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Learning Experience: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningExperienceStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningExperienceStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Learning Experience: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningExperienceStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningExperienceStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Learning Experience: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningExperienceImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningExperienceImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Learning Experience:</label>
-                @Html.TextAreaFor(model => model.LearningExperienceComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Learning Experience: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningExperienceImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningExperienceImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Learning Experience:</label>
+                        @Html.TextAreaFor(model => model.LearningExperienceComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Learning Experience Rating Section -->
@@ -352,27 +364,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Learning & Teaching: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningTeachingKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningTeachingKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Learning & Teaching: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningTeachingKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningTeachingKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Learning & Teaching: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningTeachingStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningTeachingStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Learning & Teaching: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningTeachingStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningTeachingStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Learning & Teaching: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.LearningTeachingImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.LearningTeachingImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Learning & Teaching:</label>
-                @Html.TextAreaFor(model => model.LearningTeachingComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Learning & Teaching: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.LearningTeachingImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.LearningTeachingImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Learning & Teaching:</label>
+                        @Html.TextAreaFor(model => model.LearningTeachingComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Learning & Teaching Rating Section -->
@@ -506,27 +528,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Assessment & Progress: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.AssessmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.AssessmentKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Assessment & Progress: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.AssessmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.AssessmentKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Assessment & Progress: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.AssessmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.AssessmentStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Assessment & Progress: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.AssessmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.AssessmentStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Assessment & Progress: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.AssessmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.AssessmentImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Assessment & Progress:</label>
-                @Html.TextAreaFor(model => model.AssessmentComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Assessment & Progress: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.AssessmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.AssessmentImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Assessment & Progress:</label>
+                        @Html.TextAreaFor(model => model.AssessmentComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Assessment Rating Section -->
@@ -678,27 +710,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Resources & Learning Environment: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.ResourcesKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.ResourcesKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Resources & Learning Environment: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.ResourcesKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.ResourcesKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Resources & Learning Environment: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.ResourcesStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.ResourcesStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Resources & Learning Environment: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.ResourcesStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.ResourcesStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Resources & Learning Environment: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.ResourcesImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.ResourcesImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Resources & Learning Environment:</label>
-                @Html.TextAreaFor(model => model.ResourcesComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Resources & Learning Environment: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.ResourcesImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.ResourcesImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Resources & Learning Environment:</label>
+                        @Html.TextAreaFor(model => model.ResourcesComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Resources Rating Section -->
@@ -813,27 +855,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Support Effectiveness: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SupportEffectivenesssKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SupportEffectivenesssKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Support Effectiveness: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SupportEffectivenesssKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SupportEffectivenesssKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Support Effectiveness: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SupportEffectivenessStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SupportEffectivenessStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Support Effectiveness: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SupportEffectivenessStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SupportEffectivenessStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Support Effectiveness: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SupportEffectivenessImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SupportEffectivenessImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Support Effectiveness:</label>
-                @Html.TextAreaFor(model => model.SupportEffectivenessComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Support Effectiveness: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SupportEffectivenessImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SupportEffectivenessImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Support Effectiveness:</label>
+                        @Html.TextAreaFor(model => model.SupportEffectivenessComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Support Effectiveness Rating Section -->
@@ -967,27 +1019,37 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Key Issues with Skills Development: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SkillsDevelopmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SkillsDevelopmentKeyIssues, "", new { @class = "text-danger" })
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Key Issues with Skills Development: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SkillsDevelopmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentKeyIssues, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Strengths in Skills Development: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SkillsDevelopmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentStrengths, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Strengths in Skills Development: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SkillsDevelopmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SkillsDevelopmentStrengths, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Suggested Improvements for Skills Development: <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.SkillsDevelopmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.SkillsDevelopmentImprovements, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>Additional Comments on Skills Development:</label>
-                @Html.TextAreaFor(model => model.SkillsDevelopmentComments, new { @class = "form-control", rows = 3 })
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Suggested Improvements for Skills Development: <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.SkillsDevelopmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentImprovements, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Additional Comments on Skills Development:</label>
+                        @Html.TextAreaFor(model => model.SkillsDevelopmentComments, new { @class = "form-control", rows = 5 })
+                    </div>
+                </div>
             </div>
 
             <!-- Skills Development Rating Section -->
