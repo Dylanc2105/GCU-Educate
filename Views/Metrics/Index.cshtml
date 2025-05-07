@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- bar chart for issues by type -->
         <div class="col-md-8">
             <div class="card shadow-sm h-100">
@@ -62,8 +62,8 @@
         </div>
     </div>
 
-    <!-- other metrics row -->
     <div class="row mt-3">
+        
         <!-- pie chart for issues by type -->
         <div class="col-md-6">
             <div class="card shadow-sm">
@@ -95,7 +95,7 @@
     var issuesByTypeBarChart;
     var issuesByTypePieChart;
     var issuesOverTimeChart;
-
+    
     function renderChart(data, labels) {
         if (issuesByTypeBarChart) {
             issuesByTypeBarChart.destroy();
@@ -236,5 +236,6 @@
         var timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
         var timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
         renderIssuesOverTimeChart(timeDates, timeCounts);
+        
     });
 </script>

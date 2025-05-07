@@ -52,10 +52,8 @@ public class MetricsController : Controller
                 IssueType = g.Key,
                 Count = g.Count()
             }).ToList();
-        var allIssueTypes = db.Issues
-            .Select(i => i.IssueTitle.ToString())
-            .Distinct()
-            .ToList();
+
+        
         var model = new MetricsViewModel
         {
             // total number of issues
@@ -68,8 +66,7 @@ public class MetricsController : Controller
             SelectedClassId = classId,
             StartDate = startDate,
             EndDate = endDate,
-            IssuesOverTime = issuesOverTime,
-            AllIssueTypes = allIssueTypes
+            IssuesOverTime = issuesOverTime
         };
 
         return View(model);

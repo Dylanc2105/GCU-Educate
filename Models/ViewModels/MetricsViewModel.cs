@@ -22,7 +22,8 @@ namespace GuidanceTracker.Models.ViewModels
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public List<IssuesOverTime> IssuesOverTime { get; set; }
-        public List<string> AllIssueTypes { get; set; }
+
+        
     }
 
     // helper class for issue type
@@ -39,6 +40,7 @@ namespace GuidanceTracker.Models.ViewModels
         public int Count { get; set; }
     }
 
+    
 
 
 
