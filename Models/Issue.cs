@@ -42,7 +42,7 @@ namespace GuidanceTracker.Models
         // Optional reference to an archived ticket if this was restored
         public int? ArchivedIssueId { get; set; }
 
-        // 🔹 Adding a list of comments & appointments
+        // Adding a list of comments & appointments
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
 
@@ -50,24 +50,20 @@ namespace GuidanceTracker.Models
 
     public enum IssueTitle
     {
-        [Display (Name="Late Attendance")]
+        
         LateAttendance,
-        [Display (Name="Missing Attendance")]
         MissingAttendance,
         Behaviour,
         Deadlines,
         Communication,
         Performance,
         Medical,
-        [Display(Name = "Academic Dishonesty")]
         AcademicDishonesty,
-        [Display(Name = "Custom Issue")]
         CustomIssue
     }
     public enum IssueStatus
     {
         New,
-        [Display(Name = "In Progress")]
         InProgress,
         Archived
     }
