@@ -18,6 +18,10 @@ namespace GuidanceTracker.Models.ViewModels
 
         // filter properties, can be nullable, as dont have to select anything
         public int? SelectedClassId { get; set; }
+        // properties for issues over time
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public List<IssuesOverTime> IssuesOverTime { get; set; }
     }
 
     // helper class for issue type
@@ -27,7 +31,14 @@ namespace GuidanceTracker.Models.ViewModels
         public int Count { get; set; }
     }
 
-   
+    // helper class for issues over time
+    public class IssuesOverTime
+    {
+        public DateTime Date { get; set; }
+        public int Count { get; set; }
+    }
 
-    
+
+
+
 }

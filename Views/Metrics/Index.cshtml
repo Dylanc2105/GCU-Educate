@@ -1,8 +1,6 @@
 ﻿@model GuidanceTracker.Models.ViewModels.MetricsViewModel
 @using Newtonsoft.Json;
 
-
-
 <div class="container-fluid">
     <div class="row">
         <!-- total issues and filter card -->
@@ -21,6 +19,18 @@
                     <h6 class="card-title mb-0">Filters</h6>
                 </div>
                 <div class="card-body">
+                    <!-- date range -->
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate"
+                               value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" onchange="applyFilters()">
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate"
+                               value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" onchange="applyFilters()">
+                    </div>
+
                     <!-- class dropdown -->
                     <div class="mb-3">
                         <label for="classSelect" class="form-label">Class</label>
@@ -52,18 +62,28 @@
         </div>
     </div>
 
-    <!-- other metrics row  -->
+    <!-- other metrics row -->
     <div class="row mt-3">
-        <!-- pie chart for issues by class -->
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h6 class="card-title mb-0">Issues by Type(Pie)</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="issuesByTypePieChart" height="300"></canvas>
-                    </div>
+        <!-- pie chart for issues by type -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Issues by Type (Pie)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="issuesByTypePieChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- line chart for issues over time -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Issues Over Time</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="issuesOverTimeChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -74,6 +94,7 @@
 <script>
     var issuesByTypeBarChart;
     var issuesByTypePieChart;
+    var issuesOverTimeChart;
 
     function renderChart(data, labels) {
         if (issuesByTypeBarChart) {
@@ -90,7 +111,7 @@
                     backgroundColor: [
                         '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
                         '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
-                    ], 
+                    ],
                     borderColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 1
                 }]
@@ -102,10 +123,9 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            // ensures y axis has integers on the side (ticks)
-                            stepSize: 1, // increment between ticks (integer)
+                            stepSize: 1,
                             callback: function (value) {
-                                return Number.isInteger(value) ? value : ''; // nly show integers
+                                return Number.isInteger(value) ? value : '';
                             }
                         }
                     }
@@ -124,12 +144,12 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Issues by Type(Pie Chart)',
+                    label: 'Issues by Type',
                     data: data,
                     backgroundColor: [
                         '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
                         '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
-                    ], 
+                    ],
                     borderColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 1
                 }]
@@ -153,24 +173,68 @@
         });
     }
 
-
+    function renderIssuesOverTimeChart(dates, counts) {
+        if (issuesOverTimeChart) {
+            issuesOverTimeChart.destroy();
+        }
+        var ctx = document.getElementById('issuesOverTimeChart').getContext('2d');
+        issuesOverTimeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Number of Issues',
+                    data: counts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function (value) {
+                                return Number.isInteger(value) ? value : '';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     function applyFilters() {
         var classId = document.getElementById('classSelect').value;
-        window.location.href = `?classId=${classId}`;
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+
+        // build query with all filters
+        var queryParams = [];
+        if (classId) queryParams.push('classId=' + classId);
+        if (startDate) queryParams.push('startDate=' + startDate);
+        if (endDate) queryParams.push('endDate=' + endDate);
+
+        window.location.href = '?' + queryParams.join('&');
     }
 
-    // initialises charts with data
-        document.addEventListener('DOMContentLoaded', function () {
-            // issues by type
-            var issuesData = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.Count).ToList()));
-            var issuesLabels = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.IssueType).ToList()));
-            //render the chart
-            renderChart(issuesData, issuesLabels);
+    // initialize charts with data
+    document.addEventListener('DOMContentLoaded', function () {
+        // issues by type
+        var issuesData = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.Count).ToList()));
+        var issuesLabels = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.IssueType).ToList()));
+        renderChart(issuesData, issuesLabels);
+        renderPieChart(issuesData, issuesLabels);
 
-            
-            //render the chart
-            renderPieChart(issuesData, issuesLabels);
-
+        // issues over time
+        var timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
+        var timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
+        renderIssuesOverTimeChart(timeDates, timeCounts);
     });
 </script>
