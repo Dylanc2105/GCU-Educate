@@ -12,7 +12,7 @@ namespace GuidanceTracker.Models
         [Key]
         [ForeignKey("Issue")]
         public int IssueId { get; set; }
-        public DateTime ArchivedAt { get; set; } = DateTime.Now;
+        public DateTime ArchivedAt { get; set; } = DateTime.UtcNow;
         public string ArchivedBy { get; set; }
 
         public virtual Issue Issue { get; set; }

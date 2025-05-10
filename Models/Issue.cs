@@ -16,7 +16,7 @@ namespace GuidanceTracker.Models
         public string IssueDescription { get; set; }
         public IssueStatus IssueStatus { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }
 
         // Foreign keys

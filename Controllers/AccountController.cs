@@ -195,7 +195,7 @@ namespace GuidanceTracker.Controllers
                     City = model.City,
                     //data & time of registration
 
-                    RegistredAt = DateTime.Now,
+                    RegistredAt = DateTime.UtcNow,
                 };
              
                 var result = await UserManager.CreateAsync(user, model.Password);

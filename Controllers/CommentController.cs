@@ -29,7 +29,7 @@ namespace GuidanceTracker.Controllers
                 IssueId = issueId,
                 UserId = userId,
                 Content = Content,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
             db.Comments.Add(comment);

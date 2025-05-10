@@ -102,7 +102,7 @@ namespace GuidanceTracker.Controllers
                 {
                     FeedbackTitle = viewModel.Title,
                     FeedbackContent = viewModel.content,
-                    DateOfCreation = DateTime.Now,
+                    DateOfCreation = DateTime.UtcNow,
                     StudentId = studentId,
                     UnitId = viewModel.UnitId
                 };

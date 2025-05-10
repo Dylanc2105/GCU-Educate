@@ -119,7 +119,7 @@ namespace GuidanceTracker.Controllers
                     EmailConfirmed = model.EmailConfirm,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    RegistredAt = DateTime.Now,
+                    RegistredAt = DateTime.UtcNow,
                     ClassId = model.ClassId
                 };
 
@@ -178,7 +178,7 @@ namespace GuidanceTracker.Controllers
         {
             string guidanceTeacherId = User.Identity.GetUserId();
 
-            DateTime baseDate = DateTime.Now;
+            DateTime baseDate = DateTime.UtcNow;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
             var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
 

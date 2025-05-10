@@ -106,7 +106,7 @@ namespace GuidanceTracker.Models
                     Street = "35 Washington st",
                     City = "London",
                     Postcode = "E12 8UP",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
 
@@ -127,7 +127,7 @@ namespace GuidanceTracker.Models
                     Street = "35 Washington st",
                     City = "London",
                     Postcode = "E12 8UP",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
 
@@ -148,7 +148,7 @@ namespace GuidanceTracker.Models
                     Street = "35 Washington st",
                     City = "London",
                     Postcode = "E12 8UP",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
 
@@ -169,7 +169,7 @@ namespace GuidanceTracker.Models
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
                 userManager.Create(lecturer3, "123");
@@ -188,7 +188,7 @@ namespace GuidanceTracker.Models
                     Street = "25 glasgow road",
                     City = "Glasgow",
                     Postcode = "G31 29H",
-                    RegistredAt = DateTime.Now.AddYears(-3),
+                    RegistredAt = DateTime.UtcNow.AddYears(-3),
                     EmailConfirmed = true,
                     DepartmentId = "CR-CTC"
                 };
@@ -210,7 +210,7 @@ namespace GuidanceTracker.Models
                     Street = "42 Finance Street",
                     City = "Edinburgh",
                     Postcode = "EH4 7LP",
-                    RegistredAt = DateTime.Now.AddYears(-2),
+                    RegistredAt = DateTime.UtcNow.AddYears(-2),
                     EmailConfirmed = true,
                     DepartmentId = "BU-FIN"
                 };
@@ -253,7 +253,7 @@ namespace GuidanceTracker.Models
                     Street = "25 LA st",
                     City = "London",
                     Postcode = "E52 9UP",
-                    RegistredAt = DateTime.Now.AddYears(-3),
+                    RegistredAt = DateTime.UtcNow.AddYears(-3),
                     EmailConfirmed = true,
                 };
                 //add jeff to users table
@@ -274,7 +274,7 @@ namespace GuidanceTracker.Models
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
                 userManager.Create(lecturer2, "123");
@@ -293,7 +293,7 @@ namespace GuidanceTracker.Models
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
-                    RegistredAt = DateTime.Now.AddYears(-5),
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
                     EmailConfirmed = true,
                 };
                 userManager.Create(lecturer3, "123");
@@ -312,7 +312,7 @@ namespace GuidanceTracker.Models
                     Street = "27 King Street",
                     City = "Manchester",
                     Postcode = "M2 6LE",
-                    RegistredAt = DateTime.Now.AddYears(-2),
+                    RegistredAt = DateTime.UtcNow.AddYears(-2),
                     EmailConfirmed = true,
                 };
                 userManager.Create(lecturer4, "123");
@@ -332,7 +332,7 @@ namespace GuidanceTracker.Models
                     Street = "25 LA st",
                     City = "London",
                     Postcode = "E52 9UP",
-                    RegistredAt = DateTime.Now.AddYears(-3),
+                    RegistredAt = DateTime.UtcNow.AddYears(-3),
                     EmailConfirmed = true,
                 };
                 //add jeff to users table
@@ -1210,7 +1210,7 @@ namespace GuidanceTracker.Models
                 Room = "05.005",
                 Time = new TimeSpan(11, 00, 0),
                 Class = classes1,
-                Day = DateTime.Now,
+                Day = DateTime.UtcNow,
             };
             context.GuidanceSessions.Add(guidanceSession1);
 
@@ -1220,7 +1220,7 @@ namespace GuidanceTracker.Models
                 Room = "05.007",
                 Time = new TimeSpan(13, 00, 0),
                 Class = classes2,
-                Day = DateTime.Now.AddDays(2),
+                Day = DateTime.UtcNow.AddDays(2),
             };
             context.GuidanceSessions.Add(guidanceSession2);
 
@@ -1230,7 +1230,7 @@ namespace GuidanceTracker.Models
                 Room = "05.012",
                 Time = new TimeSpan(11, 00, 0),
                 Class = classes3,
-                Day = DateTime.Now.AddDays(1),
+                Day = DateTime.UtcNow.AddDays(1),
             };
             context.GuidanceSessions.Add(guidanceSession3);
 
@@ -1240,7 +1240,7 @@ namespace GuidanceTracker.Models
                 Room = "05.005",
                 Time = new TimeSpan(11, 00, 0),
                 Class = classes4,
-                Day = DateTime.Now.AddDays(3),
+                Day = DateTime.UtcNow.AddDays(3),
             };
             context.GuidanceSessions.Add(guidanceSession4);
 
@@ -1250,7 +1250,7 @@ namespace GuidanceTracker.Models
                 Room = "05.010",
                 Time = new TimeSpan(13, 00, 0),
                 Class = classes5,
-                Day = DateTime.Now.AddDays(4),
+                Day = DateTime.UtcNow.AddDays(4),
             };
             context.GuidanceSessions.Add(guidanceSession5);
 
@@ -1260,7 +1260,7 @@ namespace GuidanceTracker.Models
                 Room = "05.007",
                 Time = new TimeSpan(11, 00, 0),
                 Class = classes6,
-                Day = DateTime.Now.AddDays(5)
+                Day = DateTime.UtcNow.AddDays(5)
             };
             context.GuidanceSessions.Add(guidanceSession6);
 
@@ -1270,7 +1270,7 @@ namespace GuidanceTracker.Models
                 Room = "05.009",
                 Time = new TimeSpan(14, 00, 0),
                 Class = classes7,
-                Day = DateTime.Now.AddDays(4)
+                Day = DateTime.UtcNow.AddDays(4)
             };
             context.GuidanceSessions.Add(guidanceSession7);
 
@@ -1280,7 +1280,7 @@ namespace GuidanceTracker.Models
                 Room = "05.009",
                 Time = new TimeSpan(14, 00, 0),
                 Class = classes7,
-                Day = DateTime.Now.AddDays(2),
+                Day = DateTime.UtcNow.AddDays(2),
             };
             context.GuidanceSessions.Add(guidanceSession8);
 
@@ -1290,7 +1290,7 @@ namespace GuidanceTracker.Models
                 Room = "05.005",
                 Time = new TimeSpan(13, 00, 0),
                 Class = classes9,
-                Day = DateTime.Now.AddDays(3)
+                Day = DateTime.UtcNow.AddDays(3)
             };
             context.GuidanceSessions.Add(guidanceSession9);
             context.SaveChanges();
@@ -1309,7 +1309,7 @@ namespace GuidanceTracker.Models
                     Street = "53 Accounting Lane",
                     City = "Edinburgh",
                     Postcode = "EH7 4QP",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = newGuidanceTeacher.Id,
                     ClassId = financeClass.ClassId,
@@ -1333,7 +1333,7 @@ namespace GuidanceTracker.Models
                     Street = "18 Commerce Road",
                     City = "Edinburgh",
                     Postcode = "EH7 4QP",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = newGuidanceTeacher.Id,
                     ClassId = financeClass.ClassId,
@@ -1357,7 +1357,7 @@ namespace GuidanceTracker.Models
                     Street = "45 High Street",
                     City = "London",
                     Postcode = "E18 2XP",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-2),
                     EmailConfirmed = true,
                     IsClassRep = true,
                     GuidanceTeacherId = guidance.Id,
@@ -1380,7 +1380,7 @@ namespace GuidanceTracker.Models
                     Street = "78 Park Avenue",
                     City = "Manchester",
                     Postcode = "M1 5QD",
-                    RegistredAt = DateTime.Now.AddMonths(-3),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes2.ClassId // HNC Computing Class B
@@ -1402,7 +1402,7 @@ namespace GuidanceTracker.Models
                     Street = "15 Oak Road",
                     City = "Birmingham",
                     Postcode = "B1 8LS",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes3.ClassId // HNC Software Development Class A
@@ -1424,7 +1424,7 @@ namespace GuidanceTracker.Models
                     Street = "32 Maple Drive",
                     City = "Glasgow",
                     Postcode = "G1 2RS",
-                    RegistredAt = DateTime.Now.AddMonths(-4),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes4.ClassId // HNC Software Development Class B
@@ -1446,7 +1446,7 @@ namespace GuidanceTracker.Models
                     Street = "67 Church Street",
                     City = "Edinburgh",
                     Postcode = "EH1 3QP",
-                    RegistredAt = DateTime.Now.AddMonths(-5),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-5),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes5.ClassId // HND Computer Science Class
@@ -1468,7 +1468,7 @@ namespace GuidanceTracker.Models
                     Street = "92 Station Road",
                     City = "Leeds",
                     Postcode = "LS1 4BT",
-                    RegistredAt = DateTime.Now.AddMonths(-2),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes6.ClassId // HND Software Development Class A
@@ -1490,7 +1490,7 @@ namespace GuidanceTracker.Models
                     Street = "14 Queen Avenue",
                     City = "Liverpool",
                     Postcode = "L1 5TD",
-                    RegistredAt = DateTime.Now.AddMonths(-3),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-3),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes7.ClassId // HND Software Development Class B
@@ -1512,7 +1512,7 @@ namespace GuidanceTracker.Models
                     Street = "51 London Road",
                     City = "Cardiff",
                     Postcode = "CF10 2EQ",
-                    RegistredAt = DateTime.Now.AddMonths(-1),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-1),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes8.ClassId // NQ Computing Class A
@@ -1534,7 +1534,7 @@ namespace GuidanceTracker.Models
                     Street = "29 York Avenue",
                     City = "Belfast",
                     Postcode = "BT1 6GH",
-                    RegistredAt = DateTime.Now.AddMonths(-4),
+                    RegistredAt = DateTime.UtcNow.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
                     ClassId = classes9.ClassId // NQ Computing Class B
@@ -1552,8 +1552,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.LateAttendance,
                 IssueDescription = "Student has missed multiple classes.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student1.Id
@@ -1566,8 +1566,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.MissingAttendance,
                 IssueDescription = "Student has failed my class.",
                 IssueStatus = IssueStatus.InProgress,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student2.Id
@@ -1580,8 +1580,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Medical,
                 IssueDescription = "Student has fractured their arm and is unable to type",
                 IssueStatus = IssueStatus.Archived,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student3.Id
@@ -1594,8 +1594,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.LateAttendance,
                 IssueDescription = "Student has been consistently late to class.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddYears(-3),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddYears(-3),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student4.Id
@@ -1608,8 +1608,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.MissingAttendance,
                 IssueDescription = "Student has missed several classes without valid reasons.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddMonths(-2),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddMonths(-2),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer2.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student5.Id
@@ -1622,8 +1622,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Behaviour,
                 IssueDescription = "Student has been disruptive in class.",
                 IssueStatus = IssueStatus.InProgress,
-                CreatedAt = DateTime.Now.AddDays(-7),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-7),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer3.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student6.Id
@@ -1636,8 +1636,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Deadlines,
                 IssueDescription = "Student has missed multiple assignment deadlines.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddDays(-14),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-14),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer4.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student7.Id
@@ -1650,8 +1650,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Communication,
                 IssueDescription = "Student has failed to respond to several important communications.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddYears(-2),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddYears(-2),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student8.Id
@@ -1664,8 +1664,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Performance,
                 IssueDescription = "Student's performance has been below expectations for the semester.",
                 IssueStatus = IssueStatus.InProgress,
-                CreatedAt = DateTime.Now.AddMonths(-1),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddMonths(-1),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer2.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student9.Id
@@ -1678,8 +1678,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Medical,
                 IssueDescription = "Student has been ill and unable to attend classes.",
                 IssueStatus = IssueStatus.Archived,
-                CreatedAt = DateTime.Now.AddDays(-5),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-5),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer3.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student1.Id
@@ -1692,8 +1692,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.AcademicDishonesty,
                 IssueDescription = "Student was caught plagiarizing during the last exam.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddYears(-1),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddYears(-1),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer4.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student2.Id
@@ -1706,8 +1706,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.CustomIssue,
                 IssueDescription = "Student has been requesting extensions for every assignment.",
                 IssueStatus = IssueStatus.InProgress,
-                CreatedAt = DateTime.Now.AddMonths(-4),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddMonths(-4),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student3.Id
@@ -1720,8 +1720,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.LateAttendance,
                 IssueDescription = "Student arrives late to class almost every session.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddDays(-30),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-30),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer2.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student4.Id
@@ -1734,8 +1734,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.MissingAttendance,
                 IssueDescription = "Student has missed a significant portion of the semester.",
                 IssueStatus = IssueStatus.InProgress,
-                CreatedAt = DateTime.Now.AddMonths(-3),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddMonths(-3),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer3.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student5.Id
@@ -1748,8 +1748,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Behaviour,
                 IssueDescription = "Student has been repeatedly disrespectful to classmates.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddDays(-10),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-10),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = lecturer4.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student6.Id
@@ -1762,8 +1762,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.LateAttendance,
                 IssueDescription = "Student is consistently 40 minutes late to class.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddDays(-2),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-2),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = financeLecturer.Id,
                 GuidanceTeacherId = newGuidanceTeacher.Id,
                 StudentId = financeStudent.Id
@@ -1776,8 +1776,8 @@ namespace GuidanceTracker.Models
                 IssueTitle = IssueTitle.Behaviour,
                 IssueDescription = "Student is consistently talking class.",
                 IssueStatus = IssueStatus.New,
-                CreatedAt = DateTime.Now.AddDays(-2),
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddDays(-2),
+                UpdatedAt = DateTime.UtcNow,
                 LecturerId = financeLecturer.Id,
                 GuidanceTeacherId = newGuidanceTeacher.Id,
                 StudentId = financeStudent2.Id
@@ -2007,7 +2007,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Welcome to the Guidance Tracker System",
                 Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
-                PostDate = DateTime.Now.AddDays(-10),
+                PostDate = DateTime.UtcNow.AddDays(-10),
                 AuthorId = curriculumHead1.Id,
                 Visibility = VisibilityType.Global
             };
@@ -2018,7 +2018,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Welcome to the Guidance Tracker System",
                 Content = "This is a global announcement for all users. The new Guidance Tracker System is now live! Please explore the features and let us know if you have any feedback.",
-                PostDate = DateTime.Now.AddDays(-10),
+                PostDate = DateTime.UtcNow.AddDays(-10),
                 AuthorId = curriculumHead1.Id,
                 Visibility = VisibilityType.Global
             };
@@ -2030,7 +2030,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "System Maintenance Notice",
                 Content = "The system will be undergoing maintenance this weekend from Saturday 22:00 to Sunday 02:00. Please save your work before this time to avoid any data loss.",
-                PostDate = DateTime.Now.AddDays(-5),
+                PostDate = DateTime.UtcNow.AddDays(-5),
                 AuthorId = curriculumHead1.Id,
                 Visibility = VisibilityType.Global
             };
@@ -2042,7 +2042,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Student Council Meeting",
                 Content = "The next Student Council meeting will be held on Friday at 15:00 in Room 302. All class representatives are required to attend. The agenda includes discussion on upcoming events and academic support services.",
-                PostDate = DateTime.Now.AddDays(-3),
+                PostDate = DateTime.UtcNow.AddDays(-3),
                 AuthorId = guidance.Id,
                 Visibility = VisibilityType.Student
             };
@@ -2052,7 +2052,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Study Resources Now Available",
                 Content = "New study resources for all courses have been uploaded to the student portal. These include practice exams, study guides, and video tutorials. Access them through your student dashboard.",
-                PostDate = DateTime.Now.AddDays(-2),
+                PostDate = DateTime.UtcNow.AddDays(-2),
                 AuthorId = lecturer1.Id,
                 Visibility = VisibilityType.Student
             };
@@ -2064,7 +2064,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Staff Meeting Reminder",
                 Content = "This is a reminder that we have our monthly staff meeting tomorrow at 14:00 in the conference room. Please prepare your department updates and bring any questions or concerns you'd like to discuss.",
-                PostDate = DateTime.Now.AddDays(-1),
+                PostDate = DateTime.UtcNow.AddDays(-1),
                 AuthorId = curriculumHead1.Id,
                 Visibility = VisibilityType.Staff
             };
@@ -2075,7 +2075,7 @@ namespace GuidanceTracker.Models
                 PostId = Guid.NewGuid().ToString(),
                 Title = "Grading Policy Update",
                 Content = "Please note that there have been updates to the grading policy for the current semester. All assignments must now include detailed feedback, and final grades must be submitted within 10 days of the assessment date. See the attached document for more details.",
-                PostDate = DateTime.Now.AddHours(-12),
+                PostDate = DateTime.UtcNow.AddHours(-12),
                 AuthorId = guidance.Id,
                 Visibility = VisibilityType.Staff
             };
@@ -2113,28 +2113,28 @@ namespace GuidanceTracker.Models
             {
                 UserOneId = lecturer1.Id,
                 UserTwoId = guidance.Id,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.UtcNow
             };
 
             var conversation2 = new Conversation
             {
                 UserOneId = lecturer2.Id,
                 UserTwoId = guidance2.Id,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.UtcNow
             };
 
             var conversation3 = new Conversation
             {
                 UserOneId = student1.Id,
                 UserTwoId = guidance.Id,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.UtcNow
             };
 
             var conversation4 = new Conversation
             {
                 UserOneId = financeStudent.Id,
                 UserTwoId = newGuidanceTeacher.Id,
-                LastUpdated = DateTime.Now
+                LastUpdated = DateTime.UtcNow
             };
 
             context.Conversations.Add(conversation1);
@@ -2152,7 +2152,7 @@ namespace GuidanceTracker.Models
         SenderId = lecturer1.Id,
         ReceiverId = guidance.Id,
         Content = "Hi, can we discuss David’s attendance?",
-        SentAt = DateTime.Now.AddMinutes(-25),
+        SentAt = DateTime.UtcNow.AddMinutes(-25),
         IsRead = false
     },
     new Message
@@ -2161,7 +2161,7 @@ namespace GuidanceTracker.Models
         SenderId = guidance.Id,
         ReceiverId = lecturer1.Id,
         Content = "Sure, I'll pull up his records now.",
-        SentAt = DateTime.Now.AddMinutes(-20),
+        SentAt = DateTime.UtcNow.AddMinutes(-20),
         IsRead = false
     },
     new Message
@@ -2170,7 +2170,7 @@ namespace GuidanceTracker.Models
         SenderId = student1.Id,
         ReceiverId = guidance.Id,
         Content = "Hi, I need help with my schedule.",
-        SentAt = DateTime.Now.AddHours(-2),
+        SentAt = DateTime.UtcNow.AddHours(-2),
         IsRead = false
     },
     new Message
@@ -2179,7 +2179,7 @@ namespace GuidanceTracker.Models
         SenderId = guidance.Id,
         ReceiverId = student1.Id,
         Content = "Let’s book an appointment to go through it.",
-        SentAt = DateTime.Now.AddHours(-1),
+        SentAt = DateTime.UtcNow.AddHours(-1),
         IsRead = false
     }
 };

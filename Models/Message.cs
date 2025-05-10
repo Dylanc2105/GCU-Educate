@@ -28,6 +28,9 @@ namespace GuidanceTracker.Models
 
         public bool IsRead { get; set; }
 
+        public bool IsArchived { get; set; } = false;
+
+
         [ForeignKey("ConversationId")]
         public virtual Conversation Conversation { get; set; }
 

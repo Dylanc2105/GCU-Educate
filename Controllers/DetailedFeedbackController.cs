@@ -372,7 +372,7 @@ namespace GuidanceTracker.Controllers
                     {
                         ClassId = viewModel.ClassId,
                         CreatorId = currentUserId,
-                        DateRequested = DateTime.Now,
+                        DateRequested = DateTime.UtcNow,
                         StudentId = student.Id
                     };
 
@@ -445,7 +445,7 @@ namespace GuidanceTracker.Controllers
                 ClassId = request.ClassId,
                 Class = targetClass.ClassName,
                 Course = course?.CourseName,
-                FeedbackDate = DateTime.Now,
+                FeedbackDate = DateTime.UtcNow,
                 StudentId = studentId,
                 CreatorId = request.CreatorId,
 
@@ -675,7 +675,7 @@ namespace GuidanceTracker.Controllers
                     OverallRating = viewModel.OverallRating,
 
                     // Status properties
-                    DateCreated = DateTime.Now,
+                    DateCreated = DateTime.UtcNow,
                     IsSubmitted = true,
                 };
 

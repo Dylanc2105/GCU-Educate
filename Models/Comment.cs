@@ -13,7 +13,7 @@ namespace GuidanceTracker.Models
         public string Content { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         public string UserId { get; set; }

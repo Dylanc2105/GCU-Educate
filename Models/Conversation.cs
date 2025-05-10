@@ -24,6 +24,10 @@ namespace GuidanceTracker.Models
 
         public DateTime LastUpdated { get; set; }
 
+        public bool IsArchivedByUserOne { get; set; }
+        public bool IsArchivedByUserTwo { get; set; }
+        public DateTime? ArchivedAt { get; set; }
+
         public virtual ICollection<Message> Messages { get; set; }
 
         [ForeignKey("UserOneId")]

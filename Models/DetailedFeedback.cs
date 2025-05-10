@@ -169,7 +169,7 @@ namespace GuidanceTracker.Models
 
         public DetailedFeedback()
         {
-            DateCreated = DateTime.Now;
+            DateCreated = DateTime.UtcNow;
             IsSubmitted = false;
 
             // Set default rating values

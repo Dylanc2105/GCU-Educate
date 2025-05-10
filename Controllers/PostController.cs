@@ -62,7 +62,7 @@ namespace GuidanceTracker.Controllers
                 {
                     PostId = unread.PostId,
                     UserId = currentUserId,
-                    ReadOn = DateTime.Now
+                    ReadOn = DateTime.UtcNow
                 });
             }
 
@@ -146,7 +146,7 @@ namespace GuidanceTracker.Controllers
                     Title = viewModel.Title,
                     Content = viewModel.Content,
                     AuthorId = User.Identity.GetUserId(),
-                    PostDate = DateTime.Now,
+                    PostDate = DateTime.UtcNow,
                     Visibility = viewModel.Visibility
                 };
 
@@ -199,7 +199,7 @@ namespace GuidanceTracker.Controllers
                             Type = NotificationType.Announcement,
                             Message = $"New announcement: {post.Title}",
                             RedirectUrl = "/Post/ViewPosts",
-                            CreatedAt = DateTime.Now,
+                            CreatedAt = DateTime.UtcNow,
                             IsRead = false
                         });
                     }

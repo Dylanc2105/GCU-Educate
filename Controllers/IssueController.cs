@@ -96,6 +96,37 @@ namespace GuidanceTracker.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult GetLinkableIssues()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var commentedIssueIds = db.Comments
+                .Where(c => c.UserId == userId)
+                .Select(c => c.IssueId);
+
+            // Load the issues into memory first so we can use .ToString() safely
+            var issues = db.Issues
+                .Include(i => i.Student)
+                .Where(i =>
+                    i.LecturerId == userId ||
+                    i.GuidanceTeacherId == userId ||
+                    commentedIssueIds.Contains(i.IssueId)
+                )
+                .ToList() // Materialize the query here
+               .Select(i => new
+               {
+                   IssueId = i.IssueId,
+                   StudentId = i.StudentId, // ADD THIS
+                   StudentName = i.Student.FirstName + " " + i.Student.LastName,
+                   Title = i.IssueTitle.ToString(),
+                   Status = i.IssueStatus.ToString(),
+                   CreatedAt = i.CreatedAt.ToString("yyyy-MM-dd")
+               })
+                .ToList();
+            return Json(issues, JsonRequestBehavior.AllowGet);
+        }
+
 
         // POST: Issue/CreateIssue
         [HttpPost]
@@ -130,7 +161,7 @@ namespace GuidanceTracker.Controllers
                         existingIssue.Comments.Add(new Comment
                         {
                             Content = model.Description,
-                            CreatedAt = DateTime.Now,
+                            CreatedAt = DateTime.UtcNow,
                             UserId = teacherId
                         });
 
@@ -145,8 +176,8 @@ namespace GuidanceTracker.Controllers
                         IssueTitle = model.IssueTitle,
                         IssueDescription = model.Description,
                         IssueStatus = IssueStatus.New,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
                         LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
                         GuidanceTeacherId = student.GuidanceTeacherId, // karina: issues are correctly assigned to the guidance teacher
                         Comments = new List<Comment>()
@@ -158,7 +189,7 @@ namespace GuidanceTracker.Controllers
                         issue.Comments.Add(new Comment
                         {
                             Content = groupComment,
-                            CreatedAt = DateTime.Now,
+                            CreatedAt = DateTime.UtcNow,
                             UserId = teacherId
                         });
                     }
@@ -167,7 +198,7 @@ namespace GuidanceTracker.Controllers
                     issue.Comments.Add(new Comment
                     {
                         Content = model.Description,
-                        CreatedAt = DateTime.Now,
+                        CreatedAt = DateTime.UtcNow,
                         UserId = teacherId
                     });
 
@@ -425,7 +456,7 @@ namespace GuidanceTracker.Controllers
                 var comment = new Comment
                 {
                     Content = content,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     UserId = userId,
                     IssueId = ticketId
                 };
@@ -520,7 +551,7 @@ namespace GuidanceTracker.Controllers
 
                 // Set the issue status to "New" or "InProgress"
                 issue.IssueStatus = IssueStatus.New; // Or use InProgress if needed
-                issue.UpdatedAt = DateTime.Now;
+                issue.UpdatedAt = DateTime.UtcNow;
 
                 // Save the changes
                 db.SaveChanges();
@@ -574,7 +605,7 @@ namespace GuidanceTracker.Controllers
                 }
 
                 issue.IssueStatus = newStatus;
-                issue.UpdatedAt = DateTime.Now;
+                issue.UpdatedAt = DateTime.UtcNow;
                 db.SaveChanges();
 
                 return Json(new { success = true });

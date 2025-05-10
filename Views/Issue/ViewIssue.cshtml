@@ -46,7 +46,7 @@
                 foreach (var appointment in Model.Student.Appointments)
                 {
                     <div class="appointment-card">
-                        <p><strong>@(appointment.AppointmentDate > DateTime.Now ? "Upcoming" : "Past")</strong></p>
+                        <p><strong>@(appointment.AppointmentDate > DateTime.UtcNow ? "Upcoming" : "Past")</strong></p>
                         <p><strong>Date:</strong> @appointment.AppointmentDate.ToString("dd/MM/yyyy")</p>
                         <p><strong>Time:</strong> @appointment.StartTime</p>
                         <p><strong>Room:</strong> @appointment.Room</p>
