@@ -6,6 +6,11 @@
 <div class="dm-wrapper">
     <!-- LEFT PANE: INBOX -->
     <div class="inbox-pane" id="inboxList">
+        <!-- Inbox Title Bar -->
+        <div class="inbox-title-bar">
+            <img src="~/Images/Icons/Messages.png" alt="Inbox Icon" class="inbox-icon" />
+            <span class="inbox-title-text">Message Inbox</span>
+        </div>
         <div class="inbox-header">
             <div class="inbox-controls">
                 <input type="text" id="inboxSearch" class="conversation-search" placeholder="Search messages..." onkeyup="applyInboxFilters()">
@@ -248,6 +253,29 @@
         margin-bottom: 10px;
     }
 
+    .inbox-title-bar {
+        background-color: #7F3D98;
+        color: white;
+        padding: 14px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
+
+        .inbox-title-bar .inbox-icon {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+    .inbox-title-text {
+        line-height: 1;
+    }
+
     /* Rows: label on left, control on right */
     .setting-row {
         display: flex;
@@ -300,7 +328,7 @@
         transition: background 0.2s;
         display: flex;
         flex-direction: column;
-        position: relative; /* Needed for archive icon */
+        position: relative; 
     }
 
         .conversation-item .archive-icon {
@@ -924,7 +952,9 @@
                     <span class="inbox-role-badge">${c.Role}</span>
                     <div class="preview">${c.LastMessage || 'No messages yet'}</div>
                     ${c.UnreadCount > 0 ? `<div class="message-meta">${c.UnreadCount} unread</div>` : ''}
-                    <span class="archive-icon" title="Archive" onclick="event.stopPropagation(); showArchiveConfirmation('single', ${c.Id})">🗃️</span>
+                        <span class="archive-icon" title="Archive" onclick="event.stopPropagation(); showArchiveConfirmation('single', ${c.Id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </span>
                 </div>`;
             });
             $('#conversationContainer').html(html || '<p class="text-center text-muted">No conversations yet.</p>');
