@@ -17,11 +17,11 @@
             padding: 0;
         }
 
-        /* Header styles */
         .top-header {
             background-color: #7F3D98;
             color: white;
-            padding: 15px 0;
+            height: 70px; 
+            line-height: 70px; 
             text-align: center;
             width: 100%;
             position: fixed;
@@ -29,44 +29,8 @@
             left: 0;
             right: 0;
             z-index: 100;
+            padding: 0; 
         }
-
-        .user-controls ul.navbar-nav {
-            display: inline-flex;
-            flex-direction: row;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-            .user-controls ul.navbar-nav li {
-                margin-left: 15px;
-            }
-
-        .user-controls .nav-link {
-            color: white;
-            text-decoration: none;
-        }
-
-        .user-controls button.nav-link {
-            color: white;
-            cursor: pointer;
-        }
-
-        /* User controls on the right side of header */
-        .user-controls {
-            position: absolute;
-            text-align: center;
-            top: 15px;
-            right: 50px;
-        }
-
-            .user-controls a {
-                margin-left: 15px;
-                color: white;
-                text-decoration: none;
-                display: inline-block;
-            }
 
         .header-logo {
             position: absolute;
@@ -76,16 +40,54 @@
         }
 
         .top-logo {
-            height: 30px;
+            height: 65px;
             width: auto;
         }
 
         .college-name {
             display: inline-block;
-            margin: 0 auto;
+            vertical-align: middle;
+            line-height: 70px; 
+            font-size: 18px;
         }
 
-        /* Left sidebar navigation */
+        .user-controls {
+            position: absolute;
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+            .user-controls ul.navbar-nav {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .user-controls img {
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+            }
+
+
+                .user-controls ul.navbar-nav li {
+                    margin: 0 10px;
+                }
+
+            .user-controls .nav-link {
+                color: white;
+                text-decoration: none;
+                padding: 5px;
+            }
+
         .sidebar {
             background-color: #7F3D98;
             width: 80px;
@@ -97,13 +99,12 @@
             flex-direction: column;
             align-items: center;
             padding-top: 80px;
-            transition: width 0.3s ease;
         }
 
             .sidebar a {
                 color: white;
-                font-size: 24px;
-                margin-bottom: 30px;
+                font-size: 40px;
+                margin-bottom: 10px;
                 text-decoration: none;
                 display: flex;
                 flex-direction: column;
@@ -112,8 +113,9 @@
                 width: 100%;
             }
 
+
                 .sidebar a .icon-title {
-                    font-size: 12px;
+                    font-size: 15px;
                     margin-top: 5px;
                     display: block;
                 }
@@ -122,22 +124,18 @@
             margin-left: 100px;
             margin-top: 60px;
             padding: 20px 30px;
-            transition: margin-left 0.3s ease;
         }
 
-        /* Dashboard title */
         .dashboard-title {
             color: #7F3D98;
             font-size: 28px;
             margin-bottom: 15px;
         }
 
-        /* Welcome message */
         .welcome-text {
             margin-bottom: 25px;
         }
 
-        /* Card grid layout */
         .cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -152,7 +150,6 @@
             min-height: 150px;
         }
 
-        /* Card sizes */
         .small-card {
             flex: 1;
             min-width: 250px;
@@ -167,84 +164,13 @@
             font-size: 18px;
         }
 
-            .card-header i {
-                margin-right: 10px;
-            }
-
-        /* Status styling */
-        .flagged {
-            color: red;
-            font-weight: bold;
-        }
-
-        /* List styling */
-        ol {
-            padding-left: 25px;
-            margin-top: 10px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        .user-controls {
-            position: absolute;
-            top: 15px;
-            right: 50px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-            .user-controls ul.navbar-nav {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-
-                .user-controls ul.navbar-nav li {
-                    margin: 0 10px;
-                }
-
-            .user-controls .nav-link {
-                color: white;
-                text-decoration: none;
-                padding: 5px;
-            }
-
-        .dropdown-item {
-            color: black !important;
-            background-color: white;
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            margin: 0;
-            border: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-        }
-
-            .dropdown-item:hover {
-                background-color: #f1f1f1;
-                color: black;
-            }
-
-            .dropdown-item:not(:last-child) {
-                border-bottom: 1px solid #eee;
-            }
-
         .dropdown-menu {
             position: absolute !important;
             top: 100%;
             right: 0;
             left: auto;
             z-index: 1050;
-            display: none; /* Bootstrap toggles this */
+            display: none;
             min-width: 250px;
             background-color: white;
             color: black;
@@ -254,6 +180,15 @@
             padding: 0;
             overflow: hidden;
             width: 300px;
+        }
+
+        .dropdown-item-text {
+            color: black !important;
+            background-color: white;
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            box-sizing: border-box;
         }
     </style>
 
@@ -271,97 +206,139 @@
     <!-- Top header with college name -->
     <div class="top-header">
         <div class="header-logo">
-            <img src="~/Images/GTLogo.png" alt="Logo" class="top-logo">
+            <img src="~/Images/Icons/Logo-white.png" alt="Logo" class="top-logo">
         </div>
 
         <span class="college-name">City of Glasgow College</span>
 
-        <!-- notificaion bell, dropdown, hello user and log off -->
+        <!-- Icons: Notifications, Settings, Log Out -->
         <div class="user-controls">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav d-flex align-items-center">
+                <!-- Notifications Icon -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-bell"></i>
+                        <img src="~/Images/Icons/Notifacations.png" alt="Notifications" width="40" height="40">
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" id="notificationContent">
                         <span class="dropdown-item-text">Loading...</span>
                     </div>
                 </li>
 
+                <!-- Settings Icon -->
                 <li class="nav-item">
-                    @Html.Partial("_LoginPartial")
+                    <a class="nav-link" href="/Account/Manage">
+                        <img src="~/Images/Icons/settings.png" alt="Settings" width="40" height="40">
+                    </a>
+                </li>
+
+                <!-- Log Out Icon -->
+                <li class="nav-item">
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @class = "form-inline", id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-link nav-link p-0" title="Log Out">
+                            <img src="~/Images/Icons/log off.png" alt="Log Out" width="40" height="40" />
+                        </button>
+                    }
                 </li>
             </ul>
         </div>
     </div>
 
     <!-- Left sidebar navigation -->
-    <!--If statements to ensure the home button takes each role to respective home page-->
     <div class="sidebar">
+        <!-- Home -->
         <a href="@{
-     string url = Url.Action("Index", "Home");
-     if (Request.IsAuthenticated)
-     {
-         if (User.IsInRole("GuidanceTeacher"))
-         {
-             url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
-         }
-         else if (User.IsInRole("Lecturer"))
-         {
-         url = Url.Action("LecturerDash", "Lecturer");
-         }
-         else if (User.IsInRole("Student"))
-         {
-             url = Url.Action("StudentDash", "Student");
-         }
-     }
-     @url
- }" title="Home">
-            <i class="fas fa-home"></i><span class="icon-title">Home</span>
-        </a>
-        <!--Only lecturers and guidance lecturers can view issues-->
-        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+        string url = Url.Action("Index", "Home");
+        if (Request.IsAuthenticated)
         {
-            <a href="@Url.Action("Index", "Issue")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
+            if (User.IsInRole("GuidanceTeacher"))
+            {
+                url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
+            }
+            else if (User.IsInRole("Lecturer"))
+            {
+                url = Url.Action("LecturerDash", "Lecturer");
+            }
+            else if (User.IsInRole("Student"))
+            {
+                url = Url.Action("StudentDash", "Student");
+            }
         }
-        else if (Request.IsAuthenticated && User.IsInRole("Lecturer"))
+        @url
+    }" title="Home">
+            <img src="~/Images/Icons/home.png" alt="Home" width="38" height="38" />
+            <span class="icon-title">Home</span>
+        </a>
+
+        <!-- Issues -->
+        @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("Lecturer")))
         {
-            <a href="@Url.Action("Index", "Issue")" title="Issues"><i class="fas fa-exclamation-circle"></i><span class="icon-title">Issues</span></a>
+            <a href="@Url.Action("Index", "Issue")" title="Issues">
+                <img src="~/Images/Icons/Issues.png" alt="Issues" width="38" height="38"  />
+                <span class="icon-title">Issues</span>
+            </a>
         }
 
-        <!--Ensures only the CurriculumHead can view all student data-->
-        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead") || User.IsInRole("GuidanceTeacher"))
+        <!-- Students -->
+        @if (Request.IsAuthenticated && (User.IsInRole("CurriculumHead") || User.IsInRole("GuidanceTeacher")))
         {
-            <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students"><i class="fas fa-user-graduate"></i><span class="icon-title">Students</span></a>
+            <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
+                <img src="~/Images/Icons/student.png" alt="Students" width="38" height="38"  />
+                <span class="icon-title">Students</span>
+            </a>
         }
+
+        <!-- Messages -->
         <a href="@Url.Action("Index", "Message")" title="Messages">
-            <i class="fas fa-comments"></i><span class="icon-title">Messages</span>
+            <img src="~/Images/Icons/Messages.png" alt="Messages" width="38" height="38"  />
+            <span class="icon-title">Messages</span>
         </a>
-        <a href="@Url.Action("ViewPosts", "Post")" title="Posts"><i class="fas fa-scroll"></i><span class="icon-title">Posts</span></a>
+
+        <!-- Posts -->
+        <a href="@Url.Action("ViewPosts", "Post")" title="Posts">
+            <img src="~/Images/Icons/posts.png" alt="Posts" width="38" height="38"  />
+            <span class="icon-title">Posts</span>
+        </a>
+
+        <!-- Calendar -->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Calendar", "GuidanceTeacher")" title="Calendar"><i class="fas fa-calendar-alt"></i><span class="icon-title">Calendar</span></a>
+            <a href="@Url.Action("Calendar", "GuidanceTeacher")" title="Calendar">
+                <img src="~/Images/Icons/calendar.png" alt="Calendar" width="38" height="38" />
+                <span class="icon-title">Calendar</span>
+            </a>
         }
+
+        <!-- Metrics -->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Index", "Metrics")" title="Metrics"><i class="fas fa-chart-bar"></i> <span class="icon-title">Metrics</span></a>
+            <a href="@Url.Action("Index", "Metrics")" title="Metrics">
+                <img src="~/Images/Icons/Metrics.png" alt="Metrics" width="38" height="38" />
+                <span class="icon-title">Metrics</span>
+            </a>
         }
+
+        <!-- MyVoice (Student Feedback) -->
         @if (Request.IsAuthenticated && User.IsInRole("Student"))
         {
-            <a href="@Url.Action("StudentFeedbackDashboard", "SimpleFeedback")" title="MyVoice"><i class="fas fa-bullhorn"></i> <span class="icon-title">Feedback</span></a>
-        }
-        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
-        {
-            <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" title="Feedback"><i class="fas fa-bullhorn"></i> <span class="icon-title">Feedback</span></a>
-        }
-        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead"))
-        {
-            <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" title="Feedback"><i class="fas fa-bullhorn"></i> <span class="icon-title">Feedback</span></a>
+            <a href="@Url.Action("StudentFeedbackDashboard", "SimpleFeedback")" title="Feedback">
+                <img src="~/Images/Icons/my voice.png" alt="Feedback" width="38" height="38"  />
+                <span class="icon-title">Feedback</span>
+            </a>
         }
 
-
+        <!-- Detailed Feedback (Guidance/Curriculum) -->
+        @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead")))
+        {
+            <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" title="Feedback">
+                <img src="~/Images/Icons/feedback.png" alt="Feedback" width="38" height="38"  />
+                <span class="icon-title">Feedback</span>
+            </a>
+        }
     </div>
+
     <!-- Main content area -->
     <div class="main-content">
         <div class="content-container">
