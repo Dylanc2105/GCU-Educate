@@ -190,6 +190,24 @@
     <input type="text" id="studentSearch" class="search-input" placeholder="Search students..." />
 </div>
 
+<!-- Filter and Sort Controls -->
+<div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+    <!-- Class Filter -->
+    <select id="classFilter" class="search-input" style="max-width: 200px;">
+        <option value="">All Classes</option>
+        @foreach (var cls in Model.Select(s => s.Class.ClassName).Distinct())
+        {
+            <option value="@cls">@cls</option>
+        }
+    </select>
+
+    <!-- Sort Options -->
+    <select id="sortFilter" class="search-input" style="max-width: 200px;">
+        <option value="name-asc">Sort by Name (A-Z)</option>
+        <option value="name-desc">Sort by Name (Z-A)</option>
+    </select>
+</div>
+
 <!-- Container for all student cards -->
 <div class="student-cards">
     @foreach (var item in Model)
@@ -282,5 +300,52 @@
                 });
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('studentSearch');
+            const classFilter = document.getElementById('classFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const studentCardsContainer = document.querySelector('.student-cards');
+
+            function applyFilters() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedClass = classFilter.value.toLowerCase();
+                const sortBy = sortFilter.value;
+                const cards = Array.from(document.querySelectorAll('.student-card'));
+
+                // Filter logic
+                cards.forEach(card => {
+                    const studentName = card.getAttribute('data-student-name').toLowerCase();
+                    const courseName = card.getAttribute('data-course').toLowerCase();
+
+                    const matchesSearch = studentName.includes(searchTerm) || courseName.includes(searchTerm);
+                    const matchesClass = !selectedClass || courseName === selectedClass;
+
+                    card.style.display = (matchesSearch && matchesClass) ? '' : 'none';
+                });
+
+                // Sort logic
+                const visibleCards = cards.filter(c => c.style.display !== 'none');
+                visibleCards.sort((a, b) => {
+                    if (sortBy === 'name-asc' || sortBy === 'name-desc') {
+                        const nameA = a.getAttribute('data-student-name').toLowerCase();
+                        const nameB = b.getAttribute('data-student-name').toLowerCase();
+                        return sortBy === 'name-asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+                    } else {
+                        const dateA = new Date(a.querySelector('.detail-value').innerText);
+                        const dateB = new Date(b.querySelector('.detail-value').innerText);
+                        return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
+                    }
+                });
+
+                // Reorder DOM
+                visibleCards.forEach(card => studentCardsContainer.appendChild(card));
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            classFilter.addEventListener('change', applyFilters);
+            sortFilter.addEventListener('change', applyFilters);
+        });
+
     </script>
 }
