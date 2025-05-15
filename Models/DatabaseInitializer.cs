@@ -1544,6 +1544,423 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
+            if (userManager.FindByName("student10@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student10@email.com",
+                    Email = "student10@email.com",
+                    FirstName = "Dylan",
+                    LastName = "Campbell",
+                    Street = "57 Station Rd",
+                    City = "Glasgow",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.UtcNow.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 1,
+                    StudentNumber = "42000125"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student11@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student11@email.com",
+                    Email = "student11@email.com",
+                    FirstName = "Ross",
+                    LastName = "Gibb",
+                    Street = "34 West End",
+                    City = "Aberdeen",
+                    Postcode = "FK8 1QZ",
+                    RegistredAt = DateTime.UtcNow.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 2,
+                    StudentNumber = "42000126"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student12@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student12@email.com",
+                    Email = "student12@email.com",
+                    FirstName = "Garry",
+                    LastName = "Grant",
+                    Street = "57 Station Rd",
+                    City = "Glasgow",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.UtcNow.AddMonths(-2),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 3,
+                    StudentNumber = "42000127"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student13@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student13@email.com",
+                    Email = "student13@email.com",
+                    FirstName = "Amy",
+                    LastName = "Medineli",
+                    Street = "34 West End",
+                    City = "Stirling",
+                    Postcode = "EH2 2BB",
+                    RegistredAt = DateTime.UtcNow.AddMonths(-4),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 4,
+                    StudentNumber = "42000128"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+            if (userManager.FindByName("student14@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student14@email.com",
+                    Email = "student14@email.com",
+                    FirstName = "Grant",
+                    LastName = "Smith",
+                    Street = "9 George Sq",
+                    City = "Stirling",
+                    Postcode = "FK8 1QZ",
+                    RegistredAt = DateTime.Parse("2025-03-07T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 5,
+                    StudentNumber = "42000129"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student15@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student15@email.com",
+                    Email = "student15@email.com",
+                    FirstName = "Amy",
+                    LastName = "Johnson",
+                    Street = "5 Greenhill Ave",
+                    City = "Glasgow",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-02-27T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 6,
+                    StudentNumber = "42000130"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student16@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student16@email.com",
+                    Email = "student16@email.com",
+                    FirstName = "Megan",
+                    LastName = "Brown",
+                    Street = "73 Oxford St",
+                    City = "Edinburgh",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-02-17T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 7,
+                    StudentNumber = "42000131"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student17@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student17@email.com",
+                    Email = "student17@email.com",
+                    FirstName = "Liam",
+                    LastName = "Taylor",
+                    Street = "1 Queen St",
+                    City = "Edinburgh",
+                    Postcode = "FK8 1QZ",
+                    RegistredAt = DateTime.Parse("2025-03-08T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 8,
+                    StudentNumber = "42000132"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student18@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student18@email.com",
+                    Email = "student18@email.com",
+                    FirstName = "Ethan",
+                    LastName = "Anderson",
+                    Street = "42 Main Road",
+                    City = "Dundee",
+                    Postcode = "FK8 1QZ",
+                    RegistredAt = DateTime.Parse("2025-01-25T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 9,
+                    StudentNumber = "42000133"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+            if (userManager.FindByName("student19@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student19@email.com",
+                    Email = "student19@email.com",
+                    FirstName = "Chloe",
+                    LastName = "Clark",
+                    Street = "9 George Sq",
+                    City = "Stirling",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-01-29T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 1,
+                    StudentNumber = "42000134"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student20@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student20@email.com",
+                    Email = "student20@email.com",
+                    FirstName = "Zara",
+                    LastName = "Lewis",
+                    Street = "9 George Sq",
+                    City = "Stirling",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-01-24T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 2,
+                    StudentNumber = "42000135"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student21@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student21@email.com",
+                    Email = "student21@email.com",
+                    FirstName = "Kyle",
+                    LastName = "Walker",
+                    Street = "88 Commerce St",
+                    City = "Edinburgh",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-03-08T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 3,
+                    StudentNumber = "42000136"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student22@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student22@email.com",
+                    Email = "student22@email.com",
+                    FirstName = "Ava",
+                    LastName = "Hall",
+                    Street = "9 George Sq",
+                    City = "Aberdeen",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-04-09T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 4,
+                    StudentNumber = "42000137"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student23@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student23@email.com",
+                    Email = "student23@email.com",
+                    FirstName = "Logan",
+                    LastName = "Allen",
+                    Street = "9 George Sq",
+                    City = "Aberdeen",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-04-01T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 5,
+                    StudentNumber = "42000138"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student24@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student24@email.com",
+                    Email = "student24@email.com",
+                    FirstName = "Emma",
+                    LastName = "Young",
+                    Street = "1 Queen St",
+                    City = "Stirling",
+                    Postcode = "FK8 1QZ",
+                    RegistredAt = DateTime.Parse("2025-03-22T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 6,
+                    StudentNumber = "42000139"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student25@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student25@email.com",
+                    Email = "student25@email.com",
+                    FirstName = "Ben",
+                    LastName = "Scott",
+                    Street = "34 West End",
+                    City = "Glasgow",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-03-16T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 7,
+                    StudentNumber = "42000140"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student26@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student26@email.com",
+                    Email = "student26@email.com",
+                    FirstName = "Lucy",
+                    LastName = "Adams",
+                    Street = "34 West End",
+                    City = "Aberdeen",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-01-31T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 8,
+                    StudentNumber = "42000141"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student27@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student27@email.com",
+                    Email = "student27@email.com",
+                    FirstName = "Noah",
+                    LastName = "Hughes",
+                    Street = "1 Queen St",
+                    City = "Stirling",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-02-17T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 9,
+                    StudentNumber = "42000142"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student28@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student28@email.com",
+                    Email = "student28@email.com",
+                    FirstName = "Sophie",
+                    LastName = "Gray",
+                    Street = "57 Station Rd",
+                    City = "Edinburgh",
+                    Postcode = "AB10 1XY",
+                    RegistredAt = DateTime.Parse("2025-02-18T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 1,
+                    StudentNumber = "42000143"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
+
+            if (userManager.FindByName("student29@email.com") == null)
+            {
+                var student = new Student
+                {
+                    UserName = "student29@email.com",
+                    Email = "student29@email.com",
+                    FirstName = "Sean",
+                    LastName = "Murray",
+                    Street = "24 Union St",
+                    City = "Edinburgh",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-04-13T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = 2,
+                    StudentNumber = "42000144"
+                };
+                userManager.Create(student, "123");
+                userManager.AddToRole(student.Id, "Student");
+            }
 
 
             // Create a Issue
