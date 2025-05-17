@@ -5,6 +5,358 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <style>
+                * {
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Poppins', sans-serif;
+                        box-sizing: border-box;
+
+        }
+
+                .wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        width: 100%;
+                        max-width: 650px;
+
+        }
+
+                body {
+                        display: flex;
+                        flex-direction: column;
+                        background: #fff;
+                        min-height: 100vh;
+                        padding: 20px 10px;
+                        align-items: center;
+                        justify-content: flex-start;
+
+        }
+
+                .calendar-container {
+                        background: #fff;
+                        width: 100%;
+                        border-radius: 10px;
+                        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+
+        }
+
+                    .calendar-container header {
+                            display: flex;
+                            align-items: center;
+                            padding: 25px 30px 10px;
+                            justify-content: space-between;
+
+        }
+
+                header .calendar-navigation {
+                        display: flex;
+
+        }
+
+                    header .calendar-navigation span {
+                            height: 38px;
+                            width: 38px;
+                            margin: 0 1px;
+                            cursor: pointer;
+                            text-align: center;
+                            line-height: 38px;
+                            border-radius: 50%;
+                            user-select: none;
+                            color: #aeabab;
+                            font-size: 1.9rem;
+
+        }
+
+                .calendar-navigation span:last-child {
+                        margin-right: -10px;
+
+        }
+
+                header .calendar-navigation span:hover {
+                        background: #f2f2f2;
+
+        }
+
+                header .calendar-current-date {
+                        font-weight: 500;
+                        font-size: 1.45rem;
+
+        }
+
+                .calendar-body {
+                        padding: 20px;
+
+        }
+
+                    .calendar-body ul {
+                            list-style: none;
+                            flex-wrap: wrap;
+                            display: flex;
+                            text-align: center;
+
+        }
+
+                    .calendar-body .calendar-dates {
+                            margin-bottom: 20px;
+
+        }
+
+                    .calendar-body li {
+                            width: calc(100% / 7);
+                            font-size: 1.07rem;
+                            color: #414141;
+
+        }
+
+                    .calendar-body .calendar-weekdays li {
+                            cursor: default;
+                            font-weight: 500;
+
+        }
+
+                    .calendar-body .calendar-dates li {
+                            margin-top: 30px;
+                            position: relative;
+                            z-index: 1;
+                            cursor: pointer;
+
+        }
+
+                .calendar-dates li.inactive {
+                        color: #aaa;
+                        cursor: default; /* Make inactive dates non-clickable visually */
+
+        }
+
+                .calendar-dates li.weekend {
+                        color: #ff7f7f; /* Style weekend dates differently */
+                        cursor: default; /* Make weekend dates non-clickable visually */
+
+        }
+
+
+                .calendar-dates li.active {
+                        color: #fff;
+
+        }
+
+                .calendar-dates li::before {
+                        position: absolute;
+                        content: "";
+                        z-index: -1;
+                        top: 50%;
+                        left: 50%;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        transform: translate(-50%, -50%);
+
+        }
+
+                .calendar-dates li.active::before {
+                        background: #7F3D98;
+
+        }
+
+                .calendar-dates li:not(.active):not(.inactive):not(.weekend):hover::before {
+                        background: #e4e1e1;
+
+        }
+
+                #appointments-container {
+                        width: 100%;
+                        margin: 20px auto;
+                        background: white;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+                        border-radius: 10px;
+                        max-height: none;
+                        display: none;
+
+        }
+
+                    #appointments-container h3 {
+                            margin-bottom: 15px;
+                            color: #414141;
+
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="calendar-container">
+            <header class="calendar-header">
+                <p class="calendar-current-date"></p>
+                <div class="calendar-navigation">
+                    <span id="calendar-prev" class="material-symbols-rounded">
+                        chevron_left
+                    </span>
+                    <span id="calendar-next" class="material-symbols-rounded">
+                        chevron_right
+                    </span>
+                </div>
+            </header>
+
+            <div class="calendar-body">
+                <ul class="calendar-weekdays">
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wed</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                </ul>
+                <ul class="calendar-dates"></ul>
+            </div>
+        </div>
+
+        <div id="appointments-container">
+            <h3>Appointments</h3>
+            <ul id="appointments-list"></ul>
+        </div>
+    </div>
+</body>
+
+<script>
+     let date = new Date();
+     let year = date.getFullYear();
+     let month = date.getMonth();
+
+     const day = document.querySelector(".calendar-dates");
+     const currdate = document.querySelector(".calendar-current-date");
+     const prenexIcons = document.querySelectorAll(".calendar-navigation span");
+     const appointmentsContainer = document.getElementById('appointments-container');
+     const appointmentsList = document.getElementById('appointments-list');
+
+     const months = [
+         "January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"
+     ];
+
+     const manipulate = () => {
+         let dayone = new Date(year, month, 1).getDay();
+         let lastdate = new Date(year, month + 1, 0).getDate();
+         let dayend = new Date(year, month, lastdate).getDay();
+         let monthlastdate = new Date(year, month, 0).getDate();
+         let lit = "";
+
+         for (let i = dayone; i > 0; i--) {
+             lit += `<li class="inactive">${monthlastdate - i + 1}</li>`;
+         }
+
+         for (let i = 1; i <= lastdate; i++) {
+             let isToday = i === date.getDate() && month === new Date().getMonth() && year === new Date().getFullYear() ? "active" : "";
+            
+             // Determine if the current date is a weekend
+             const currentDayOfWeek = new Date(year, month, i).getDay();
+             const isWeekend = (currentDayOfWeek === 0 || currentDayOfWeek === 6) ? "weekend" : ""; // 0 for Sunday, 6 for Saturday
+
+             lit += `<li class="${isToday} ${isWeekend}">${i}</li>`;
+         }
+
+         for (let i = dayend; i < 6; i++) {
+             lit += `<li class="inactive">${i - dayend + 1}</li>`;
+         }
+
+         currdate.innerText = `${months[month]} ${year}`;
+         day.innerHTML = lit;
+         addDateClickListeners();
+     };
+
+     const addDateClickListeners = () => {
+         const dateElements = document.querySelectorAll('.calendar-dates li');
+
+         dateElements.forEach(dateElement => {
+             dateElement.addEventListener('click', function() {
+                 // Check if the clicked date is inactive or a weekend
+                 if (this.classList.contains('inactive') || this.classList.contains('weekend')) {
+                     return; // Do nothing if it's inactive or a weekend
+                 }
+
+                 const dayNum = parseInt(this.textContent);
+                 const selectedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                 fetchAppointments(selectedDate);
+             });
+         });
+     };
+
+     // Fixed function to correctly handle the date
+     const fetchAppointments = (formattedDate) => {
+         const url = `@Url.Action("GetAppointmentsForDatePartial", "GuidanceTeacher")?date=${formattedDate}`;
+
+         // Show selected date in appointments header
+         const displayDate = new Date(formattedDate);
+         const dateStr = `${months[displayDate.getMonth()]} ${displayDate.getDate()}, ${displayDate.getFullYear()}`;
+         document.getElementById('appointments-container').innerHTML = `<h3>Appointments for ${dateStr}</h3><div id="appointments-content"></div>`;
+
+         fetch(url)
+             .then(response => {
+                 if (!response.ok) {
+                     throw new Error(`HTTP error! status: ${response.status}`);
+                 }
+                 return response.text(); // Get the HTML content
+             })
+             .then(html => {
+                 document.getElementById('appointments-content').innerHTML = html; // Replace content
+                 document.getElementById('appointments-container').style.display = 'block'; // Show container
+             })
+             .catch(error => {
+                 console.error('Error fetching appointments:', error);
+                 document.getElementById('appointments-content').innerHTML = '<p>Failed to fetch appointments.</p>';
+                 document.getElementById('appointments-container').style.display = 'block';
+             });
+     };
+
+     manipulate();
+
+     prenexIcons.forEach(icon => {
+         icon.addEventListener("click", () => {
+             month = icon.id === "calendar-prev" ? month - 1 : month + 1;
+             if (month < 0 || month > 11) {
+                 date = new Date(year, month, new Date().getDate());
+                 year = date.getFullYear();
+                 month = date.getMonth();
+             } else {
+                 date = new Date(year, month, date.getDate());
+             }
+             manipulate();
+         });
+     });
+</script>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 </head>
 
 <body>
@@ -289,310 +641,5 @@
             color: #414141;
         }
 </style>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*<html lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
-    <title>Calendar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-</head>
-
-<body>
-    <div class="calendar-container">
-        <header class="calendar-header">
-            <p class="calendar-current-date"></p>
-            <div class="calendar-navigation">
-                <span id="calendar-prev" class="material-symbols-rounded">
-                    chevron_left
-                </span>
-                <span id="calendar-next" class="material-symbols-rounded">
-                    chevron_right
-                </span>
-            </div>
-        </header>
-
-        <div class="calendar-body">
-            <ul class="calendar-weekdays">
-                <li>Sun</li>
-                <li>Mon</li>
-                <li>Tue</li>
-                <li>Wed</li>
-                <li>Thu</li>
-                <li>Fri</li>
-                <li>Sat</li>
-            </ul>
-            <ul class="calendar-dates"></ul>
-        </div>
-    </div>
-
-    <br />
-
-
-</body>
-<div id="appointments-container">
-    
-    <ul id="appointments-list"></ul>
-</div>
-</html>
-
-
-
-<script>
-    let date = new Date();
-    let year = date.getFullYear();
-    let month = date.getMonth();
-
-    const day = document.querySelector(".calendar-dates");
-    const currdate = document.querySelector(".calendar-current-date");
-    const prenexIcons = document.querySelectorAll(".calendar-navigation span");
-    const appointmentsContainer = document.getElementById('appointments-container');
-    const appointmentsList = document.getElementById('appointments-list');
-    const closeAppointmentsButton = document.getElementById('close-appointments');
-
-    const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    const manipulate = () => {
-        let dayone = new Date(year, month, 1).getDay();
-        let lastdate = new Date(year, month + 1, 0).getDate();
-        let dayend = new Date(year, month, lastdate).getDay();
-        let monthlastdate = new Date(year, month, 0).getDate();
-        let lit = "";
-
-        for (let i = dayone; i > 0; i--) {
-            lit += `<li class="inactive">${monthlastdate - i + 1}</li>`;
-        }
-
-        for (let i = 1; i <= lastdate; i++) {
-            let isToday = i === date.getDate() && month === new Date().getMonth() && year === new Date().getFullYear() ? "active" : "";
-            lit += `<li class="${isToday}">${i}</li>`;
-        }
-
-        for (let i = dayend; i < 6; i++) {
-            lit += `<li class="inactive">${i - dayend + 1}</li>`;
-        }
-
-        currdate.innerText = `${months[month]} ${year}`;
-        day.innerHTML = lit;
-        addDateClickListeners();
-    };
-
-    const addDateClickListeners = () => {
-        const dateElements = document.querySelectorAll('.calendar-dates li');
-
-        dateElements.forEach(dateElement => {
-            dateElement.addEventListener('click', function() {
-                const dayNum = parseInt(this.textContent);
-                if (!this.classList.contains('inactive')) {
-                    const selectedDateObj = new Date(year, month, dayNum);
-                    const selectedDate = `${months[month]} ${dayNum}, ${year}`;
-                    fetchAppointments(selectedDateObj);
-                }
-            });
-        });
-    };
-
-
-
-    //display appoinments for seleted date
-     const fetchAppointments = (selectedDate) => {
-        const formattedDate = selectedDate.toISOString().split('T')[0];
-        const url = `@Url.Action("GetAppointmentsForDatePartial", "GuidanceTeacher")?date=${formattedDate}`;
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text(); // Get the HTML content
-            })
-            .then(html => {
-                document.getElementById('appointments-container').innerHTML = html; // Replace container's content
-                document.getElementById('appointments-container').style.display = 'block'; // Show container
-            })
-            .catch(error => {
-                console.error('Error fetching appointments:', error);
-                alert('Failed to fetch appointments.');
-            });
-    };
-
-
-    manipulate();
-
-    prenexIcons.forEach(icon => {
-        icon.addEventListener("click", () => {
-            month = icon.id === "calendar-prev" ? month - 1 : month + 1;
-            if (month < 0 || month > 11) {
-                date = new Date(year, month, new Date().getDate());
-                year = date.getFullYear();
-                month = date.getMonth();
-            } else {
-                date = new Date(year, month, date.getDate());
-            }
-            manipulate();
-        });
-    });
-</script>
-
-
-
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-        display: flex;
-        background: #fff;
-        min-height: 100vh;
-        padding: 0 10px;
-        align-items: center;
-        justify-content: center;
-    }
-
-
-
-    .calendar-container {
-        background: #fff;
-        width: 450px;
-        border-radius: 10px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-    }
-
-        .calendar-container header {
-            display: flex;
-            align-items: center;
-            padding: 25px 30px 10px;
-            justify-content: space-between;
-        }
-
-    header .calendar-navigation {
-        display: flex;
-    }
-
-        header .calendar-navigation span {
-            height: 38px;
-            width: 38px;
-            margin: 0 1px;
-            cursor: pointer;
-            text-align: center;
-            line-height: 38px;
-            border-radius: 50%;
-            user-select: none;
-            color: #aeabab;
-            font-size: 1.9rem;
-        }
-
-    .calendar-navigation span:last-child {
-        margin-right: -10px;
-    }
-
-    header .calendar-navigation span:hover {
-        background: #f2f2f2;
-    }
-
-    header .calendar-current-date {
-        font-weight: 500;
-        font-size: 1.45rem;
-    }
-
-    .calendar-body {
-        padding: 20px;
-    }
-
-        .calendar-body ul {
-            list-style: none;
-            flex-wrap: wrap;
-            display: flex;
-            text-align: center;
-        }
-
-        .calendar-body .calendar-dates {
-            margin-bottom: 20px;
-        }
-
-        .calendar-body li {
-            width: calc(100% / 7);
-            font-size: 1.07rem;
-            color: #414141;
-        }
-
-        .calendar-body .calendar-weekdays li {
-            cursor: default;
-            font-weight: 500;
-        }
-
-        .calendar-body .calendar-dates li {
-            margin-top: 30px;
-            position: relative;
-            z-index: 1;
-            cursor: pointer;
-        }
-
-    .calendar-dates li.inactive {
-        color: #aaa;
-    }
-
-    .calendar-dates li.active {
-        color: #fff;
-    }
-
-    .calendar-dates li::before {
-        position: absolute;
-        content: "";
-        z-index: -1;
-        top: 50%;
-        left: 50%;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .calendar-dates li.active::before {
-        background: #7F3D98;
-    }
-
-    .calendar-dates li:not(.active):hover::before {
-        background: #e4e1e1;
-    }
-
-    .appointments-container {
-        position: fixed; /* Or absolute, if you want it relative to a positioned parent */
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); /* Centers the container */
-        background: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        z-index: 1000; /* Ensure it's above other content */
-        max-height: 80vh; /* Optional: limit height and add scroll */
-        overflow-y: auto;
-    }
-</style>*@
+</html>*@
 
