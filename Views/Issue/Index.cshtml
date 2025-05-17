@@ -195,6 +195,13 @@
         .close-btn:hover {
             color: #666;
         }
+    .issue-header {
+        background-color: #E6DFF0;
+        border-left: 5px solid white;
+        font-weight: bold;
+        cursor: default;
+        pointer-events: none;
+    }
 </style>
 
 <h1 class="dashboard-title">Issues Dashboard</h1>
@@ -206,8 +213,13 @@
     <div class="left-container">
         <!-- New Issues -->
         <div class="container">
-            <div class="section-title">New Issues</div>
-
+            <div class="section-title">New</div>
+            <!-- karina: headings for the table-->
+            <div class="issue-card issue-header">
+                <div class="issue-main">Student</div>
+                <div class="issue-main">Issue</div>
+                <div class="issue-main">Date</div>
+            </div>
             @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt).Take(4))
             {
                 <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
@@ -229,7 +241,13 @@
 
         <!-- In Progress Issues -->
         <div class="container">
-            <div class="section-title">In Progress Issues</div>
+            <div class="section-title">In Progress</div>
+            <!-- karina: headings for the table-->
+            <div class="issue-card issue-header">
+                <div class="issue-main">Student</div>
+                <div class="issue-main">Issue</div>
+                <div class="issue-main">Date</div>
+            </div>
 
             @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt).Take(4))
             {
@@ -260,6 +278,12 @@
                     <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
                 </div>
                 <div class="modal-body">
+                    <!--  headings for the table-->
+                    <div class="issue-card issue-header">
+                        <div class="issue-main">Student</div>
+                        <div class="issue-main">Issue</div>
+                        <div class="issue-main">Date</div>
+                    </div>
                     @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt))
                     {
                         <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
@@ -281,6 +305,12 @@
                     <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
                 </div>
                 <div class="modal-body">
+                    <!--  headings for the table-->
+                    <div class="issue-card issue-header">
+                        <div class="issue-main">Student</div>
+                        <div class="issue-main">Issue</div>
+                        <div class="issue-main">Date</div>
+                    </div>
                     @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt))
                     {
                         <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
@@ -301,10 +331,10 @@
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
                 <!-- Existing Quick Action Buttons -->
-                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New Issue</a>
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Issue Hub</a>
-                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All Issues</a>
-                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived Issues</a>
+                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New</a>
+                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Hub</a>
+                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All</a>
+                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived</a>
             </div>
         </div>
     </div>
