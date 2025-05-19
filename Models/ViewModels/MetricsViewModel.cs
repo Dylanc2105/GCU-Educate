@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+/// <summary>
+/// Author: Karina Fatkullina
+/// File: Metrics View Model to hold data for the metrics page
+/// </summary>
 namespace GuidanceTracker.Models.ViewModels
 {
     public class MetricsViewModel
@@ -26,14 +29,18 @@ namespace GuidanceTracker.Models.ViewModels
         
     }
 
-    // helper class for issue type
+    /// <summary>
+    /// helper class for issues by type
+    /// </summary>
     public class IssueByType
     {
         public string IssueType { get; set; }
         public int Count { get; set; }
     }
-
-    // helper class for issues over time
+    /// <summary>
+    /// helper class for issues over time
+    /// </summary>
+    
     public class IssuesOverTime
     {
         public DateTime Date { get; set; }

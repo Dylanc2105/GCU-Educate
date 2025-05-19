@@ -5,7 +5,10 @@ using System.Web.Mvc;
 using GuidanceTracker.Models;
 using GuidanceTracker.Models.ViewModels;
 using System.Data.Entity;
-
+/// <summary>
+/// Author: Karina Fatkullina
+/// File: Metrics controller that contains the logic for the metrics page
+/// </summary>
 public class MetricsController : Controller
 {
     
@@ -13,7 +16,10 @@ public class MetricsController : Controller
     [Authorize(Roles = "GuidanceTeacher")]
     public ActionResult Index(int? classId, DateTime? startDate, DateTime? endDate)
     {
-        // if no date range is provided the default start date is set to last month
+        /// <summary>
+        /// if no date range is provided the default start date is set to last month
+        /// default end date is set to today
+        /// </summary>
         if (!startDate.HasValue)
         {
             startDate = DateTime.Today.AddMonths(-1); 
@@ -21,20 +27,21 @@ public class MetricsController : Controller
 
         if (!endDate.HasValue)
         {
-            endDate = DateTime.Today; // default end date is today
+            endDate = DateTime.Today; 
         }
-        // variable to hold issues
+        
         var issuesQuery = db.Issues.AsQueryable();
 
-        // if class is selected, filter issues for students in that class
+        
+        /// <summary> if class is selected, filter issues for students in that class </summary>
         if (classId.HasValue)
         {
             issuesQuery = issuesQuery.Where(i => i.Student.ClassId == classId.Value);
         }
-        // add date range filter
+       
         issuesQuery = issuesQuery.Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
 
-        // group issues by date
+        /// <summary> group issues by date, using DbFunctions.TruncateTime to ignore time part </summary>
         var issuesOverTime = issuesQuery
             .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
             .Select(g => new IssuesOverTime
@@ -44,7 +51,8 @@ public class MetricsController : Controller
             })
             .OrderBy(x => x.Date)
             .ToList();
-        // group issues by type
+        
+        /// <summary> group issues by type </summary>
         var issuesByType = issuesQuery
             .GroupBy(i => i.IssueTitle.ToString())
             .Select(g => new IssueByType
@@ -53,16 +61,13 @@ public class MetricsController : Controller
                 Count = g.Count()
             }).ToList();
 
-        
+        /// <summary> populate the view model with the data </summary>
         var model = new MetricsViewModel
         {
-            // total number of issues
+            
             TotalIssues = issuesQuery.Count(),
-            // issues by type (filtered)
-            IssuesByType = issuesByType,            
-            // populated the class dropdown menu
+            IssuesByType = issuesByType, 
             Classes = db.Classes.ToList(),
-            // if provided set the selected class id
             SelectedClassId = classId,
             StartDate = startDate,
             EndDate = endDate,
