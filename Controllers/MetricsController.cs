@@ -79,6 +79,27 @@ public class MetricsController : Controller
                 Count = g.Count()
             }).ToList();
 
+        var lateAttendanceOverTime = issuesQuery
+            .Where(i => i.IssueTitle.ToString() == "LateAttendance")
+            .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+            .Select(g => new IssuesOverTime
+            {
+                Date = g.Key.Value,
+                Count = g.Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+        var missingAttendanceOverTime = issuesQuery
+            .Where(i => i.IssueTitle.ToString() == "MissingAttendance")
+            .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+            .Select(g => new IssuesOverTime
+            {
+                Date = g.Key.Value,
+                Count = g.Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToList();
         /// <summary> populate the view model with the data </summary>
         var model = new MetricsViewModel
         {
@@ -91,7 +112,9 @@ public class MetricsController : Controller
             SelectedUnitId = unitId,
             StartDate = startDate,
             EndDate = endDate,
-            IssuesOverTime = issuesOverTime
+            IssuesOverTime = issuesOverTime,
+            LateAttendanceOverTime = lateAttendanceOverTime,
+            MissingAttendanceOverTime = missingAttendanceOverTime
         };
 
         return View(model);

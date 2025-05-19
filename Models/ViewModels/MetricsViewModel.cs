@@ -25,6 +25,8 @@ namespace GuidanceTracker.Models.ViewModels
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public List<IssuesOverTime> IssuesOverTime { get; set; }
+        public List<IssuesOverTime> LateAttendanceOverTime { get; set; }
+        public List<IssuesOverTime> MissingAttendanceOverTime { get; set; }
 
         public List<Unit> Units { get; set; }
         public int? SelectedUnitId { get; set; }

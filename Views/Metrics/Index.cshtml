@@ -63,38 +63,36 @@
             </div>
         </div>
         
-        <!-- bar chart for issues by type -->
+        <!-- issues by type, can be filtered into bar chart and pie chart -->
         <div class="col-md-8">
             <div class="card shadow-sm h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="card-title mb-0">Issues by Type</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="toggleTypeChart('bar')">Bar</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTypeChart('pie')">Pie</button>
+                    </div>
                 </div>
+
                 <div class="card-body">
                     <canvas id="issuesByTypeBarChart" height="300"></canvas>
+                    <canvas id="issuesByTypePieChart" height="300" style="display: none;"></canvas>
+
                 </div>
             </div>
         </div>
     </div>
-
+    <!-- issues over time, late attendance and missing attendance card-->
     <div class="row mt-3">
-        
-        <!-- pie chart for issues by type -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h6 class="card-title mb-0">Issues by Type (Pie)</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="issuesByTypePieChart" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- line chart for issues over time -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header">
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="card-title mb-0">Issues Over Time</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="toggleTimeChart('issues')">All Issues</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('late')">Late Attendance</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('missing')">Missing Attendance</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <canvas id="issuesOverTimeChart" height="300"></canvas>
@@ -109,7 +107,7 @@
     var issuesByTypeBarChart;
     var issuesByTypePieChart;
     var issuesOverTimeChart;
-    
+
     function renderChart(data, labels) {
         if (issuesByTypeBarChart) {
             issuesByTypeBarChart.destroy();
@@ -187,7 +185,7 @@
         });
     }
 
-    function renderIssuesOverTimeChart(dates, counts) {
+    function renderIssuesOverTimeChart(dates, counts, title, color) {
         if (issuesOverTimeChart) {
             issuesOverTimeChart.destroy();
         }
@@ -197,10 +195,10 @@
             data: {
                 labels: dates,
                 datasets: [{
-                    label: 'Number of Issues',
+                    label: title,
                     data: counts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: color.replace('1)', '0.2)'),
+                    borderColor: color,
                     borderWidth: 2,
                     tension: 0.1,
                     fill: true
@@ -222,6 +220,23 @@
                 }
             }
         });
+    }
+
+    // toggle function for pie and bar charts for issues by type
+    function toggleTypeChart(type) {
+        document.querySelectorAll('#issuesByTypeBarChart, #issuesByTypePieChart').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        if (type === 'bar') {
+            document.getElementById('issuesByTypeBarChart').style.display = 'block';
+            document.querySelector('.btn-group button:nth-child(1)').classList.add('active');
+            document.querySelector('.btn-group button:nth-child(2)').classList.remove('active');
+        } else {
+            document.getElementById('issuesByTypePieChart').style.display = 'block';
+            document.querySelector('.btn-group button:nth-child(2)').classList.add('active');
+            document.querySelector('.btn-group button:nth-child(1)').classList.remove('active');
+        }
     }
 
     function applyFilters() {
@@ -252,6 +267,6 @@
         var timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
         var timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
         renderIssuesOverTimeChart(timeDates, timeCounts);
-        
+
     });
 </script>
