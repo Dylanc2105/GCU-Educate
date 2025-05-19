@@ -8,8 +8,7 @@ using System.Data.Entity;
 using System.Web.UI.WebControls;
 using Unit = GuidanceTracker.Models.Unit;
 /// <summary>
-/// Author: Karina Fatkullina
-/// File: Metrics controller that contains the logic for the metrics page
+/// 
 /// </summary>
 public class MetricsController : Controller
 {

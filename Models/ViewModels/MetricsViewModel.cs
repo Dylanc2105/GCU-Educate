@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 /// <summary>
-/// Author: Karina Fatkullina
-/// File: Metrics View Model to hold data for the metrics page
+/// 
 /// </summary>
 namespace GuidanceTracker.Models.ViewModels
 {

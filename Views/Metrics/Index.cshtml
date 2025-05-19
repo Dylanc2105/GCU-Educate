@@ -185,7 +185,7 @@
         });
     }
 
-    function renderIssuesOverTimeChart(dates, counts, title, color) {
+    function renderIssuesOverTimeChart(dates, counts) {
         if (issuesOverTimeChart) {
             issuesOverTimeChart.destroy();
         }
@@ -195,10 +195,10 @@
             data: {
                 labels: dates,
                 datasets: [{
-                    label: title,
+                    label: 'Number of Issues',
                     data: counts,
-                    backgroundColor: color.replace('1)', '0.2)'),
-                    borderColor: color,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
                     tension: 0.1,
                     fill: true
