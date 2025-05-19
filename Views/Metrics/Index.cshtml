@@ -45,6 +45,20 @@
                             }
                         </select>
                     </div>
+                    <!-- unit dropdown -->
+                    <div class="mb-3">
+                        <label for="unitSelect" class="form-label">Unit</label>
+                        <select class="form-control" id="unitSelect" onchange="applyFilters()">
+                            <option value="">All Units</option>
+                            @foreach (var unit in Model.Units)
+                            {
+                                <option value="@unit.UnitId"
+                                        @(Request["unitId"] == unit.UnitId.ToString() ? "selected" : "")>
+                                    @unit.UnitName
+                                </option>
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -212,12 +226,14 @@
 
     function applyFilters() {
         var classId = document.getElementById('classSelect').value;
+        var unitId = document.getElementById('unitSelect').value;
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
 
         // build query with all filters
         var queryParams = [];
         if (classId) queryParams.push('classId=' + classId);
+        if (unitId) queryParams.push('unitId=' + unitId);
         if (startDate) queryParams.push('startDate=' + startDate);
         if (endDate) queryParams.push('endDate=' + endDate);
 
