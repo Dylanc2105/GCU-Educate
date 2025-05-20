@@ -187,7 +187,7 @@ namespace GuidanceTracker.Controllers
                 }
 
                 db.Posts.Add(post);
-                // 
+                
                 var users = db.Users.ToList();
                 try
                 {

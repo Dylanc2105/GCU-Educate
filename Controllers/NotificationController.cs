@@ -15,18 +15,52 @@ namespace GuidanceTracker.Controllers
         // new db context
         private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
 
+
+        [Authorize]
+        public ActionResult All()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var allNotifications = db.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(50) // limit for performance
+                .ToList();
+
+            ViewBag.IsFullPage = true; // tells the partial: don't scroll or show "View All"
+
+            return View("AllNotifications", allNotifications);
+        }
+
+        // Count No. of read issues
+        [HttpGet]
+        [Authorize]
+        public JsonResult GetUnreadCount()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var unreadCount = db.Notifications
+                .Count(n => n.UserId == userId && !n.IsRead);
+
+            return Json(new { count = unreadCount }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
         [HttpGet]
         public ActionResult GetRecentNotifications()
         {
             // identify user
             var userId = User.Identity.GetUserId();
-            System.Diagnostics.Debug.WriteLine("User ID = " + userId);
+
+
 
             // order notifications for user by the newest 5 into a list
             var notifications = db.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
-                .Take(5)
+                .Take(50)
                 .ToList();
 
             return PartialView("_NotificationDropdown", notifications);
@@ -47,7 +81,29 @@ namespace GuidanceTracker.Controllers
                 db.SaveChanges(); // Persist to database
             }
 
-            return new HttpStatusCodeResult(HttpStatusCode.OK); // Silent success response
+            //return new HttpStatusCodeResult(HttpStatusCode.OK); // Silent success response
+            return Json(new { success = true });
         }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult MarkAllAsRead()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var unread = db.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToList();
+
+            foreach (var n in unread)
+            {
+                n.IsRead = true;
+            }
+
+            db.SaveChanges();
+
+            return RedirectToAction("All");
+        }
+
     }
 }

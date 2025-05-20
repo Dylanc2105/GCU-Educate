@@ -1,18 +1,39 @@
 ﻿@model List<GuidanceTracker.Models.Notification>
 
-@foreach (var notification in Model)
-{
-    <div id="notification-@notification.Id" class="dropdown-item d-flex justify-content-between @(notification.IsRead ? "" : "font-weight-bold")">
-        <a href="javascript:void(0);" onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')" class="flex-grow-1 text-truncate">
-            @notification.Message
-        </a>
-        <small class="text-muted ml-2" style="white-space: nowrap;">
-            @notification.CreatedAt.ToString("h:mm tt")
-        </small>
-    </div>
-
+@{
+    var isFullPage = ViewBag.IsFullPage != null && (bool)ViewBag.IsFullPage;
+    var totalCount = Model.Count;
+    var visibleLimit = 6;
+    var showScroll = !isFullPage;
+    var showViewAll = !isFullPage && totalCount > visibleLimit;
+    var visibleNotifications = isFullPage ? Model : Model.Take(visibleLimit).ToList();
+    var scrollStyle = showScroll ? "max-height: 250px; overflow-y: auto;" : "";
+    var scrollId = showScroll ? "notificationScrollContainer" : "";
 }
-@if (!Model.Any())
+
+<div id="@scrollId" style="@scrollStyle">
+    @if (!visibleNotifications.Any())
+    {
+        <span class="dropdown-item text-muted">No notifications</span>
+    }
+
+    @foreach (var notification in visibleNotifications)
+    {
+        <div id="notification-@notification.Id" class="dropdown-item d-flex justify-content-between @(notification.IsRead ? "" : "font-weight-bold")">
+            <a href="javascript:void(0);" onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')" class="flex-grow-1 text-truncate">
+                @notification.Message
+            </a>
+            <small class="text-muted ml-2" style="white-space: nowrap;">
+                @notification.CreatedAt.ToString("h:mm tt")
+            </small>
+        </div>
+    }
+</div>
+
+@* "View All" only in dropdown *@
+@if (showViewAll)
 {
-    <span class="dropdown-item text-muted">No notifications</span>
+    <div class="dropdown-item text-center font-italic">
+        <a href="/Notification/All" class="text-primary">View All @(totalCount - visibleLimit) More…</a>
+    </div>
 }
