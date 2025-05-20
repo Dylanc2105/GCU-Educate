@@ -183,6 +183,17 @@
             padding: 10px 16px;
             box-sizing: border-box;
         }
+
+        #notificationContent {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #notificationScrollContainer {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
         /* SETTINGS MODAL STYLES */
         
         .setting-section {
@@ -380,8 +391,17 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="~/Images/Icons/Notifacations.png" alt="Notifications" width="40" height="40">
+                        <div style="position: relative; display: inline-block;">
+                            <img src="~/Images/Icons/Notifacations.png" alt="Notifications" width="40" height="40" />
+                            <span id="notificationBadge"
+                                  class="badge rounded-pill bg-danger"
+                                  style="position: absolute; top: 10px; right: -5px; font-size: 0.65rem; display: none;">
+                                0
+                            </span>
+                        </div>
                     </a>
+
+
                     <div class="dropdown-menu dropdown-menu-right" id="notificationContent">
                         <span class="dropdown-item-text">Loading...</span>
                     </div>
@@ -562,16 +582,21 @@
                 window.location.href = url;
             });
         }
-
-        function openSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.add('show-modal');
+        function updateNotificationBadge() {
+            $.get('/Notification/GetUnreadCount', function (data) {
+                const badge = $('#notificationBadge');
+                if (data.count > 0) {
+                    badge.text(data.count);
+                    badge.show();
+                } else {
+                    badge.hide();
+                }
+            });
         }
 
-        function closeSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.remove('show-modal');
-        }
+        $(document).ready(function () {
+            updateNotificationBadge(); // on page load
+        });
 
 
 
