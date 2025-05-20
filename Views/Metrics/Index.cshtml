@@ -45,42 +45,54 @@
                             }
                         </select>
                     </div>
+                    <!-- unit dropdown -->
+                    <div class="mb-3">
+                        <label for="unitSelect" class="form-label">Unit</label>
+                        <select class="form-control" id="unitSelect" onchange="applyFilters()">
+                            <option value="">All Units</option>
+                            @foreach (var unit in Model.Units)
+                            {
+                                <option value="@unit.UnitId"
+                                        @(Request["unitId"] == unit.UnitId.ToString() ? "selected" : "")>
+                                    @unit.UnitName
+                                </option>
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- bar chart for issues by type -->
+        <!-- issues by type, can be filtered into bar chart and pie chart -->
         <div class="col-md-8">
             <div class="card shadow-sm h-100">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="card-title mb-0">Issues by Type</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="toggleTypeChart('bar')">Bar</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTypeChart('pie')">Pie</button>
+                    </div>
                 </div>
+
                 <div class="card-body">
                     <canvas id="issuesByTypeBarChart" height="300"></canvas>
+                    <canvas id="issuesByTypePieChart" height="300" style="display: none;"></canvas>
+
                 </div>
             </div>
         </div>
     </div>
-
+    <!-- issues over time, late attendance and missing attendance card-->
     <div class="row mt-3">
-        
-        <!-- pie chart for issues by type -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h6 class="card-title mb-0">Issues by Type (Pie)</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="issuesByTypePieChart" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- line chart for issues over time -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header">
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="card-title mb-0">Issues Over Time</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="toggleTimeChart('issues')">All Issues</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('late')">Late Attendance</button>
+                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('missing')">Missing Attendance</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <canvas id="issuesOverTimeChart" height="300"></canvas>
@@ -91,11 +103,15 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
 <script>
     var issuesByTypeBarChart;
     var issuesByTypePieChart;
     var issuesOverTimeChart;
-    
+    var allDates, allCounts;
+    var lateDates, lateCounts;
+    var missingDates, missingCounts;
+
     function renderChart(data, labels) {
         if (issuesByTypeBarChart) {
             issuesByTypeBarChart.destroy();
@@ -189,7 +205,12 @@
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
                     tension: 0.1,
-                    fill: true
+                    fill: true,
+                    trendlineLinear: { // this is the trendline
+                        style: "rgba(255, 99, 132, 0.8)",
+                        lineStyle: "solid",
+                        width: 2
+                    }
                 }]
             },
             options: {
@@ -210,20 +231,60 @@
         });
     }
 
+    // toggle function for pie and bar charts for issues by type
+    function toggleTypeChart(type) {
+        document.querySelectorAll('#issuesByTypeBarChart, #issuesByTypePieChart').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        if (type === 'bar') {
+            document.getElementById('issuesByTypeBarChart').style.display = 'block';
+            document.querySelector('.btn-group button:nth-child(1)').classList.add('active');
+            document.querySelector('.btn-group button:nth-child(2)').classList.remove('active');
+        } else {
+            document.getElementById('issuesByTypePieChart').style.display = 'block';
+            document.querySelector('.btn-group button:nth-child(2)').classList.add('active');
+            document.querySelector('.btn-group button:nth-child(1)').classList.remove('active');
+        }
+    }
+
     function applyFilters() {
         var classId = document.getElementById('classSelect').value;
+        var unitId = document.getElementById('unitSelect').value;
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
 
         // build query with all filters
         var queryParams = [];
         if (classId) queryParams.push('classId=' + classId);
+        if (unitId) queryParams.push('unitId=' + unitId);
         if (startDate) queryParams.push('startDate=' + startDate);
         if (endDate) queryParams.push('endDate=' + endDate);
 
         window.location.href = '?' + queryParams.join('&');
     }
 
+    // toggle option for issues over time chart
+    function toggleTimeChart(type) {
+        let dates, counts;
+        document.querySelectorAll('.btn-group-sm button').forEach(btn => btn.classList.remove('active'));
+
+        if (type === 'issues') {
+            dates = allDates;
+            counts = allCounts;
+            document.querySelector('.btn-group-sm button:nth-child(1)').classList.add('active');
+        } else if (type === 'late') {
+            dates = lateDates;
+            counts = lateCounts;
+            document.querySelector('.btn-group-sm button:nth-child(2)').classList.add('active');
+        } else if (type === 'missing') {
+            dates = missingDates;
+            counts = missingCounts;
+            document.querySelector('.btn-group-sm button:nth-child(3)').classList.add('active');
+        }
+
+        renderIssuesOverTimeChart(dates, counts);
+    }
     // initialize charts with data
     document.addEventListener('DOMContentLoaded', function () {
         // issues by type
@@ -232,10 +293,20 @@
         renderChart(issuesData, issuesLabels);
         renderPieChart(issuesData, issuesLabels);
 
-        // issues over time
-        var timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
-        var timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
-        renderIssuesOverTimeChart(timeDates, timeCounts);
-        
+        // issues over time (all)
+        allDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
+        allCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
+
+        // late attendance
+        lateDates = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
+        lateCounts = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Count).ToList()));
+
+        // missing attendance
+        missingDates = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
+        missingCounts = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Count).ToList()));
+        timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
+        timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
+        renderIssuesOverTimeChart(allDates, allCounts);
+
     });
 </script>
