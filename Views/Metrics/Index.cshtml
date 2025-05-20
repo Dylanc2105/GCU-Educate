@@ -103,6 +103,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
 <script>
     var issuesByTypeBarChart;
     var issuesByTypePieChart;
@@ -204,7 +205,12 @@
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
                     tension: 0.1,
-                    fill: true
+                    fill: true,
+                    trendlineLinear: { // this is the trendline
+                        style: "rgba(255, 99, 132, 0.8)",
+                        lineStyle: "solid",
+                        width: 2
+                    }
                 }]
             },
             options: {
