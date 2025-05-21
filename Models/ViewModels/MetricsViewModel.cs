@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+/// <summary>
+/// 
+/// </summary>
 namespace GuidanceTracker.Models.ViewModels
 {
     public class MetricsViewModel
@@ -18,22 +20,30 @@ namespace GuidanceTracker.Models.ViewModels
 
         // filter properties, can be nullable, as dont have to select anything
         public int? SelectedClassId { get; set; }
+
         // properties for issues over time
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public List<IssuesOverTime> IssuesOverTime { get; set; }
+        public List<IssuesOverTime> LateAttendanceOverTime { get; set; }
+        public List<IssuesOverTime> MissingAttendanceOverTime { get; set; }
+        public List<Unit> Units { get; set; }
+        public int? SelectedUnitId { get; set; }
 
-        
     }
 
-    // helper class for issue type
+    /// <summary>
+    /// helper class for issues by type
+    /// </summary>
     public class IssueByType
     {
         public string IssueType { get; set; }
         public int Count { get; set; }
     }
-
-    // helper class for issues over time
+    /// <summary>
+    /// helper class for issues over time
+    /// </summary>
+    
     public class IssuesOverTime
     {
         public DateTime Date { get; set; }

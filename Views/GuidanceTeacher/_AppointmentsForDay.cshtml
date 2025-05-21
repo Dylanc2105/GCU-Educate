@@ -9,13 +9,15 @@
            <p>Student Name</p>
         </th>
         <th>
-            Appointment Time
+            Time
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AppointmentStatus)
+            Status
+            @*@Html.DisplayNameFor(model => model.AppointmentStatus)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AppointmentNotes)
+            Notes
+            @*@Html.DisplayNameFor(model => model.AppointmentNotes)*@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Room)
@@ -43,7 +45,7 @@
             @Html.DisplayFor(modelItem => item.Room)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn small" }) 
+            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit" }) 
         </td>
     </tr>
 }
@@ -56,7 +58,7 @@ else
 
 
 <style>
-    .btn-back {
+    .btn-edit {
         background: #7F3D98;
     }
 
@@ -67,11 +69,12 @@ else
         padding: 8px 16px;
         cursor: pointer;
         font-size: 14px;
-        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+        transition: background-color 0.3s ease; 
     }
 
     .btn-back:hover {
-        background-color: #5c2b70; /* A darker shade of your original purple */
+        background-color: #5c2b70; 
         color: white;
     }
+    
 </style>

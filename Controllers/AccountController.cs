@@ -25,6 +25,11 @@ namespace GuidanceTracker.Controllers
         {
         }
 
+        public ActionResult Report()
+        {
+            return View();
+        }
+
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
