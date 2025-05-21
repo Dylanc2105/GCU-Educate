@@ -1,4 +1,6 @@
 ﻿@model GuidanceTracker.Models.Issue
+@using GuidanceTracker.Models
+@using Microsoft.AspNet.Identity
 
 @{
     ViewBag.Title = "Issue Details";
@@ -72,11 +74,15 @@
                 foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
                 {
                     bool isGroup = comment.Content.StartsWith("This issue was raised as part of a group involving");
-                    <div class="comment-box @(isGroup ? "group-comment" : "")">
+                    //Billy: check if the comment is from the current user
+                    bool isCurrentUser = comment.UserId == User.Identity.GetUserId();
+
+                    <div class="comment-box @(isGroup ? "group-comment" : "") @(isCurrentUser ? "my-comment" : "")">
                         @if (!isGroup)
                         {
                             <p class="comment-author">
-                                <strong>@comment.User.FirstName @comment.User.LastName</strong>
+                                <!-- Billy: Shows "You" if the comment was created by the current usr, otherwise shows the users full name -->
+                                <strong>@(isCurrentUser ? "You" : comment.User.FirstName + " " + comment.User.LastName)</strong>
                                 <span class="comment-date">(@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</span>
                             </p>
                         }
@@ -248,9 +254,8 @@
         padding: 10px;
         border-radius: 6px;
         border: 1px solid #ccc;
-
-
     }
+
     .status-select {
         display: inline-block;
         width: auto;

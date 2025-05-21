@@ -1,5 +1,6 @@
 ﻿using GuidanceTracker.Models;
 using GuidanceTracker.Models.ViewModels;
+using GuidanceTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
@@ -9,6 +10,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace GuidanceTracker.Controllers
 {
@@ -241,7 +243,7 @@ namespace GuidanceTracker.Controllers
             return View(appointments);
         }
 
-        public ActionResult ApproveAppointment(int id)
+        public async Task<ActionResult> ApproveAppointment(int id)
         {
             var appointment = db.Appointments.Find(id);
 
@@ -250,6 +252,16 @@ namespace GuidanceTracker.Controllers
             {
                 appointment.AppointmentStatus = AppointmentStatus.Scheduled;
                 db.SaveChanges();
+
+                var emailService = new AppEmailService();
+                await emailService.SendAsync(
+                    appointment.Student.Email,
+                    "Appointment Confirmed",
+                    $"<p>Hello {appointment.Student.FirstName},</p>" +
+                    $"<p>Your appointment has been confirmed for <strong>{appointment.AppointmentDate:dddd, dd MMM yyyy h:mm tt}</strong> in Room {appointment.Room}.</p>" +
+                    "<p>Please arrive a few minutes early.</p>"
+                );
+
             }
             else
             {
@@ -258,7 +270,7 @@ namespace GuidanceTracker.Controllers
             return RedirectToAction("AppointmentsToBeApproved");
         }
 
-        public ActionResult CancelAppointment(int id)
+        public async Task<ActionResult> CancelAppointment(int id)
         {
             var appointment = db.Appointments.Find(id);
 
@@ -267,6 +279,16 @@ namespace GuidanceTracker.Controllers
             {
                 appointment.AppointmentStatus = AppointmentStatus.Cancelled;
                 db.SaveChanges();
+
+                var emailService = new AppEmailService();
+                await emailService.SendAsync(
+                    appointment.Student.Email,
+                    "Appointment Cancelled",
+                    $"<p>Hello {appointment.Student.FirstName},</p>" +
+                    $"<p>Your scheduled appointment on <strong>{appointment.AppointmentDate:dddd, dd MMM yyyy h:mm tt}</strong> in Room {appointment.Room} has been <span style='color:red;'>cancelled</span>.</p>" +
+                    "<p>If you have any questions, please contact your guidance teacher.</p>"
+                );
+
             }
             else
             {
@@ -323,7 +345,7 @@ namespace GuidanceTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(AppointmentViewModel model)
+        public async Task<ActionResult> Edit(AppointmentViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -369,6 +391,23 @@ namespace GuidanceTracker.Controllers
             appointment.Room = model.Room;
 
             db.SaveChanges();
+
+            // Send reschedule email
+            var student = db.Students.Find(appointment.StudentId);
+            var emailService = new AppEmailService();
+            var formattedDate = appointment.AppointmentDate.ToString("dddd, dd MMM yyyy");
+            var formattedTime = appointment.StartTime.ToString(@"hh\:mm"); // TimeSpan needs `\:` escaping
+
+            await emailService.SendAsync(
+                student.Email,
+                "Appointment Rescheduled",
+                $"<p>Hello {student.FirstName},</p>" +
+                $"<p>Your appointment has been <strong>rescheduled</strong> to " +
+                $"<strong>{formattedDate} at {formattedTime}</strong> in Room {appointment.Room}.</p>" +
+                $"<p>Please take note of the new time and arrive promptly.</p>"
+            );
+
+
             TempData["Success"] = "Appointment updated successfully.";
             return RedirectToAction("Index", "Issue");
         }

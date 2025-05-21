@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using GuidanceTracker.Services;
 
 
 
@@ -206,6 +207,14 @@ namespace GuidanceTracker.Controllers
                 }
 
                 db.SaveChanges();
+
+                // send notification
+                new NotificationService().NotifyGuidanceForClassIssues
+                (
+                    model.SelectedStudentIds,
+                    User.Identity.GetUserId()
+                );
+
                 return RedirectToAction("StudentIssue");
             }
 
@@ -463,6 +472,10 @@ namespace GuidanceTracker.Controllers
 
                 db.Comments.Add(comment);
                 db.SaveChanges();
+
+                // notify
+                var issue = db.Issues.Include("Student").FirstOrDefault(i => i.IssueId == ticketId);
+                new NotificationService().NotifyNewComment(issue, userId);
 
                 return Json(new { success = true });
             }

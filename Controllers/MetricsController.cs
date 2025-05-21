@@ -5,15 +5,22 @@ using System.Web.Mvc;
 using GuidanceTracker.Models;
 using GuidanceTracker.Models.ViewModels;
 using System.Data.Entity;
-
+using System.Web.UI.WebControls;
+using Unit = GuidanceTracker.Models.Unit;
+/// <summary>
+/// 
+/// </summary>
 public class MetricsController : Controller
 {
     
     private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
     [Authorize(Roles = "GuidanceTeacher")]
-    public ActionResult Index(int? classId, DateTime? startDate, DateTime? endDate)
+    public ActionResult Index(int? classId, int? unitId, DateTime? startDate, DateTime? endDate)
     {
-        // if no date range is provided the default start date is set to last month
+        /// <summary>
+        /// if no date range is provided the default start date is set to last month
+        /// default end date is set to today
+        /// </summary>
         if (!startDate.HasValue)
         {
             startDate = DateTime.Today.AddMonths(-1); 
@@ -21,20 +28,37 @@ public class MetricsController : Controller
 
         if (!endDate.HasValue)
         {
-            endDate = DateTime.Today; // default end date is today
+            endDate = DateTime.Today; 
         }
-        // variable to hold issues
+        
         var issuesQuery = db.Issues.AsQueryable();
+        List<Unit> filteredUnits = new List<Unit>();
 
-        // if class is selected, filter issues for students in that class
+        /// <summary> if class is selected, filter issues for students in that class </summary>
         if (classId.HasValue)
         {
             issuesQuery = issuesQuery.Where(i => i.Student.ClassId == classId.Value);
+            filteredUnits = db.Classes
+            .Where(c => c.ClassId == classId.Value)
+            .SelectMany(c => c.Units)
+            .ToList();
+
         }
-        // add date range filter
+        else
+        {
+            filteredUnits = db.Units.ToList();
+        }
+
+
+        /// <summary> if unit is selected, filter issues for students in that unit </summary>
+        if (unitId.HasValue)
+        {
+            issuesQuery = issuesQuery.Where(i => i.Student.Class.Units.Any(u => u.UnitId == unitId.Value));
+        }
+
         issuesQuery = issuesQuery.Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
 
-        // group issues by date
+        /// <summary> group issues by date, using DbFunctions.TruncateTime to ignore time part </summary>
         var issuesOverTime = issuesQuery
             .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
             .Select(g => new IssuesOverTime
@@ -44,7 +68,8 @@ public class MetricsController : Controller
             })
             .OrderBy(x => x.Date)
             .ToList();
-        // group issues by type
+        
+        /// <summary> group issues by type </summary>
         var issuesByType = issuesQuery
             .GroupBy(i => i.IssueTitle.ToString())
             .Select(g => new IssueByType
@@ -53,20 +78,42 @@ public class MetricsController : Controller
                 Count = g.Count()
             }).ToList();
 
-        
+        var lateAttendanceOverTime = issuesQuery
+            .Where(i => i.IssueTitle.ToString() == "LateAttendance")
+            .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+            .Select(g => new IssuesOverTime
+            {
+                Date = g.Key.Value,
+                Count = g.Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+        var missingAttendanceOverTime = issuesQuery
+            .Where(i => i.IssueTitle.ToString() == "MissingAttendance")
+            .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+            .Select(g => new IssuesOverTime
+            {
+                Date = g.Key.Value,
+                Count = g.Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToList();
+        /// <summary> populate the view model with the data </summary>
         var model = new MetricsViewModel
         {
-            // total number of issues
+            
             TotalIssues = issuesQuery.Count(),
-            // issues by type (filtered)
-            IssuesByType = issuesByType,            
-            // populated the class dropdown menu
+            IssuesByType = issuesByType, 
             Classes = db.Classes.ToList(),
-            // if provided set the selected class id
+            Units = filteredUnits,
             SelectedClassId = classId,
+            SelectedUnitId = unitId,
             StartDate = startDate,
             EndDate = endDate,
-            IssuesOverTime = issuesOverTime
+            IssuesOverTime = issuesOverTime,
+            LateAttendanceOverTime = lateAttendanceOverTime,
+            MissingAttendanceOverTime = missingAttendanceOverTime
         };
 
         return View(model);

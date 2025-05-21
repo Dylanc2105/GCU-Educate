@@ -1,0 +1,15 @@
+﻿@model List<GuidanceTracker.Models.Notification>
+
+@{
+    ViewBag.Title = "All Notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-3">All Notifications</h2>
+<form method="post" action="/Notification/MarkAllAsRead" class="mb-3">
+    <button type="submit" class="btn btn-sm" style="background-color: #7F3D98; color: white;">
+        Mark All as Read
+    </button>
+</form>
+
+@Html.Partial("_NotificationDropdown", Model)

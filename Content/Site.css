@@ -32,3 +32,14 @@ textarea {
 .font-weight-bold {
     font-weight: bold;
 }
+
+#notificationContent {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+
+#notificationScrollContainer {
+    max-height: 250px;
+    overflow-y: auto;
+}
