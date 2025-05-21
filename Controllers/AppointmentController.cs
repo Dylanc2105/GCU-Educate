@@ -219,7 +219,7 @@ namespace GuidanceTracker.Controllers
                 AppointmentStatus = model.AppointmentStatus,
                 GuidanceTeacherId = User.Identity.GetUserId(),
                 Room = model.Room,
-                IssueId = model.IssueId 
+                IssueId = model.IssueId
             };
 
             db.Appointments.Add(appointment);
@@ -602,6 +602,83 @@ namespace GuidanceTracker.Controllers
                 TempData["Message"] = "Submission of feedback form failed: " + ex.Message; // Store Error
             }
             return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
+        }
+
+
+
+        // GET: Display the student selection view
+        public ActionResult SelectStudentForAppointment()
+        {
+            var userId = User.Identity.GetUserId();
+
+            // Get classes associated with this guidance teacher
+            var guidanceTeacher = db.GuidanceTeachers
+                .Include(gt => gt.Classes)
+                .FirstOrDefault(gt => gt.Id == userId);
+
+
+            var model = new StudentIssueSelectViewModel
+            {
+                Classes = guidanceTeacher.Classes.ToList(),
+                Students = new List<Student>() // Empty until class is selected
+            };
+
+            return View(model);
+        }
+
+        // AJAX: Get Students by Class ID
+        public ActionResult GetStudentsByClass(int classId)
+        {
+            var students = db.Students
+                .Where(s => s.ClassId == classId)
+                .Select(s => new
+                {
+                    s.Id,
+                    FullName = s.FirstName + " " + s.LastName
+                })
+                .ToList();
+
+            return Json(students, JsonRequestBehavior.AllowGet);
+        }
+
+        // AJAX: Get Issues by Student ID
+        public ActionResult GetStudentIssues(string studentId)
+        {
+            if (string.IsNullOrEmpty(studentId))
+            {
+                return Json(new { error = "Student ID is required" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var student = db.Students.Find(studentId);
+            if (student == null)
+            {
+                return Json(new { error = "Student not found" }, JsonRequestBehavior.AllowGet);
+            }
+
+            // Get active issues for this student
+            // First get the basic data from database
+            var issuesQuery = db.Issues
+                .Where(i => i.StudentId == studentId && i.IssueStatus != IssueStatus.Archived)
+                .OrderByDescending(i => i.CreatedAt)
+                .ToList(); // Execute the query and bring data into memory
+
+            // Then perform the ToString() operations in memory
+            var issues = issuesQuery.Select(i => new
+            {
+                IssueId = i.IssueId,
+                IssueTitle = i.IssueTitle.ToString(), // Now safe to call ToString()
+                IssueDescription = i.IssueDescription ?? "No description available",
+                IssueStatus = i.IssueStatus.ToString(),
+                CreatedAt = i.CreatedAt.ToString("dd/MM/yyyy")
+            }).ToList();
+
+            return Json(new
+            {
+                success = true,
+                studentName = student.FirstName + " " + student.LastName,
+                studentId = student.Id,
+                issues = issues
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

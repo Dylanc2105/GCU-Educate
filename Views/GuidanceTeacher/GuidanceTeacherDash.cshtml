@@ -141,7 +141,17 @@
                     </div>
                 </div>
             </div>
-
+            <!-- appointments dashboard -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card custom-card">
+                    <div class="card-body" style="text-align:center">
+                        <i class="fa-solid fa-scroll" style="color: #7F3D98; font-size: 80px;"></i>
+                        <p class="card-title" style="color: #7F3D98">Appointments Dashboard</p>
+                        <p class="h3" style="color: #7F3D98"></p>
+                        <p>@Html.ActionLink("AppointmentsDash", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "text-muted text-decoration-none" })</p>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -154,7 +164,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     <script>
-        $('#partialAppointments').load("/GuidanceTeacher/AppointmentsForWeekPartial")
+
 
 
         // script to dynamically show the current date and time on the dash

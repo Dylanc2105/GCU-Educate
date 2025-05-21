@@ -78,6 +78,43 @@ namespace GuidanceTracker.Controllers
             return View(model);
         }
 
+        //dashboard for appointemnts
+        public ActionResult AppointmentsDash()
+        {
+            AppointmentsDashViewModel model = new AppointmentsDashViewModel();
+            model.AppointmentsToBeApprovedCount = db.Appointments
+                .Where(a => a.AppointmentStatus == AppointmentStatus.Requested).Count();
+
+            model.AppointmentsTodayCount = db.Appointments
+    .Where(a => a.AppointmentDate.Year == DateTime.Today.Year &&
+                a.AppointmentDate.Month == DateTime.Today.Month &&
+                a.AppointmentDate.Day == DateTime.Today.Day)
+    .Count();
+
+            string guidanceTeacherId = User.Identity.GetUserId();
+
+            DateTime baseDate = DateTime.UtcNow;
+            var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
+            var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
+
+            model.AppointmentsForWeekCount = db.Appointments.
+                Include(a => a.Student).
+                Include(a => a.GuidanceTeacher).
+                Where(a => a.GuidanceTeacher.Id == guidanceTeacherId).
+                Where(a => a.AppointmentDate > thisWeekStart).
+                Where(a => a.AppointmentDate < thisWeekEnd).
+                OrderBy(a => a.AppointmentDate).Count();
+            
+
+            return View(model);
+        }
+
+        public ActionResult CalendarForDashPartial()
+        {
+            return PartialView("_CalendarPartial");
+        }
+
+
         // View all students
         public ActionResult ViewAllStudents()
         {
@@ -174,7 +211,7 @@ namespace GuidanceTracker.Controllers
         }
 
         //partial view with appiontments for current week
-        public ActionResult AppointmentsForWeekPartial()
+        public ActionResult AppointmentsForWeek()
         {
             string guidanceTeacherId = User.Identity.GetUserId();
 
@@ -191,7 +228,7 @@ namespace GuidanceTracker.Controllers
                 OrderBy(a => a.AppointmentDate).ToList();
 
 
-            return PartialView("_AppointmentsForWeek", appointments);
+            return View("AppointmentsForWeek", appointments);
         }
 
         public ActionResult StudentDetails(string id)

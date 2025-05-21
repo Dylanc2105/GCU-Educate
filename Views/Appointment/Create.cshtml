@@ -23,60 +23,54 @@
                         @Html.HiddenFor(model => model.IssueId)
 
                         <div class="form-group">
-                            @Html.LabelFor(model => model.StudentName, "Student", htmlAttributes: new { @class = "control-label" })
+                            <strong>Student:</strong>
                             <div class="form-control-static">
                                 @Model.StudentName
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Appointment Date</label>
+                            <strong>Appointment Date:</strong>
                             <div class="form-control-static">
                                 @Model.AppointmentDate.ToShortDateString()
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Room</label>
+                            <strong>Room:</strong>
                             <div class="form-control-static">
                                 @Model.Room
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Appointment Type</label>
-                            <div class="form-control-static">
-                                @(Model.IssueId.HasValue ? "Issue-related Appointment" : "Progress Meeting")
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             @Html.LabelFor(model => model.StartTime, "Select Time Slot", htmlAttributes: new { @class = "control-label" })
                             @Html.DropDownListFor(model => model.StartTime,
-                                          new SelectList(Model.AvailableTimeSlots.Where(s => s.IsAvailable), "StartTime", "DisplayText"),
-                                          "-- Select a time slot --",
-                                          new { @class = "form-control" })
+                                                         new SelectList(Model.AvailableTimeSlots.Where(s => s.IsAvailable), "StartTime", "DisplayText"),
+                                                         "-- Select a time slot --",
+                                                         new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(model => model.AppointmentNotes, htmlAttributes: new { @class = "control-label" })
+                            <p class="control-label">Appointemnt Notes</p>
                             @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control", rows = 4 })
                             @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
                         </div>
-
+                        <br />
                         <div class="form-group">
-                            <input type="submit" value="Schedule Appointment" class="btn btn-primary" />
+                            <input type="submit" value="Schedule Appointment" class="btn btn-back" />
                         </div>
+                        <br />
+                        <p>
+                            @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
+                        </p>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-<p>
-    @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
-</p>
 
 <style>
     .btn-back {
