@@ -42,19 +42,25 @@ namespace GuidanceTracker.Controllers
         // ✅ Fetch Comments for a Ticket (AJAX)
         public JsonResult GetComments(int issueId)
         {
-            var comments = db.Comments
-                .Where(c => c.IssueId == issueId)
-                .OrderByDescending(c => c.CreatedAt)
-                .Select(c => new
-                {
-                    c.CommentId,
-                    c.Content,
-                    CreatedAt = c.CreatedAt.ToString("dd/MM/yyyy HH:mm"),
-                    UserName = c.User.FirstName + " " + c.User.LastName
-                })
-                .ToList();
+            {
+                var currentUserId = User.Identity.GetUserId();
 
-            return Json(comments, JsonRequestBehavior.AllowGet);
+                var comments = db.Comments
+                    .Where(c => c.IssueId == issueId)
+                    .OrderByDescending(c => c.CreatedAt)
+                    .ToList() 
+                    .Select(c => new
+                    {
+                        c.CommentId,
+                        c.Content,
+                        CreatedAt = c.CreatedAt.ToString("dd/MM/yyyy HH:mm"),
+                        // changed this so that it either shows the name of the commenter or "You" if it's the current user
+                        UserName = c.UserId == currentUserId ? "You" : c.User.FirstName + " " + c.User.LastName
+                    })
+                    .ToList();
+
+                return Json(comments, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
