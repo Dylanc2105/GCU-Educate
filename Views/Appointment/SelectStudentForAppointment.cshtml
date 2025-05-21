@@ -1,0 +1,305 @@
+﻿@model GuidanceTracker.Models.ViewModels.StudentIssueSelectViewModel
+@{
+    ViewBag.Title = "Select Student for Appointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .page-title {
+        font-size: 26px;
+        font-weight: 600;
+        color: #7F3D98;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin: 10px 0 20px 0;
+        color: #7F3D98;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+    .selection-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .selection-section {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .container-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    .issues-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #f9f9f9;
+    }
+
+    .issue-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background: white;
+        border: 1px solid #eee;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .issue-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .issue-title {
+        font-weight: bold;
+        color: #7F3D98;
+    }
+
+    .issue-date {
+        font-size: 12px;
+        color: #777;
+    }
+
+    .issue-description {
+        font-size: 14px;
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    .action-btn {
+        background-color: #7F3D98;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+
+        .action-btn:hover {
+            background-color: #985BAF;
+        }
+
+    .progress-meeting-section {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f3f0f5;
+        border-radius: 8px;
+        border: 1px dashed #7F3D98;
+    }
+
+    .progress-meeting-title {
+        font-weight: bold;
+        color: #7F3D98;
+        margin-bottom: 10px;
+    }
+
+    .student-info {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 6px;
+        border-left: 4px solid #7F3D98;
+    }
+
+    .student-name {
+        font-weight: bold;
+        font-size: 18px;
+        color: #7F3D98;
+    }
+
+    #issuesContainer {
+        display: none;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 20px;
+        color: #7F3D98;
+    }
+
+    .no-issues {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+    }
+</style>
+<h2 class="page-title">Schedule an Appointment</h2>
+<a href="@Url.Action("AppointmentsDash", "GuidanceTeacher")" class="back-button">← Back to Appointments Centre</a>
+<div class="selection-container">
+    <div class="selection-section">
+        <div class="container-box">
+            <div class="form-group">
+                <label for="classDropdown">Select Class</label>
+                @Html.DropDownListFor(m => m.SelectedClassId, new SelectList(Model.Classes, "ClassId", "ClassName"), "Choose a class", new { @class = "form-control", @id = "classDropdown" })
+            </div>
+            <div class="form-group">
+                <label for="studentDropdown">Select Student</label>
+                <select id="studentDropdown" class="form-control">
+                    <option value="">Choose a student</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="issuesContainer" class="selection-section">
+        <div class="container-box" style="flex: 1 0 100%;">
+            <div class="student-info">
+                <div class="student-name" id="selectedStudentName"></div>
+            </div>
+
+            <h3>Select an Issue for Appointment</h3>
+            <div id="issuesList" class="issues-list">
+                <div class="loading">Loading issues...</div>
+            </div>
+
+            <div class="progress-meeting-section">
+                <div class="progress-meeting-title">Schedule a Progress Meeting</div>
+                <p>If you prefer to schedule a general progress meeting instead of addressing a specific issue, click below:</p>
+                <button id="progressMeetingBtn" class="action-btn" disabled>Schedule Progress Meeting</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        let selectedStudentId = '';
+        let selectedStudentName = '';
+
+        // Class dropdown change event
+        $('#classDropdown').change(function () {
+            const classId = $(this).val();
+            if (!classId) {
+                resetStudents();
+                return;
+            }
+
+            // Get students for the selected class
+            $.getJSON('@Url.Action("GetStudentsByClass", "Appointment")', { classId }, function (data) {
+                const studentDropdown = $('#studentDropdown');
+                studentDropdown.empty().append($('<option>').text('Choose a student').attr('value', ''));
+
+                $.each(data, function (i, student) {
+                    studentDropdown.append($('<option>')
+                        .text(student.FullName)
+                        .attr('value', student.Id));
+                });
+            });
+
+            // Reset issues when class changes
+            resetIssues();
+        });
+
+        // Student dropdown change event
+        $('#studentDropdown').change(function () {
+            selectedStudentId = $(this).val();
+            if (!selectedStudentId) {
+                resetIssues();
+                return;
+            }
+
+            // Show the issues container
+            $('#issuesContainer').show();
+            $('#issuesList').html('<div class="loading">Loading issues...</div>');
+
+            // Enable progress meeting button
+            $('#progressMeetingBtn').prop('disabled', false)
+                .off('click')
+                .on('click', function() {
+                    window.location.href = '@Url.Action("Create", "Appointment")' + '?studentId=' + selectedStudentId;
+                });
+
+            // Get issues for the selected student
+            $.getJSON('@Url.Action("GetStudentIssues", "Appointment")', { studentId: selectedStudentId }, function (data) {
+                if (data.success) {
+                    selectedStudentName = data.studentName;
+                    $('#selectedStudentName').text(data.studentName);
+
+                    const issuesList = $('#issuesList');
+                    issuesList.empty();
+
+                    if (data.issues && data.issues.length > 0) {
+                        $.each(data.issues, function (i, issue) {
+                            const issueItem = `
+                                <div class="issue-item">
+                                    <div class="issue-header">
+                                        <div class="issue-title">${issue.IssueTitle}</div>
+                                        <div class="issue-date">${issue.CreatedAt}</div>
+                                    </div>
+                                    <div class="issue-description">${issue.IssueDescription}</div>
+                                    <button class="action-btn schedule-issue-btn"
+                                            data-issue-id="${issue.IssueId}">
+                                        Schedule Appointment
+                                    </button>
+                                </div>
+                            `;
+                            issuesList.append(issueItem);
+                        });
+
+                        // Issue appointment button click handler
+                        $('.schedule-issue-btn').click(function() {
+                            const issueId = $(this).data('issue-id');
+                            window.location.href = '@Url.Action("CreateAppointmentWithIssue", "Appointment")' + '?issueId=' + issueId;
+                        });
+                    } else {
+                        issuesList.html('<div class="no-issues">No active issues found for this student.</div>');
+                    }
+                } else {
+                    $('#issuesList').html('<div class="no-issues">Error: ' + (data.error || 'Could not load issues') + '</div>');
+                }
+            }).fail(function() {
+                $('#issuesList').html('<div class="no-issues">Error: Could not connect to the server.</div>');
+            });
+        });
+
+        function resetStudents() {
+            $('#studentDropdown').empty().append($('<option>').text('Choose a student').attr('value', ''));
+            resetIssues();
+        }
+
+        function resetIssues() {
+            selectedStudentId = '';
+            selectedStudentName = '';
+            $('#issuesContainer').hide();
+            $('#issuesList').empty();
+            $('#selectedStudentName').text('');
+            $('#progressMeetingBtn').prop('disabled', true);
+        }
+    });
+    </script>
+}

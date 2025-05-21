@@ -1,0 +1,79 @@
+﻿@model IEnumerable<GuidanceTracker.Models.Appointment>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Appointments for the week</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            <p><strong>Student Name</strong></p>
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            Status
+        </th>
+        <th>
+            Notes
+        </th>
+        <th>
+            Room
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.FirstName)
+                @Html.DisplayFor(modelItem => item.Student.LastName)
+            </td>
+            <td>
+                @item.AppointmentDate.ToString("dd/MM")
+                @item.StartTime.ToString("hh\\:mm")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentNotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit" })
+            </td>
+        </tr>
+    }
+
+
+</table>
+@Html.ActionLink("back to appointments center", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
+<style>
+    .btn-back {
+        background: #7F3D98;
+    }
+    .btn-edit {
+        background: #7F3D98;
+    }
+
+    .btn {
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
+    }
+
+    .btn-back:hover {
+        background-color: #5c2b70; /* A darker shade of your original purple */
+        color: white;
+    }
+</style>
