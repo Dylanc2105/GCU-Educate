@@ -1,4 +1,4 @@
-﻿@model List<GuidanceTracker.Models.Notification>
+﻿@model Dictionary<string, List<GuidanceTracker.Models.Notification>>
 
 @{
     ViewBag.Title = "All Notifications";
@@ -6,10 +6,28 @@
 }
 
 <h2 class="mb-3">All Notifications</h2>
+
+<!-- Mark all as read button -->
 <form method="post" action="/Notification/MarkAllAsRead" class="mb-3">
     <button type="submit" class="btn btn-sm" style="background-color: #7F3D98; color: white;">
         Mark All as Read
     </button>
 </form>
 
-@Html.Partial("_NotificationDropdown", Model)
+<!-- Grouped notifications -->
+@foreach (var group in Model)
+{
+    <h5 class="text-muted">@group.Key</h5>
+
+    foreach (var notification in group.Value)
+    {
+        <div id="notification-@notification.Id" class="dropdown-item d-flex justify-content-between @(notification.IsRead ? "" : "font-weight-bold")">
+            <a href="javascript:void(0);" onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')" class="flex-grow-1 text-truncate">
+                @notification.Message
+            </a>
+            <small class="text-muted ml-2" style="white-space: nowrap;">
+                @notification.CreatedAt.ToString("h:mm tt")
+            </small>
+        </div>
+    }
+}

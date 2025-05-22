@@ -15,22 +15,32 @@ namespace GuidanceTracker.Controllers
         // new db context
         private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
 
-
+        // Show all notifications, gruoped by day
         [Authorize]
         public ActionResult All()
         {
             var userId = User.Identity.GetUserId();
 
-            var allNotifications = db.Notifications
+            var notifications = db.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
-                .Take(50) // limit for performance
+                .Take(50)
                 .ToList();
 
-            ViewBag.IsFullPage = true; // tells the partial: don't scroll or show "View All"
+            var grouped = notifications
+                .GroupBy(n => n.CreatedAt.Date)
+                .ToDictionary(
+                    g => g.Key == DateTime.Today ? "Today" :
+                         g.Key == DateTime.Today.AddDays(-1) ? "Yesterday" :
+                         g.Key.ToString("dd MMM yyyy"),
+                    g => g.ToList()
+                );
 
-            return View("AllNotifications", allNotifications);
+            return View("AllNotifications", grouped);
         }
+
+
+
 
         // Count No. of read issues
         [HttpGet]

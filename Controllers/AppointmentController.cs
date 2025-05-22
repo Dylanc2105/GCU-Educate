@@ -2,15 +2,12 @@
 using GuidanceTracker.Models.ViewModels;
 using GuidanceTracker.Services;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace GuidanceTracker.Controllers
 {

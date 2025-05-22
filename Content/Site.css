@@ -24,11 +24,6 @@ textarea {
     text-decoration: none;
 }
 
-    .dropdown-item a:hover {
-        text-decoration: underline;
-        background-color: #f1f1f1;
-    }
-
 .font-weight-bold {
     font-weight: bold;
 }
@@ -42,3 +37,14 @@ textarea {
     max-height: 250px;
     overflow-y: auto;
 }
+
+#notificationScrollContainer.dropdown-item {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin: 0;
+    line-height: 1.3;
+}
+
+    #notificationScrollContainer .dropdown-item:not(:last-child) {
+        border-bottom: 1px solid #eee;
+    }

@@ -194,6 +194,17 @@
             overflow-y: auto;
         }
 
+        /* Override Bootstrap hover highlight on dropdown notifications */
+        #notificationScrollContainer .dropdown-item:hover,
+        #notificationScrollContainer .dropdown-item:focus,
+        #notificationScrollContainer .dropdown-item:active {
+            background-color: #e0e0e0 !important; /* Replace with your dark grey */
+            color: inherit;
+            box-shadow: none;
+            outline: none;
+        }
+
+
         /* SETTINGS MODAL STYLES */
         
         .setting-section {
