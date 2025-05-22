@@ -28,12 +28,12 @@
             </small>
         </div>
     }
-</div>
 
-@* "View All" only in dropdown *@
-@if (showViewAll)
-{
-    <div class="dropdown-item text-center font-italic">
-        <a href="/Notification/All" class="text-primary">View All @(totalCount - visibleLimit) More…</a>
-    </div>
-}
+    @* ✅ Move View All INSIDE scroll container *@
+    @if (showViewAll)
+    {
+        <div class="dropdown-item text-center font-italic">
+            <a href="/Notification/All" class="text-primary">View All @(totalCount - visibleLimit) More…</a>
+        </div>
+    }
+</div>
