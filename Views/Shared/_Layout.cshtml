@@ -494,7 +494,7 @@
         <!-- Calendar -->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
-            <a href="@Url.Action("Calendar", "GuidanceTeacher")" title="Calendar">
+            <a href="@Url.Action("AppointmentsDash", "GuidanceTeacher")" title="Calendar">
                 <img src="~/Images/Icons/calendar.png" alt="Calendar" width="47" height="47" />
             </a>
         }
