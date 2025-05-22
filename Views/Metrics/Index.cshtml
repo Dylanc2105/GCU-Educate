@@ -10,6 +10,20 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Total Issues</h5>
                     <p class="card-text display-4">@Model.TotalIssues</p>
+                    @if (Model.HasComparisonData)
+                    {
+                        <p class="card-text text-muted">
+                            @if (Model.ComparisonTotalIssues < Model.TotalIssues)
+                            {
+                                <span class="text-success">▲</span>
+                            }
+                            else if (Model.ComparisonTotalIssues > Model.TotalIssues)
+                            {
+                                <span class="text-danger">▼</span>
+                            }
+                            @Math.Abs(Model.TotalIssues - Model.ComparisonTotalIssues) from comparison period
+                        </p>
+                    }
                 </div>
             </div>
 
@@ -30,7 +44,17 @@
                         <input type="date" class="form-control" id="endDate"
                                value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" onchange="applyFilters()">
                     </div>
-
+                    <!-- comparison filters -->
+                    <div class="mb-3">
+                        <label for="comparisonPeriod" class="form-label">Compare With</label>
+                        <select class="form-control" id="comparisonPeriod" onchange="applyFilters()">
+                            <option value="">None</option>
+                            <option value="previousPeriod" @(Model.ComparisonPeriod == "previousPeriod" ? "selected" : "")>Previous Period</option>
+                            <option value="previousWeek" @(Model.ComparisonPeriod == "previousWeek" ? "selected" : "")>Previous Week</option>
+                            <option value="previousMonth" @(Model.ComparisonPeriod == "previousMonth" ? "selected" : "")>Previous Month</option>
+                            <option value="previousYear" @(Model.ComparisonPeriod == "previousYear" ? "selected" : "")>Previous Year</option>
+                        </select>
+                    </div>
                     <!-- class dropdown -->
                     <div class="mb-3">
                         <label for="classSelect" class="form-label">Class</label>
@@ -189,29 +213,40 @@
         });
     }
 
-    function renderIssuesOverTimeChart(dates, counts) {
+    function renderIssuesOverTimeChart(dates, counts, compDates, compCounts) {
         if (issuesOverTimeChart) {
             issuesOverTimeChart.destroy();
         }
         var ctx = document.getElementById('issuesOverTimeChart').getContext('2d');
+
+        var datasets = [{
+            label: 'Current Period',
+            data: counts,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            tension: 0.1,
+            fill: true
+        }];
+
+        if (compDates && compCounts) {
+            datasets.push({
+                label: 'Comparison Period',
+                data: compCounts,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                tension: 0.1,
+                fill: false
+            });
+        }
+
         issuesOverTimeChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
-                datasets: [{
-                    label: 'Number of Issues',
-                    data: counts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    tension: 0.1,
-                    fill: true,
-                    trendlineLinear: { // this is the trendline
-                        style: "rgba(255, 99, 132, 0.8)",
-                        lineStyle: "solid",
-                        width: 2
-                    }
-                }]
+                datasets: datasets
             },
             options: {
                 responsive: true,
@@ -253,6 +288,7 @@
         var unitId = document.getElementById('unitSelect').value;
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
+        var comparisonPeriod = document.getElementById('comparisonPeriod').value;
 
         // build query with all filters
         var queryParams = [];
@@ -260,30 +296,36 @@
         if (unitId) queryParams.push('unitId=' + unitId);
         if (startDate) queryParams.push('startDate=' + startDate);
         if (endDate) queryParams.push('endDate=' + endDate);
-
+        if (comparisonPeriod) queryParams.push('comparisonPeriod=' + comparisonPeriod);
         window.location.href = '?' + queryParams.join('&');
     }
 
     // toggle option for issues over time chart
     function toggleTimeChart(type) {
-        let dates, counts;
+        let dates, counts, compDates, compCounts;
         document.querySelectorAll('.btn-group-sm button').forEach(btn => btn.classList.remove('active'));
 
         if (type === 'issues') {
             dates = allDates;
             counts = allCounts;
+            compDates = compAllDates;
+            compCounts = compAllCounts;
             document.querySelector('.btn-group-sm button:nth-child(1)').classList.add('active');
         } else if (type === 'late') {
             dates = lateDates;
             counts = lateCounts;
+            compDates = compLateDates;
+            compCounts = compLateCounts;
             document.querySelector('.btn-group-sm button:nth-child(2)').classList.add('active');
         } else if (type === 'missing') {
             dates = missingDates;
             counts = missingCounts;
+            compDates = compMissingDates;
+            compCounts = compMissingCounts;
             document.querySelector('.btn-group-sm button:nth-child(3)').classList.add('active');
         }
 
-        renderIssuesOverTimeChart(dates, counts);
+        renderIssuesOverTimeChart(dates, counts, compDates, compCounts);
     }
     // initialize charts with data
     document.addEventListener('DOMContentLoaded', function () {
@@ -293,20 +335,27 @@
         renderChart(issuesData, issuesLabels);
         renderPieChart(issuesData, issuesLabels);
 
-        // issues over time (all)
+        // current period data
         allDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
         allCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
-
-        // late attendance
         lateDates = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
         lateCounts = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Count).ToList()));
-
-        // missing attendance
         missingDates = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
         missingCounts = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Count).ToList()));
-        timeDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
-        timeCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
-        renderIssuesOverTimeChart(allDates, allCounts);
+
+        // data for the period we are comparing to 
+        compAllDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonIssuesOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
+        compAllCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonIssuesOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
+        compLateDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonLateAttendanceOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
+        compLateCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonLateAttendanceOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
+        compMissingDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonMissingAttendanceOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
+        compMissingCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonMissingAttendanceOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
+
+        // renders teh chart
+        renderIssuesOverTimeChart(allDates, allCounts, compAllDates, compAllCounts);
+
+
+
 
     });
 </script>

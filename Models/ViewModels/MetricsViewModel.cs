@@ -29,7 +29,14 @@ namespace GuidanceTracker.Models.ViewModels
         public List<IssuesOverTime> MissingAttendanceOverTime { get; set; }
         public List<Unit> Units { get; set; }
         public int? SelectedUnitId { get; set; }
+        // for comparing data over periods of time
+        public int ComparisonTotalIssues { get; set; }
+        public bool HasComparisonData { get; set; }
+        public string ComparisonPeriod { get; set; }
 
+        public List<IssuesOverTime> ComparisonIssuesOverTime { get; set; }
+        public List<IssuesOverTime> ComparisonLateAttendanceOverTime { get; set; }
+        public List<IssuesOverTime> ComparisonMissingAttendanceOverTime { get; set; }
     }
 
     /// <summary>
