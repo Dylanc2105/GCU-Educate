@@ -15,7 +15,7 @@ public class MetricsController : Controller
     
     private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
     [Authorize(Roles = "GuidanceTeacher")]
-    public ActionResult Index(int? classId, int? unitId, DateTime? startDate, DateTime? endDate)
+    public ActionResult Index(int? classId, int? unitId, DateTime? startDate, DateTime? endDate, string comparisonPeriod)
     {
         /// <summary>
         /// if no date range is provided the default start date is set to last month
@@ -30,7 +30,36 @@ public class MetricsController : Controller
         {
             endDate = DateTime.Today; 
         }
-        
+
+        /// <summary> if comparison period is selected, will calculate comparison based on the period selected </summary>
+        DateTime? compStartDate = null;
+        DateTime? compEndDate = null;
+
+        if (!string.IsNullOrEmpty(comparisonPeriod))
+        {
+            TimeSpan dateRange = endDate.Value - startDate.Value;
+
+            switch (comparisonPeriod)
+            {
+                case "previousPeriod":
+                    compStartDate = startDate.Value - dateRange;
+                    compEndDate = endDate.Value - dateRange;
+                    break;
+                case "previousWeek":
+                    compStartDate = startDate.Value.AddDays(-7);
+                    compEndDate = endDate.Value.AddDays(-7);
+                    break;
+                case "previousMonth":
+                    compStartDate = startDate.Value.AddMonths(-1);
+                    compEndDate = endDate.Value.AddMonths(-1);
+                    break;
+                case "previousYear":
+                    compStartDate = startDate.Value.AddYears(-1);
+                    compEndDate = endDate.Value.AddYears(-1);
+                    break;
+            }
+        }
+
         var issuesQuery = db.Issues.AsQueryable();
         List<Unit> filteredUnits = new List<Unit>();
 
@@ -57,6 +86,64 @@ public class MetricsController : Controller
         }
 
         issuesQuery = issuesQuery.Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
+
+        /// <summary> variables to hold the issues if comparison is selected </summary>
+        var comparisonIssuesOverTime = new List<IssuesOverTime>();
+        var comparisonLateAttendanceOverTime = new List<IssuesOverTime>();
+        var comparisonMissingAttendanceOverTime = new List<IssuesOverTime>();
+        int comparisonTotalIssues = 0;
+
+
+        if (compStartDate.HasValue && compEndDate.HasValue)
+        {
+            var compQuery = db.Issues.AsQueryable();
+
+            if (classId.HasValue)
+            {
+                compQuery = compQuery.Where(i => i.Student.ClassId == classId.Value);
+            }
+
+            if (unitId.HasValue)
+            {
+                compQuery = compQuery.Where(i => i.Student.Class.Units.Any(u => u.UnitId == unitId.Value));
+            }
+
+            compQuery = compQuery.Where(i => i.CreatedAt >= compStartDate && i.CreatedAt <= compEndDate);
+
+            comparisonTotalIssues = compQuery.Count();
+
+            comparisonIssuesOverTime = compQuery
+                .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+                .Select(g => new IssuesOverTime
+                {
+                    Date = g.Key.Value,
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            comparisonLateAttendanceOverTime = compQuery
+                .Where(i => i.IssueTitle.ToString() == "LateAttendance")
+                .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+                .Select(g => new IssuesOverTime
+                {
+                    Date = g.Key.Value,
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            comparisonMissingAttendanceOverTime = compQuery
+                .Where(i => i.IssueTitle.ToString() == "MissingAttendance")
+                .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
+                .Select(g => new IssuesOverTime
+                {
+                    Date = g.Key.Value,
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+        }
 
         /// <summary> group issues by date, using DbFunctions.TruncateTime to ignore time part </summary>
         var issuesOverTime = issuesQuery
@@ -113,7 +200,13 @@ public class MetricsController : Controller
             EndDate = endDate,
             IssuesOverTime = issuesOverTime,
             LateAttendanceOverTime = lateAttendanceOverTime,
-            MissingAttendanceOverTime = missingAttendanceOverTime
+            MissingAttendanceOverTime = missingAttendanceOverTime,
+            ComparisonIssuesOverTime = comparisonIssuesOverTime,
+            ComparisonLateAttendanceOverTime = comparisonLateAttendanceOverTime,
+            ComparisonMissingAttendanceOverTime = comparisonMissingAttendanceOverTime,
+            ComparisonPeriod = comparisonPeriod,
+            HasComparisonData = compStartDate.HasValue && compEndDate.HasValue
+
         };
 
         return View(model);
