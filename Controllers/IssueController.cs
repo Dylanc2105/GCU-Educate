@@ -371,7 +371,7 @@ namespace GuidanceTracker.Controllers
 
 
 
-        // ✅ View Archived Issues
+        //View Archived Issues
         public ActionResult ArchivedIssues(string sortOrder, string issueType, string searchString)
         {
             var issuesQuery = db.Issues
@@ -421,6 +421,16 @@ namespace GuidanceTracker.Controllers
                 .Include("Student")
                 .Include("Comments") // Ensure comments are included
                 .FirstOrDefault(t => t.IssueId == id);
+
+            // karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student.
+            var currentUserId = User.Identity.GetUserId();
+            if (User.IsInRole("Lecturer"))
+            {
+                ViewBag.LecturerUnits = db.Units
+                    .Where(u => u.LecturerId == currentUserId &&
+                     u.Classes.Any(c => c.ClassId == ticket.Student.ClassId))
+                    .ToList();
+            }
 
             var appointments = GetAppointments(ticket.StudentId);
 
@@ -628,5 +638,72 @@ namespace GuidanceTracker.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// karina: method to add to an existing issue for lecturers
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Lecturer")]
+        public JsonResult AddLecturerComment(int issueId, string content, int unitId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    return Json(new { success = false, error = "Comment cannot be empty." });
+                }
+
+                if (unitId == 0)
+                {
+                    return Json(new { success = false, error = "Unit must be selected." });
+                }
+
+                string userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
+
+                if (user == null)
+                {
+                    return Json(new { success = false, error = "User not found." });
+                }
+
+                var issue = db.Issues.Find(issueId);
+                if (issue == null)
+                {
+                    return Json(new { success = false, error = "Issue not found." });
+                }
+
+                // get the unit information
+                var unit = db.Units.Find(unitId);
+                if (unit == null)
+                {
+                    return Json(new { success = false, error = "Unit not found." });
+                }
+
+
+                // create the comment with unit information
+                var comment = new Comment
+                {
+                    Content = $"Related to {unit.UnitName}: {content}",
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = userId,
+                    IssueId = issueId
+                };
+
+                db.Comments.Add(comment);
+                db.SaveChanges();
+
+                // notifications
+                new NotificationService().NotifyNewComment(issue, userId);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
     }
 }

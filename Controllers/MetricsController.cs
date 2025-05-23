@@ -28,7 +28,7 @@ public class MetricsController : Controller
 
         if (!endDate.HasValue)
         {
-            endDate = DateTime.Today; 
+            endDate = DateTime.Today.AddDays(1); 
         }
 
         /// <summary> if comparison period is selected, will calculate comparison based on the period selected </summary>
