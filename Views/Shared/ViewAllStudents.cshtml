@@ -26,7 +26,7 @@
     /* Card header with student name and course */
     .student-card-header {
         padding: 15px;
-        background-color: #f3f3f3;
+        background-color: darkgray;
         color: white;
         cursor: pointer;
         display: flex;
@@ -252,17 +252,30 @@
                 <!-- Action buttons for each student -->
                 <div class="card-actions">
                     <!-- Student Details link -->
-                    <a href="@Url.Action("StudentDetails", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <!-- Elect As Student Rep -->
-                    <a href="@Url.Action("ElectStudentRep", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
-                        <i class="fas fa-user-check"></i> Elect as Student Rep
-                    </a>
-                    <!-- Elect As Deputy Rep -->
-                    <a href="@Url.Action("ElectDeputyStudentRep", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
-                        <i class="fas fa-user-check"></i> Elect as Deputy Rep
-                    </a>
+                    @if (User.IsInRole("GuidanceTeacher"))
+                    {
+                        <a href="@Url.Action("StudentDetails", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
+                            <i class="fas fa-info-circle"></i> Details
+                        </a>
+                    }
+                    @if (User.IsInRole("CurriculumHead"))
+                    {
+                        <!-- View Student link -->
+                        <a href="@Url.Action("StudentDetails", "CurriculumHead", new { id = item.Id })" class="action-link details">
+                            <i class="fas fa-info-circle"></i> Details
+                        </a>
+                    }
+                    @if (User.IsInRole("GuidanceTeacher"))
+                    {
+                        <!-- Edit Student link -->
+                        <a href="@Url.Action("EditStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <!-- Delete Student link -->
+                        <a href="@Url.Action("DeleteStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link delete">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    }
                 </div>
             </div>
         </div>

@@ -14,7 +14,7 @@ public class MetricsController : Controller
 {
     
     private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
-    [Authorize(Roles = "GuidanceTeacher")]
+    [Authorize(Roles = "GuidanceTeacher, CurriculumHead")]
     public ActionResult Index(int? classId, int? unitId, DateTime? startDate, DateTime? endDate, string comparisonPeriod)
     {
         /// <summary>

@@ -444,21 +444,25 @@
     <div class="sidebar">
         <!-- Home -->
         <a href="@{
-        string url = Url.Action("Index", "Home");
-        if (Request.IsAuthenticated)
-        {
-            if (User.IsInRole("GuidanceTeacher"))
+            string url = Url.Action("Index", "Home");
+            if (Request.IsAuthenticated)
             {
-                url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
-            }
-            else if (User.IsInRole("Lecturer"))
-            {
-                url = Url.Action("LecturerDash", "Lecturer");
-            }
-            else if (User.IsInRole("Student"))
-            {
-                url = Url.Action("StudentDash", "Student");
-            }
+                if (User.IsInRole("GuidanceTeacher"))
+                {
+                    url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
+                }
+                else if (User.IsInRole("Lecturer"))
+                {
+                    url = Url.Action("LecturerDash", "Lecturer");
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    url = Url.Action("StudentDash", "Student");
+                }
+                else if (User.IsInRole("CurriculumHead"))
+                {
+                    url = Url.Action("CurriculumHeadDash", "CurriculumHead");
+                }
         }
         @url
     }" title="Home">
@@ -474,9 +478,16 @@
         }
 
         <!-- Students -->
-        @if (Request.IsAuthenticated && (User.IsInRole("CurriculumHead") || User.IsInRole("GuidanceTeacher")))
+        @if (Request.IsAuthenticated && ( User.IsInRole("GuidanceTeacher")))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
+                <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
+            </a>
+        }
+
+        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead"))
+        {
+            <a href="@Url.Action("ViewAllStudents", "CurriculumHead")" title="Students">
                 <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
             </a>
         }
@@ -500,7 +511,7 @@
         }
 
         <!-- Metrics -->
-        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead"))
         {
             <a href="@Url.Action("Index", "Metrics")" title="Metrics">
                 <img src="~/Images/Icons/Metrics.png" alt="Metrics" width="47" height="47" />
