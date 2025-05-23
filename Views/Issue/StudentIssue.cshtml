@@ -5,6 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- success message for submitting an issue-->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+
 <h1 class="dashboard-title">Student Issue Center</h1>
 
 <div class="d-flex" style="height: 80vh;">
@@ -237,6 +246,7 @@
             $("#issueList").show();
         }
     });
+
+        
+
 </script>
-
-
