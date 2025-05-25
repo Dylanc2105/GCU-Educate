@@ -250,6 +250,14 @@ public class MetricsController : Controller
         return Json(units, JsonRequestBehavior.AllowGet);
     }
 
+    public JsonResult GetAllUnits()
+    {
+        var units = db.Units
+            .Select(u => new { u.UnitId, u.UnitName })
+            .ToList();
+        return Json(units, JsonRequestBehavior.AllowGet);
+    }
+
     public JsonResult FilterData(DateTime startDate, DateTime endDate, int? classId, int? unitId, IssueTitle? issueType)
     {
         var query = db.Issues.AsQueryable()
