@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/23.2.4/fluent.css" />
     <script src="https://cdn.syncfusion.com/ej2/23.2.4/dist/ej2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.print.min.css" media="print"/>*@
     <title>@ViewBag.Title</title>
@@ -20,8 +22,8 @@
         .top-header {
             background-color: #7F3D98;
             color: white;
-            height: 70px; 
-            line-height: 70px; 
+            height: 70px;
+            line-height: 70px;
             text-align: center;
             width: 100%;
             position: fixed;
@@ -29,7 +31,7 @@
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 0; 
+            padding: 0;
         }
 
         .header-logo {
@@ -47,7 +49,7 @@
         .college-name {
             display: inline-block;
             vertical-align: middle;
-            line-height: 70px; 
+            line-height: 70px;
             font-size: 18px;
         }
 
@@ -78,9 +80,9 @@
             }
 
 
-                .user-controls ul.navbar-nav li {
-                    margin: 0 10px;
-                }
+            .user-controls ul.navbar-nav li {
+                margin: 0 10px;
+            }
 
             .user-controls .nav-link {
                 color: white;
@@ -194,19 +196,19 @@
             overflow-y: auto;
         }
 
-        /* Override Bootstrap hover highlight on dropdown notifications */
-        #notificationScrollContainer .dropdown-item:hover,
-        #notificationScrollContainer .dropdown-item:focus,
-        #notificationScrollContainer .dropdown-item:active {
-            background-color: #e0e0e0 !important; /* Replace with your dark grey */
-            color: inherit;
-            box-shadow: none;
-            outline: none;
-        }
+            /* Override Bootstrap hover highlight on dropdown notifications */
+            #notificationScrollContainer .dropdown-item:hover,
+            #notificationScrollContainer .dropdown-item:focus,
+            #notificationScrollContainer .dropdown-item:active {
+                background-color: #e0e0e0 !important; /* Replace with your dark grey */
+                color: inherit;
+                box-shadow: none;
+                outline: none;
+            }
 
 
         /* SETTINGS MODAL STYLES */
-        
+
         .setting-section {
             margin-bottom: 30px;
         }
@@ -229,7 +231,7 @@
 
         .setting-btn {
             background-color: #7F3D98;
-            color: white; 
+            color: white;
             border: none;
             font-size: 12px;
             padding: 4px 8px;
@@ -373,7 +375,6 @@
             transition-delay: 0s, 0s;
             transition: transform 0.3s ease-in, opacity 0.3s ease-in;
         }
-
     </style>
 
     <!-- Add Font Awesome for icons -->
@@ -444,21 +445,25 @@
     <div class="sidebar">
         <!-- Home -->
         <a href="@{
-        string url = Url.Action("Index", "Home");
-        if (Request.IsAuthenticated)
-        {
-            if (User.IsInRole("GuidanceTeacher"))
+            string url = Url.Action("Index", "Home");
+            if (Request.IsAuthenticated)
             {
-                url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
-            }
-            else if (User.IsInRole("Lecturer"))
-            {
-                url = Url.Action("LecturerDash", "Lecturer");
-            }
-            else if (User.IsInRole("Student"))
-            {
-                url = Url.Action("StudentDash", "Student");
-            }
+                if (User.IsInRole("GuidanceTeacher"))
+                {
+                    url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
+                }
+                else if (User.IsInRole("Lecturer"))
+                {
+                    url = Url.Action("LecturerDash", "Lecturer");
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    url = Url.Action("StudentDash", "Student");
+                }
+                else if (User.IsInRole("CurriculumHead"))
+                {
+                    url = Url.Action("CurriculumHeadDash", "CurriculumHead");
+                }
         }
         @url
     }" title="Home">
@@ -474,9 +479,16 @@
         }
 
         <!-- Students -->
-        @if (Request.IsAuthenticated && (User.IsInRole("CurriculumHead") || User.IsInRole("GuidanceTeacher")))
+        @if (Request.IsAuthenticated && ( User.IsInRole("GuidanceTeacher")))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
+                <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
+            </a>
+        }
+
+        @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead"))
+        {
+            <a href="@Url.Action("ViewAllStudents", "CurriculumHead")" title="Students">
                 <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
             </a>
         }
@@ -500,7 +512,7 @@
         }
 
         <!-- Metrics -->
-        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead"))
         {
             <a href="@Url.Action("Index", "Metrics")" title="Metrics">
                 <img src="~/Images/Icons/Metrics.png" alt="Metrics" width="47" height="47" />
@@ -607,6 +619,12 @@
 
         $(document).ready(function () {
             updateNotificationBadge(); // on page load
+        });
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $(".alert-success").fadeOut("slow");
+            }, 3000);
         });
 
 

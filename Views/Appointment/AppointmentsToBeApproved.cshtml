@@ -4,6 +4,13 @@
     ViewBag.Title = "Appointments To Be Approved";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
 <h2>@ViewBag.Title</h2>
 
 <table class="table table-striped">
@@ -28,10 +35,17 @@
                     @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
                     {
                         @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action" })
-                        <span></span> @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action" })
-                        <span></span> @Html.ActionLink("Cancel", "CancelAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-danger btn-action" })
+                        <span></span>
+                        @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action" })
+                        <span></span>
+                        <a href="@Url.Action("CancelAppointment", "Appointment", new { id = item.AppointmentId })"
+                           class="btn btn-danger btn-action"
+                           onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                            Cancel
+                        </a>
                     }
                 </td>
+
             </tr>
         }
     </tbody>
@@ -46,6 +60,7 @@
     .btn-back {
         background: #7F3D98;
     }
+
     .btn {
         color: white;
         border: none;

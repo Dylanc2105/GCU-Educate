@@ -102,6 +102,10 @@ namespace GuidanceTracker.Controllers
                         {
                             return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
                         }
+                        else if (roles.Contains("CurriculumHead"))
+                        {
+                            return RedirectToAction("CurriculumHeadDash", "CurriculumHead");
+                        }
                     }
                     return RedirectToLocal(returnUrl);
 

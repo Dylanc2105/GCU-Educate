@@ -6,6 +6,14 @@
 
 <title>@ViewBag.Title</title>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success text-center mt-2 mb-3">
+        @TempData["Success"]
+    </div>
+}
+
+
 <head>
     <style>
         body {
@@ -137,5 +145,11 @@
 
         // updates the time every second
         setInterval(updateClock, 1000);
+
+            $(document).ready(function () {
+                setTimeout(function () {
+                    $(".alert-success").fadeOut("slow");
+                }, 3000); // fades after 3 seconds
+        });
     </script>
 }

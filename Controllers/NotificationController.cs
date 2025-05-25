@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 namespace GuidanceTracker.Controllers
 {
-    [Authorize(Roles = "GuidanceTeacher, Lecturer")]
+    [Authorize]
     public class NotificationController : Controller
     {
         // new db context
@@ -38,7 +38,6 @@ namespace GuidanceTracker.Controllers
 
             return View("AllNotifications", grouped);
         }
-
 
 
 

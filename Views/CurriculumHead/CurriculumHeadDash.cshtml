@@ -1,0 +1,195 @@
+﻿@model GuidanceTracker.Models.ViewModels.CurriculumDashViewModel
+
+@{
+    ViewBag.Title = "Curriculum Head Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <script type="text/javascript">
+        var msg = "@ViewBag.Message";
+        alert(msg);
+    </script>
+}
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text h3 {
+            color: #7F3D98;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .welcome-text p {
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            color: #7F3D98;
+            font-size: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            color: #7F3D98;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            color: #7F3D98;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .view-more-link {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+            .view-more-link:hover {
+                color: #495057;
+                text-decoration: none;
+            }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+    </style>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <h2 class="dashboard-title">Curriculum Head Dashboard</h2>
+
+        <!-- Welcome Card - Full Width -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <h3>Hi, @Model.FirstName!</h3>
+                            <p>Welcome to your Guidance Dashboard.</p>
+                            <p class="text-muted" id="currentDateTime"></p>
+                        </div>
+                        <div class="welcome-illustration">
+                            <i class="fa-solid fa-graduation-cap" style="font-size: 100px; color: #7F3D98; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="row g-4 stats-row">
+            <!-- New Feedback Card -->
+            <div class="col-12 col-md-4">
+                <div class="card custom-card">
+                    <div class="card-body text-center">
+                        <i class="fa-solid fa-bullhorn stat-icon"></i>
+                        <p class="stat-title">New Feedback</p>
+                        <p class="stat-number">@Model.NewFeedbackCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback", null, new { @class = "view-more-link" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Messages Card -->
+            <div class="col-12 col-md-4">
+                <div class="card custom-card">
+                    <div class="card-body text-center">
+                        <i class="fa-solid fa-comments stat-icon"></i>
+                        <p class="stat-title">New Messages</p>
+                        <p class="stat-number">@Model.UnreadMessagesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Posts Card -->
+            <div class="col-12 col-md-4">
+                <div class="card custom-card">
+                    <div class="card-body text-center">
+                        <i class="fa-solid fa-scroll stat-icon"></i>
+                        <p class="stat-title">New Posts</p>
+                        <p class="stat-number">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+        <script>
+            // Script to dynamically show the current date and time on the dashboard
+            function updateClock() {
+                const now = new Date();
+                const formatted = now.toLocaleString('en-GB', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                document.getElementById('currentDateTime').innerText = formatted;
+            }
+
+            updateClock();
+            // Update the time every second
+            setInterval(updateClock, 1000);
+        </script>
+    }
+</body>

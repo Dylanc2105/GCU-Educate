@@ -116,6 +116,7 @@ namespace GuidanceTracker.Controllers
 
 
         // View all students
+        [Authorize (Roles = "GuidanceTeacher")]
         public ActionResult ViewAllStudents()
         {
             var students = db.Students.OrderBy(s => s.RegistredAt).ToList();

@@ -15,11 +15,12 @@ public class MetricsController : Controller
 {
     private readonly GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
 
+
     /// <summary>
     /// index action handles most of the logic for queries and filters for metrics and also the metrics view model an build
     /// </summary>
 
-    [Authorize(Roles = "GuidanceTeacher")]
+    [Authorize(Roles = "GuidanceTeacher, CurriculumHead")]
     public ActionResult Index(int? classId, int? unitId, IssueTitle? issueType, DateTime? startDate, DateTime? endDate, string export = null)
     {
         /// <summary> if no date range is provided, the default is the current month </summary>

@@ -213,6 +213,7 @@ namespace GuidanceTracker.Controllers
                     User.Identity.GetUserId()
                 );
 
+                TempData["Success"] = "Issue raised successfully.";
                 return RedirectToAction("StudentIssue");
             }
 
