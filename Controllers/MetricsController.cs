@@ -38,9 +38,18 @@ public class MetricsController : Controller
             query = query.Where(i => i.Student.ClassId == classId);
         }
 
+        /// <summary> if a unit is selected, get the unit name and filter issues that have comments containing that unit name </summary>
         if (unitId.HasValue)
         {
-            query = query.Where(i => i.Student.Class.Units.Any(u => u.UnitId == unitId));
+            var unitName = db.Units.Where(u => u.UnitId == unitId).Select(u => u.UnitName).FirstOrDefault();
+            if (!string.IsNullOrEmpty(unitName))
+            {
+                var issueIdsWithUnitComments = db.Comments
+                    .Where(c => c.Content.Contains(unitName))
+                    .Select(c => c.IssueId)
+                    .Distinct();
+                query = query.Where(i => issueIdsWithUnitComments.Contains(i.IssueId));
+            }
         }
 
         if (issueType.HasValue)
@@ -90,44 +99,69 @@ public class MetricsController : Controller
         /// <summary> if a class is selected get units for that class </summary>
         if (classId.HasValue)
         {
-            byUnit = query
-                .Where(i => i.Student.ClassId == classId)
-                .SelectMany(i => i.Student.Class.Units)
-                .GroupBy(u => new { u.UnitId, u.UnitName })
-                .Select(g => new UnitSummary
-                {
-                    UnitId = g.Key.UnitId,
-                    UnitName = g.Key.UnitName,
-                    Count = query.Count(i => i.Student.ClassId == classId)
-                })
-                .OrderByDescending(u => u.Count)
+            /// <summary> get units for the selected class and count issues in that class </summary>
+            var classUnits = db.Classes
+                .Where(c => c.ClassId == classId)
+                .SelectMany(c => c.Units)
                 .ToList();
+
+            byUnit = classUnits.Select(u => new UnitSummary
+            {
+                UnitId = u.UnitId,
+                UnitName = u.UnitName,
+                Count = GetUnitSpecificIssueCount(u.UnitId, u.UnitName, startDate.Value, endDate.Value, classId, issueType)
+            })
+            .Where(u => u.Count > 0)
+            .OrderByDescending(u => u.Count)
+            .ToList();
         }
         else
         {
-            /// <summary> get all units with issue counts </summary>
-            var classUnits = db.Classes
-                .SelectMany(c => c.Units.Select(u => new { ClassId = c.ClassId, Unit = u }))
-                .ToList();
+            /// <summary> get all units and their associated issue counts </summary>
+            var allUnits = db.Units.ToList();
 
-            byUnit = classUnits
-                .GroupBy(cu => new { cu.Unit.UnitId, cu.Unit.UnitName })
-                .Select(g => new UnitSummary
-                {
-                    UnitId = g.Key.UnitId,
-                    UnitName = g.Key.UnitName,
-                    Count = g.Sum(cu => query.Count(i => i.Student.ClassId == cu.ClassId))
-                })
-                .Where(u => u.Count > 0)
-                .OrderByDescending(u => u.Count)
-                .ToList();
+            byUnit = allUnits.Select(u => new UnitSummary
+            {
+                UnitId = u.UnitId,
+                UnitName = u.UnitName,
+                Count = GetUnitSpecificIssueCount(u.UnitId, u.UnitName, startDate.Value, endDate.Value, null, issueType)
+            })
+            .Where(u => u.Count > 0)
+            .OrderByDescending(u => u.Count)
+            .ToList();
         }
 
         /// <summary> comparison data for previous period, set to one month </summary>
         var comparisonStart = startDate.Value.AddMonths(-1);
         var comparisonEnd = endDate.Value.AddMonths(-1);
-        var prevPeriodCount = db.Issues
-            .Count(i => i.CreatedAt >= comparisonStart && i.CreatedAt <= comparisonEnd);
+
+        var prevQuery = db.Issues
+            .Where(i => i.CreatedAt >= comparisonStart && i.CreatedAt <= comparisonEnd);
+
+        if (classId.HasValue)
+        {
+            prevQuery = prevQuery.Where(i => i.Student.ClassId == classId);
+        }
+
+        if (unitId.HasValue)
+        {
+            var unitName = db.Units.Where(u => u.UnitId == unitId).Select(u => u.UnitName).FirstOrDefault();
+            if (!string.IsNullOrEmpty(unitName))
+            {
+                var issueIdsWithUnitComments = db.Comments
+                    .Where(c => c.Content.Contains(unitName))
+                    .Select(c => c.IssueId)
+                    .Distinct();
+                prevQuery = prevQuery.Where(i => issueIdsWithUnitComments.Contains(i.IssueId));
+            }
+        }
+
+        if (issueType.HasValue)
+        {
+            prevQuery = prevQuery.Where(i => i.IssueTitle == issueType.Value);
+        }
+
+        var prevPeriodCount = prevQuery.Count();
 
         /// <summary> get enum values for dropdowns </summary>
         var allIssueTypes = Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>().ToList();
@@ -179,6 +213,33 @@ public class MetricsController : Controller
         return ((current - previous) / (decimal)previous) * 100;
     }
 
+    /// <summary>
+    /// count issues where the unit is mentioned in comments
+    /// count both original issues ceated plus the issues added in comments
+    /// </summary>
+    private int GetUnitSpecificIssueCount(int unitId, string unitName, DateTime startDate, DateTime endDate, int? classId, IssueTitle? issueType)
+    {
+        var baseIssueQuery = db.Issues
+            .Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
+
+        if (classId.HasValue)
+        {
+            baseIssueQuery = baseIssueQuery.Where(i => i.Student.ClassId == classId);
+        }
+
+        if (issueType.HasValue)
+        {
+            baseIssueQuery = baseIssueQuery.Where(i => i.IssueTitle == issueType.Value);
+        }
+
+        var issuesWithUnitComments = baseIssueQuery
+            .Where(i => i.Comments.Any(c =>
+                c.Content.Contains(unitName)
+            ))
+            .Count();
+
+        return issuesWithUnitComments;
+    }
     public JsonResult GetUnitsByClass(int classId)
     {
         var units = db.Classes
@@ -191,15 +252,24 @@ public class MetricsController : Controller
 
     public JsonResult FilterData(DateTime startDate, DateTime endDate, int? classId, int? unitId, IssueTitle? issueType)
     {
-        // Same filtering logic as Index action
         var query = db.Issues.AsQueryable()
             .Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
 
         if (classId.HasValue) query = query.Where(i => i.Student.ClassId == classId);
-        if (unitId.HasValue) query = query.Where(i => i.Student.Class.Units.Any(u => u.UnitId == unitId));
+        if (unitId.HasValue)
+        {
+            var unitName = db.Units.Where(u => u.UnitId == unitId).Select(u => u.UnitName).FirstOrDefault();
+            if (!string.IsNullOrEmpty(unitName))
+            {
+                var issueIdsWithUnitComments = db.Comments
+                    .Where(c => c.Content.Contains(unitName))
+                    .Select(c => c.IssueId)
+                    .Distinct();
+                query = query.Where(i => issueIdsWithUnitComments.Contains(i.IssueId));
+            }
+        }
         if (issueType.HasValue) query = query.Where(i => i.IssueTitle == issueType.Value);
 
-        // Class analytics
         var byClass = query
             .GroupBy(i => i.Student.Class)
             .Select(g => new
@@ -211,12 +281,9 @@ public class MetricsController : Controller
             .OrderByDescending(c => c.count)
             .ToList();
 
-        // Fixed unit analytics for FilterData
         var byUnit = new List<object>();
         if (classId.HasValue)
         {
-            // Get units for the specific class
-            var classIssues = query.Where(i => i.Student.ClassId == classId).ToList();
             var classUnits = db.Classes.Where(c => c.ClassId == classId)
                 .SelectMany(c => c.Units)
                 .ToList();
@@ -225,7 +292,7 @@ public class MetricsController : Controller
             {
                 unitId = u.UnitId,
                 unitName = u.UnitName,
-                count = classIssues.Count // All issues in the class affect all units in that class
+                count = GetUnitSpecificIssueCount(u.UnitId, u.UnitName, startDate, endDate, classId, issueType)
             })
             .Where(u => u.count > 0)
             .OrderByDescending(u => u.count)
@@ -234,43 +301,48 @@ public class MetricsController : Controller
         }
         else
         {
-            // Get all classes and their units
-            var allClassesWithIssues = query.GroupBy(i => i.Student.Class).ToList();
-            var unitCounts = new Dictionary<int, int>();
-
-            foreach (var classGroup in allClassesWithIssues)
-            {
-                var issueCount = classGroup.Count();
-                foreach (var unit in classGroup.Key.Units)
-                {
-                    if (unitCounts.ContainsKey(unit.UnitId))
-                        unitCounts[unit.UnitId] += issueCount;
-                    else
-                        unitCounts[unit.UnitId] = issueCount;
-                }
-            }
-
             var allUnits = db.Units.ToList();
-            byUnit = allUnits
-                .Where(u => unitCounts.ContainsKey(u.UnitId))
-                .Select(u => new
-                {
-                    unitId = u.UnitId,
-                    unitName = u.UnitName,
-                    count = unitCounts[u.UnitId]
-                })
-                .OrderByDescending(u => u.count)
-                .Cast<object>()
-                .ToList();
+
+            byUnit = allUnits.Select(u => new
+            {
+                unitId = u.UnitId,
+                unitName = u.UnitName,
+                count = GetUnitSpecificIssueCount(u.UnitId, u.UnitName, startDate, endDate, null, issueType)
+            })
+            .Where(u => u.count > 0)
+            .OrderByDescending(u => u.count)
+            .Cast<object>()
+            .ToList();
         }
 
-        // Comparison data
+        /// <summary> comparison data for previous period </summary>
         var comparisonStart = startDate.AddMonths(-1);
         var comparisonEnd = endDate.AddMonths(-1);
-        var prevPeriodCount = db.Issues
-            .Count(i => i.CreatedAt >= comparisonStart && i.CreatedAt <= comparisonEnd);
+        var prevQuery = db.Issues
+            .Where(i => i.CreatedAt >= comparisonStart && i.CreatedAt <= comparisonEnd);
 
-        // Prepare response
+        if (classId.HasValue)
+            prevQuery = prevQuery.Where(i => i.Student.ClassId == classId);
+
+        if (unitId.HasValue)
+        {
+            var unitName = db.Units.Where(u => u.UnitId == unitId).Select(u => u.UnitName).FirstOrDefault();
+            if (!string.IsNullOrEmpty(unitName))
+            {
+                var issueIdsWithUnitComments = db.Comments
+                    .Where(c => c.Content.Contains(unitName))
+                    .Select(c => c.IssueId)
+                    .Distinct();
+                prevQuery = prevQuery.Where(i => issueIdsWithUnitComments.Contains(i.IssueId));
+            }
+        }
+
+        if (issueType.HasValue)
+            prevQuery = prevQuery.Where(i => i.IssueTitle == issueType.Value);
+
+        var prevPeriodCount = prevQuery.Count();
+
+        /// <summary> prepare response  </summary>
         var result = new
         {
             totalIssues = query.Count(),
@@ -308,9 +380,3 @@ public class MetricsController : Controller
         return Json(result, JsonRequestBehavior.AllowGet);
     }
 }
-
-//public class ExportViewModel
-//{
-//    public MetricsViewModel Metrics { get; set; }
-//    public string GeneratedDate { get; } = DateTime.Now.ToString("f");
-//}
