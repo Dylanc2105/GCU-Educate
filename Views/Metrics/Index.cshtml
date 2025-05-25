@@ -71,10 +71,13 @@
                     </div>
                 </div>
 
-                <!-- export to PDF -->
+                <!-- export to PDF and reset filter buttons -->
                 <div class="col-md-3 d-flex align-items-end">
                     <button id="exportPdf" class="btn btn-outline-primary">
                         <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button id="resetFilters" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo"></i> Reset Filters
                     </button>
                 </div>
             </div>
@@ -211,51 +214,75 @@
         var dailyTrendChart, issueTypeChart, classChart, unitChart;
 
         $(document).ready(function() {
-            /// <summary> initialise charts </summary>
             renderCharts();
-
             /// <summary> sets up filter change events </summary>
             $('#startDate, #endDate, #classSelect, #unitSelect, #issueTypeSelect').change(function() {
                 applyFilters();
             });
 
-            /// <summary> export the PDF file </summary>
+            /// <summary> export the PDF file if the button is clicked </summary>
             $('#exportPdf').click(function() {
                 var params = getFilterParams();
                 params.export = 'pdf';
                 window.location.href = '@Url.Action("Index")' + '?' + $.param(params);
             });
 
+            /// <summary> reset filters </summary>
+            $('#resetFilters').click(function () {
+                $('#startDate').val('');
+                $('#endDate').val('');
+                $('#classSelect').val('');
+                $('#unitSelect').val('');
+                $('#issueTypeSelect').val('');
+                applyFilters();
+            });
+
             /// <summary> load initial insights </summary>
             loadInsights();
 
-            /// <summary> is class is changed units will change </summary>
             $('#classSelect').change(function() {
                 var classId = $(this).val();
+
                 if (classId) {
-                    $.getJSON('@Url.Action("GetUnitsByClass")', { classId: classId }, function(units) {
-                        var unitSelect = $('#unitSelect');
-                        unitSelect.empty();
-                        unitSelect.append($('<option/>', { value: '', text: 'All Units' }));
-                        $.each(units, function(index, unit) {
-                            unitSelect.append($('<option/>', {
-                                value: unit.UnitId,
-                                text: unit.UnitName
-                            }));
+                    $.getJSON('@Url.Action("GetUnitsByClass")', { classId: classId })
+                        .done(function(units) {
+                            updateUnitDropdown(units);
+                            applyFilters();
+                        })
+                        .fail(function() {
+                            console.error('Failed to load units for class');
                         });
-                        applyFilters();
-                    });
                 } else {
-                    $('#unitSelect').empty().append($('<option/>', { value: '', text: 'All Units' }));
-                    applyFilters();
+                    $.getJSON('@Url.Action("GetAllUnits")')
+                        .done(function(units) {
+                            updateUnitDropdown(units);
+                            applyFilters();
+                        })
+                        .fail(function() {
+                            console.error('Failed to load all units');
+                        });
                 }
             });
         });
 
+        function updateUnitDropdown(units) {
+            var unitSelect = $('#unitSelect');
+            unitSelect.empty();
+            unitSelect.append($('<option/>', { value: '', text: 'All Units' }));
+
+            if (units && units.length > 0) {
+                $.each(units, function(index, unit) {
+                    unitSelect.append($('<option/>', {
+                        value: unit.UnitId,
+                        text: unit.UnitName
+                    }));
+                });
+            }
+        }
+
         function applyFilters() {
             var params = getFilterParams();
             history.pushState(null, '', '@Url.Action("Index")' + '?' + $.param(params));
-
             reloadData();
         }
 
@@ -276,10 +303,9 @@
             return params;
         }
 
+        /// <summary> reload data based on the filter parameters provided </summary>
         function reloadData() {
             var params = getFilterParams();
-
-            // Show loading indicator
             $('#insightsContainer').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
 
             $.get('@Url.Action("FilterData")', params, function(data) {
@@ -289,8 +315,8 @@
                 var trendIndicator = $('#trendIndicator');
                 var trendText = (data.percentageChange >= 0 ? "↑" : "↓") +
                     Math.abs(data.percentageChange).toFixed(1) + "% ";
-                    trendIndicator.html(trendText + "<span class='text-muted'>vs previous period</span>");
-                    trendIndicator.removeClass('text-danger text-success')
+                trendIndicator.html(trendText + "<span class='text-muted'>vs previous period</span>");
+                trendIndicator.removeClass('text-danger text-success')
                     .addClass(data.percentageChange >= 0 ? 'text-danger' : 'text-success');
 
                 /// <summary> update peak day </summary>
@@ -306,20 +332,19 @@
                     $('#peakDayContent').html('<h3>' + peakDayName + '</h3><p class="mb-0">' + peakDateFormatted + ' - ' + peakDay.count + ' issues</p>');
                 }
 
-                /// <summary> update most common issue </summary>
+                /// <summary> most common issue </summary>
                 if (data.byType && data.byType.length > 0) {
                     var commonIssue = data.byType[0];
                     $('#commonIssueContent').html('<h3>' + commonIssue.issueType + '</h3><p class="mb-0">' + commonIssue.count + ' occurrences</p>');
                 }
 
-                /// <summary> update the class summary card of either the class with most issues or with total issues if class is selected </summary>
+                /// <summary> update cass summary card </summary>
                 if (data.byClass && data.byClass.length > 0) {
                     var topClass = data.byClass[0];
                     $('#topClassContent').html('<h3>' + topClass.className + '</h3><p class="mb-0">' + topClass.count + ' issues</p>');
                 }
 
                 updateCharts(data);
-
                 updateInsights(data);
             })
             .fail(function() {
@@ -333,7 +358,6 @@
             var classCtx = document.getElementById('classChart').getContext('2d');
             var unitCtx = document.getElementById('unitChart').getContext('2d');
 
-            /// <summary> daily trends chart </summary>
             dailyTrendChart = new Chart(dailyTrendCtx, {
                 type: 'bar',
                 data: {
@@ -359,7 +383,6 @@
                 }
             });
 
-            /// <summary> issue type chart </summary>
             issueTypeChart = new Chart(issueTypeCtx, {
                 type: 'doughnut',
                 data: {
@@ -382,7 +405,6 @@
                 }
             });
 
-            /// <summary> issues in each class </summary>
             classChart = new Chart(classCtx, {
                 type: 'bar',
                 data: {
@@ -408,7 +430,6 @@
                 }
             });
 
-            /// <summary> unit chart </summary>
             unitChart = new Chart(unitCtx, {
                 type: 'bar',
                 data: {
@@ -423,7 +444,7 @@
                 },
                 options: {
                     responsive: true,
-                    indexAxis: 'y', 
+                    indexAxis: 'y',
                     scales: {
                         x: {
                             beginAtZero: true,
@@ -436,7 +457,6 @@
             });
         }
 
-        /// <summary> function that updates the charts when filters are selected </summary>
         function updateCharts(data) {
             if (dailyTrendChart && data.dailyTrends) {
                 dailyTrendChart.data.labels = data.dailyTrends.map(function(d) {
@@ -460,7 +480,6 @@
             }
 
             if (unitChart && data.byUnit) {
-                /// <summary> the unit chart shows the top 10 units with issues </summary>
                 var topUnits = data.byUnit.slice(0, 10);
                 unitChart.data.labels = topUnits.map(function(u) { return u.unitName; });
                 unitChart.data.datasets[0].data = topUnits.map(function(u) { return u.count; });
@@ -475,12 +494,10 @@
                 dailyTrends: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => new { date = d.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), count = d.Count }))),
                 byType: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => new { issueType = t.DisplayName, count = t.Count }))),
                 byClass: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => new { className = c.ClassName, count = c.Count }))),
-                byUnit: @Html.Raw(JsonConvert.SerializeObject(Model.ByUnit.Select(u => new { unitName = u.UnitName, count = u.Count }))),
+                byUnit: @Html.Raw(JsonConvert.SerializeObject(Model.ByUnit.Select(u => new { unitName = u.UnitName, count = u.Count })))
             };
             updateInsights(modelData);
         }
-
-        /// <summary> function that updates insights </summary>
 
         function updateInsights(data) {
             var insights = generateInsights(data);
@@ -525,14 +542,14 @@
                 });
             }
 
-            /// <summary> peak day insights </summary>
+            /// <summary> peak day iniights </summary>
             if (data.dailyTrends && data.dailyTrends.length > 0) {
                 var peakDay = data.dailyTrends.reduce(function (prev, current) {
                     return (prev.count > current.count) ? prev : current;
                 });
                 var peakDate = new Date(peakDay.date);
                 var peakDayName = peakDate.toLocaleDateString('en-GB', { weekday: 'long' });
-                var avgDaily = data.dailyTrends.reduce((sum, d) => sum + d.count, 0) / data.dailyTrends.length;
+                var avgDaily = data.dailyTrends.reduce(function(sum, d) { return sum + d.count; }, 0) / data.dailyTrends.length;
 
                 if (peakDay.count > avgDaily * 1.5) {
                     insights.push({
@@ -544,10 +561,10 @@
                 }
             }
 
-            /// <summary> most common issue type </summary>
+            /// <summary> most ocmmon issue type </summary>
             if (data.byType && data.byType.length > 0) {
                 var commonIssue = data.byType[0];
-                var totalIssues = data.byType.reduce((sum, t) => sum + t.count, 0);
+                var totalIssues = data.byType.reduce(function(sum, t) { return sum + t.count; }, 0);
                 var percentage = (commonIssue.count / totalIssues * 100).toFixed(1);
 
                 if (percentage > 40) {
@@ -563,7 +580,7 @@
             /// <summary> class distribution </summary>
             if (data.byClass && data.byClass.length > 1) {
                 var topClass = data.byClass[0];
-                var totalClassIssues = data.byClass.reduce((sum, c) => sum + c.count, 0);
+                var totalClassIssues = data.byClass.reduce(function(sum, c) { return sum + c.count; }, 0);
                 var classPercentage = (topClass.count / totalClassIssues * 100).toFixed(1);
 
                 if (classPercentage > 30) {
@@ -576,10 +593,10 @@
                 }
             }
 
-            /// <summary> unit anaysis </summary>
+            /// <summary> unit analysis </summary>
             if (data.byUnit && data.byUnit.length > 0) {
                 var topUnit = data.byUnit[0];
-                var unitsWith5Plus = data.byUnit.filter(u => u.count >= 5).length;
+                var unitsWith5Plus = data.byUnit.filter(function(u) { return u.count >= 5; }).length;
 
                 if (unitsWith5Plus > 0) {
                     insights.push({
@@ -591,7 +608,7 @@
                 }
             }
 
-            /// <summary> data volume insights </summary>
+            /// <summary> overall data insights </summary>
             if (data.totalIssues === 0) {
                 insights.push({
                     title: "No Issues Recorded",

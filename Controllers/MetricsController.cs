@@ -28,11 +28,10 @@ public class MetricsController : Controller
             startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             endDate = startDate.Value.AddMonths(1).AddDays(-1);
         }
-        /// <summary> base query </summary>
+        
         var query = db.Issues.AsQueryable()
             .Where(i => i.CreatedAt >= startDate && i.CreatedAt <= endDate);
 
-        /// <summary> check if filter are selected and apply them if necessary </summary>
         if (classId.HasValue)
         {
             query = query.Where(i => i.Student.ClassId == classId);
@@ -257,6 +256,7 @@ public class MetricsController : Controller
             .ToList();
         return Json(units, JsonRequestBehavior.AllowGet);
     }
+
 
     public JsonResult FilterData(DateTime startDate, DateTime endDate, int? classId, int? unitId, IssueTitle? issueType)
     {
