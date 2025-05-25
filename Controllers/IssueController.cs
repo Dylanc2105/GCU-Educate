@@ -53,8 +53,7 @@ namespace GuidanceTracker.Controllers
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {
-            // karina: updated the create issue action
-            // so that dropdowns only show the associated classes, units and students
+            /// <summary> karina: updating the create issue action to load only the classes, units and students associated with the logged in user </summary>
             var userId = User.Identity.GetUserId();
 
             var model = new CreateIssueViewModel
@@ -85,7 +84,6 @@ namespace GuidanceTracker.Controllers
             }
             else
             {
-                // 
                 var guidanceTeacher = db.GuidanceTeachers
                     .Include(gt => gt.Classes)
                     .FirstOrDefault(gt => gt.Id == userId);
@@ -280,19 +278,20 @@ namespace GuidanceTracker.Controllers
         // Load the Student Issue Selection Page (For Adding Issues)
         public ActionResult StudentIssue()
         {
-            // karina: updating the action to load only the classes associated with the logged in user
-            // get classes from the database
+            /// <summary>   karina: updating the action to load only the classes associated with the logged in user
+            /// get classes from the database
+            /// </summary>
+            
             var userId = User.Identity.GetUserId();
             List<ClassViewModel> classList = new List<ClassViewModel>();
-
-            // get the lecturer and include the units and classes
+            /// <summary> karina: get the lecturer and include the units tehy teach </summary>
             var lecturer = db.Lecturers
                 .Include(l => l.Units.Select(u => u.Classes))
                 .FirstOrDefault(l => l.Id == userId);
 
+            /// <summary> karina: if the lecturer is not null, get the classes from their units </summary>
             if (lecturer != null)
             {
-                // get the classes from the lecturer's units
                 var classIds = lecturer.Units
                     .SelectMany(u => u.Classes)
                     .Select(c => c.ClassId)
@@ -309,7 +308,7 @@ namespace GuidanceTracker.Controllers
             }
             else
             {
-                // get the logged in guidance teacher and include their classes
+                /// <summary> karina: if the user is a guidance teacher, get their classes </summary>
                 var guidanceTeacher = db.GuidanceTeachers
                     .Include(gt => gt.Classes)
                     .FirstOrDefault(gt => gt.Id == userId);
@@ -422,7 +421,8 @@ namespace GuidanceTracker.Controllers
                 .Include("Comments") // Ensure comments are included
                 .FirstOrDefault(t => t.IssueId == id);
 
-            // karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student.
+
+            /// <summary> karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student. </summary>
             var currentUserId = User.Identity.GetUserId();
             if (User.IsInRole("Lecturer"))
             {
@@ -673,7 +673,7 @@ namespace GuidanceTracker.Controllers
                     return Json(new { success = false, error = "Issue not found." });
                 }
 
-                // get the unit information
+                /// <summary> get the unit information </summary>
                 var unit = db.Units.Find(unitId);
                 if (unit == null)
                 {
@@ -681,7 +681,7 @@ namespace GuidanceTracker.Controllers
                 }
 
 
-                // create the comment with unit information
+                /// <summary> create a comment for unit information </summary>
                 var comment = new Comment
                 {
                     Content = $"Related to {unit.UnitName}: {content}",
@@ -693,7 +693,7 @@ namespace GuidanceTracker.Controllers
                 db.Comments.Add(comment);
                 db.SaveChanges();
 
-                // notifications
+                /// <summary> notifications </summary>
                 new NotificationService().NotifyNewComment(issue, userId);
 
                 return Json(new { success = true });

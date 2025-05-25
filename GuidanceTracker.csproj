@@ -178,6 +178,9 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
@@ -468,6 +471,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Content\kendo\2025.1.227\font-icons\kendo-font-icons.ttf" />
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\GuidanceTracker20250227222444 - Web Deploy.pubxml" />
     <Content Include="Images\Icons\calendar.png" />
@@ -485,6 +489,10 @@
     <Content Include="Images\Icons\posts.png" />
     <Content Include="Images\Icons\settings.png" />
     <Content Include="Images\Icons\student.png" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -2648,7 +2656,7 @@
     <Content Include="Views\GuidanceTeacher\_CalendarPartial.cshtml" />
     <Content Include="Views\Appointment\SelectStudentForAppointment.cshtml" />
     <Content Include="Views\Notification\AllNotifications.cshtml" />
-
+    <Content Include="Views\Metrics\Export.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
