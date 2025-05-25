@@ -50,7 +50,7 @@ namespace GuidanceTracker.Models
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ProgressMeetingFeedbackForm> ProgressMeetingFeedbackForms { get; set; }
         public DbSet<AppointmentFeedbackForm> AppointmentFeedbackForms { get; set; }
-
+   
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

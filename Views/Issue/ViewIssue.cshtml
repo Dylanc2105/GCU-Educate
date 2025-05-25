@@ -95,12 +95,41 @@
                 <p>No comments yet.</p>
             }
         </div>
+        <!-- karina: Added user validation. if its a guidance teahcer they can add a comment-->
+        @if (User.IsInRole("GuidanceTeacher"))
+        {
+            <form id="commentForm">
+                @Html.AntiForgeryToken()
+                <textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
+                <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
+            </form>
+        }
+        <!-- karina: if the user is a lecturer they can add to the issue by choosing the unit and commenting-->
+        @if (User.IsInRole("Lecturer"))
+        {
+            <form id="lecturerAddToIssueForm">
+                @Html.AntiForgeryToken()
 
-        <form id="commentForm">
-            @Html.AntiForgeryToken()
-            <textarea id="commentInput" class="form-control" rows="4" placeholder="Write a comment..."></textarea>
-            <button type="submit" class="btn btn-purple mt-2">Post Comment</button>
-        </form>
+                <div class="form-group">
+                    <label>Related Unit:</label>
+                    <select id="unitDropdown" class="form-control">
+                        <option value="">-- Select Unit --</option>
+                        @foreach (var unit in ((IEnumerable<Unit>)ViewBag.LecturerUnits))
+                        {
+                            <option value="@unit.UnitId">@unit.UnitName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="lecturerComment">Add to this issue:</label>
+                    <textarea id="lecturerComment" class="form-control" rows="3"
+                              placeholder="Write a comment..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-purple">Add Comment</button>
+            </form>
+        }
     </div>
 </div>
 
@@ -132,7 +161,37 @@
             });
         });
 
-        // karina: javascript to handle the update status button
+        // karina: function to handle form submisison when a lecturer add to an existing issue
+        $("#lecturerAddToIssueForm").submit(function(e) {
+            e.preventDefault();
+            const comment = $("#lecturerComment").val().trim();
+            const unitId = $("#unitDropdown").val();
+
+            if (!comment) return alert("Comment cannot be empty.");
+            if (!unitId) return alert("Please select a unit.");
+
+            // sends AJAX POST request to add the comment
+            $.post("@Url.Action("AddLecturerComment", "Issue")", {
+                issueId: @Model.IssueId,
+                content: comment,
+                unitId: unitId,
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            }, function(res) {
+                if (res.success) {
+                    // get selected unit for the display
+                    const unitName = $("#unitDropdown option:selected").text();
+                    $("#commentsContainer").prepend(`
+                        <div class='comment-box my-comment'>
+                            <p><strong>You</strong> (Just now)</p>
+                            <p><strong>Related to ${unitName}:</strong> ${comment}</p>
+                        </div>`);
+                    $("#lecturerComment").val("");
+                } else {
+                    alert("Error: " + res.error);
+                }
+            });
+        });
+        // karina: handle click event for guidance teahcers to update the status
         $("#updateStatusBtn").click(function(e) {
             e.preventDefault();
             const newStatus = $("#statusDropdown").val();
