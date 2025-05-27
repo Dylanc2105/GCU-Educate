@@ -22,9 +22,31 @@ namespace GuidanceTracker.Models.ViewModels
         public List<IssueTypeSummary> ByType { get; set; }
         public List<ClassSummary> ByClass { get; set; }
         public List<UnitSummary> ByUnit { get; set; }
+
+        public List<IssueStatusSummary> ByStatus { get; set; }
+        public int ActiveIssues { get; set; }
+        public int ArchivedIssues { get; set; }
+        public decimal ResolutionRate { get; set; }
+        public decimal ResolutionRateChange { get; set; }
+        public double AverageResolutionDays { get; set; }
+        public List<StatusTrend> StatusTrends { get; set; }
     }
 
-    /// <summary> helper classes for trends and issue, unit, and class summaries</summary>
+    /// <summary> helper classes for trends and issue, unit, and class summaries. also status</summary>
+    /// 
+    public class IssueStatusSummary
+    {
+        public IssueStatus Status { get; set; }
+        public int Count { get; set; }
+        public string DisplayName => Status.ToString().Replace("InProgress", "In Progress");
+    }
+    public class StatusTrend
+    {
+        public DateTime Date { get; set; }
+        public IssueStatus Status { get; set; }
+        public int Count { get; set; }
+    }
+
     public class DailyTrend
     {
         public DateTime Date { get; set; }

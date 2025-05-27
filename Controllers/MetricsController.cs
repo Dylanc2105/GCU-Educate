@@ -57,7 +57,7 @@ public class MetricsController : Controller
             query = query.Where(i => i.IssueTitle == issueType.Value);
         }
 
-        /// <summary> get unnits based on class filters </summary>
+        /// <summary> get unnits based on class filters if no units are selected get all units from units table</summary>
         var units = classId.HasValue
             ? db.Classes.Where(c => c.ClassId == classId).SelectMany(c => c.Units).ToList()
             : db.Units.ToList();
@@ -93,6 +93,38 @@ public class MetricsController : Controller
                 Count = g.Count()
             })
             .OrderByDescending(c => c.Count)
+            .ToList();
+
+        var byStatus = query
+            .GroupBy(i => i.IssueStatus)
+            .Select(g => new IssueStatusSummary
+            {
+                Status = g.Key,
+                Count = g.Count()
+            })
+            .ToList();
+
+        /// <summary> calculate active vs archived metrics </summary>
+        var activeCount = byStatus.Where(s => s.Status == IssueStatus.New || s.Status == IssueStatus.InProgress).Sum(s => s.Count);
+        var archivedCount = byStatus.Where(s => s.Status == IssueStatus.Archived).Sum(s => s.Count);
+        var totalIssues = query.Count();
+        var resolutionRate = totalIssues > 0 ? (decimal)archivedCount / totalIssues * 100 : 0;
+
+        /// <summary> calculate average time for resolution for archived issues </summary>
+        var archivedIssues = query.Where(i => i.IssueStatus == IssueStatus.Archived && i.UpdatedAt != default(DateTime)).ToList();
+        var avgResolutionDays = archivedIssues.Count > 0
+            ? archivedIssues.Average(i => (i.UpdatedAt - i.CreatedAt).TotalDays)
+            : 0;
+
+        var statusTrends = query
+            .GroupBy(i => new { Date = DbFunctions.TruncateTime(i.CreatedAt), Status = i.IssueStatus })
+            .Select(g => new StatusTrend
+            {
+                Date = g.Key.Date.Value,
+                Status = g.Key.Status,
+                Count = g.Count()
+            })
+            .OrderBy(s => s.Date)
             .ToList();
 
         var byUnit = new List<UnitSummary>();
@@ -131,7 +163,7 @@ public class MetricsController : Controller
             .ToList();
         }
 
-        /// <summary> comparison data for previous period, set to one month </summary>
+        /// <summary> comparison data for previous period </summary>
         var comparisonStart = startDate.Value.AddMonths(-1);
         var comparisonEnd = endDate.Value.AddMonths(-1);
 
@@ -162,6 +194,8 @@ public class MetricsController : Controller
         }
 
         var prevPeriodCount = prevQuery.Count();
+        var prevArchivedCount = prevQuery.Where(i => i.IssueStatus == IssueStatus.Archived).Count();
+        var prevResolutionRate = prevPeriodCount > 0 ? (decimal)prevArchivedCount / prevPeriodCount * 100 : 0;
 
         /// <summary> get enum values for dropdowns </summary>
         var allIssueTypes = Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>().ToList();
@@ -182,7 +216,14 @@ public class MetricsController : Controller
             DailyTrends = dailyTrends,
             ByType = byType,
             ByClass = byClass,
-            ByUnit = byUnit
+            ByUnit = byUnit,
+            ByStatus = byStatus,
+            ActiveIssues = activeCount,
+            ArchivedIssues = archivedCount,
+            ResolutionRate = resolutionRate,
+            ResolutionRateChange = CalculatePercentageChange((int)resolutionRate, (int)prevResolutionRate),
+            AverageResolutionDays = avgResolutionDays,
+            StatusTrends = statusTrends
         };
 
         /// <summary> if export pdf button is clicked it will call the Rotativa methods to export a pdf file </summary>
