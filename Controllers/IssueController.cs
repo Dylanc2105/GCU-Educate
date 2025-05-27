@@ -229,14 +229,23 @@ namespace GuidanceTracker.Controllers
         // AJAX: Get Units by Class
         public ActionResult GetUnits(int classId)
         {
-            // Get the UnitIds manually from the join table (UnitClasses)
-            var unitIds = db.Database.SqlQuery<int>(
-                "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+            var currentUserId = User.Identity.GetUserId();
 
             var units = db.Units
-                .Where(u => unitIds.Contains(u.UnitId))
+                .Where(u => u.LecturerId == currentUserId && 
+                           u.Classes.Any(c => c.ClassId == classId)) 
                 .Select(u => new { u.UnitId, u.UnitName })
                 .ToList();
+
+
+            //// Get the UnitIds manually from the join table (UnitClasses)
+            //var unitIds = db.Database.SqlQuery<int>(
+            //    "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+
+            //var units = db.Units
+            //    .Where(u => unitIds.Contains(u.UnitId))
+            //    .Select(u => new { u.UnitId, u.UnitName })
+            //    .ToList();
 
             return Json(units, JsonRequestBehavior.AllowGet);
         }
@@ -419,12 +428,21 @@ namespace GuidanceTracker.Controllers
         {
             var ticket = db.Issues
                 .Include("Student")
-                .Include("Comments") // Ensure comments are included
+                .Include("Comments") 
+                .Include("Lecturer")
                 .FirstOrDefault(t => t.IssueId == id);
 
 
             /// <summary> karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student. </summary>
             var currentUserId = User.Identity.GetUserId();
+
+            var issueUnit = db.Units
+                .Where(u => u.LecturerId == ticket.LecturerId &&
+                           u.Classes.Any(c => c.ClassId == ticket.Student.ClassId))
+                .FirstOrDefault();
+
+            ViewBag.IssueUnit = issueUnit;
+
             if (User.IsInRole("Lecturer"))
             {
                 ViewBag.LecturerUnits = db.Units
@@ -592,8 +610,11 @@ namespace GuidanceTracker.Controllers
         {
             try
             {
+                var currentUserId = User.Identity.GetUserId();
+
                 var units = db.Units
-                    .Where(u => u.Classes.Any(c => c.ClassId == classId))
+                    .Where(u => u.LecturerId == currentUserId && 
+                               u.Classes.Any(c => c.ClassId == classId)) 
                     .Select(u => new
                     {
                         UnitId = u.UnitId,
@@ -610,7 +631,10 @@ namespace GuidanceTracker.Controllers
         }
 
 
-
+        /// <summary>
+        /// updates the status change for the issues
+        /// </summary>
+        
         [HttpPost]
         public JsonResult UpdateIssueStatus(int issueId, string status)
         {
