@@ -331,6 +331,25 @@ public class MetricsController : Controller
             .OrderByDescending(c => c.count)
             .ToList();
 
+        var byStatus = query
+            .GroupBy(i => i.IssueStatus)
+            .Select(g => new
+            {
+                status = g.Key.ToString(),
+                count = g.Count()
+            })
+            .ToList();
+
+        var activeCount = byStatus.Where(s => s.status == "New" || s.status == "InProgress").Sum(s => s.count);
+        var archivedCount = byStatus.Where(s => s.status == "Archived").Sum(s => s.count);
+        var totalIssues = query.Count();
+        var resolutionRate = totalIssues > 0 ? (decimal)archivedCount / totalIssues * 100 : 0;
+
+        var archivedIssues = query.Where(i => i.IssueStatus == IssueStatus.Archived && i.UpdatedAt != default(DateTime)).ToList();
+        var avgResolutionDays = archivedIssues.Count > 0
+            ? archivedIssues.Average(i => (i.UpdatedAt - i.CreatedAt).TotalDays)
+            : 0;
+
         var byUnit = new List<object>();
         if (classId.HasValue)
         {
@@ -391,12 +410,20 @@ public class MetricsController : Controller
             prevQuery = prevQuery.Where(i => i.IssueTitle == issueType.Value);
 
         var prevPeriodCount = prevQuery.Count();
+        var prevArchivedCount = prevQuery.Where(i => i.IssueStatus == IssueStatus.Archived).Count();
+        var prevResolutionRate = prevPeriodCount > 0 ? (decimal)prevArchivedCount / prevPeriodCount * 100 : 0;
 
         /// <summary> prepare response  </summary>
         var result = new
         {
             totalIssues = query.Count(),
             percentageChange = CalculatePercentageChange(query.Count(), prevPeriodCount),
+            activeIssues = activeCount,
+            archivedIssues = archivedCount,
+            resolutionRate = resolutionRate,
+            resolutionRateChange = CalculatePercentageChange((int)resolutionRate, (int)prevResolutionRate),
+            averageResolutionDays = avgResolutionDays,
+            byStatus = byStatus,
             dailyTrends = query
                 .GroupBy(i => DbFunctions.TruncateTime(i.CreatedAt))
                 .Select(g => new

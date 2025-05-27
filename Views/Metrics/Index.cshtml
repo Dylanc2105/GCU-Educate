@@ -527,7 +527,7 @@
                     }
                 }
             });
-            
+
 
 
 
@@ -630,7 +630,7 @@
                 resolutionRate: @Model.ResolutionRate,
                 resolutionRateChange: @Model.ResolutionRateChange,
                 averageResolutionDays: @Model.AverageResolutionDays,
-                byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.DisplayName, count = s.Count }))),
+                    byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.Status.ToString(), count = s.Count }))),
                 dailyTrends: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => new { date = d.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), count = d.Count }))),
                 byType: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => new { issueType = t.DisplayName, count = t.Count }))),
                 byClass: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => new { className = c.ClassName, count = c.Count }))),
