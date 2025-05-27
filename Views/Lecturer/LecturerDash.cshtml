@@ -15,10 +15,11 @@
             padding: 0;
         }
 
-        .stat-icon {
-            color: #7F3D98;
-            font-size: 70px;
+        .stat-icon-img {
+            width: 70px;
+            height: 70px;
             margin-bottom: 10px;
+            object-fit: contain;
         }
 
         .stat-title {
@@ -78,8 +79,6 @@
                 margin-bottom: 4px;
             }
     </style>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -101,7 +100,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <i class="fa-solid fa-file stat-icon"></i>
+                        <img src="~/Images/Icons/PURPLE/issues.png" class="stat-icon-img" alt="Issues" />
                         <p class="stat-title">Active Issues</p>
                         <p class="stat-number">@Model.ActiveIssuesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "view-more-link" })</p>
@@ -113,7 +112,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <i class="fa-solid fa-comments stat-icon"></i>
+                        <img src="~/Images/Icons/PURPLE/messages.png" class="stat-icon-img" alt="Messages" />
                         <p class="stat-title">New Messages</p>
                         <p class="stat-number">@Model.NewMessagesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
@@ -125,7 +124,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <i class="fa-solid fa-scroll stat-icon"></i>
+                        <img src="~/Images/Icons/PURPLE/posts.png" class="stat-icon-img" alt="Posts" />
                         <p class="stat-title">New Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
                         <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
