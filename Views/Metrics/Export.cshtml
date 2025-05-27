@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Export";
-    Layout = null; 
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -76,6 +76,30 @@
                 font-size: 12px;
                 color: #666;
             }
+
+        .summary-card.warning {
+            border-left: 4px solid #ffc107;
+        }
+
+        .summary-card.success {
+            border-left: 4px solid #198754;
+        }
+
+        .summary-card.danger {
+            border-left: 4px solid #dc3545;
+        }
+
+        .value.warning {
+            color: #ffc107;
+        }
+
+        .value.success {
+            color: #198754;
+        }
+
+        .value.danger {
+            color: #dc3545;
+        }
 
         .section {
             margin-bottom: 30px;
@@ -163,15 +187,64 @@
             gap: 20px;
         }
 
+        .three-column {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
         .column {
             flex: 1;
+        }
+
+        .insights-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .insight-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-success {
+            background-color: #d1e7dd;
+            border-left: 4px solid #198754;
+        }
+
+        .insight-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .insight-danger {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+
+        .insight-info {
+            background-color: #d1ecf1;
+            border-left: 4px solid #0dcaf0;
+        }
+
+        .insight-title {
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
         @@media print {
             body {
                 margin: 0;
                 padding: 20px;
-                background-color: white !important;
+                background-color: white;
                 -webkit-print-color-adjust: exact;
             }
 
@@ -198,7 +271,11 @@
                 break-inside: avoid;
             }
 
-            .two-column {
+            .two-column, .three-column {
+                page-break-inside: avoid;
+            }
+
+            .insights-section {
                 page-break-inside: avoid;
             }
         }
@@ -241,6 +318,28 @@
             </div>
         </div>
 
+        <div class="summary-card warning">
+            <h3>Active Issues</h3>
+            <div class="value warning">@Model.ActiveIssues</div>
+            <div class="sub-text">New & In Progress</div>
+        </div>
+
+        <div class="summary-card success">
+            <h3>Resolved Issues</h3>
+            <div class="value success">@Model.ArchivedIssues</div>
+            <div class="sub-text">Archived</div>
+        </div>
+
+        <div class="summary-card">
+            <h3>Resolution Rate</h3>
+            <div class="value">@Model.ResolutionRate.ToString("0.0")%</div>
+            <div class="sub-text @(Model.ResolutionRateChange >= 0 ? "trend-negative" : "trend-positive")">
+                @(Model.ResolutionRateChange >= 0 ? "↑" : "↓") @Math.Abs(Model.ResolutionRateChange).ToString("0.0")% vs previous period
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-section">
         @{
             var peakDay = Model.DailyTrends.OrderByDescending(d => d.Count).FirstOrDefault();
         }
@@ -276,6 +375,67 @@
                 <div class="sub-text">@topClass.Count issues</div>
             </div>
         }
+
+        <div class="summary-card">
+            <h3>Avg. Resolution Time</h3>
+            <div class="value">@Model.AverageResolutionDays.ToString("0.0")</div>
+            <div class="sub-text">days</div>
+        </div>
+    </div>
+
+    <div class="insights-section">
+        <h2 style="margin-top: 0; border-bottom: none; color: #7F3D98;">Key Insights & Analysis</h2>
+
+        @{
+            var totalTickets = Model.ActiveIssues + Model.ArchivedIssues;
+            var activePercentage = totalTickets > 0 ? (Model.ActiveIssues * 100.0m / totalTickets) : 0;
+        }
+
+        @if (Model.ActiveIssues > Model.ArchivedIssues && Model.ActiveIssues > 10)
+        {
+            <div class="insight-item insight-warning">
+                <div class="insight-title">High Active Issue Backlog</div>
+                There are @Model.ActiveIssues active issues compared to @Model.ArchivedIssues resolved issues (@activePercentage.ToString("0.1")% unresolved). Consider prioritizing resolution of outstanding cases.
+            </div>
+        }
+        else if (Model.ResolutionRate > 80)
+        {
+            <div class="insight-item insight-success">
+                <div class="insight-title">Excellent Resolution Performance</div>
+                With a @Model.ResolutionRate.ToString("0.1")% resolution rate, the team is effectively managing issues.
+            </div>
+        }
+
+        @if (Model.AverageResolutionDays > 14)
+        {
+            <div class="insight-item insight-danger">
+                <div class="insight-title">Slow Resolution Times</div>
+                Average resolution time is @Model.AverageResolutionDays.ToString("0.1") days, which may need attention to improve efficiency.
+            </div>
+        }
+        else if (Model.AverageResolutionDays < 3)
+        {
+            <div class="insight-item insight-success">
+                <div class="insight-title">Rapid Resolution Times</div>
+                Issues are being resolved very quickly (average @Model.AverageResolutionDays.ToString("0.1") days), indicating efficient processes.
+            </div>
+        }
+
+        @if (Math.Abs(Model.PercentageChange) > 20)
+        {
+            <div class="insight-item @(Model.PercentageChange > 0 ? "insight-danger" : "insight-success")">
+                <div class="insight-title">Significant Trend Change</div>
+                Issues are @Math.Abs(Model.PercentageChange).ToString("0.1")% @(Model.PercentageChange > 0 ? "higher" : "lower") than the previous period, representing a significant change that requires attention.
+            </div>
+        }
+
+        @if (totalTickets == 0)
+        {
+            <div class="insight-item insight-success">
+                <div class="insight-title">No Issues Recorded</div>
+                No issues were recorded for the selected period, indicating excellent behavior management.
+            </div>
+        }
     </div>
 
     <div class="section">
@@ -308,7 +468,7 @@
         }
     </div>
 
-    <div class="two-column">
+    <div class="three-column">
         <div class="column">
             <div class="section">
                 <h2>Issues by Type</h2>
@@ -319,7 +479,7 @@
                             <tr>
                                 <th>Issue Type</th>
                                 <th>Count</th>
-                                <th>Percentage</th>
+                                <th>%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -341,6 +501,42 @@
                 else
                 {
                     <p>No issue type data available.</p>
+                }
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="section">
+                <h2>Issues by Status</h2>
+                @if (Model.ByStatus.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Count</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var totalStatusIssues = Model.ByStatus.Sum(s => s.Count);
+                            }
+                            @foreach (var status in Model.ByStatus)
+                            {
+                                var statusPercentage = totalStatusIssues > 0 ? (status.Count * 100.0m / totalStatusIssues) : 0;
+                                <tr>
+                                    <td>@status.DisplayName</td>
+                                    <td>@status.Count</td>
+                                    <td>@statusPercentage.ToString("0.1")%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No status data available.</p>
                 }
             </div>
         </div>
@@ -385,14 +581,20 @@
                     <tr>
                         <th>Unit Name</th>
                         <th>Issues Count</th>
+                        <th>Percentage of Total</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @{
+                        var totalUnitIssues = Model.ByUnit.Sum(u => u.Count);
+                    }
                     @foreach (var unit in Model.ByUnit.Take(15))
                     {
+                        var unitPercentage = totalUnitIssues > 0 ? (unit.Count * 100.0m / totalUnitIssues) : 0;
                         <tr>
                             <td>@unit.UnitName</td>
                             <td>@unit.Count</td>
+                            <td>@unitPercentage.ToString("0.1")%</td>
                         </tr>
                     }
                 </tbody>
@@ -401,7 +603,7 @@
     }
 
     <div class="footer">
-        <p>This report was automatically generated by the Guidance Tracker system.</p>
+        <p>This report was automatically generated by the City of Glasgow College Guidance Tracker system.</p>
         <p>For questions or support, please contact your system administrator.</p>
     </div>
 </body>

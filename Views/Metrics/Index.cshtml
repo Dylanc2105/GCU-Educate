@@ -1,6 +1,10 @@
 ﻿@model GuidanceTracker.Models.ViewModels.MetricsViewModel
 @using Newtonsoft.Json
 
+@{
+    ViewBag.Title = "Metrics Dashboard";
+}
+<h1 class="dashboard-title">Metrics Dashboard</h1>
 <div class="metrics-dashboard">
     <!-- filters section -->
     <div class="filters-panel card mb-4">
@@ -154,64 +158,130 @@
         </div>
     </div>
 
-    <!-- charts for daily trends and issue distribution -->
+    <!-- status summary cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card summary-card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">Active Issues</h5>
+                    <h2 id="activeIssuesCount" class="text-warning">@Model.ActiveIssues</h2>
+                    <small class="text-muted">New & In Progress</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Resolved Issues</h5>
+                    <h2 id="archivedIssuesCount" class="text-success">@Model.ArchivedIssues</h2>
+                    <small class="text-muted">Archived</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Resolution Rate</h5>
+                    <h2 id="resolutionRate">@Model.ResolutionRate.ToString("0.0")%</h2>
+                    <div class="trend @(Model.ResolutionRateChange >= 0 ? "text-success" : "text-danger")" id="resolutionTrend">
+                        @(Model.ResolutionRateChange >= 0 ? "↑" : "↓") @Math.Abs(Model.ResolutionRateChange).ToString("0.0")%
+                        <span class="text-muted">vs previous period</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Avg. Resolution Time</h5>
+                    <h2 id="avgResolutionDays">@Model.AverageResolutionDays.ToString("0.0")</h2>
+                    <small class="text-muted">days</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- charts for daily trends, issue status and issue distribution -->
     <div class="row mb-3">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card" style="height: 100%;">
                 <div class="card-body">
                     <h5 class="card-title">Daily Trends</h5>
-                    <canvas id="dailyTrendChart" height="200"></canvas>
+                    <div style="height: 450px;">
+                        <canvas id="dailyTrendChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Issue Distribution</h5>
-                    <canvas id="issueTypeChart" height="200"></canvas>
+            <div class="row">
+                <div class="col-12 mb-2">
+                    <div class="card">
+                        <div class="card-body py-2">
+                            <h5 class="card-title">Issue Distribution</h5>
+                            <div style="height: 200px;">
+                                <canvas id="issueTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body py-2">
+                            <h5 class="card-title">Issue Status</h5>
+                            <div style="height: 200px;">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- issues by class and issues by unit charts -->
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Issues by Class</h5>
-                    <canvas id="classChart" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Issues by Unit</h5>
-                    <canvas id="unitChart" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- insights and trends -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Insights & Trends</h5>
-                    <div id="insightsContainer"></div>
-                </div>
+<!-- issues by class and issues by unit charts -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Issues by Class</h5>
+                <canvas id="classChart" height="200"></canvas>
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Issues by Unit</h5>
+                <canvas id="unitChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- insights and trends -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Insights & Trends</h5>
+                <div id="insightsContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script>
-        var dailyTrendChart, issueTypeChart, classChart, unitChart;
+        var dailyTrendChart, issueTypeChart, classChart, unitChart, statusChart;
 
         $(document).ready(function() {
             renderCharts();
@@ -319,6 +389,19 @@
                 trendIndicator.removeClass('text-danger text-success')
                     .addClass(data.percentageChange >= 0 ? 'text-danger' : 'text-success');
 
+                /// <summary> update status-related cards </summary>
+                $('#activeIssuesCount').text(data.activeIssues);
+                $('#archivedIssuesCount').text(data.archivedIssues);
+                $('#resolutionRate').text(data.resolutionRate.toFixed(1) + '%');
+                $('#avgResolutionDays').text(data.averageResolutionDays.toFixed(1));
+
+                var resolutionTrend = $('#resolutionTrend');
+                var resolutionTrendText = (data.resolutionRateChange >= 0 ? "↑" : "↓") +
+                    Math.abs(data.resolutionRateChange).toFixed(1) + "% ";
+                resolutionTrend.html(resolutionTrendText + "<span class='text-muted'>vs previous period</span>");
+                resolutionTrend.removeClass('text-danger text-success')
+                    .addClass(data.resolutionRateChange >= 0 ? 'text-success' : 'text-danger');
+
                 /// <summary> update peak day </summary>
                 if (data.dailyTrends && data.dailyTrends.length > 0) {
                     var peakDay = data.dailyTrends.reduce(function(prev, current) {
@@ -357,6 +440,7 @@
             var issueTypeCtx = document.getElementById('issueTypeChart').getContext('2d');
             var classCtx = document.getElementById('classChart').getContext('2d');
             var unitCtx = document.getElementById('unitChart').getContext('2d');
+            var statusCtx = document.getElementById('statusChart').getContext('2d');
 
             dailyTrendChart = new Chart(dailyTrendCtx, {
                 type: 'bar',
@@ -372,6 +456,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -382,6 +467,7 @@
                     }
                 }
             });
+
 
             issueTypeChart = new Chart(issueTypeCtx, {
                 type: 'doughnut',
@@ -397,13 +483,53 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'right'
+                            position: 'right',
+                            labels: {
+                                boxWidth: 8,
+                                font: {
+                                    size: 11
+                                }
+                            }
                         }
                     }
                 }
             });
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => s.DisplayName))),
+                    datasets: [{
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => s.Count))),
+                        backgroundColor: [
+                            '#ffc107',
+                            '#fd7e14',
+                            '#198754'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 8,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+
+
 
             classChart = new Chart(classCtx, {
                 type: 'bar',
@@ -468,9 +594,17 @@
             }
 
             if (issueTypeChart && data.byType) {
-                issueTypeChart.data.labels = data.byType.map(function(t) { return t.issueType; });
-                issueTypeChart.data.datasets[0].data = data.byType.map(function(t) { return t.count; });
+                issueTypeChart.data.labels = data.byType.map(function (t) { return t.issueType; });
+                issueTypeChart.data.datasets[0].data = data.byType.map(function (t) { return t.count; });
                 issueTypeChart.update();
+            }
+
+            if (statusChart && data.byStatus) {
+                statusChart.data.labels = data.byStatus.map(function (s) {
+                    return s.status.replace('InProgress', 'In Progress');
+                });
+                statusChart.data.datasets[0].data = data.byStatus.map(function (s) { return s.count; });
+                statusChart.update();
             }
 
             if (classChart && data.byClass) {
@@ -491,6 +625,12 @@
             var modelData = {
                 totalIssues: @Model.TotalIssues,
                 percentageChange: @Model.PercentageChange,
+                activeIssues: @Model.ActiveIssues,
+                archivedIssues: @Model.ArchivedIssues,
+                resolutionRate: @Model.ResolutionRate,
+                resolutionRateChange: @Model.ResolutionRateChange,
+                averageResolutionDays: @Model.AverageResolutionDays,
+                byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.DisplayName, count = s.Count }))),
                 dailyTrends: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => new { date = d.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), count = d.Count }))),
                 byType: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => new { issueType = t.DisplayName, count = t.Count }))),
                 byClass: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => new { className = c.ClassName, count = c.Count }))),
@@ -522,6 +662,102 @@
         function generateInsights(data) {
             var insights = [];
 
+            /// <summary> status insights. active vs archived </summary>
+            if (data.activeIssues !== undefined && data.archivedIssues !== undefined) {
+                var totalIssues = data.activeIssues + data.archivedIssues;
+                var activePercentage = totalIssues > 0 ? (data.activeIssues / totalIssues * 100) : 0;
+                var resolutionRate = totalIssues > 0 ? (data.archivedIssues / totalIssues * 100) : 0;
+
+                if (data.activeIssues > data.archivedIssues && data.activeIssues > 10) {
+                    insights.push({
+                        title: "High Active Issue Backlog",
+                        description: "There are " + data.activeIssues + " active issues compared to " + data.archivedIssues +
+                            " resolved issues (" + activePercentage.toFixed(1) + "% unresolved). Consider prioritizing resolution of outstanding cases.",
+                        severity: 'warning'
+                    });
+                } else if (resolutionRate > 80) {
+                    insights.push({
+                        title: "Excellent Resolution Performance",
+                        description: "With a " + resolutionRate.toFixed(1) + "% resolution rate (" + data.archivedIssues +
+                            " resolved out of " + totalIssues + " total), the team is effectively managing issues.",
+                        severity: 'success'
+                    });
+                } else if (resolutionRate < 40 && totalIssues > 5) {
+                    insights.push({
+                        title: "Low Resolution Rate Concern",
+                        description: "Only " + resolutionRate.toFixed(1) + "% of issues are resolved (" + data.archivedIssues +
+                            " out of " + totalIssues + "). Consider reviewing resolution processes and allocating more resources to active cases.",
+                        severity: 'danger'
+                    });
+                }
+
+                if (data.activeIssues === 0 && data.archivedIssues > 0) {
+                    insights.push({
+                        title: "All Issues Resolved",
+                        description: "Excellent work! All " + data.archivedIssues + " issues have been resolved with no active cases remaining.",
+                        severity: 'success'
+                    });
+                }
+            }
+
+            /// <summary> resolution time insights </summary>
+            if (data.averageResolutionDays !== undefined && data.archivedIssues > 0) {
+                if (data.averageResolutionDays > 14) {
+                    insights.push({
+                        title: "Slow Resolution Times",
+                        description: "Average resolution time is " + data.averageResolutionDays.toFixed(1) +
+                            " days, which is quite lengthy. Consider streamlining the resolution process or providing additional support to reduce response times.",
+                        severity: 'danger'
+                    });
+                } else if (data.averageResolutionDays > 7) {
+                    insights.push({
+                        title: "Moderate Resolution Times",
+                        description: "Average resolution time is " + data.averageResolutionDays.toFixed(1) +
+                            " days. While acceptable, there may be room for improvement in resolution efficiency.",
+                        severity: 'warning'
+                    });
+                } else if (data.averageResolutionDays < 3) {
+                    insights.push({
+                        title: "Rapid Resolution Times",
+                        description: "Issues are being resolved very quickly (average " + data.averageResolutionDays.toFixed(1) +
+                            " days), indicating highly efficient problem-solving processes.",
+                        severity: 'success'
+                    });
+                }
+            }
+
+            /// <summary> resolution rate trend insights </summary>
+            if (data.resolutionRateChange !== undefined) {
+                if (data.resolutionRateChange > 15) {
+                    insights.push({
+                        title: "Significant Resolution Improvement",
+                        description: "Resolution rate has improved by " + data.resolutionRateChange.toFixed(1) +
+                            "% compared to the previous period, showing excellent progress in issue management.",
+                        severity: 'success'
+                    });
+                } else if (data.resolutionRateChange > 5) {
+                    insights.push({
+                        title: "Improving Resolution Performance",
+                        description: "Resolution rate has improved by " + data.resolutionRateChange.toFixed(1) +
+                            "% compared to the previous period, indicating positive trends in issue resolution.",
+                        severity: 'info'
+                    });
+                } else if (data.resolutionRateChange < -15) {
+                    insights.push({
+                        title: "Significant Resolution Decline",
+                        description: "Resolution rate has decreased by " + Math.abs(data.resolutionRateChange).toFixed(1) +
+                            "% compared to the previous period. Immediate review of current workload and processes is recommended.",
+                        severity: 'danger'
+                    });
+                } else if (data.resolutionRateChange < -5) {
+                    insights.push({
+                        title: "Declining Resolution Performance",
+                        description: "Resolution rate has decreased by " + Math.abs(data.resolutionRateChange).toFixed(1) +
+                            "% compared to the previous period. Monitor trends and consider process improvements.",
+                        severity: 'warning'
+                    });
+                }
+            }
             /// <summary> overall trends </summary>
             if (data.percentageChange !== 0) {
                 var trendSeverity = 'info';
