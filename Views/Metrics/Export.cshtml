@@ -383,60 +383,7 @@
         </div>
     </div>
 
-    <div class="insights-section">
-        <h2 style="margin-top: 0; border-bottom: none; color: #7F3D98;">Key Insights & Analysis</h2>
-
-        @{
-            var totalTickets = Model.ActiveIssues + Model.ArchivedIssues;
-            var activePercentage = totalTickets > 0 ? (Model.ActiveIssues * 100.0m / totalTickets) : 0;
-        }
-
-        @if (Model.ActiveIssues > Model.ArchivedIssues && Model.ActiveIssues > 10)
-        {
-            <div class="insight-item insight-warning">
-                <div class="insight-title">High Active Issue Backlog</div>
-                There are @Model.ActiveIssues active issues compared to @Model.ArchivedIssues resolved issues (@activePercentage.ToString("0.1")% unresolved). Consider prioritizing resolution of outstanding cases.
-            </div>
-        }
-        else if (Model.ResolutionRate > 80)
-        {
-            <div class="insight-item insight-success">
-                <div class="insight-title">Excellent Resolution Performance</div>
-                With a @Model.ResolutionRate.ToString("0.1")% resolution rate, the team is effectively managing issues.
-            </div>
-        }
-
-        @if (Model.AverageResolutionDays > 14)
-        {
-            <div class="insight-item insight-danger">
-                <div class="insight-title">Slow Resolution Times</div>
-                Average resolution time is @Model.AverageResolutionDays.ToString("0.1") days, which may need attention to improve efficiency.
-            </div>
-        }
-        else if (Model.AverageResolutionDays < 3)
-        {
-            <div class="insight-item insight-success">
-                <div class="insight-title">Rapid Resolution Times</div>
-                Issues are being resolved very quickly (average @Model.AverageResolutionDays.ToString("0.1") days), indicating efficient processes.
-            </div>
-        }
-
-        @if (Math.Abs(Model.PercentageChange) > 20)
-        {
-            <div class="insight-item @(Model.PercentageChange > 0 ? "insight-danger" : "insight-success")">
-                <div class="insight-title">Significant Trend Change</div>
-                Issues are @Math.Abs(Model.PercentageChange).ToString("0.1")% @(Model.PercentageChange > 0 ? "higher" : "lower") than the previous period, representing a significant change that requires attention.
-            </div>
-        }
-
-        @if (totalTickets == 0)
-        {
-            <div class="insight-item insight-success">
-                <div class="insight-title">No Issues Recorded</div>
-                No issues were recorded for the selected period, indicating excellent behavior management.
-            </div>
-        }
-    </div>
+    
 
     <div class="section">
         <h2>Daily Trend Analysis</h2>

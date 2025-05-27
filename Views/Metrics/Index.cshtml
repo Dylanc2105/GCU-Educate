@@ -244,45 +244,65 @@
     </div>
 
 
-<!-- issues by class and issues by unit charts -->
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Issues by Class</h5>
-                <canvas id="classChart" height="200"></canvas>
+    <!-- issues by class and issues by unit charts -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Issues by Class</h5>
+                    <canvas id="classChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Issues by Unit</h5>
+                    <canvas id="unitChart" height="200"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Issues by Unit</h5>
-                <canvas id="unitChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- insights and trends -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Insights & Trends</h5>
-                <div id="insightsContainer"></div>
+    <!-- insights and trends -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Insights & Trends</h5>
+                    <div id="insightsContainer"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 </div>
 
 @section Scripts {
+    <style>
+        #insightsContainer {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+            #insightsContainer .alert {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            
+            #insightsContainer * {
+                transition: none !important;
+                animation: none !important;
+            }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script>
         var dailyTrendChart, issueTypeChart, classChart, unitChart, statusChart;
-
         $(document).ready(function() {
             renderCharts();
             /// <summary> sets up filter change events </summary>
@@ -527,7 +547,7 @@
                     }
                 }
             });
-            
+
 
 
 
@@ -630,7 +650,7 @@
                 resolutionRate: @Model.ResolutionRate,
                 resolutionRateChange: @Model.ResolutionRateChange,
                 averageResolutionDays: @Model.AverageResolutionDays,
-                byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.DisplayName, count = s.Count }))),
+                    byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.Status.ToString(), count = s.Count }))),
                 dailyTrends: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => new { date = d.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), count = d.Count }))),
                 byType: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => new { issueType = t.DisplayName, count = t.Count }))),
                 byClass: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => new { className = c.ClassName, count = c.Count }))),
