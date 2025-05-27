@@ -419,12 +419,21 @@ namespace GuidanceTracker.Controllers
         {
             var ticket = db.Issues
                 .Include("Student")
-                .Include("Comments") // Ensure comments are included
+                .Include("Comments") 
+                .Include("Lecturer")
                 .FirstOrDefault(t => t.IssueId == id);
 
 
             /// <summary> karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student. </summary>
             var currentUserId = User.Identity.GetUserId();
+
+            var issueUnit = db.Units
+                .Where(u => u.LecturerId == ticket.LecturerId &&
+                           u.Classes.Any(c => c.ClassId == ticket.Student.ClassId))
+                .FirstOrDefault();
+
+            ViewBag.IssueUnit = issueUnit;
+
             if (User.IsInRole("Lecturer"))
             {
                 ViewBag.LecturerUnits = db.Units

@@ -14,6 +14,7 @@
             <h1>@Model.IssueTitle</h1>
             <p><strong>Student:</strong> @Model.Student.FirstName @Model.Student.LastName</p>
             <p><strong>Raised by:</strong> @Model.Lecturer.FirstName @Model.Lecturer.LastName</p>
+            <p><strong>Unit:</strong> @(ViewBag.IssueUnit != null ? ((GuidanceTracker.Models.Unit)ViewBag.IssueUnit).UnitName : "Not specified")</p>
             <!-- karina: added a dropdown so status can be changed -->
             @if (User.IsInRole("GuidanceTeacher"))
             {
