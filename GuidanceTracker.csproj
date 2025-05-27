@@ -489,6 +489,16 @@
     <Content Include="Images\Icons\my voice.png" />
     <Content Include="Images\Icons\Notifacations.png" />
     <Content Include="Images\Icons\posts.png" />
+    <Content Include="Images\Icons\PURPLE\calendar.png" />
+    <Content Include="Images\Icons\PURPLE\feedback.png" />
+    <Content Include="Images\Icons\PURPLE\Issues.png" />
+    <Content Include="Images\Icons\PURPLE\Messages.png" />
+    <Content Include="Images\Icons\PURPLE\Metrics.png" />
+    <Content Include="Images\Icons\PURPLE\my voice.png" />
+    <Content Include="Images\Icons\PURPLE\posts.png" />
+    <Content Include="Images\Icons\PURPLE\RequestAppointment.png" />
+    <Content Include="Images\Icons\PURPLE\settings.png" />
+    <Content Include="Images\Icons\PURPLE\student.png" />
     <Content Include="Images\Icons\settings.png" />
     <Content Include="Images\Icons\student.png" />
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
@@ -1544,6 +1554,9 @@
     <Content Include="Scripts\kendo\2025.1.227\messages\kendo.messages.zh-TW.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\site.js" />
+    <Content Include="Sounds\notification.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -2658,11 +2671,8 @@
     <Content Include="Views\GuidanceTeacher\_CalendarPartial.cshtml" />
     <Content Include="Views\Appointment\SelectStudentForAppointment.cshtml" />
     <Content Include="Views\Notification\AllNotifications.cshtml" />
-
     <Content Include="Views\Metrics\Export.cshtml" />
-
     <Content Include="Views\CurriculumHead\CurriculumHeadDash.cshtml" />
-
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

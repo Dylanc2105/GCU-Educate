@@ -479,7 +479,7 @@
         }
 
         <!-- Students -->
-        @if (Request.IsAuthenticated && ( User.IsInRole("GuidanceTeacher")))
+        @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher")))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
                 <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
@@ -550,61 +550,75 @@
     @RenderSection("scripts", required: false)
 
     <script>
-        // Wait for DOM to finish loading
-        $(document).ready(function () {
-
-            const bell = $('#notificationsDropdown');
-
-            // When bell is clicked, fetch recent notifications via AJAX
-            bell.on('click', function () {
-
-                $.get('/Notification/GetRecentNotifications', function (data) {
-                    // Inject the returned partial view HTML into the dropdown container
-                    $('#notificationContent')
-                        .html(data)     // Replace old content
-                        .addClass('show')       // Bootstrap old content
-                        .css('display', 'block'); // Ensure it's visible
-                }).fail(function (xhr, status, error) {
-                    // Log failure if the request fails
-                    console.error("❌ AJAX failed:", error);
-                });
-            });
-        });
+        let previousNotificationIds = [];
 
         $(document).ready(function () {
             const bell = $('#notificationsDropdown');
             const dropdown = $('#notificationContent');
 
-            // Toggle dropdown visibility when bell is clicked
             bell.on('click', function (e) {
-                e.stopPropagation(); // Prevent dropdown from closing on itself
-                dropdown.toggle();   // Manually toggle dropdown
+                e.stopPropagation();
+
+                $.get('/Notification/GetRecentNotifications', function (data) {
+                    // Extract notification IDs from the HTML (assuming each has ID like 'notification-123')
+                    const newIds = [];
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                        const id = el.id.split('-')[1];
+                        if (id) newIds.push(id);
+                    });
+
+                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                        const audio = document.getElementById('notificationSound');
+                        if (audio) audio.play();
+                    }
+
+                    previousNotificationIds = newIds;
+
+                    $('#notificationContent').html(data).addClass('show').css('display', 'block');
+                }).fail(function (xhr, status, error) {
+                    console.error("❌ AJAX failed:", error);
+                });
             });
 
-            // Clicking anywhere else in the page will hide the dropdown
             $(document).on('click', function (e) {
-                if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0) {
-                    dropdown.hide();
+                if (!$('#notificationContent').is(e.target) && $('#notificationContent').has(e.target).length === 0) {
+                    $('#notificationContent').hide();
+                }
+            });
+
+            // Init badge
+            updateNotificationBadge();
+
+            setTimeout(function () {
+                $(".alert-success").fadeOut("slow");
+            }, 3000);
+
+            // Set toggle from localStorage
+            const setting = localStorage.getItem('playNotificationSound') === 'true';
+            document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                if (cb.parentElement.previousElementSibling?.textContent?.includes("Notification Sounds")) {
+                    cb.checked = setting;
                 }
             });
         });
 
-        // Sends AJAX POST to mark a notification as read, then redirects to its target page
-        function markAsRead(id, url) {
-            // Remove bold style
-            const item = document.getElementById("notification-" + id);
-            if (item) {
-                item.classList.remove("font-weight-bold");
-            }
-
-            // Send request to backend to update IsRead = true
-            $.post('/Notification/MarkAsRead', { id: id }, function () {
-                window.location.href = url; // redirect to notification's target page
-            }).fail(function () {
-                // Even if marking fails, proceed with redirect
-                window.location.href = url;
-            });
+        function toggleSoundSetting(enabled) {
+            localStorage.setItem('playNotificationSound', enabled);
         }
+
+        function openSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.add('show-modal');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.remove('show-modal');
+        }
+
         function updateNotificationBadge() {
             $.get('/Notification/GetUnreadCount', function (data) {
                 const badge = $('#notificationBadge');
@@ -617,19 +631,28 @@
             });
         }
 
-        $(document).ready(function () {
-            updateNotificationBadge(); // on page load
-        });
+        function markAsRead(id, url) {
+            const item = document.getElementById("notification-" + id);
+            if (item) item.classList.remove("font-weight-bold");
 
-        $(document).ready(function () {
-            setTimeout(function () {
-                $(".alert-success").fadeOut("slow");
-            }, 3000);
-        });
+            $.post('/Notification/MarkAsRead', { id: id }, function () {
+                window.location.href = url;
+            }).fail(function () {
+                window.location.href = url;
+            });
+        }
 
-
+        function toggleWelcomeSetting(enabled) {
+            localStorage.setItem('hideWelcome', enabled);
+            const welcomeCard = document.getElementById('welcomeCard');
+            if (welcomeCard) {
+                welcomeCard.style.display = enabled ? 'none' : '';
+            }
+        }
 
     </script>
+
+
     <!-- ⚙️ Settings Modal -->
     <div id="settingsModal" class="modal-overlay">
 
@@ -642,6 +665,7 @@
             <!-- Preferences Section -->
             <div class="setting-section">
                 <h4 class="section-title">Preferences</h4>
+
                 <div class="setting-row">
                     <span>Disable Email Alerts</span>
                     <label class="toggle-label">
@@ -649,34 +673,33 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-            </div>
 
-            <!-- Notifications Section -->
-            <div class="setting-section">
-                <h4 class="section-title">Notifications</h4>
                 <div class="setting-row">
-                    <span>Disable all notifications</span>
+                    <span>Play Notification Sounds</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" onchange="toggleSoundSetting(this.checked)" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <span>Hide Welcome Message</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" onchange="toggleWelcomeSetting(this.checked)" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <span>Disable Secure Timeout</span>
                     <label class="toggle-label">
                         <input type="checkbox" />
                         <span class="slider"></span>
                     </label>
                 </div>
+
                 <div class="setting-row">
-                    <span>Disable student notifications</span>
-                    <label class="toggle-label">
-                        <input type="checkbox" />
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="setting-row">
-                    <span>Disable post notifications</span>
-                    <label class="toggle-label">
-                        <input type="checkbox" />
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="setting-row">
-                    <span>Disable issue notifications</span>
+                    <span>Appear Offline</span>
                     <label class="toggle-label">
                         <input type="checkbox" />
                         <span class="slider"></span>
@@ -687,14 +710,17 @@
             <!-- Account Info Section -->
             <div class="setting-section">
                 <h4 class="section-title">Account Info</h4>
+
                 <div class="setting-row">
                     <span>My details</span>
                     <button class="setting-btn" onclick="viewMyDetails()">View Details</button>
                 </div>
+
                 <div class="setting-row">
-                    <span>Notifacation History</span>
+                    <span>Notification History</span>
                     <button class="setting-btn" onclick="viewMyDetails()">View History</button>
                 </div>
+
                 <div class="setting-row">
                     <small style="color: gray;">
                         <span>Spotted an error: </span>
@@ -704,7 +730,6 @@
             </div>
         </div>
     </div>
-
-
+    <audio id="notificationSound" src="~/Sounds/notification.mp3" preload="auto"></audio>
 </body>
 </html>

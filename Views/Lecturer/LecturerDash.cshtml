@@ -6,7 +6,6 @@
 
 <title>@ViewBag.Title</title>
 
-
 <head>
     <style>
         body {
@@ -16,104 +15,148 @@
             padding: 0;
         }
 
-        .dashboard-container {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            padding: 20px;
-            gap: 20px;
+        .stat-icon {
+            color: #7F3D98;
+            font-size: 70px;
+            margin-bottom: 10px;
+        }
+
+        .stat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #7F3D98;
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #7F3D98;
+            margin-bottom: 10px;
+        }
+
+        .view-more-link {
+            font-size: 1rem;
+            color: #7F3D98;
+            text-decoration: underline;
         }
 
         .custom-card {
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s ease;
         }
 
             .custom-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        .welcome-card {
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+            .welcome-card h5 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #7F3D98;
+                margin-bottom: 5px;
+            }
+
+            .welcome-card p {
+                font-size: 1rem;
+                color: #555;
+                margin-bottom: 4px;
             }
     </style>
-    <!-- link for icons -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
-    <div class="dashboard-container">
+    <div class="container-fluid py-4">
         <div class="row g-4">
-            <!-- welcome text -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card" style="background-color: #F4F4F4">
+
+            <!-- Welcome Card -->
+            <div class="col-12" id="welcomeCard">
+                <div class="card welcome-card">
                     <div class="card-body">
-                        <h3 class="card-title">Hi, @Model.FirstName!</h3>
-                        <p class="card-text">Welcome to your Lecturer Dashboard. </p>
+                        <h5 class="card-title">Hi, @Model.FirstName!</h5>
+                        <p class="card-text">Welcome to your Lecturer Dashboard.</p>
                         <p class="text-muted" id="currentDateTime"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- active issues -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-file" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">Active Issues</p>
-                        <p class="h3" style="color: #7F3D98">@Model.ActiveIssuesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- new messages -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-comments" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Messages</p>
-                        <p class="h3" style="color: #7F3D98">@Model.NewMessagesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "text-muted text-decoration-none" })</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- announcements -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card" style="text-align:center">
+            <!-- Active Issues -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
                     <div class="card-body">
-                        <i class="fa-solid fa-scroll" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Posts</p>
-                        <p class="h3" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
+                        <i class="fa-solid fa-file stat-icon"></i>
+                        <p class="stat-title">Active Issues</p>
+                        <p class="stat-number">@Model.ActiveIssuesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
+
+            <!-- New Messages -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <i class="fa-solid fa-comments stat-icon"></i>
+                        <p class="stat-title">New Messages</p>
+                        <p class="stat-number">@Model.NewMessagesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Posts -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <i class="fa-solid fa-scroll stat-icon"></i>
+                        <p class="stat-title">New Posts</p>
+                        <p class="stat-number">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+        <script>
+            function updateClock() {
+                const now = new Date();
+                const formatted = now.toLocaleString('en-GB', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                document.getElementById('currentDateTime').innerText = formatted;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+    }
 </body>
-
-@section Scripts {
-
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/bootstrap")
-    <script>
-        // script to dynamically show the current date and time on the dash
-        function updateClock() {
-            const now = new Date();
-            const formatted = now.toLocaleString('en-GB', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-
-            document.getElementById('currentDateTime').innerText = formatted;
-        }
-        updateClock();
-
-        // updates the time every second
-        setInterval(updateClock, 1000);
-    </script>
-}
