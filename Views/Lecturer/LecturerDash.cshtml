@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #F4F4F4;
+            background-color: white;
             margin: 0;
             padding: 0;
         }
@@ -31,7 +31,7 @@
 
         .stat-number {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 400;
             color: #7F3D98;
             margin-bottom: 10px;
         }
@@ -59,7 +59,7 @@
             }
 
         .welcome-card {
-            background-color: #f4f4f4;
+            background-color: white;
             border-radius: 10px;
             padding: 16px 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -100,7 +100,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/issues.png" class="stat-icon-img" alt="Issues" />
+                        <img src="~/Images/Icons/PURPLE/issues.svg" class="stat-icon-img" alt="Issues" />
                         <p class="stat-title">Active Issues</p>
                         <p class="stat-number">@Model.ActiveIssuesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "view-more-link" })</p>
@@ -112,7 +112,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/messages.png" class="stat-icon-img" alt="Messages" />
+                        <img src="~/Images/Icons/PURPLE/messages.svg" class="stat-icon-img" alt="Messages" />
                         <p class="stat-title">New Messages</p>
                         <p class="stat-number">@Model.NewMessagesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
@@ -124,7 +124,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card custom-card text-center">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/posts.png" class="stat-icon-img" alt="Posts" />
+                        <img src="~/Images/Icons/PURPLE/posts.svg" class="stat-icon-img" alt="Posts" />
                         <p class="stat-title">New Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
                         <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
