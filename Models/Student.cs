@@ -31,6 +31,7 @@ namespace GuidanceTracker.Models
 
         public string FeedbackId { get; set; }
 
+
         
 
         public ICollection<MessageBoard> MessageBoards { get; set; }

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -55,10 +55,19 @@
       <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=7.7.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.7.7.2\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.Interfaces.8.0.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=7.7.0.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.System.Drawing.7.7.0\lib\net462\EPPlus.System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.14.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>packages\Humanizer.Core.2.14.1\lib\netstandard2.0\Humanizer.dll</HintPath>
@@ -139,6 +148,9 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Extensions.Primitives.8.0.0\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Net.Http.Headers, Version=2.3.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Net.Http.Headers.2.3.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
     </Reference>
@@ -178,12 +190,16 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Collections.Immutable, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Collections.Immutable.8.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Composition.AttributedModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -228,6 +244,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Xml.8.0.2\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
     <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
@@ -300,7 +319,9 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
+    <Compile Include="Controllers\ClassesController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\CurriculumHeadController.cs" />
     <Compile Include="Controllers\DetailedFeedbackController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
@@ -346,6 +367,10 @@
     <Compile Include="Models\SimpleFeedback.cs" />
     <Compile Include="Models\ViewModels\AppointmentsDashViewModel.cs" />
     <Compile Include="Models\ViewModels\AppointmentViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateClassViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateCourseViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateGuidanceTeacherViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateLecturerViewModel.cs" />
     <Compile Include="Models\ViewModels\CurriculumDashViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\CreateDetailedFeedbackViewModel.cs" />
     <Compile Include="Models\ViewModels\FeedbackViewModels\ReceivedFeedbackDashViewModel.cs" />
@@ -370,6 +395,10 @@
     <Compile Include="Models\ViewModels\StudentDashViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentDetailsViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentIssueSelectViewModel.cs" />
+    <Compile Include="Models\ViewModels\UploadClassesViewModel.cs" />
+    <Compile Include="Models\ViewModels\UploadCoursesViewModel.cs" />
+    <Compile Include="Models\ViewModels\UploadLecturersViewModel.cs" />
+    <Compile Include="Models\ViewModels\UploadStudentsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AppEmailService.cs" />
     <Compile Include="Services\NotificationService.cs" />
@@ -1565,7 +1594,6 @@
     <Content Include="Views\resetpassword\ResetCodeVerification.cshtml" />
     <Content Include="Views\resetpassword\ResetPassword.cshtml" />
     <Content Include="Views\Shared\ViewAllStudents.cshtml" />
-    <Content Include="Views\GuidanceTeacher\CreateStudent.cshtml" />
     <Content Include="Views\Issue\Index.cshtml" />
     <Content Include="Views\Issue\StudentIssue.cshtml" />
     <Content Include="Views\Issue\ViewIssue.cshtml" />
@@ -2651,9 +2679,20 @@
     <Content Include="Views\Appointment\SelectStudentForAppointment.cshtml" />
     <Content Include="Views\Notification\AllNotifications.cshtml" />
     <Content Include="Views\CurriculumHead\CurriculumHeadDash.cshtml" />
+    <Content Include="Views\CurriculumHead\EnrollmentAcademicOperationsCenter.cshtml" />
+    <Content Include="Views\GuidanceTeacher\Create.cshtml" />
+    <Content Include="Views\Lecturer\Create.cshtml" />
+    <Content Include="Views\Lecturer\UploadExcel.cshtml" />
+    <Content Include="Views\Course\Create.cshtml" />
+    <Content Include="Views\Course\UploadExcel.cshtml" />
+    <Content Include="Views\Classes\Create.cshtml" />
+    <Content Include="Views\Classes\UploadClasses.cshtml" />
+    <Content Include="Views\Student\Create.cshtml" />
+    <Content Include="Views\Student\UploadStudents.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Class\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>
@@ -2694,11 +2733,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

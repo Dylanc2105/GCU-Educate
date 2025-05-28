@@ -1,0 +1,348 @@
+﻿@model GuidanceTracker.Models.ViewModels.UploadStudentsViewModel
+
+@{
+    ViewBag.Title = "Upload Students from Excel";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Assuming this is your main layout
+}
+
+@* Display success/error messages from TempData *@
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@TempData["Message"]";
+        alert(msg);
+    </script>
+}
+
+@* Display detailed Excel parsing errors *@
+@if (TempData["ExcelErrors"] != null)
+{
+    var errors = TempData["ExcelErrors"] as List<string>;
+    if (errors != null && errors.Any())
+    {
+        <div class="alert alert-danger" role="alert" style="max-width: 800px; margin: 20px auto;">
+            <h4>Errors encountered during Excel upload:</h4>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+<head>
+    <style>
+        /* Reusing your existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text {
+            text-align: center;
+        }
+
+            .welcome-text h3 {
+                color: #7F3D98;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .welcome-text p {
+                color: #666;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .form-heading {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left;
+            padding-top: 7px;
+            margin-bottom: 0;
+        }
+
+        .form-horizontal .form-control {
+            border-color: #ddd;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background-color: #7F3D98;
+            border-color: #7F3D98;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #6a3480;
+                border-color: #6a3480;
+                color: white;
+            }
+
+        .btn-default {
+            background-color: #e9ecef;
+            border-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-default:hover {
+                background-color: #dee2e6;
+                border-color: #dee2e6;
+                color: #343a40;
+            }
+
+        .btn-info {
+            background-color: #5bc0de;
+            border-color: #5bc0de;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-info:hover {
+                background-color: #31b0d5;
+                border-color: #31b0d5;
+                color: white;
+            }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .data-table th, .data-table td {
+                border: 1px solid #dee2e6;
+                padding: 12px 15px;
+                text-align: left;
+            }
+
+            .data-table th {
+                background-color: #e2e6ea;
+                color: #343a40;
+                font-weight: bold;
+            }
+
+            .data-table td {
+                vertical-align: top;
+            }
+
+            .data-table .required-cell {
+                font-weight: bold;
+                color: #dc3545;
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <h3 class="form-heading">Upload Students from Excel</h3>
+                            <p class="text-muted">Select an Excel file (.xlsx) containing student data to bulk create students.</p>
+                            <p class="text-muted font-weight-bold">
+                                Please ensure your Excel file follows the exact format below.
+                                The first row of your Excel file **MUST** contain these column headers.
+                            </p>
+                        </div>
+                        <div class="form-wrapper mt-4">
+                            <h4 class="form-heading" style="font-size: 1.4rem; margin-top: 2rem;">Expected Excel File Format</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Column Header</th>
+                                        <th>Description</th>
+                                        <th>Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>FirstName</strong></td>
+                                        <td>The student's first name.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LastName</strong></td>
+                                        <td>The student's last name.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td>The student's email address. Will also be used as their login username. Must be unique.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>IsClassRep</strong></td>
+                                        <td>"TRUE" if the student is a class representative, "FALSE" otherwise. (Optional, defaults to FALSE)</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>IsDeputyClassRep</strong></td>
+                                        <td>"TRUE" if the student is a deputy class representative, "FALSE" otherwise. (Optional, defaults to FALSE)</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ClassId</strong></td>
+                                        <td>The unique ID of the class the student is assigned to. The guidance teacher will be automatically assigned based on this class.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="form-heading" style="font-size: 1.4rem; margin-top: 2rem;">Available Classes and Their IDs (and their assigned Guidance Teacher)</h4>
+                            <p class="text-muted text-center">Use these **Class IDs** in the 'ClassId' column of your Excel spreadsheet. The system will automatically assign the corresponding guidance teacher.</p>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class Name</th>
+                                        <th>Class ID (for spreadsheet)</th>
+                                        <th>Assigned Guidance Teacher</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Classes != null && Model.Classes.Any())
+                                    {
+                                        foreach (var cls in Model.Classes)
+                                        {
+                                            <tr>
+                                                <td>@cls.ClassName</td>
+                                                <td><strong>@cls.ClassId</strong></td>
+                                                <td>
+                                                    @if (cls.GuidanceTeacher != null)
+                                                    {
+                                                        <text>@cls.GuidanceTeacher.FullName</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-danger">None Assigned</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3">No classes found. Please ensure classes are configured in the system.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div class="form-group text-center mt-4">
+                                <a href="@Url.Action("DownloadStudentTemplate", "Student")" class="btn btn-info">
+                                    <i class="fas fa-download"></i> Download Excel Template
+                                </a>
+                            </div>
+
+                            @using (Html.BeginForm("UploadStudents", "Student", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ExcelFile, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        <input type="file" name="ExcelFile" id="ExcelFile" class="form-control" accept=".xlsx" />
+                                        @Html.ValidationMessageFor(m => m.ExcelFile, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="submit" class="btn btn-primary" value="Upload & Create Students" />
+                                        @if (User.IsInRole("CurriculumHead"))
+                                        {
+                                            @Html.ActionLink("Back to Dashboard", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "btn btn-default ml-2" })
+                                        }
+                                        @if (User.IsInRole("GuidanceTeacher"))
+                                        {
+                                            @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-default ml-2" })
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>

@@ -116,45 +116,43 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance.Id, "GuidanceTeacher");
             }
 
+            // Seed Guidance Teacher 1
             if (userManager.FindByName("guidance1@email.com") == null)
             {
                 newGuidanceTeacher = new GuidanceTeacher
                 {
                     UserName = "guidance1@email.com",
                     Email = "guidance1@email.com",
-                    FirstName = "james",
-                    LastName = "dog",
-                    Street = "35 Washington st",
+                    FirstName = "Sarah",
+                    LastName = "Connor",
+                    Street = "123 Oak Avenue",
                     City = "London",
-                    Postcode = "E12 8UP",
-                    RegistredAt = DateTime.UtcNow.AddYears(-5),
+                    Postcode = "SW1A 0AA", 
+                    RegistredAt = DateTime.UtcNow.AddYears(-3),
                     EmailConfirmed = true,
                 };
 
-                //add admin to users table
-                userManager.Create(newGuidanceTeacher, "123");
-                //assign it to the guidance teacher role
+                userManager.Create(newGuidanceTeacher, "123"); 
                 userManager.AddToRole(newGuidanceTeacher.Id, "GuidanceTeacher");
             }
 
+            // Seed Guidance Teacher 2
             if (userManager.FindByName("guidance2@email.com") == null)
             {
                 guidance2 = new GuidanceTeacher
                 {
                     UserName = "guidance2@email.com",
                     Email = "guidance2@email.com",
-                    FirstName = "james",
-                    LastName = "dog",
-                    Street = "35 Washington st",
+                    FirstName = "Michael",
+                    LastName = "Jordan",
+                    Street = "45 Elm Street",
                     City = "London",
-                    Postcode = "E12 8UP",
-                    RegistredAt = DateTime.UtcNow.AddYears(-5),
+                    Postcode = "N1 9GU", 
+                    RegistredAt = DateTime.UtcNow.AddYears(-2), 
                     EmailConfirmed = true,
                 };
 
-                //add admin to users table
-                userManager.Create(guidance2, "123");
-                //assign it to the guidance teacher role
+                userManager.Create(guidance2, "123"); 
                 userManager.AddToRole(guidance2.Id, "GuidanceTeacher");
             }
 

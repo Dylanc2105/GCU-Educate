@@ -10,6 +10,9 @@ using GuidanceTracker.Models.ViewModels;
 using static GuidanceTracker.Controllers.PostController;
 using System.Data.Entity;
 using System.Net;
+using OfficeOpenXml;
+using System.IO;
+
 
 namespace GuidanceTracker.Controllers
 {
@@ -184,5 +187,13 @@ namespace GuidanceTracker.Controllers
 
             return View(model);
         }
+
+
+        public ActionResult EnrollmentAcademicOperationsCenter()
+        {
+            return View();
+        }
+        
+        
     }
 }

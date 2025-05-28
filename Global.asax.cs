@@ -1,3 +1,4 @@
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace GuidanceTracker
     {
         protected void Application_Start()
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;           
+
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
