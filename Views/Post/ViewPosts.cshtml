@@ -4,7 +4,7 @@
 }
 <style>
     :root {
-        --primary-color: #7b2cbf;
+        --primary-color: #7F3D98;
         --primary-hover: #6a24a6;
         --light-bg: #f8f9fa;
         --border-color: #e0e0e0;
@@ -15,34 +15,30 @@
 
     .posts-dashboard {
         padding: 20px;
-        background-color: #f3f3f3;
+        background-color: white;
     }
 
-    .dashboard-title {
-        color: #7F3D98;
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
 
     .post-section {
-        background-color: #f3f3f3;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
         margin-bottom: 30px;
     }
 
     .section-title {
-        color: var(--primary-color);
         font-size: 22px;
+        font-weight: bold;
+        color: black;
+        margin-bottom: 15px;
         text-align: center;
-        margin-bottom: 20px;
     }
 
     .post-item {
         display: flex;
         border-left: 4px solid var(--primary-color);
-        background-color: white;
+        background-color: #FAFAFA;
         padding: 15px;
         margin-bottom: 15px;
         border-radius: 0 4px 4px 0;
@@ -88,8 +84,9 @@
 
     .quick-actions {
         background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
     }
 
@@ -160,7 +157,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="post-section">
-                <h2 class="section-title">Recent Posts</h2>
+                <div class="section-title">Recent <img src="~/Images/Icons/PURPLE/posts.svg" /></div>
 
                 @if (!Model.Any())
                 {
@@ -203,9 +200,9 @@
 
         <div class="col-md-4">
             <div class="quick-actions">
-                <h2 class="section-title">Quick Actions</h2>
-                <a href="@Url.Action("CreateNewPost", "Post")" class="action-button">Create New Post</a>
-                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button">View My Posts</a>
+                <div class="section-title">Quick Actions</div>
+                <a href="@Url.Action("CreateNewPost", "Post")" class="action-button">Create New <img src="~/Images/Icons/OTHER/createIssue.svg" /></a>
+                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button">View My Posts <img src="~/Images/Icons/OTHER/allIssues.svg" /></a>
             </div>
         </div>
     </div>

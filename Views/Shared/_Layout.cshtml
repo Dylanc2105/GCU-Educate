@@ -394,7 +394,6 @@
             <img src="~/Images/Icons/Logo-white.png" alt="Logo" class="top-logo">
         </div>
 
-        <span class="college-name">City of Glasgow College</span>
 
         <!-- Icons: Notifications, Settings, Log Out -->
         <div class="user-controls">
@@ -404,7 +403,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div style="position: relative; display: inline-block;">
-                            <img src="~/Images/Icons/Notifacations.png" alt="Notifications" width="40" height="40" />
+                            <img src="~/Images/Icons/notifications.svg" alt="Notifications" width="40" height="40" />
                             <span id="notificationBadge"
                                   class="badge rounded-pill bg-danger"
                                   style="position: absolute; top: 10px; right: -5px; font-size: 0.65rem; display: none;">
@@ -422,7 +421,7 @@
                 <!-- Settings Icon -->
                 <li class="nav-item">
                     <a class="nav-link" title="Settings" onclick="openSettingsModal()">
-                        <img src="~/Images/Icons/settings.png" alt="Settings" width="40" height="40">
+                        <img src="~/Images/Icons/settings.svg" alt="Settings" width="40" height="40">
                     </a>
                 </li>
 
@@ -433,7 +432,7 @@
                     {
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-link nav-link p-0" title="Log Out">
-                            <img src="~/Images/Icons/log off.png" alt="Log Out" width="40" height="40" />
+                            <img src="~/Images/Icons/logOff.svg" alt="Log Out" width="40" height="40" />
                         </button>
                     }
                 </li>
@@ -467,14 +466,14 @@
         }
         @url
     }" title="Home">
-            <img src="~/Images/Icons/home.png" alt="Home" width="47" height="47" />
+            <img src="~/Images/Icons/home.svg" alt="Home" width="47" height="47" />
         </a>
 
         <!-- Issues -->
         @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("Lecturer")))
         {
             <a href="@Url.Action("Index", "Issue")" title="Issues">
-                <img src="~/Images/Icons/Issues.png" alt="Issues" width="47" height="47" />
+                <img src="~/Images/Icons/issues.svg" alt="Issues" width="47" height="47" />
             </a>
         }
 
@@ -482,32 +481,32 @@
         @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher")))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
-                <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
+                <img src="~/Images/Icons/student.svg" alt="Students" width="47" height="47" />
             </a>
         }
 
         @if (Request.IsAuthenticated && User.IsInRole("CurriculumHead"))
         {
             <a href="@Url.Action("ViewAllStudents", "CurriculumHead")" title="Students">
-                <img src="~/Images/Icons/student.png" alt="Students" width="47" height="47" />
+                <img src="~/Images/Icons/student.svg" alt="Students" width="47" height="47" />
             </a>
         }
 
         <!-- Messages -->
         <a href="@Url.Action("Index", "Message")" title="Messages">
-            <img src="~/Images/Icons/Messages.png" alt="Messages" width="47" height="47" />
+            <img src="~/Images/Icons/messages.svg" alt="Messages" width="47" height="47" />
         </a>
 
         <!-- Posts -->
         <a href="@Url.Action("ViewPosts", "Post")" title="Posts">
-            <img src="~/Images/Icons/posts.png" alt="Posts" width="47" height="47" />
+            <img src="~/Images/Icons/posts.svg" alt="Posts" width="47" height="47" />
         </a>
 
         <!-- Calendar -->
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
             <a href="@Url.Action("AppointmentsDash", "GuidanceTeacher")" title="Calendar">
-                <img src="~/Images/Icons/calendar.png" alt="Calendar" width="47" height="47" />
+                <img src="~/Images/Icons/calendar.svg" alt="Calendar" width="47" height="47" />
             </a>
         }
 
@@ -515,7 +514,7 @@
         @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead"))
         {
             <a href="@Url.Action("Index", "Metrics")" title="Metrics">
-                <img src="~/Images/Icons/Metrics.png" alt="Metrics" width="47" height="47" />
+                <img src="~/Images/Icons/metrics.svg" alt="Metrics" width="47" height="47" />
             </a>
         }
 
@@ -523,7 +522,7 @@
         @if (Request.IsAuthenticated && User.IsInRole("Student"))
         {
             <a href="@Url.Action("StudentFeedbackDashboard", "SimpleFeedback")" title="Feedback">
-                <img src="~/Images/Icons/my voice.png" alt="Feedback" width="47" height="47" />
+                <img src="~/Images/Icons/myVoice.svg" alt="Feedback" width="47" height="47" />
             </a>
         }
 
@@ -531,7 +530,7 @@
         @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead")))
         {
             <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" title="Feedback">
-                <img src="~/Images/Icons/feedback.png" alt="Feedback" width="47" height="47" />
+                <img src="~/Images/Icons/feedback.svg" alt="Feedback" width="47" height="47" />
             </a>
         }
     </div>
@@ -653,7 +652,7 @@
     </script>
 
 
-    <!-- ⚙️ Settings Modal -->
+    <!-- Settings Modal -->
     <div id="settingsModal" class="modal-overlay">
 
         <div class="modal-content">
