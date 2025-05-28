@@ -2,63 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-/// <summary>
-/// 
-/// </summary>
+using System.Web.Mvc;
+
 namespace GuidanceTracker.Models.ViewModels
 {
     public class MetricsViewModel
     {
-        // int for the total issue metrics
-        public int TotalIssues { get; set; }
-
-        // lists to hold issues by type
-        public List<IssueByType> IssuesByType { get; set; }
-
-        // dropdown data
-        public List<Class> Classes { get; set; }
-
-        // filter properties, can be nullable, as dont have to select anything
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public int? SelectedClassId { get; set; }
-
-        // properties for issues over time
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public List<IssuesOverTime> IssuesOverTime { get; set; }
-        public List<IssuesOverTime> LateAttendanceOverTime { get; set; }
-        public List<IssuesOverTime> MissingAttendanceOverTime { get; set; }
-        public List<Unit> Units { get; set; }
         public int? SelectedUnitId { get; set; }
-        // for comparing data over periods of time
-        public int ComparisonTotalIssues { get; set; }
-        public bool HasComparisonData { get; set; }
-        public string ComparisonPeriod { get; set; }
+        public IssueTitle? SelectedIssueType { get; set; }
+        public List<Class> Classes { get; set; }
+        public List<Unit> Units { get; set; }
+        public List<IssueTitle> IssueTypes { get; set; }
+        public int TotalIssues { get; set; }
+        public decimal PercentageChange { get; set; }
+        public List<DailyTrend> DailyTrends { get; set; }
+        public List<IssueTypeSummary> ByType { get; set; }
+        public List<ClassSummary> ByClass { get; set; }
+        public List<UnitSummary> ByUnit { get; set; }
 
-        public List<IssuesOverTime> ComparisonIssuesOverTime { get; set; }
-        public List<IssuesOverTime> ComparisonLateAttendanceOverTime { get; set; }
-        public List<IssuesOverTime> ComparisonMissingAttendanceOverTime { get; set; }
+        public List<IssueStatusSummary> ByStatus { get; set; }
+        public int ActiveIssues { get; set; }
+        public int ArchivedIssues { get; set; }
+        public decimal ResolutionRate { get; set; }
+        public decimal ResolutionRateChange { get; set; }
+        public double AverageResolutionDays { get; set; }
+        public List<StatusTrend> StatusTrends { get; set; }
     }
 
-    /// <summary>
-    /// helper class for issues by type
-    /// </summary>
-    public class IssueByType
+    /// <summary> helper classes for trends and issue, unit, and class summaries. also status</summary>
+    /// 
+    public class IssueStatusSummary
     {
-        public string IssueType { get; set; }
+        public IssueStatus Status { get; set; }
+        public int Count { get; set; }
+        public string DisplayName => Status.ToString().Replace("InProgress", "In Progress");
+    }
+    public class StatusTrend
+    {
+        public DateTime Date { get; set; }
+        public IssueStatus Status { get; set; }
         public int Count { get; set; }
     }
-    /// <summary>
-    /// helper class for issues over time
-    /// </summary>
-    
-    public class IssuesOverTime
+
+    public class DailyTrend
     {
         public DateTime Date { get; set; }
         public int Count { get; set; }
+        public string DayOfWeek => Date.ToString("ddd");
+        public string FormattedDate => Date.ToString("MMM dd");
     }
 
-    
+    public class IssueTypeSummary
+    {
+        public IssueTitle IssueType { get; set; }
+        public int Count { get; set; }
+        public decimal Percentage { get; set; }
+        public string DisplayName => IssueType.ToString();
+    }
 
+    public class ClassSummary
+    {
+        public int ClassId { get; set; }
+        public string ClassName { get; set; }
+        public int Count { get; set; }
+    }
 
-
+    public class UnitSummary
+    {
+        public int UnitId { get; set; }
+        public string UnitName { get; set; }
+        public int Count { get; set; }
+    }
 }

@@ -16,7 +16,7 @@ using static GuidanceTracker.Controllers.PostController;
 
 namespace GuidanceTracker.Controllers
 {
-    [Authorize(Roles = "GuidanceTeacher")]
+    [Authorize(Roles = "GuidanceTeacher, CurriculumHead")]
     public class GuidanceTeacherController : AccountController
     {
         private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
@@ -121,71 +121,6 @@ namespace GuidanceTracker.Controllers
         {
             var students = db.Students.OrderBy(s => s.RegistredAt).ToList();
             return View(students);
-        }
-
-        // Create a new student (GET)
-        public ActionResult CreateStudent()
-        {
-            CreateStudentViewModel student = new CreateStudentViewModel
-            {
-                Classes = db.Classes
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.ClassId.ToString(),
-                        Text = c.ClassName
-                    })
-                    .ToList()
-            };
-            return View(student);
-        }
-
-        // Create a new student (POST)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateStudent(CreateStudentViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                Student newStudent = new Student
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    Street = model.Street,
-                    City = model.City,
-                    Postcode = model.Postcode,
-                    PhoneNumberConfirmed = true,
-                    EmailConfirmed = model.EmailConfirm,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    RegistredAt = DateTime.UtcNow,
-                    ClassId = model.ClassId
-                };
-
-                var result = UserManager.Create(newStudent, model.Password);
-                if (result.Succeeded)
-                {
-                    UserManager.AddToRole(newStudent.Id, "Student");
-                    return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-            }
-
-            // Repopulate the Classes list before returning the view
-            model.Classes = db.Classes
-                .Select(c => new SelectListItem
-                {
-                    Value = c.ClassId.ToString(),
-                    Text = c.ClassName
-                })
-                .ToList();
-
-            return View(model);
         }
 
         public ActionResult Calendar()
@@ -346,6 +281,89 @@ namespace GuidanceTracker.Controllers
             }
             db.SaveChanges();
             return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
+        }
+
+        // GET: GuidanceTeacher/Create
+        // Displays the form to create a new guidance teacher
+        [Authorize(Roles = "CurriculumHead")]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "CurriculumHead")]
+        // POST: GuidanceTeacher/Create
+        // Handles the submission of the guidance teacher creation form
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Protects against Cross-Site Request Forgery attacks
+        public async Task<ActionResult> Create(CreateGuidanceTeacherViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Create a new GuidanceTeacher user based on the ViewModel data
+                var guidanceTeacherUser = new GuidanceTeacher
+                {
+                    UserName = model.Email, // Email is commonly used as the UserName for login
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Street = model.Street,
+                    City = model.City,
+                    Postcode = model.Postcode,
+                    RegistredAt = DateTime.UtcNow // Set the registration date to the current UTC time
+                };
+
+                // Attempt to create the user in the ASP.NET Identity system with the provided password
+                var result = await UserManager.CreateAsync(guidanceTeacherUser, model.Password);
+
+                if (result.Succeeded)
+                {
+                    // If user creation is successful, assign the "GuidanceTeacher" role
+                    var roleResult = await UserManager.AddToRoleAsync(guidanceTeacherUser.Id, "GuidanceTeacher");
+
+                    if (roleResult.Succeeded)
+                    {
+                        // Set a success message to display on the next view
+                        TempData["Message"] = "Guidance Teacher created successfully!";
+                        // Redirect to a list of guidance teachers or the dashboard
+                        return RedirectToAction("EnrollmentAcademicOperationsCenter", "CurriculumHead");
+                    }
+                    else
+                    {
+                        // If role assignment fails, add errors to ModelState
+                        AddErrors(roleResult);
+                        // Optionally, you might want to delete the user if role assignment fails
+                        // await UserManager.DeleteAsync(guidanceTeacherUser);
+                    }
+                }
+                else
+                {
+                    // If user creation fails (e.g., duplicate email, password policy), add errors to ModelState
+                    AddErrors(result);
+                }
+            }
+
+            // If ModelState is not valid or user/role creation failed, re-display the form with errors
+            return View(model);
+        }
+                // Helper method to add IdentityResult errors to ModelState
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        // Dispose the UserManager when the controller is disposed to free resources
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && UserManager != null) // Corrected from userManager to UserManager
+            {
+                UserManager.Dispose(); // Dispose the public property
+                // No need to set _userManager = null explicitly if accessing via property
+            }
+            base.Dispose(disposing);
         }
     }
 }

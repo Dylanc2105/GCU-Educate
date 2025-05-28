@@ -1,0 +1,371 @@
+﻿@model GuidanceTracker.Models.ViewModels.UploadCoursesViewModel
+
+@{
+    ViewBag.Title = "Upload Courses from Excel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* Display success/error messages from TempData *@
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@TempData["Message"]";
+        alert(msg);
+    </script>
+}
+
+@* Display detailed Excel parsing errors *@
+@if (TempData["ExcelErrors"] != null)
+{
+    var errors = TempData["ExcelErrors"] as List<string>;
+    if (errors != null && errors.Any())
+    {
+        <div class="alert alert-danger" role="alert" style="max-width: 800px; margin: 20px auto;">
+            <h4>Errors encountered during Excel upload:</h4>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+<head>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Welcome Text and Headings */
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text {
+            text-align: center;
+        }
+
+            .welcome-text h3 {
+                color: #7F3D98;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .welcome-text p {
+                color: #666;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Form Specific Styles */
+        .form-heading {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left;
+            padding-top: 7px;
+            margin-bottom: 0;
+        }
+
+        .form-horizontal .form-control {
+            border-color: #ddd;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px; /* Increased max-width for better table display */
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #7F3D98;
+            border-color: #7F3D98;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #6a3480;
+                border-color: #6a3480;
+                color: white;
+            }
+
+        .btn-default {
+            background-color: #e9ecef;
+            border-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-default:hover {
+                background-color: #dee2e6;
+                border-color: #dee2e6;
+                color: #343a40;
+            }
+
+        .btn-secondary-purple {
+            background-color: #9B59B6; /* A slightly different shade of purple */
+            border-color: #9B59B6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-secondary-purple:hover {
+                background-color: #8E44AD; /* Darker shade on hover */
+                border-color: #8E44AD;
+                color: white;
+            }
+
+        .btn-info {
+            background-color: #5bc0de;
+            border-color: #5bc0de;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-info:hover {
+                background-color: #31b0d5;
+                border-color: #31b0d5;
+                color: white;
+            }
+
+        /* Styles for the Excel format table */
+        .excel-format-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            background-color: #f8f9fa; /* Light grey background */
+            border: 1px solid #dee2e6; /* Light border */
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+
+            .excel-format-table th,
+            .excel-format-table td {
+                border: 1px solid #dee2e6;
+                padding: 12px 15px;
+                text-align: left;
+            }
+
+            .excel-format-table th {
+                background-color: #e2e6ea; /* Slightly darker header */
+                color: #343a40;
+                font-weight: bold;
+            }
+
+            .excel-format-table td {
+                vertical-align: top;
+            }
+
+            .excel-format-table .required-cell {
+                font-weight: bold;
+                color: #dc3545; /* Red color for required text */
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <h3 class="form-heading">Upload Courses from Excel</h3>
+                            <p class="text-muted">Select an Excel file (.xlsx) containing course data to bulk create courses.</p>
+                            <p class="text-muted font-weight-bold">
+                                Please ensure your Excel file follows the exact format below.
+                                The first row of your Excel file **MUST** contain these column headers.
+                            </p>
+                        </div>
+                        <div class="form-wrapper mt-4">
+                            <h4 class="form-heading" style="font-size: 1.4rem; margin-top: 2rem;">Expected Excel File Format</h4>
+                            <table class="excel-format-table">
+                                <thead>
+                                    <tr>
+                                        <th>Column Header</th>
+                                        <th>Description</th>
+                                        <th>Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>CourseName</strong></td>
+                                        <td>The official name of the course.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CourseReference</strong></td>
+                                        <td>A unique reference code for the course (e.g., COMP101, BUSA205).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ModeOfStudy</strong></td>
+                                        <td>How the course is studied (e.g., Full-time, Part-time, Online).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DurationInWeeks</strong></td>
+                                        <td>The total duration of the course in weeks (e.g., 30, 48).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SCQFLevel</strong></td>
+                                        <td>The SCQF (Scottish Credit and Qualifications Framework) level (1-12).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Site</strong></td>
+                                        <td>The physical campus or location where the course is delivered.</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>StartDate</strong></td>
+                                        <td>The course start date (e.g., `YYYY-MM-DD`, or `MM/DD/YYYY`).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>EndDate</strong></td>
+                                        <td>The course end date (e.g., `YYYY-MM-DD`, or `MM/DD/YYYY`).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DepartmentId</strong></td>
+                                        <td>The unique ID of the department offering the course (e.g., GUID or string ID from your database).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="form-heading" style="font-size: 1.4rem; margin-top: 2rem;">Available Departments and Their IDs</h4>
+                            <p class="text-muted text-center">Use these **Department IDs** in the 'DepartmentId' column of your Excel spreadsheet.</p>
+                            <table class="excel-format-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department Name</th>
+                                        <th>Department ID (for spreadsheet)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Departments != null && Model.Departments.Any())
+                                    {
+                                        foreach (var dept in Model.Departments)
+                                        {
+                                            <tr>
+                                                <td>@dept.DepartmentName</td>
+                                                <td><strong>@dept.DepartmentId</strong></td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="2">No departments found. Please ensure departments are configured in the system.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div class="form-group text-center mt-4">
+                                <a href="@Url.Action("DownloadTemplate", "Course")" class="btn btn-info">
+                                    <i class="fas fa-download"></i> Download Excel Template
+                                </a>
+                            </div>
+
+                            @using (Html.BeginForm("UploadExcel", "Course", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ExcelFile, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        <input type="file" name="ExcelFile" id="ExcelFile" class="form-control" accept=".xlsx" />
+                                        @Html.ValidationMessageFor(m => m.ExcelFile, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="submit" class="btn btn-primary" value="Upload & Create Courses" />
+                                        @Html.ActionLink("Back to Dashboard", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "btn btn-default ml-2" })
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>

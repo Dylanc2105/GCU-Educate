@@ -53,8 +53,7 @@ namespace GuidanceTracker.Controllers
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {
-            // karina: updated the create issue action
-            // so that dropdowns only show the associated classes, units and students
+            /// <summary> karina: updating the create issue action to load only the classes, units and students associated with the logged in user </summary>
             var userId = User.Identity.GetUserId();
 
             var model = new CreateIssueViewModel
@@ -85,7 +84,6 @@ namespace GuidanceTracker.Controllers
             }
             else
             {
-                // 
                 var guidanceTeacher = db.GuidanceTeachers
                     .Include(gt => gt.Classes)
                     .FirstOrDefault(gt => gt.Id == userId);
@@ -215,6 +213,7 @@ namespace GuidanceTracker.Controllers
                     User.Identity.GetUserId()
                 );
 
+                TempData["Success"] = "Issue raised successfully.";
                 return RedirectToAction("StudentIssue");
             }
 
@@ -230,14 +229,23 @@ namespace GuidanceTracker.Controllers
         // AJAX: Get Units by Class
         public ActionResult GetUnits(int classId)
         {
-            // Get the UnitIds manually from the join table (UnitClasses)
-            var unitIds = db.Database.SqlQuery<int>(
-                "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+            var currentUserId = User.Identity.GetUserId();
 
             var units = db.Units
-                .Where(u => unitIds.Contains(u.UnitId))
+                .Where(u => u.LecturerId == currentUserId && 
+                           u.Classes.Any(c => c.ClassId == classId)) 
                 .Select(u => new { u.UnitId, u.UnitName })
                 .ToList();
+
+
+            //// Get the UnitIds manually from the join table (UnitClasses)
+            //var unitIds = db.Database.SqlQuery<int>(
+            //    "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+
+            //var units = db.Units
+            //    .Where(u => unitIds.Contains(u.UnitId))
+            //    .Select(u => new { u.UnitId, u.UnitName })
+            //    .ToList();
 
             return Json(units, JsonRequestBehavior.AllowGet);
         }
@@ -280,19 +288,20 @@ namespace GuidanceTracker.Controllers
         // Load the Student Issue Selection Page (For Adding Issues)
         public ActionResult StudentIssue()
         {
-            // karina: updating the action to load only the classes associated with the logged in user
-            // get classes from the database
+            /// <summary>   karina: updating the action to load only the classes associated with the logged in user
+            /// get classes from the database
+            /// </summary>
+            
             var userId = User.Identity.GetUserId();
             List<ClassViewModel> classList = new List<ClassViewModel>();
-
-            // get the lecturer and include the units and classes
+            /// <summary> karina: get the lecturer and include the units tehy teach </summary>
             var lecturer = db.Lecturers
                 .Include(l => l.Units.Select(u => u.Classes))
                 .FirstOrDefault(l => l.Id == userId);
 
+            /// <summary> karina: if the lecturer is not null, get the classes from their units </summary>
             if (lecturer != null)
             {
-                // get the classes from the lecturer's units
                 var classIds = lecturer.Units
                     .SelectMany(u => u.Classes)
                     .Select(c => c.ClassId)
@@ -309,7 +318,7 @@ namespace GuidanceTracker.Controllers
             }
             else
             {
-                // get the logged in guidance teacher and include their classes
+                /// <summary> karina: if the user is a guidance teacher, get their classes </summary>
                 var guidanceTeacher = db.GuidanceTeachers
                     .Include(gt => gt.Classes)
                     .FirstOrDefault(gt => gt.Id == userId);
@@ -371,7 +380,7 @@ namespace GuidanceTracker.Controllers
 
 
 
-        // ✅ View Archived Issues
+        //View Archived Issues
         public ActionResult ArchivedIssues(string sortOrder, string issueType, string searchString)
         {
             var issuesQuery = db.Issues
@@ -419,8 +428,28 @@ namespace GuidanceTracker.Controllers
         {
             var ticket = db.Issues
                 .Include("Student")
-                .Include("Comments") // Ensure comments are included
+                .Include("Comments") 
+                .Include("Lecturer")
                 .FirstOrDefault(t => t.IssueId == id);
+
+
+            /// <summary> karina: gets the current user id and if its a lecturer gets the associated units that the they teach for the student. </summary>
+            var currentUserId = User.Identity.GetUserId();
+
+            var issueUnit = db.Units
+                .Where(u => u.LecturerId == ticket.LecturerId &&
+                           u.Classes.Any(c => c.ClassId == ticket.Student.ClassId))
+                .FirstOrDefault();
+
+            ViewBag.IssueUnit = issueUnit;
+
+            if (User.IsInRole("Lecturer"))
+            {
+                ViewBag.LecturerUnits = db.Units
+                    .Where(u => u.LecturerId == currentUserId &&
+                     u.Classes.Any(c => c.ClassId == ticket.Student.ClassId))
+                    .ToList();
+            }
 
             var appointments = GetAppointments(ticket.StudentId);
 
@@ -581,8 +610,11 @@ namespace GuidanceTracker.Controllers
         {
             try
             {
+                var currentUserId = User.Identity.GetUserId();
+
                 var units = db.Units
-                    .Where(u => u.Classes.Any(c => c.ClassId == classId))
+                    .Where(u => u.LecturerId == currentUserId && 
+                               u.Classes.Any(c => c.ClassId == classId)) 
                     .Select(u => new
                     {
                         UnitId = u.UnitId,
@@ -599,7 +631,10 @@ namespace GuidanceTracker.Controllers
         }
 
 
-
+        /// <summary>
+        /// updates the status change for the issues
+        /// </summary>
+        
         [HttpPost]
         public JsonResult UpdateIssueStatus(int issueId, string status)
         {
@@ -628,5 +663,72 @@ namespace GuidanceTracker.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// karina: method to add to an existing issue for lecturers
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Lecturer")]
+        public JsonResult AddLecturerComment(int issueId, string content, int unitId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    return Json(new { success = false, error = "Comment cannot be empty." });
+                }
+
+                if (unitId == 0)
+                {
+                    return Json(new { success = false, error = "Unit must be selected." });
+                }
+
+                string userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
+
+                if (user == null)
+                {
+                    return Json(new { success = false, error = "User not found." });
+                }
+
+                var issue = db.Issues.Find(issueId);
+                if (issue == null)
+                {
+                    return Json(new { success = false, error = "Issue not found." });
+                }
+
+                /// <summary> get the unit information </summary>
+                var unit = db.Units.Find(unitId);
+                if (unit == null)
+                {
+                    return Json(new { success = false, error = "Unit not found." });
+                }
+
+
+                /// <summary> create a comment for unit information </summary>
+                var comment = new Comment
+                {
+                    Content = $"Related to {unit.UnitName}: {content}",
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = userId,
+                    IssueId = issueId
+                };
+
+                db.Comments.Add(comment);
+                db.SaveChanges();
+
+                /// <summary> notifications </summary>
+                new NotificationService().NotifyNewComment(issue, userId);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
     }
 }

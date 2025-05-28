@@ -4,170 +4,173 @@
     ViewBag.Title = "Guidance Teacher Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-
     <script type="text/javascript">
-        var msg = "@ViewBag.Message";
-        alert(msg);
+        alert("@ViewBag.Message");
     </script>
 }
+
 <head>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #F4F4F4;
-            margin: 0;
-            padding: 0;
+        .stat-icon-img {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 10px;
+            object-fit: contain;
         }
 
-        .dashboard-container {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            padding: 20px;
-            gap: 20px;
+        .stat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #7F3D98;
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #7F3D98;
+            margin-bottom: 10px;
+        }
+
+        .view-more-link {
+            font-size: 1rem;
+            color: #7F3D98;
+            text-decoration: underline;
         }
 
         .custom-card {
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s ease;
         }
 
             .custom-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        .welcome-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+            .welcome-card h5 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #7F3D98;
+                margin-bottom: 5px;
+            }
+
+            .welcome-card p {
+                font-size: 1rem;
+                color: #555;
+                margin-bottom: 4px;
             }
     </style>
-    <!-- link for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <div class="row g-4">
-            <!-- welcome text -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card" style="background-color: #F4F4F4">
+    <div class="container-fluid py-4">
+        <div class="row g-4" id="dashboardCardsContainer">
+
+            <!-- Welcome -->
+            <div class="col-12" id="welcomeCard">
+                <div class="card welcome-card">
                     <div class="card-body">
                         <h5 class="card-title">Hi, @Model.FirstName!</h5>
-                        <p class="card-text">Welcome to your Guidance Dashboard. </p>
+                        <p class="card-text">Welcome to your Guidance Dashboard.</p>
                         <p class="text-muted" id="currentDateTime"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- new issues -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-circle-exclamation" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Issues</p>
-                        <p class="h3" style="color: #7F3D98">@Model.NewIssuesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "text-muted text-decoration-none" })</p>
+            <!-- New Issues -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/issues.svg" alt="New Issues Icon" class="stat-icon-img" />
+                        <p class="stat-title">New Issues</p>
+                        <p class="stat-number">@Model.NewIssuesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
 
-            <!-- feedback -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-bullhorn" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Feedback</p>
-                        <p class="h3" style="color: #7F3D98">@Model.NewFeedbackCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback", null, new { @class = "text-muted text-decoration-none" })</p>
+            <!-- New Feedback -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/feedback.svg" alt="Feedback Icon" class="stat-icon-img" />
+                        <p class="stat-title">New Feedback</p>
+                        <p class="stat-number">@Model.NewFeedbackCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
 
-            <!-- appointments -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-calendar-day" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">Appointments Today</p>
-                        <p class="h3" style="color: #7F3D98">@Model.AppointmentsTodayCount</p>
-                        <p>@Html.ActionLink("View more >", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "text-muted text-decoration-none" })</p>
-                    </div>
-                </div>
-            </div>
-            <!-- appoinemtnts to be approved -->
-            <!--<div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-calendar-check" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">Appointments To Be Approved</p>
-                        <p class="h3" style="color: #7F3D98">@Model.AppointmentsToBeApprovedCount</p>
-                        <p>@Html.ActionLink("View more >", "AppointmentsToBeApproved", "Appointment", null, new { @class = "text-muted text-decoration-none" })</p>
-                    </div>
-                </div>
-            </div>-->
-
-            <!-- Guidance Sessions For Week -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-calendar-week" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">Guidance Sessions For Week</p>
-                        <p class="h3" style="color: #7F3D98">@Model.GuidanceSessionsForWeekCount</p>
-                        <p>@Html.ActionLink("View more >", "GuidanceSessionsForWeek", "GuidanceSession", null, new { @class = "text-muted text-decoration-none" })</p>
+            <!-- Appointments Today -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/calendarToday.svg" alt="Appointments Icon" class="stat-icon-img" />
+                        <p class="stat-title">Appointments Today</p>
+                        <p class="stat-number">@Model.AppointmentsTodayCount</p>
+                        <p>@Html.ActionLink("View more >", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
 
-
-
-            <!-- messages -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-comments" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Messages</p>
-                        <p class="h3" style="color: #7F3D98">@Model.UnreadMessagesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "text-muted text-decoration-none" })</p>
+            <!-- Guidance Sessions -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/calendarWeek.svg" alt="Guidance Sessions Icon" class="stat-icon-img" />
+                        <p class="stat-title">Guidance Sessions For Week</p>
+                        <p class="stat-number">@Model.GuidanceSessionsForWeekCount</p>
+                        <p>@Html.ActionLink("View more >", "GuidanceSessionsForWeek", "GuidanceSession", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
 
-            <!-- announcements -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-scroll" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">New Posts</p>
-                        <p class="h3" style="color: #7F3D98">@Model.NewAnnouncementsCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "text-muted text-decoration-none" })</p>
+            <!-- Messages -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/messages.svg" alt="Messages Icon" class="stat-icon-img" />
+                        <p class="stat-title">New Messages</p>
+                        <p class="stat-number">@Model.UnreadMessagesCount</p>
+                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
             </div>
-            <!-- appointments dashboard -->
-            @*<div class="col-12 col-md-6 col-lg-4">
-                <div class="card custom-card">
-                    <div class="card-body" style="text-align:center">
-                        <i class="fa-solid fa-scroll" style="color: #7F3D98; font-size: 80px;"></i>
-                        <p class="card-title" style="color: #7F3D98">Appointments Dashboard</p>
-                        <p class="h3" style="color: #7F3D98"></p>
-                        <p>@Html.ActionLink("AppointmentsDash", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "text-muted text-decoration-none" })</p>
+
+            <!-- Posts -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/posts.svg" alt="Posts Icon" class="stat-icon-img" />
+                        <p class="stat-title">New Posts</p>
+                        <p class="stat-number">@Model.NewAnnouncementsCount</p>
+                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
                     </div>
                 </div>
-            </div>*@
-
-
+            </div>
 
         </div>
     </div>
-</body>
 
-@section Scripts {
-
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/bootstrap")
     <script>
-
-
-
-        // script to dynamically show the current date and time on the dash
         function updateClock() {
             const now = new Date();
             const formatted = now.toLocaleString('en-GB', {
@@ -179,12 +182,16 @@
                 minute: '2-digit',
                 second: '2-digit'
             });
-
             document.getElementById('currentDateTime').innerText = formatted;
         }
-        updateClock();
 
-        // updates the time every second
+        updateClock();
         setInterval(updateClock, 1000);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const hideWelcome = localStorage.getItem('hideWelcomeMessage') === 'true';
+            const welcomeCard = document.getElementById('welcomeCard');
+            if (hideWelcome && welcomeCard) welcomeCard.remove();
+        });
     </script>
-}
+</body>

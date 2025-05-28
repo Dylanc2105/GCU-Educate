@@ -109,14 +109,14 @@ namespace GuidanceTracker.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateSimpleFeedback(SimpleStudentFeedbackViewModel viewModel)
         {
             var studentId = User.Identity.GetUserId();
             var student = db.Students.Include(s => s.Class).FirstOrDefault(s => s.Id == studentId);
+
             if (ModelState.IsValid)
             {
-
-                // Create a single feedback record
                 var feedback = new SimpleFeedback
                 {
                     FeedbackTitle = viewModel.Title,
@@ -126,7 +126,6 @@ namespace GuidanceTracker.Controllers
                     UnitId = viewModel.UnitId
                 };
 
-                // Set recipients based on checkboxes
                 bool hasRecipient = false;
 
                 if (viewModel.SendToGuidanceTeacher && !string.IsNullOrEmpty(viewModel.GuidanceTeacherId))
@@ -143,21 +142,21 @@ namespace GuidanceTracker.Controllers
                     hasRecipient = true;
                 }
 
-                // Ensure at least one recipient is selected
                 if (!hasRecipient)
                 {
                     ModelState.AddModelError("", "Please select at least one recipient");
                     return View(viewModel);
                 }
 
-                // Add and save
                 db.SimpleFeedbacks.Add(feedback);
                 db.SaveChanges();
+
+                // Set flash message
+                TempData["Success"] = "Feedback submitted successfully!";
 
                 return RedirectToAction("StudentDash", "Student");
             }
 
-            // Need to repopulate dropdown if validation fails
             var studentUnits = db.Units
                 .Where(u => u.Classes.Any(c => c.Students.Any(s => s.Id == studentId)))
                 .ToList();
@@ -170,6 +169,7 @@ namespace GuidanceTracker.Controllers
 
             return View(viewModel);
         }
+
 
         public ActionResult ViewSimpleFeedbacks()
         {

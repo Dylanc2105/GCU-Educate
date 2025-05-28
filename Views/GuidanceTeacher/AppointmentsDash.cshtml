@@ -1,13 +1,13 @@
 ﻿@model GuidanceTracker.Models.ViewModels.AppointmentsDashViewModel
 
-
+<h1 class="dashboard-title">Appointments Dashboard</h1>
 <div class="container-fluid dashboard">
     <div class="row">
         <!-- Left side with calendar -->
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="card-title">Calendar</h5>
+                    <h5 class="card-title" style="font-weight:bold;">Calendar</h5>
                 </div>
                 <div class="card-body">
                     @Html.Action("CalendarForDashPartial", "GuidanceTeacher")
@@ -22,11 +22,11 @@
                 <div class="card-header">
                     @if (Model.AppointmentsTodayCount != 1)
                     {
-                    <h5 class="card-title">You have @Model.AppointmentsTodayCount appointments today</h5>
+                    <h5 class="card-title" style="font-weight:bold;">You have @Model.AppointmentsTodayCount appointments today</h5>
                     }
                     else
                     {
-                        <h5 class="card-title">You have 1 appointment today</h5>
+                        <h5 class="card-title" style="font-weight:bold;">You have 1 appointment today</h5>
                     }
                 </div>
                 <div class="card-body appointments-container">
@@ -87,13 +87,18 @@
 <style>
     .dashboard .card {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        border: none;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
     }
 
     .dashboard .card-header {
         background-color: #f8f9fa;
         border-bottom: 1px solid #eaecef;
+        font-size: 22px;
+        font-weight: bold;
+        color: black;
+        margin-bottom: 15px;
+        text-align: center;
     }
 
     .appointments-container {

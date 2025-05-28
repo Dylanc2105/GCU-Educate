@@ -179,9 +179,9 @@
     <h2>Student Directory</h2>
     @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
     {
-        <a href="@Url.Action("CreateStudent")" class="create-btn">
-            <i class="fas fa-plus"></i> Add New Student
-        </a>
+<a href="@Url.Action("Create", "Student")" class="create-btn">
+    <i class="fas fa-plus"></i> Add New Student
+</a>
     }
 </div>
 

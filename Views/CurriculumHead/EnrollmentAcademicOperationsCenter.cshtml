@@ -1,0 +1,182 @@
+﻿@model GuidanceTracker.Models.ViewModels.CurriculumDashViewModel
+
+@{
+    ViewBag.Title = "Enrollment & Academic Operations Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* Check for TempData message first, as it's typically used after a redirect *@
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@TempData["Message"]";
+        alert(msg);
+    </script>
+}
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <script type="text/javascript">
+        var msg = "@ViewBag.Message";
+        alert(msg);
+    </script>
+}
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%; /* Ensures all cards in a row have equal height */
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text h3 {
+            color: #7F3D98;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .welcome-text p {
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            color: #7F3D98;
+            font-size: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title { /* Used for card descriptions instead of numbers */
+            color: #7F3D98;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            flex-grow: 1; /* Allows title to take available space */
+        }
+
+        .stats-row { /* This class is now used for the action cards */
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        /* New style for the action buttons within the cards */
+        .action-button {
+            background-color: #7F3D98;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            text-decoration: none; /* Remove underline from action link */
+            transition: background-color 0.3s ease;
+            display: inline-block; /* Allows padding and margin */
+            margin-top: 1rem; /* Space between title and button */
+        }
+
+            .action-button:hover {
+                background-color: #5c2b70; /* Darker shade on hover */
+                color: white; /* Ensure text remains white on hover */
+                text-decoration: none;
+            }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distributes content and pushes button to bottom */
+            height: 100%; /* Make card-body take full height of custom-card */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+    <body>
+        <div class="container-fluid py-4">
+            <h2 class="dashboard-title">Enrollment & Academic Operations Center</h2> @* Main dashboard title *@
+
+<div class="row g-4 stats-row">
+    <div class="col-12 col-md-4">
+        <div class="card custom-card">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-user-plus stat-icon"></i>
+                <p class="stat-title">Create Guidance Teacher</p>
+                @Html.ActionLink("Go to Form", "Create", "GuidanceTeacher", null, new { @class = "action-button" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card custom-card">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-chalkboard-user stat-icon"></i>
+                <p class="stat-title">Create Lecturer</p>
+                @Html.ActionLink("Go to Form", "Create", "Lecturer", null, new { @class = "action-button" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card custom-card">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-book-open stat-icon"></i>
+                <p class="stat-title">Create Course</p>
+                @Html.ActionLink("Go to Form", "Create", "Course", null, new { @class = "action-button" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card custom-card">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-chalkboard stat-icon"></i>
+                <p class="stat-title">Create Class</p>
+                @Html.ActionLink("Go to Form", "Create", "Classes", null, new { @class = "action-button" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card custom-card">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-user-graduate stat-icon"></i>
+                <p class="stat-title">Create Students</p>
+                @Html.ActionLink("Go to Form", "Create", "Student", null, new { @class = "action-button" })
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</body>

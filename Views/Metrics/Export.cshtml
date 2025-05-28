@@ -1,0 +1,557 @@
+﻿@model GuidanceTracker.Models.ViewModels.MetricsViewModel
+
+@{
+    ViewBag.Title = "Export";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guidance Tracker Metrics Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #ffffff;
+            line-height: 1.4;
+            width: 100%;
+            max-width: none;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #7F3D98;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+            .header h1 {
+                color: #7F3D98;
+                margin: 0;
+                font-size: 28px;
+            }
+
+            .header p {
+                margin: 10px 0 0 0;
+                color: #666;
+                font-size: 14px;
+            }
+
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .summary-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 5px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            background-color: #ffffff;
+        }
+
+            .summary-card h3 {
+                margin: 0 0 10px 0;
+                color: #7F3D98;
+                font-size: 16px;
+            }
+
+            .summary-card .value {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #333;
+            }
+
+            .summary-card .sub-text {
+                font-size: 12px;
+                color: #666;
+            }
+
+        .summary-card.warning {
+            border-left: 4px solid #ffc107;
+        }
+
+        .summary-card.success {
+            border-left: 4px solid #198754;
+        }
+
+        .summary-card.danger {
+            border-left: 4px solid #dc3545;
+        }
+
+        .value.warning {
+            color: #ffc107;
+        }
+
+        .value.success {
+            color: #198754;
+        }
+
+        .value.danger {
+            color: #dc3545;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+            .section h2 {
+                color: #7F3D98;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 5px;
+                font-size: 18px;
+                margin-top: 0;
+            }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #ffffff;
+        }
+
+            .data-table th,
+            .data-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .data-table th {
+                background-color: #f8f9fa;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .data-table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            .data-table tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        .filters-applied {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #cce7ff;
+        }
+
+            .filters-applied h3 {
+                margin: 0 0 10px 0;
+                color: #1976d2;
+            }
+
+            .filters-applied p {
+                margin: 5px 0;
+                color: #333;
+            }
+
+        .trend-positive {
+            color: #dc3545;
+        }
+
+        .trend-negative {
+            color: #198754;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .two-column {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .three-column {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        .insights-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .insight-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-success {
+            background-color: #d1e7dd;
+            border-left: 4px solid #198754;
+        }
+
+        .insight-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .insight-danger {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+
+        .insight-info {
+            background-color: #d1ecf1;
+            border-left: 4px solid #0dcaf0;
+        }
+
+        .insight-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        @@media print {
+            body {
+                margin: 0;
+                padding: 20px;
+                background-color: white;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .header {
+                page-break-inside: avoid;
+            }
+
+            .summary-section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .data-table {
+                page-break-inside: auto;
+            }
+
+            .data-table tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .two-column, .three-column {
+                page-break-inside: avoid;
+            }
+
+            .insights-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Guidance Tracker Metrics Report</h1>
+        <p>Generated on @DateTime.Now.ToString("dddd, MMMM dd, yyyy 'at' HH:mm")</p>
+        <p>Report Period: @Model.StartDate.ToString("MMMM dd, yyyy") - @Model.EndDate.ToString("MMMM dd, yyyy")</p>
+    </div>
+
+    @if (Model.SelectedClassId.HasValue || Model.SelectedUnitId.HasValue || Model.SelectedIssueType.HasValue)
+    {
+        <div class="filters-applied">
+            <h3>Filters Applied:</h3>
+            @if (Model.SelectedClassId.HasValue)
+            {
+                var selectedClass = Model.Classes.FirstOrDefault(c => c.ClassId == Model.SelectedClassId.Value);
+                <p><strong>Class:</strong> @(selectedClass?.ClassName ?? "Unknown")</p>
+            }
+            @if (Model.SelectedUnitId.HasValue)
+            {
+                var selectedUnit = Model.Units.FirstOrDefault(u => u.UnitId == Model.SelectedUnitId.Value);
+                <p><strong>Unit:</strong> @(selectedUnit?.UnitName ?? "Unknown")</p>
+            }
+            @if (Model.SelectedIssueType.HasValue)
+            {
+                <p><strong>Issue Type:</strong> @Model.SelectedIssueType.Value.ToString()</p>
+            }
+        </div>
+    }
+
+    <div class="summary-section">
+        <div class="summary-card">
+            <h3>Total Issues</h3>
+            <div class="value">@Model.TotalIssues</div>
+            <div class="sub-text @(Model.PercentageChange >= 0 ? "trend-positive" : "trend-negative")">
+                @(Model.PercentageChange >= 0 ? "↑" : "↓") @Math.Abs(Model.PercentageChange).ToString("0.0")% vs previous period
+            </div>
+        </div>
+
+        <div class="summary-card warning">
+            <h3>Active Issues</h3>
+            <div class="value warning">@Model.ActiveIssues</div>
+            <div class="sub-text">New & In Progress</div>
+        </div>
+
+        <div class="summary-card success">
+            <h3>Resolved Issues</h3>
+            <div class="value success">@Model.ArchivedIssues</div>
+            <div class="sub-text">Archived</div>
+        </div>
+
+        <div class="summary-card">
+            <h3>Resolution Rate</h3>
+            <div class="value">@Model.ResolutionRate.ToString("0.0")%</div>
+            <div class="sub-text @(Model.ResolutionRateChange >= 0 ? "trend-negative" : "trend-positive")">
+                @(Model.ResolutionRateChange >= 0 ? "↑" : "↓") @Math.Abs(Model.ResolutionRateChange).ToString("0.0")% vs previous period
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-section">
+        @{
+            var peakDay = Model.DailyTrends.OrderByDescending(d => d.Count).FirstOrDefault();
+        }
+        @if (peakDay != null)
+        {
+            <div class="summary-card">
+                <h3>Peak Day</h3>
+                <div class="value">@peakDay.Date.ToString("dddd")</div>
+                <div class="sub-text">@peakDay.Date.ToString("MMM dd") - @peakDay.Count issues</div>
+            </div>
+        }
+
+        @{
+            var commonIssue = Model.ByType.FirstOrDefault();
+        }
+        @if (commonIssue != null)
+        {
+            <div class="summary-card">
+                <h3>Most Common Issue</h3>
+                <div class="value">@commonIssue.DisplayName</div>
+                <div class="sub-text">@commonIssue.Count occurrences</div>
+            </div>
+        }
+
+        @{
+            var topClass = Model.ByClass.FirstOrDefault();
+        }
+        @if (topClass != null)
+        {
+            <div class="summary-card">
+                <h3>Most Affected Class</h3>
+                <div class="value">@topClass.ClassName</div>
+                <div class="sub-text">@topClass.Count issues</div>
+            </div>
+        }
+
+        <div class="summary-card">
+            <h3>Avg. Resolution Time</h3>
+            <div class="value">@Model.AverageResolutionDays.ToString("0.0")</div>
+            <div class="sub-text">days</div>
+        </div>
+    </div>
+
+    
+
+    <div class="section">
+        <h2>Daily Trend Analysis</h2>
+        @if (Model.DailyTrends.Any())
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day of Week</th>
+                        <th>Issues Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var trend in Model.DailyTrends.OrderBy(d => d.Date))
+                    {
+                        <tr>
+                            <td>@trend.Date.ToString("MMM dd, yyyy")</td>
+                            <td>@trend.Date.ToString("dddd")</td>
+                            <td>@trend.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No daily trend data available for the selected period.</p>
+        }
+    </div>
+
+    <div class="three-column">
+        <div class="column">
+            <div class="section">
+                <h2>Issues by Type</h2>
+                @if (Model.ByType.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Issue Type</th>
+                                <th>Count</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var totalIssues = Model.ByType.Sum(t => t.Count);
+                            }
+                            @foreach (var type in Model.ByType)
+                            {
+                                var percentage = totalIssues > 0 ? (type.Count * 100.0m / totalIssues) : 0;
+                                <tr>
+                                    <td>@type.DisplayName</td>
+                                    <td>@type.Count</td>
+                                    <td>@percentage.ToString("0.1")%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No issue type data available.</p>
+                }
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="section">
+                <h2>Issues by Status</h2>
+                @if (Model.ByStatus.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Count</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var totalStatusIssues = Model.ByStatus.Sum(s => s.Count);
+                            }
+                            @foreach (var status in Model.ByStatus)
+                            {
+                                var statusPercentage = totalStatusIssues > 0 ? (status.Count * 100.0m / totalStatusIssues) : 0;
+                                <tr>
+                                    <td>@status.DisplayName</td>
+                                    <td>@status.Count</td>
+                                    <td>@statusPercentage.ToString("0.1")%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No status data available.</p>
+                }
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="section">
+                <h2>Issues by Class</h2>
+                @if (Model.ByClass.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Issues</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cls in Model.ByClass.Take(10))
+                            {
+                                <tr>
+                                    <td>@cls.ClassName</td>
+                                    <td>@cls.Count</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No class data available.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (Model.ByUnit.Any())
+    {
+        <div class="section page-break">
+            <h2>Issues by Unit (Top 15)</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Unit Name</th>
+                        <th>Issues Count</th>
+                        <th>Percentage of Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var totalUnitIssues = Model.ByUnit.Sum(u => u.Count);
+                    }
+                    @foreach (var unit in Model.ByUnit.Take(15))
+                    {
+                        var unitPercentage = totalUnitIssues > 0 ? (unit.Count * 100.0m / totalUnitIssues) : 0;
+                        <tr>
+                            <td>@unit.UnitName</td>
+                            <td>@unit.Count</td>
+                            <td>@unitPercentage.ToString("0.1")%</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="footer">
+        <p>This report was automatically generated by the City of Glasgow College Guidance Tracker system.</p>
+        <p>For questions or support, please contact your system administrator.</p>
+    </div>
+</body>
+</html>

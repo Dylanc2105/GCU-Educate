@@ -1,0 +1,274 @@
+﻿@model GuidanceTracker.Models.ViewModels.CreateCourseViewModel
+
+@{
+    ViewBag.Title = "Create New Course";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@TempData["Message"]";
+        alert(msg);
+    </script>
+}
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text {
+            text-align: center;
+        }
+
+            .welcome-text h3 {
+                color: #7F3D98;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .welcome-text p {
+                color: #666;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+
+        /* Styles specific to the form within the dashboard theme */
+        .form-heading {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left;
+            padding-top: 7px;
+            margin-bottom: 0;
+        }
+
+        .form-horizontal .form-control {
+            border-color: #ddd;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background-color: #7F3D98;
+            border-color: #7F3D98;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #6a3480;
+                border-color: #6a3480;
+                color: white;
+            }
+
+        .btn-default {
+            background-color: #e9ecef;
+            border-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-default:hover {
+                background-color: #dee2e6;
+                border-color: #dee2e6;
+                color: #343a40;
+            }
+
+        /* New style for the "Upload Excel" button to make it distinct but consistent */
+        .btn-secondary-purple {
+            background-color: #9B59B6; /* A slightly different shade of purple */
+            border-color: #9B59B6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-secondary-purple:hover {
+                background-color: #8E44AD; /* Darker shade on hover */
+                border-color: #8E44AD;
+                color: white;
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <h3 class="form-heading">Create a New Course</h3>
+                            <p class="text-muted">Enter the details below to register a new course, or upload an Excel file for bulk creation.</p>
+                        </div>
+                        <div class="form-wrapper mt-4">
+                            @using (Html.BeginForm("Create", "Course", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.CourseName, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.CourseName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.CourseName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.CourseReference, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.CourseReference, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.CourseReference, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ModeOfStudy, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.ModeOfStudy, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.ModeOfStudy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.DurationInWeeks, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.DurationInWeeks, new { @class = "form-control", type = "number" })
+                                        @Html.ValidationMessageFor(m => m.DurationInWeeks, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.SCQFLevel, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.SCQFLevel, new { @class = "form-control", type = "number" })
+                                        @Html.ValidationMessageFor(m => m.SCQFLevel, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Site, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.Site, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Site, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.StartDate, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", type = "date" })
+                                        @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.EndDate, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", type = "date" })
+                                        @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.DepartmentId, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.DepartmentId, Model.DepartmentsList, "Select Department", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="submit" class="btn btn-primary" value="Create Course" />
+                                        @Html.ActionLink("Back to Dashboard", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "btn btn-default ml-2" })
+                                    </div>
+                                
+                                </div>
+
+                            }
+                        <div class="form-group text-center mt-4">
+                            @Html.ActionLink("Upload from Excel", "UploadExcel", "Course", null, new { @class = "btn btn-secondary-purple ml-2" })
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>

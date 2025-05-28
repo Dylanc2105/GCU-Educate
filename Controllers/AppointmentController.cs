@@ -264,6 +264,7 @@ namespace GuidanceTracker.Controllers
             {
                 return HttpNotFound();
             }
+            TempData["Success"] = "Appointment confirmed.";
             return RedirectToAction("AppointmentsToBeApproved");
         }
 
@@ -291,6 +292,8 @@ namespace GuidanceTracker.Controllers
             {
                 return HttpNotFound();
             }
+
+            TempData["Success"] = "Appointment cancelled.";
             return RedirectToAction("AppointmentsToBeApproved");
         }
 
@@ -405,8 +408,8 @@ namespace GuidanceTracker.Controllers
             );
 
 
-            TempData["Success"] = "Appointment updated successfully.";
-            return RedirectToAction("Index", "Issue");
+            TempData["Success"] = "Appointment updated.";
+            return RedirectToAction("AppointmentsToBeApproved", "Appointment");
         }
 
         public ActionResult AppointmentsForSessionPartial(int id)

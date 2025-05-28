@@ -1,0 +1,252 @@
+﻿@model GuidanceTracker.Models.ViewModels.CreateGuidanceTeacherViewModel
+
+@{
+    ViewBag.Title = "Create New Guidance Teacher";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this is set
+}
+
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@TempData["Message"]";
+        alert(msg);
+    </script>
+}
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-content {
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center items horizontally within welcome-content */
+            /* Removed justify-content: space-between; as it's not needed for a column layout here */
+            flex-wrap: wrap; /* Keep for responsiveness if elements inside were to wrap */
+        }
+
+        .welcome-text {
+            text-align: center; /* Center the text within this specific div */
+        }
+
+            .welcome-text h3 {
+                color: #7F3D98;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .welcome-text p {
+                color: #666;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Styles specific to the form within the dashboard theme */
+        .form-heading {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left; /* Keep labels left-aligned within their column */
+            padding-top: 7px;
+            margin-bottom: 0;
+        }
+
+        .form-horizontal .form-control {
+            border-color: #ddd;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 100%; /* Ensure text boxes take full width of their column */
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            /* No text-align: center here for form-group */
+        }
+
+        /* Add a specific style for the new form wrapper */
+        .form-wrapper {
+            width: 100%; /* Make the form wrapper take full width of its parent column */
+            max-width: 600px; /* Optional: set a max-width for the form itself for larger screens */
+            margin: 0 auto; /* Center the form wrapper horizontally */
+            padding: 20px; /* Add some padding inside the form wrapper */
+            background-color: white; /* Optional: give the form background a different color */
+            border-radius: 8px; /* Optional: give the form background rounded corners */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Optional: subtle shadow for the form area */
+        }
+
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background-color: #7F3D98;
+            border-color: #7F3D98;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #6a3480;
+                border-color: #6a3480;
+                color: white;
+            }
+
+        .btn-default {
+            background-color: #e9ecef;
+            border-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-default:hover {
+                background-color: #dee2e6;
+                border-color: #dee2e6;
+                color: #343a40;
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <h2 class="dashboard-title">@ViewBag.Title</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        @* Removed flex-column from here *@
+                        <div class="welcome-text">
+                            <h3 class="form-heading">Create a New Guidance Teacher Account</h3>
+                            <p class="text-muted">Enter the details below to register a new guidance teacher.</p>
+                        </div>
+                        <div class="form-wrapper mt-4">
+                            @* New wrapper for the form *@
+                            @using (Html.BeginForm("Create", "GuidanceTeacher", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.FirstName, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.LastName, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Email, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Password, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Street, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.Street, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Street, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.City, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Postcode, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        @Html.TextBoxFor(m => m.Postcode, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Postcode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="submit" class="btn btn-primary" value="Create Guidance Teacher" />
+                                        @Html.ActionLink("Back to Dashboard", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "btn btn-default ml-2" })
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>

@@ -1,0 +1,331 @@
+﻿@model GuidanceTracker.Models.ViewModels.UploadLecturersViewModel
+
+@{
+    ViewBag.Title = "Upload Lecturers from Excel";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this is set
+}
+
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script type="text/javascript">
+        var msg = "@Html.Raw(HttpUtility.JavaScriptStringEncode(TempData["Message"].ToString()))";
+        alert(msg);
+    </script>
+}
+
+@if (TempData["ExcelErrors"] is List<string> excelErrors && excelErrors.Any())
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Errors Encountered During Upload:</strong>
+        <ul>
+            @foreach (var error in excelErrors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+
+<head>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .welcome-card {
+            background-color: #F4F4F4;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Welcome Text and Headings */
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-text {
+            text-align: center;
+        }
+
+            .welcome-text h3 {
+                color: #7F3D98;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .welcome-text p {
+                color: #666;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Form Specific Styles */
+        .form-heading {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left;
+            padding-top: 7px;
+            margin-bottom: 0;
+        }
+
+        .form-horizontal .form-control {
+            border-color: #ddd;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px; /* Increased max-width for better table display */
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #7F3D98;
+            border-color: #7F3D98;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #6a3480;
+                border-color: #6a3480;
+                color: white;
+            }
+
+        .btn-default {
+            background-color: #e9ecef;
+            border-color: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-default:hover {
+                background-color: #dee2e6;
+                border-color: #dee2e6;
+                color: #343a40;
+            }
+
+        .btn-secondary-purple {
+            background-color: #9B59B6; /* A slightly different shade of purple */
+            border-color: #9B59B6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-secondary-purple:hover {
+                background-color: #8E44AD; /* Darker shade on hover */
+                border-color: #8E44AD;
+                color: white;
+            }
+
+        .btn-info {
+            background-color: #5bc0de;
+            border-color: #5bc0de;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+            .btn-info:hover {
+                background-color: #31b0d5;
+                border-color: #31b0d5;
+                color: white;
+            }
+
+        /* Styles for the Excel format table */
+        .excel-format-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            background-color: #f8f9fa; /* Light grey background */
+            border: 1px solid #dee2e6; /* Light border */
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+
+            .excel-format-table th,
+            .excel-format-table td {
+                border: 1px solid #dee2e6;
+                padding: 12px 15px;
+                text-align: left;
+            }
+
+            .excel-format-table th {
+                background-color: #e2e6ea; /* Slightly darker header */
+                color: #343a40;
+                font-weight: bold;
+            }
+
+            .excel-format-table td {
+                vertical-align: top;
+            }
+
+            .excel-format-table .required-cell {
+                font-weight: bold;
+                color: #dc3545; /* Red color for required text */
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card welcome-card">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <h3 class="form-heading">Upload Lecturers from Excel</h3>
+                            <p class="text-muted">Select an Excel file (.xlsx) containing lecturer data to bulk create accounts.</p>
+                            <p class="text-muted font-weight-bold">
+                                Please ensure your Excel file follows the exact format below.
+                                The first row of your Excel file MUST contain these column headers.
+                            </p>
+                        </div>
+                        <div class="form-wrapper mt-4">
+                            <h4 class="form-heading" style="font-size: 1.4rem; margin-top: 2rem;">Expected Excel File Format</h4>
+                            <table class="excel-format-table">
+                                <thead>
+                                    <tr>
+                                        <th>Column Header</th>
+                                        <th>Description</th>
+                                        <th>Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td>The lecturer's unique email address (will also be their username).</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Password</strong></td>
+                                        <td>Initial password for the lecturer's account.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FirstName</strong></td>
+                                        <td>The lecturer's first name.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LastName</strong></td>
+                                        <td>The lecturer's last name.</td>
+                                        <td class="required-cell">Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Street</strong></td>
+                                        <td>The lecturer's street address.</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>City</strong></td>
+                                        <td>The city where the lecturer resides.</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Postcode</strong></td>
+                                        <td>The lecturer's postcode.</td>
+                                        <td>No</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                         
+                            <div class="form-group text-center mt-4">
+                                <a href="@Url.Action("DownloadLecturerTemplate", "Lecturer")" class="btn btn-info">
+                                    <i class="fas fa-download"></i> Download Excel Template
+                                </a>
+                            </div>
+
+                            @using (Html.BeginForm("UploadExcel", "Lecturer", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                                <div class="form-group mt-4">
+                                    @* Added margin-top for spacing *@
+                                    @Html.LabelFor(m => m.ExcelFile, new { @class = "col-md-3 control-label" })
+                                    <div class="col-md-9">
+                                        <input type="file" name="ExcelFile" id="ExcelFile" class="form-control" accept=".xlsx" />
+                                        @Html.ValidationMessageFor(m => m.ExcelFile, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="submit" class="btn btn-primary" value="Upload & Create Lecturers" />
+                                        @Html.ActionLink("Back to Dashboard", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "btn btn-default ml-2" })
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    }
+</body>
