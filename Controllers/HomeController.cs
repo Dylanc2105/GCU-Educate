@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace GuidanceTracker.Controllers
 {
+
     public class HomeController : Controller
     {
         public ActionResult Index()

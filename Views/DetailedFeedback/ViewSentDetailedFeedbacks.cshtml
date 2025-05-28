@@ -46,7 +46,7 @@
                                         @ViewData[$"CreatorName_{item.FeedbackId}"]
                                         <div class="small text-muted">@ViewData[$"CreatorRole_{item.FeedbackId}"]</div>
                                     </td>
-                                    <td>@item.DateCreated.ToString("MMM d, yyyy")</td>
+                                    <td>@item.DateCreated</td>
                                     <td>
                                         <a href="@Url.Action("ViewDetailedFeedbackDetails", "DetailedFeedback", new { id = item.FeedbackId })"
                                            class="btn btn-sm" style="background-color: #7F3D98; color: white;">

@@ -324,6 +324,7 @@
     <Compile Include="Models\ArchivedComment.cs" />
     <Compile Include="Models\ArchivedTicket.cs" />
     <Compile Include="Models\Class.cs" />
+    <Compile Include="Models\ClassRepFeedback.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Conversation.cs" />
     <Compile Include="Models\Course.cs" />
@@ -2651,6 +2652,10 @@
     <Content Include="Views\Appointment\SelectStudentForAppointment.cshtml" />
     <Content Include="Views\Notification\AllNotifications.cshtml" />
     <Content Include="Views\CurriculumHead\CurriculumHeadDash.cshtml" />
+    <Content Include="Views\DetailedFeedback\ClassRepFeedback.cshtml" />
+    <Content Include="Views\DetailedFeedback\ClassRepDashboard.cshtml" />
+    <Content Include="Views\DetailedFeedback\ReviewAggregatedFeedback.cshtml" />
+    <Content Include="Views\DetailedFeedback\ViewClassRepFeedbackDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -8,8 +8,10 @@ namespace GuidanceTracker.Models.ViewModels.FeedbackViewModels
 {
     public class CreateDetailedFeedbackViewModel
     {
-        public int RequestId { get; set; }
-        public int FeedbackId { get; set; }
+        public string RequestId { get; set; }
+        public string FeedbackId { get; set; }
+
+        public string ClassRepId { get; set; }
 
         // Basic information
         [Display(Name = "Course")]

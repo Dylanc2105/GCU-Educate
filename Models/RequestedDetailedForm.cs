@@ -10,7 +10,7 @@ namespace GuidanceTracker.Models
     public class RequestedDetailedForm
     {
         [Key]
-        public int RequestId { get; set; }
+        public string RequestId { get; set; }
 
         [Required]
         public int ClassId { get; set; }

@@ -239,9 +239,11 @@ namespace GuidanceTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Student student = db.Students.Find(id);
-            User user = db.Users.Find(id);
-            if (user == null)
+            Student student = db.Students
+                .Include(s => s.Class)
+                .Include(s => s.GuidanceTeacher)
+                .FirstOrDefault(s => s.Id == id);
+            if (student == null)
             {
                 return HttpNotFound();
             }
@@ -287,50 +289,37 @@ namespace GuidanceTracker.Controllers
             ViewBag.CancelledAppointments = cancelledAppointments;
             ViewBag.TotalAppointments = totalAppointments;
 
-            var model = new Student
-            {
-                StudentNumber = student.StudentNumber,
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                Street = student.Street,
-                City = student.City,
-                Postcode = student.Postcode,
-                PhoneNumber = student.PhoneNumber,
-                Email = student.Email,
-                Class = student.Class,
-                IsClassRep = student.IsClassRep,
-                IsDeputyClassRep = student.IsDeputyClassRep,
-                GuidanceTeacher = student.GuidanceTeacher,
-            };
-
-            return View(model);
+            return View(student);
         }
 
         public ActionResult ElectStudentRep(string id)
         {
-            Student student = db.Students.Find(id);
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            Student student = db.Students.Find(id);
             User user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
             }
+
             if (student.IsClassRep == false)
             {
                 student.IsClassRep = true;
             }
+
             var otherStudents = db.Students.Where(s => s.ClassId == student.ClassId && s.Id != student.Id)
                 .ToList();
             foreach (var otherStudent in otherStudents)
             {
                 otherStudent.IsClassRep = false;
             }
+
             db.SaveChanges();
             return RedirectToAction("ViewAllStudents", "GuidanceTeacher");
-
         }
 
         public ActionResult ElectDeputyStudentRep(string id)

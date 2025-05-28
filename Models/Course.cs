@@ -11,6 +11,7 @@ namespace GuidanceTracker.Models
     public class Course
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CourseId { get; set; }
 
         [Required]
