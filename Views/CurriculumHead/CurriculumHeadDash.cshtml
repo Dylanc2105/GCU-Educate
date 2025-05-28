@@ -13,127 +13,131 @@
     </script>
 }
 
+<title>@ViewBag.Title</title>
+
 <head>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #F4F4F4;
+            background-color: white;
             margin: 0;
             padding: 0;
         }
 
+        .stat-icon-img {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+
+        .stat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #7F3D98;
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #7F3D98;
+            margin-bottom: 10px;
+        }
+
+        .view-more-link {
+            font-size: 1rem;
+            color: #7F3D98;
+            text-decoration: underline;
+        }
+
         .custom-card {
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s ease;
         }
 
             .custom-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             }
 
-        .welcome-card {
-            background-color: #F4F4F4;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
+        .dashboard-title {
+            color: #7F3D98;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
-        .welcome-content {
+        .welcome-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+            .welcome-card h5 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #7F3D98;
+                margin-bottom: 5px;
+            }
+
+            .welcome-card p {
+                font-size: 1rem;
+                color: #555;
+                margin-bottom: 4px;
+            }
+
+        .welcome-illustration img {
+            width: 60px;
+            height: 60px;
+            opacity: 0.2;
+        }
+
+        .welcome-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
-
-        .welcome-text h3 {
-            color: #7F3D98;
-            margin-bottom: 0.5rem;
-            font-size: 2rem;
-        }
-
-        .welcome-text p {
-            color: #666;
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .dashboard-title {
-            color: #7F3D98;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .stat-icon {
-            color: #7F3D98;
-            font-size: 80px;
-            margin-bottom: 1rem;
-        }
-
-        .stat-title {
-            color: #7F3D98;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-number {
-            color: #7F3D98;
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .view-more-link {
-            color: #6c757d;
-            text-decoration: none;
-        }
-
-            .view-more-link:hover {
-                color: #495057;
-                text-decoration: none;
-            }
-
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
     </style>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
     <div class="container-fluid py-4">
         <h2 class="dashboard-title">Curriculum Head Dashboard</h2>
 
-        <!-- Welcome Card - Full Width -->
+        <!-- Welcome Card -->
         <div class="row">
             <div class="col-12">
                 <div class="card welcome-card">
-                    <div class="welcome-content">
-                        <div class="welcome-text">
-                            <h3>Hi, @Model.FirstName!</h3>
+                    <div class="card-body welcome-row">
+                        <div>
+                            <h5>Hi, @Model.FirstName!</h5>
                             <p>Welcome to your Guidance Dashboard.</p>
                             <p class="text-muted" id="currentDateTime"></p>
                         </div>
                         <div class="welcome-illustration">
-                            <i class="fa-solid fa-graduation-cap" style="font-size: 100px; color: #7F3D98; opacity: 0.3;"></i>
+                            <img src="~/Images/Icons/PURPLE/student.svg" alt="Welcome Icon" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Stats Cards Row -->
-        <div class="row g-4 stats-row">
-            <!-- New Feedback Card -->
-            <div class="col-12 col-md-4">
-                <div class="card custom-card">
-                    <div class="card-body text-center">
-                        <i class="fa-solid fa-bullhorn stat-icon"></i>
+        <!-- Stat Cards -->
+        <div class="row g-4">
+            <!-- New Feedback -->
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/feedback.svg" alt="Feedback Icon" class="stat-icon-img" />
                         <p class="stat-title">New Feedback</p>
                         <p class="stat-number">@Model.NewFeedbackCount</p>
                         <p>@Html.ActionLink("View more >", "ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback", null, new { @class = "view-more-link" })</p>
@@ -141,11 +145,11 @@
                 </div>
             </div>
 
-            <!-- New Messages Card -->
-            <div class="col-12 col-md-4">
-                <div class="card custom-card">
-                    <div class="card-body text-center">
-                        <i class="fa-solid fa-comments stat-icon"></i>
+            <!-- New Messages -->
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/messages.svg" alt="Messages Icon" class="stat-icon-img" />
                         <p class="stat-title">New Messages</p>
                         <p class="stat-number">@Model.UnreadMessagesCount</p>
                         <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
@@ -153,11 +157,11 @@
                 </div>
             </div>
 
-            <!-- New Posts Card -->
-            <div class="col-12 col-md-4">
-                <div class="card custom-card">
-                    <div class="card-body text-center">
-                        <i class="fa-solid fa-scroll stat-icon"></i>
+            <!-- New Posts -->
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card custom-card text-center">
+                    <div class="card-body">
+                        <img src="~/Images/Icons/PURPLE/posts.svg" alt="Posts Icon" class="stat-icon-img" />
                         <p class="stat-title">New Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
                         <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
@@ -183,7 +187,6 @@
         @Scripts.Render("~/bundles/jqueryval")
         @Scripts.Render("~/bundles/bootstrap")
         <script>
-            // Script to dynamically show the current date and time on the dashboard
             function updateClock() {
                 const now = new Date();
                 const formatted = now.toLocaleString('en-GB', {
@@ -195,12 +198,10 @@
                     minute: '2-digit',
                     second: '2-digit'
                 });
-
                 document.getElementById('currentDateTime').innerText = formatted;
             }
 
             updateClock();
-            // Update the time every second
             setInterval(updateClock, 1000);
         </script>
     }

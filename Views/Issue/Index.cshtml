@@ -11,7 +11,7 @@
 
 <style>
     body {
-        background-color: #F4F4F4;
+        background-color: white;
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
@@ -30,6 +30,8 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        border-radius: 10px;
+        
     }
 
     /* Each container style */
@@ -37,7 +39,8 @@
         background: white;
         padding: 15px;
         border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         min-height: 180px;
     }
 
@@ -89,6 +92,8 @@
         flex-direction: column;
         gap: 12px;
         padding: 10px;
+        border-radius: 10px;
+        
     }
 
     .quick-btn {
@@ -119,7 +124,8 @@
         background: white;
         padding: 15px;
         border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         min-height: 320px;
     }
 
@@ -127,7 +133,7 @@
     .section-title {
         font-size: 22px;
         font-weight: bold;
-        color: #7F3D98;
+        color: black;
         margin-bottom: 15px;
         text-align: center;
     }
@@ -180,6 +186,10 @@
         align-items: center;
         border-bottom: 1px solid #ddd;
     }
+        .modal-header img {
+            width: 25px;
+            height: 25px;
+        }
 
     .modal-body {
         padding: 15px;
@@ -196,11 +206,20 @@
             color: #666;
         }
     .issue-header {
-        background-color: #E6DFF0;
-        border-left: 5px solid white;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eaecef;
+        border-left: none;
         font-weight: bold;
         cursor: default;
         pointer-events: none;
+    }
+    
+
+    .section-title img {
+        width: 25px;
+        height: 25px;
+        vertical-align: middle;
+        margin-left: 8px;
     }
 </style>
 
@@ -213,7 +232,7 @@
     <div class="left-container">
         <!-- New Issues -->
         <div class="container">
-            <div class="section-title">New</div>
+            <div class="section-title">New <img src="~/Images/Icons/OTHER/new.svg"/></div>
             <!-- karina: headings for the table-->
             <div class="issue-card issue-header">
                 <div class="issue-main">Student</div>
@@ -241,7 +260,7 @@
 
         <!-- In Progress Issues -->
         <div class="container">
-            <div class="section-title">In Progress</div>
+            <div class="section-title">In Progress <img src="~/Images/Icons/OTHER/inProgress.svg" /></div>
             <!-- karina: headings for the table-->
             <div class="issue-card issue-header">
                 <div class="issue-main">Student</div>
@@ -274,9 +293,9 @@
         <div class="modal-backdrop">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>All New Issues</h2>
-                    <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
-                </div>
+                    <h2>All New Issues <img src="~/Images/Icons/OTHER/new.svg" /></h2>
+                <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
+            </div>
                 <div class="modal-body">
                     <!--  headings for the table-->
                     <div class="issue-card issue-header">
@@ -301,9 +320,9 @@
         <div class="modal-backdrop">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>All In Progress Issues</h2>
-                    <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
-                </div>
+                    <h2>All In Progress Issues <img src="~/Images/Icons/OTHER/inProgress.svg" /></h2>
+                <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
+            </div>
                 <div class="modal-body">
                     <!--  headings for the table-->
                     <div class="issue-card issue-header">
@@ -331,11 +350,11 @@
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
                 <!-- Existing Quick Action Buttons -->
-                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New</a>
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Hub</a>
-                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All</a>
-                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived</a>
-            </div>
+                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">Create New <img src="~/Images/Icons/OTHER/createIssue.svg" /></a>
+                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">Student Hub <img src="~/Images/Icons/OTHER/studentHub.svg" /></a>
+                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">All <img src="~/Images/Icons/OTHER/allIssues.svg" /></a>
+                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">View Archived <img src="~/Images/Icons/OTHER/archived.svg" /></a>
+        </div>
         </div>
     </div>
 

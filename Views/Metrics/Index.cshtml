@@ -1,361 +1,885 @@
 ﻿@model GuidanceTracker.Models.ViewModels.MetricsViewModel
-@using Newtonsoft.Json;
+@using Newtonsoft.Json
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- total issues and filter card -->
-        <div class="col-md-4">
-            <!-- total issues -->
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Total Issues</h5>
-                    <p class="card-text display-4">@Model.TotalIssues</p>
-                    @if (Model.HasComparisonData)
-                    {
-                        <p class="card-text text-muted">
-                            @if (Model.ComparisonTotalIssues < Model.TotalIssues)
-                            {
-                                <span class="text-success">▲</span>
-                            }
-                            else if (Model.ComparisonTotalIssues > Model.TotalIssues)
-                            {
-                                <span class="text-danger">▼</span>
-                            }
-                            @Math.Abs(Model.TotalIssues - Model.ComparisonTotalIssues) from comparison period
-                        </p>
-                    }
+@{
+    ViewBag.Title = "Metrics Dashboard";
+}
+<h1 class="dashboard-title">Metrics Dashboard</h1>
+<div class="metrics-dashboard">
+    <!-- filters section -->
+    <div class="filters-panel card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <!-- date range -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Date Range</label>
+                        <div class="input-daterange input-group">
+                            <input type="date" class="form-control" id="startDate"
+                                   value="@Model.StartDate.ToString("yyyy-MM-dd")">
+                            <span class="input-group-text">to</span>
+                            <input type="date" class="form-control" id="endDate"
+                                   value="@Model.EndDate.ToString("yyyy-MM-dd")">
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- filters -->
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h6 class="card-title mb-0">Filters</h6>
-                </div>
-                <div class="card-body">
-                    <!-- date range -->
-                    <div class="mb-3">
-                        <label for="startDate" class="form-label">Start Date</label>
-                        <input type="date" class="form-control" id="startDate"
-                               value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" onchange="applyFilters()">
-                    </div>
-                    <div class="mb-3">
-                        <label for="endDate" class="form-label">End Date</label>
-                        <input type="date" class="form-control" id="endDate"
-                               value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" onchange="applyFilters()">
-                    </div>
-                    <!-- comparison filters -->
-                    <div class="mb-3">
-                        <label for="comparisonPeriod" class="form-label">Compare With</label>
-                        <select class="form-control" id="comparisonPeriod" onchange="applyFilters()">
-                            <option value="">None</option>
-                            <option value="previousPeriod" @(Model.ComparisonPeriod == "previousPeriod" ? "selected" : "")>Previous Period</option>
-                            <option value="previousWeek" @(Model.ComparisonPeriod == "previousWeek" ? "selected" : "")>Previous Week</option>
-                            <option value="previousMonth" @(Model.ComparisonPeriod == "previousMonth" ? "selected" : "")>Previous Month</option>
-                            <option value="previousYear" @(Model.ComparisonPeriod == "previousYear" ? "selected" : "")>Previous Year</option>
-                        </select>
-                    </div>
-                    <!-- class dropdown -->
-                    <div class="mb-3">
-                        <label for="classSelect" class="form-label">Class</label>
-                        <select class="form-control" id="classSelect" onchange="applyFilters()">
+                <!-- class filter -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Class</label>
+                        <select class="form-control" id="classSelect">
                             <option value="">All Classes</option>
                             @foreach (var cls in Model.Classes)
                             {
                                 <option value="@cls.ClassId"
-                                        @(Request["classId"] == cls.ClassId.ToString() ? "selected" : "")>
+                                        @(Model.SelectedClassId == cls.ClassId ? "selected" : "")>
                                     @cls.ClassName
                                 </option>
                             }
                         </select>
                     </div>
-                    <!-- unit dropdown -->
-                    <div class="mb-3">
-                        <label for="unitSelect" class="form-label">Unit</label>
-                        <select class="form-control" id="unitSelect" onchange="applyFilters()">
+                </div>
+
+                <!-- unit filter -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Unit</label>
+                        <select class="form-control" id="unitSelect">
                             <option value="">All Units</option>
                             @foreach (var unit in Model.Units)
                             {
                                 <option value="@unit.UnitId"
-                                        @(Request["unitId"] == unit.UnitId.ToString() ? "selected" : "")>
+                                        @(Model.SelectedUnitId == unit.UnitId ? "selected" : "")>
                                     @unit.UnitName
                                 </option>
                             }
                         </select>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- issues by type, can be filtered into bar chart and pie chart -->
-        <div class="col-md-8">
-            <div class="card shadow-sm h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">Issues by Type</h6>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary active" onclick="toggleTypeChart('bar')">Bar</button>
-                        <button class="btn btn-outline-secondary" onclick="toggleTypeChart('pie')">Pie</button>
+
+                <!-- issue type filter -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Issue Type</label>
+                        <select class="form-control" id="issueTypeSelect">
+                            <option value="">All Types</option>
+                            @foreach (var type in Model.IssueTypes)
+                            {
+                                <option value="@((int)type)"
+                                        @(Model.SelectedIssueType == type ? "selected" : "")>
+                                    @type.ToString()
+                                </option>
+                            }
+                        </select>
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <canvas id="issuesByTypeBarChart" height="300"></canvas>
-                    <canvas id="issuesByTypePieChart" height="300" style="display: none;"></canvas>
-
+                <!-- export to PDF and reset filter buttons -->
+                <div class="col-md-3 d-flex align-items-end">
+                    <button id="exportPdf" class="btn btn-outline-primary">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button id="resetFilters" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo"></i> Reset Filters
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- issues over time, late attendance and missing attendance card-->
-    <div class="row mt-3">
+
+    <!-- summary cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Issues</h5>
+                    <h2 id="totalIssuesCount">@Model.TotalIssues</h2>
+                    <div class="trend @(Model.PercentageChange >= 0 ? "text-danger" : "text-success")" id="trendIndicator">
+                        @(Model.PercentageChange >= 0 ? "↑" : "↓") @Math.Abs(Model.PercentageChange).ToString("0.0")%
+                        <span class="text-muted">vs previous period</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Peak Day</h5>
+                    @{
+                        var peakDay = Model.DailyTrends.OrderByDescending(d => d.Count).FirstOrDefault();
+                    }
+                    <div id="peakDayContent">
+                        @if (peakDay != null)
+                        {
+                            <h3>@peakDay.Date.ToString("dddd")</h3>
+                            <p class="mb-0">@peakDay.Date.ToString("MMM dd") - @peakDay.Count issues</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Most Common Issue</h5>
+                    @{
+                        var commonIssue = Model.ByType.FirstOrDefault();
+                    }
+                    <div id="commonIssueContent">
+                        @if (commonIssue != null)
+                        {
+                            <h3>@commonIssue.DisplayName</h3>
+                            <p class="mb-0">@commonIssue.Count occurrences</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Class</h5>
+                    @{
+                        var topClass = Model.ByClass.FirstOrDefault();
+                    }
+                    <div id="topClassContent">
+                        @if (topClass != null)
+                        {
+                            <h3>@topClass.ClassName</h3>
+                            <p class="mb-0">@topClass.Count issues</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- status summary cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card summary-card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">Active Issues</h5>
+                    <h2 id="activeIssuesCount" class="text-warning">@Model.ActiveIssues</h2>
+                    <small class="text-muted">New & In Progress</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Resolved Issues</h5>
+                    <h2 id="archivedIssuesCount" class="text-success">@Model.ArchivedIssues</h2>
+                    <small class="text-muted">Archived</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Resolution Rate</h5>
+                    <h2 id="resolutionRate">@Model.ResolutionRate.ToString("0.0")%</h2>
+                    <div class="trend @(Model.ResolutionRateChange >= 0 ? "text-success" : "text-danger")" id="resolutionTrend">
+                        @(Model.ResolutionRateChange >= 0 ? "↑" : "↓") @Math.Abs(Model.ResolutionRateChange).ToString("0.0")%
+                        <span class="text-muted">vs previous period</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Avg. Resolution Time</h5>
+                    <h2 id="avgResolutionDays">@Model.AverageResolutionDays.ToString("0.0")</h2>
+                    <small class="text-muted">days</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- charts for daily trends, issue status and issue distribution -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card" style="height: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title">Daily Trends</h5>
+                    <div style="height: 450px;">
+                        <canvas id="dailyTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-12 mb-2">
+                    <div class="card">
+                        <div class="card-body py-2">
+                            <h5 class="card-title">Issue Distribution</h5>
+                            <div style="height: 200px;">
+                                <canvas id="issueTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body py-2">
+                            <h5 class="card-title">Issue Status</h5>
+                            <div style="height: 200px;">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- issues by class and issues by unit charts -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Issues by Class</h5>
+                    <canvas id="classChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Issues by Unit</h5>
+                    <canvas id="unitChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- insights and trends -->
+    <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">Issues Over Time</h6>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary active" onclick="toggleTimeChart('issues')">All Issues</button>
-                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('late')">Late Attendance</button>
-                        <button class="btn btn-outline-secondary" onclick="toggleTimeChart('missing')">Missing Attendance</button>
-                    </div>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <canvas id="issuesOverTimeChart" height="300"></canvas>
+                    <h5 class="card-title">Insights & Trends</h5>
+                    <div id="insightsContainer"></div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
-<script>
-    var issuesByTypeBarChart;
-    var issuesByTypePieChart;
-    var issuesOverTimeChart;
-    var allDates, allCounts;
-    var lateDates, lateCounts;
-    var missingDates, missingCounts;
-
-    function renderChart(data, labels) {
-        if (issuesByTypeBarChart) {
-            issuesByTypeBarChart.destroy();
+@section Scripts {
+    <style>
+        #insightsContainer {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: auto !important;
+            overflow: visible !important;
         }
-        var ctx = document.getElementById('issuesByTypeBarChart').getContext('2d');
-        issuesByTypeBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Number of Issues',
-                    data: data,
-                    backgroundColor: [
-                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
-                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
-                    ],
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            callback: function (value) {
-                                return Number.isInteger(value) ? value : '';
-                            }
-                        }
-                    }
-                }
+
+            #insightsContainer .alert {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
-        });
-    }
 
-    function renderPieChart(data, labels) {
-        if (issuesByTypePieChart) {
-            issuesByTypePieChart.destroy();
-        }
-        var ctx = document.getElementById('issuesByTypePieChart').getContext('2d');
-        issuesByTypePieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Issues by Type',
-                    data: data,
-                    backgroundColor: [
-                        '#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b',
-                        '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2'
-                    ],
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (tooltipItem) {
-                                return tooltipItem.label + ': ' + tooltipItem.raw + ' Issues';
-                            }
-                        }
-                    }
-                }
+            
+            #insightsContainer * {
+                transition: none !important;
+                animation: none !important;
             }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        var dailyTrendChart, issueTypeChart, classChart, unitChart, statusChart;
+        $(document).ready(function() {
+            renderCharts();
+            /// <summary> sets up filter change events </summary>
+            $('#startDate, #endDate, #classSelect, #unitSelect, #issueTypeSelect').change(function() {
+                applyFilters();
+            });
+
+            /// <summary> export the PDF file if the button is clicked </summary>
+            $('#exportPdf').click(function() {
+                var params = getFilterParams();
+                params.export = 'pdf';
+                window.location.href = '@Url.Action("Index")' + '?' + $.param(params);
+            });
+
+            /// <summary> reset filters </summary>
+            $('#resetFilters').click(function () {
+                $('#startDate').val('');
+                $('#endDate').val('');
+                $('#classSelect').val('');
+                $('#unitSelect').val('');
+                $('#issueTypeSelect').val('');
+                applyFilters();
+            });
+
+            /// <summary> load initial insights </summary>
+            loadInsights();
+
+            $('#classSelect').change(function() {
+                var classId = $(this).val();
+
+                if (classId) {
+                    $.getJSON('@Url.Action("GetUnitsByClass")', { classId: classId })
+                        .done(function(units) {
+                            updateUnitDropdown(units);
+                            applyFilters();
+                        })
+                        .fail(function() {
+                            console.error('Failed to load units for class');
+                        });
+                } else {
+                    $.getJSON('@Url.Action("GetAllUnits")')
+                        .done(function(units) {
+                            updateUnitDropdown(units);
+                            applyFilters();
+                        })
+                        .fail(function() {
+                            console.error('Failed to load all units');
+                        });
+                }
+            });
         });
-    }
 
-    function renderIssuesOverTimeChart(dates, counts, compDates, compCounts) {
-        if (issuesOverTimeChart) {
-            issuesOverTimeChart.destroy();
+        function updateUnitDropdown(units) {
+            var unitSelect = $('#unitSelect');
+            unitSelect.empty();
+            unitSelect.append($('<option/>', { value: '', text: 'All Units' }));
+
+            if (units && units.length > 0) {
+                $.each(units, function(index, unit) {
+                    unitSelect.append($('<option/>', {
+                        value: unit.UnitId,
+                        text: unit.UnitName
+                    }));
+                });
+            }
         }
-        var ctx = document.getElementById('issuesOverTimeChart').getContext('2d');
 
-        var datasets = [{
-            label: 'Current Period',
-            data: counts,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 2,
-            tension: 0.1,
-            fill: true
-        }];
+        function applyFilters() {
+            var params = getFilterParams();
+            history.pushState(null, '', '@Url.Action("Index")' + '?' + $.param(params));
+            reloadData();
+        }
 
-        if (compDates && compCounts) {
-            datasets.push({
-                label: 'Comparison Period',
-                data: compCounts,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                tension: 0.1,
-                fill: false
+        function getFilterParams() {
+            var params = {};
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var classId = $('#classSelect').val();
+            var unitId = $('#unitSelect').val();
+            var issueType = $('#issueTypeSelect').val();
+
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+            if (classId) params.classId = classId;
+            if (unitId) params.unitId = unitId;
+            if (issueType) params.issueType = issueType;
+
+            return params;
+        }
+
+        /// <summary> reload data based on the filter parameters provided </summary>
+        function reloadData() {
+            var params = getFilterParams();
+            $('#insightsContainer').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+            $.get('@Url.Action("FilterData")', params, function(data) {
+                /// <summary> update summary cards </summary>
+                $('#totalIssuesCount').text(data.totalIssues);
+
+                var trendIndicator = $('#trendIndicator');
+                var trendText = (data.percentageChange >= 0 ? "↑" : "↓") +
+                    Math.abs(data.percentageChange).toFixed(1) + "% ";
+                trendIndicator.html(trendText + "<span class='text-muted'>vs previous period</span>");
+                trendIndicator.removeClass('text-danger text-success')
+                    .addClass(data.percentageChange >= 0 ? 'text-danger' : 'text-success');
+
+                /// <summary> update status-related cards </summary>
+                $('#activeIssuesCount').text(data.activeIssues);
+                $('#archivedIssuesCount').text(data.archivedIssues);
+                $('#resolutionRate').text(data.resolutionRate.toFixed(1) + '%');
+                $('#avgResolutionDays').text(data.averageResolutionDays.toFixed(1));
+
+                var resolutionTrend = $('#resolutionTrend');
+                var resolutionTrendText = (data.resolutionRateChange >= 0 ? "↑" : "↓") +
+                    Math.abs(data.resolutionRateChange).toFixed(1) + "% ";
+                resolutionTrend.html(resolutionTrendText + "<span class='text-muted'>vs previous period</span>");
+                resolutionTrend.removeClass('text-danger text-success')
+                    .addClass(data.resolutionRateChange >= 0 ? 'text-success' : 'text-danger');
+
+                /// <summary> update peak day </summary>
+                if (data.dailyTrends && data.dailyTrends.length > 0) {
+                    var peakDay = data.dailyTrends.reduce(function(prev, current) {
+                        return (prev.count > current.count) ? prev : current;
+                    });
+
+                    var peakDate = new Date(peakDay.date);
+                    var peakDayName = peakDate.toLocaleDateString('en-GB', { weekday: 'long' });
+                    var peakDateFormatted = peakDate.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+
+                    $('#peakDayContent').html('<h3>' + peakDayName + '</h3><p class="mb-0">' + peakDateFormatted + ' - ' + peakDay.count + ' issues</p>');
+                }
+
+                /// <summary> most common issue </summary>
+                if (data.byType && data.byType.length > 0) {
+                    var commonIssue = data.byType[0];
+                    $('#commonIssueContent').html('<h3>' + commonIssue.issueType + '</h3><p class="mb-0">' + commonIssue.count + ' occurrences</p>');
+                }
+
+                /// <summary> update cass summary card </summary>
+                if (data.byClass && data.byClass.length > 0) {
+                    var topClass = data.byClass[0];
+                    $('#topClassContent').html('<h3>' + topClass.className + '</h3><p class="mb-0">' + topClass.count + ' issues</p>');
+                }
+
+                updateCharts(data);
+                updateInsights(data);
+            })
+            .fail(function() {
+                $('#insightsContainer').html('<div class="alert alert-danger">Error loading data. Please try again.</div>');
             });
         }
 
-        issuesOverTimeChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            callback: function (value) {
-                                return Number.isInteger(value) ? value : '';
+        function renderCharts() {
+            var dailyTrendCtx = document.getElementById('dailyTrendChart').getContext('2d');
+            var issueTypeCtx = document.getElementById('issueTypeChart').getContext('2d');
+            var classCtx = document.getElementById('classChart').getContext('2d');
+            var unitCtx = document.getElementById('unitChart').getContext('2d');
+            var statusCtx = document.getElementById('statusChart').getContext('2d');
+
+            dailyTrendChart = new Chart(dailyTrendCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => d.FormattedDate))),
+                    datasets: [{
+                        label: 'Issues',
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => d.Count))),
+                        backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
                             }
                         }
                     }
                 }
+            });
+
+
+            issueTypeChart = new Chart(issueTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => t.DisplayName))),
+                    datasets: [{
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => t.Count))),
+                        backgroundColor: [
+                            '#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545',
+                            '#fd7e14', '#ffc107', '#198754', '#20c997', '#0dcaf0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 8,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => s.DisplayName))),
+                    datasets: [{
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => s.Count))),
+                        backgroundColor: [
+                            '#ffc107',
+                            '#fd7e14',
+                            '#198754'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 8,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+
+
+
+            classChart = new Chart(classCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => c.ClassName))),
+                    datasets: [{
+                        label: 'Issues',
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => c.Count))),
+                        backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+
+            unitChart = new Chart(unitCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(Model.ByUnit.Take(10).Select(u => u.UnitName))),
+                    datasets: [{
+                        label: 'Issues',
+                        data: @Html.Raw(JsonConvert.SerializeObject(Model.ByUnit.Take(10).Select(u => u.Count))),
+                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
+                        borderColor: 'rgba(25, 135, 84, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            if (dailyTrendChart && data.dailyTrends) {
+                dailyTrendChart.data.labels = data.dailyTrends.map(function(d) {
+                    var date = new Date(d.date);
+                    return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+                });
+                dailyTrendChart.data.datasets[0].data = data.dailyTrends.map(function(d) { return d.count; });
+                dailyTrendChart.update();
             }
-        });
-    }
 
-    // toggle function for pie and bar charts for issues by type
-    function toggleTypeChart(type) {
-        document.querySelectorAll('#issuesByTypeBarChart, #issuesByTypePieChart').forEach(el => {
-            el.style.display = 'none';
-        });
+            if (issueTypeChart && data.byType) {
+                issueTypeChart.data.labels = data.byType.map(function (t) { return t.issueType; });
+                issueTypeChart.data.datasets[0].data = data.byType.map(function (t) { return t.count; });
+                issueTypeChart.update();
+            }
 
-        if (type === 'bar') {
-            document.getElementById('issuesByTypeBarChart').style.display = 'block';
-            document.querySelector('.btn-group button:nth-child(1)').classList.add('active');
-            document.querySelector('.btn-group button:nth-child(2)').classList.remove('active');
-        } else {
-            document.getElementById('issuesByTypePieChart').style.display = 'block';
-            document.querySelector('.btn-group button:nth-child(2)').classList.add('active');
-            document.querySelector('.btn-group button:nth-child(1)').classList.remove('active');
-        }
-    }
+            if (statusChart && data.byStatus) {
+                statusChart.data.labels = data.byStatus.map(function (s) {
+                    return s.status.replace('InProgress', 'In Progress');
+                });
+                statusChart.data.datasets[0].data = data.byStatus.map(function (s) { return s.count; });
+                statusChart.update();
+            }
 
-    function applyFilters() {
-        var classId = document.getElementById('classSelect').value;
-        var unitId = document.getElementById('unitSelect').value;
-        var startDate = document.getElementById('startDate').value;
-        var endDate = document.getElementById('endDate').value;
-        var comparisonPeriod = document.getElementById('comparisonPeriod').value;
+            if (classChart && data.byClass) {
+                classChart.data.labels = data.byClass.map(function(c) { return c.className; });
+                classChart.data.datasets[0].data = data.byClass.map(function(c) { return c.count; });
+                classChart.update();
+            }
 
-        // build query with all filters
-        var queryParams = [];
-        if (classId) queryParams.push('classId=' + classId);
-        if (unitId) queryParams.push('unitId=' + unitId);
-        if (startDate) queryParams.push('startDate=' + startDate);
-        if (endDate) queryParams.push('endDate=' + endDate);
-        if (comparisonPeriod) queryParams.push('comparisonPeriod=' + comparisonPeriod);
-        window.location.href = '?' + queryParams.join('&');
-    }
-
-    // toggle option for issues over time chart
-    function toggleTimeChart(type) {
-        let dates, counts, compDates, compCounts;
-        document.querySelectorAll('.btn-group-sm button').forEach(btn => btn.classList.remove('active'));
-
-        if (type === 'issues') {
-            dates = allDates;
-            counts = allCounts;
-            compDates = compAllDates;
-            compCounts = compAllCounts;
-            document.querySelector('.btn-group-sm button:nth-child(1)').classList.add('active');
-        } else if (type === 'late') {
-            dates = lateDates;
-            counts = lateCounts;
-            compDates = compLateDates;
-            compCounts = compLateCounts;
-            document.querySelector('.btn-group-sm button:nth-child(2)').classList.add('active');
-        } else if (type === 'missing') {
-            dates = missingDates;
-            counts = missingCounts;
-            compDates = compMissingDates;
-            compCounts = compMissingCounts;
-            document.querySelector('.btn-group-sm button:nth-child(3)').classList.add('active');
+            if (unitChart && data.byUnit) {
+                var topUnits = data.byUnit.slice(0, 10);
+                unitChart.data.labels = topUnits.map(function(u) { return u.unitName; });
+                unitChart.data.datasets[0].data = topUnits.map(function(u) { return u.count; });
+                unitChart.update();
+            }
         }
 
-        renderIssuesOverTimeChart(dates, counts, compDates, compCounts);
-    }
-    // initialize charts with data
-    document.addEventListener('DOMContentLoaded', function () {
-        // issues by type
-        var issuesData = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.Count).ToList()));
-        var issuesLabels = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesByType.Select(t => t.IssueType).ToList()));
-        renderChart(issuesData, issuesLabels);
-        renderPieChart(issuesData, issuesLabels);
+        function loadInsights() {
+            var modelData = {
+                totalIssues: @Model.TotalIssues,
+                percentageChange: @Model.PercentageChange,
+                activeIssues: @Model.ActiveIssues,
+                archivedIssues: @Model.ArchivedIssues,
+                resolutionRate: @Model.ResolutionRate,
+                resolutionRateChange: @Model.ResolutionRateChange,
+                averageResolutionDays: @Model.AverageResolutionDays,
+                    byStatus: @Html.Raw(JsonConvert.SerializeObject(Model.ByStatus.Select(s => new { status = s.Status.ToString(), count = s.Count }))),
+                dailyTrends: @Html.Raw(JsonConvert.SerializeObject(Model.DailyTrends.Select(d => new { date = d.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), count = d.Count }))),
+                byType: @Html.Raw(JsonConvert.SerializeObject(Model.ByType.Select(t => new { issueType = t.DisplayName, count = t.Count }))),
+                byClass: @Html.Raw(JsonConvert.SerializeObject(Model.ByClass.Select(c => new { className = c.ClassName, count = c.Count }))),
+                byUnit: @Html.Raw(JsonConvert.SerializeObject(Model.ByUnit.Select(u => new { unitName = u.UnitName, count = u.Count })))
+            };
+            updateInsights(modelData);
+        }
 
-        // current period data
-        allDates = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
-        allCounts = @Html.Raw(JsonConvert.SerializeObject(Model.IssuesOverTime.Select(t => t.Count).ToList()));
-        lateDates = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
-        lateCounts = @Html.Raw(JsonConvert.SerializeObject(Model.LateAttendanceOverTime.Select(t => t.Count).ToList()));
-        missingDates = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Date.ToString("MMM dd")).ToList()));
-        missingCounts = @Html.Raw(JsonConvert.SerializeObject(Model.MissingAttendanceOverTime.Select(t => t.Count).ToList()));
+        function updateInsights(data) {
+            var insights = generateInsights(data);
+            var container = $('#insightsContainer');
+            container.empty();
 
-        // data for the period we are comparing to 
-        compAllDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonIssuesOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
-        compAllCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonIssuesOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
-        compLateDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonLateAttendanceOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
-        compLateCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonLateAttendanceOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
-        compMissingDates = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonMissingAttendanceOverTime?.Select(t => t.Date.ToString("MMM dd"))?.ToList() ?? new List<string>()));
-        compMissingCounts = @Html.Raw(JsonConvert.SerializeObject(Model.ComparisonMissingAttendanceOverTime?.Select(t => t.Count)?.ToList() ?? new List<int>()));
+            if (insights.length === 0) {
+                container.append('<div class="alert alert-info">No significant insights available for the current data set.</div>');
+                return;
+            }
 
-        // renders teh chart
-        renderIssuesOverTimeChart(allDates, allCounts, compAllDates, compAllCounts);
+            insights.forEach(function(insight) {
+                container.append(
+                    '<div class="alert alert-' + insight.severity + '">' +
+                    '<strong>' + insight.title + '</strong><br>' +
+                    insight.description +
+                    '</div>'
+                );
+            });
+        }
 
+        function generateInsights(data) {
+            var insights = [];
 
+            /// <summary> status insights. active vs archived </summary>
+            if (data.activeIssues !== undefined && data.archivedIssues !== undefined) {
+                var totalIssues = data.activeIssues + data.archivedIssues;
+                var activePercentage = totalIssues > 0 ? (data.activeIssues / totalIssues * 100) : 0;
+                var resolutionRate = totalIssues > 0 ? (data.archivedIssues / totalIssues * 100) : 0;
 
+                if (data.activeIssues > data.archivedIssues && data.activeIssues > 10) {
+                    insights.push({
+                        title: "High Active Issue Backlog",
+                        description: "There are " + data.activeIssues + " active issues compared to " + data.archivedIssues +
+                            " resolved issues (" + activePercentage.toFixed(1) + "% unresolved). Consider prioritizing resolution of outstanding cases.",
+                        severity: 'warning'
+                    });
+                } else if (resolutionRate > 80) {
+                    insights.push({
+                        title: "Excellent Resolution Performance",
+                        description: "With a " + resolutionRate.toFixed(1) + "% resolution rate (" + data.archivedIssues +
+                            " resolved out of " + totalIssues + " total), the team is effectively managing issues.",
+                        severity: 'success'
+                    });
+                } else if (resolutionRate < 40 && totalIssues > 5) {
+                    insights.push({
+                        title: "Low Resolution Rate Concern",
+                        description: "Only " + resolutionRate.toFixed(1) + "% of issues are resolved (" + data.archivedIssues +
+                            " out of " + totalIssues + "). Consider reviewing resolution processes and allocating more resources to active cases.",
+                        severity: 'danger'
+                    });
+                }
 
-    });
-</script>
+                if (data.activeIssues === 0 && data.archivedIssues > 0) {
+                    insights.push({
+                        title: "All Issues Resolved",
+                        description: "Excellent work! All " + data.archivedIssues + " issues have been resolved with no active cases remaining.",
+                        severity: 'success'
+                    });
+                }
+            }
+
+            /// <summary> resolution time insights </summary>
+            if (data.averageResolutionDays !== undefined && data.archivedIssues > 0) {
+                if (data.averageResolutionDays > 14) {
+                    insights.push({
+                        title: "Slow Resolution Times",
+                        description: "Average resolution time is " + data.averageResolutionDays.toFixed(1) +
+                            " days, which is quite lengthy. Consider streamlining the resolution process or providing additional support to reduce response times.",
+                        severity: 'danger'
+                    });
+                } else if (data.averageResolutionDays > 7) {
+                    insights.push({
+                        title: "Moderate Resolution Times",
+                        description: "Average resolution time is " + data.averageResolutionDays.toFixed(1) +
+                            " days. While acceptable, there may be room for improvement in resolution efficiency.",
+                        severity: 'warning'
+                    });
+                } else if (data.averageResolutionDays < 3) {
+                    insights.push({
+                        title: "Rapid Resolution Times",
+                        description: "Issues are being resolved very quickly (average " + data.averageResolutionDays.toFixed(1) +
+                            " days), indicating highly efficient problem-solving processes.",
+                        severity: 'success'
+                    });
+                }
+            }
+
+            /// <summary> resolution rate trend insights </summary>
+            if (data.resolutionRateChange !== undefined) {
+                if (data.resolutionRateChange > 15) {
+                    insights.push({
+                        title: "Significant Resolution Improvement",
+                        description: "Resolution rate has improved by " + data.resolutionRateChange.toFixed(1) +
+                            "% compared to the previous period, showing excellent progress in issue management.",
+                        severity: 'success'
+                    });
+                } else if (data.resolutionRateChange > 5) {
+                    insights.push({
+                        title: "Improving Resolution Performance",
+                        description: "Resolution rate has improved by " + data.resolutionRateChange.toFixed(1) +
+                            "% compared to the previous period, indicating positive trends in issue resolution.",
+                        severity: 'info'
+                    });
+                } else if (data.resolutionRateChange < -15) {
+                    insights.push({
+                        title: "Significant Resolution Decline",
+                        description: "Resolution rate has decreased by " + Math.abs(data.resolutionRateChange).toFixed(1) +
+                            "% compared to the previous period. Immediate review of current workload and processes is recommended.",
+                        severity: 'danger'
+                    });
+                } else if (data.resolutionRateChange < -5) {
+                    insights.push({
+                        title: "Declining Resolution Performance",
+                        description: "Resolution rate has decreased by " + Math.abs(data.resolutionRateChange).toFixed(1) +
+                            "% compared to the previous period. Monitor trends and consider process improvements.",
+                        severity: 'warning'
+                    });
+                }
+            }
+            /// <summary> overall trends </summary>
+            if (data.percentageChange !== 0) {
+                var trendSeverity = 'info';
+                if (Math.abs(data.percentageChange) > 20) {
+                    trendSeverity = data.percentageChange > 0 ? 'danger' : 'success';
+                } else if (Math.abs(data.percentageChange) > 10) {
+                    trendSeverity = data.percentageChange > 0 ? 'warning' : 'info';
+                }
+
+                insights.push({
+                    title: "Overall Trend Analysis",
+                    description: "Issues are " + Math.abs(data.percentageChange).toFixed(1) + "% " +
+                                (data.percentageChange > 0 ? 'higher' : 'lower') + " than the previous period. " +
+                                (data.percentageChange > 20 ? "This represents a significant change that requires attention." :
+                                 data.percentageChange > 10 ? "This shows a notable trend worth monitoring." :
+                                 "This indicates a moderate change in issue patterns."),
+                    severity: trendSeverity
+                });
+            }
+
+            /// <summary> peak day iniights </summary>
+            if (data.dailyTrends && data.dailyTrends.length > 0) {
+                var peakDay = data.dailyTrends.reduce(function (prev, current) {
+                    return (prev.count > current.count) ? prev : current;
+                });
+                var peakDate = new Date(peakDay.date);
+                var peakDayName = peakDate.toLocaleDateString('en-GB', { weekday: 'long' });
+                var avgDaily = data.dailyTrends.reduce(function(sum, d) { return sum + d.count; }, 0) / data.dailyTrends.length;
+
+                if (peakDay.count > avgDaily * 1.5) {
+                    insights.push({
+                        title: "Peak Day Alert",
+                        description: peakDayName + "s show significantly higher issue rates (" + peakDay.count +
+                                   " issues vs " + avgDaily.toFixed(1) + " average). Consider reviewing what happens on this day of the week.",
+                        severity: 'warning'
+                    });
+                }
+            }
+
+            /// <summary> most ocmmon issue type </summary>
+            if (data.byType && data.byType.length > 0) {
+                var commonIssue = data.byType[0];
+                var totalIssues = data.byType.reduce(function(sum, t) { return sum + t.count; }, 0);
+                var percentage = (commonIssue.count / totalIssues * 100).toFixed(1);
+
+                if (percentage > 40) {
+                    insights.push({
+                        title: "Dominant Issue Type",
+                        description: commonIssue.issueType + " accounts for " + percentage + "% of all issues (" +
+                                   commonIssue.count + " occurrences). This concentration suggests a specific area needing focused intervention.",
+                        severity: 'warning'
+                    });
+                }
+            }
+
+            /// <summary> class distribution </summary>
+            if (data.byClass && data.byClass.length > 1) {
+                var topClass = data.byClass[0];
+                var totalClassIssues = data.byClass.reduce(function(sum, c) { return sum + c.count; }, 0);
+                var classPercentage = (topClass.count / totalClassIssues * 100).toFixed(1);
+
+                if (classPercentage > 30) {
+                    insights.push({
+                        title: "Class Concentration",
+                        description: topClass.className + " has " + classPercentage + "% of all issues (" +
+                                   topClass.count + " issues). This class may need additional support or intervention strategies.",
+                        severity: 'info'
+                    });
+                }
+            }
+
+            /// <summary> unit analysis </summary>
+            if (data.byUnit && data.byUnit.length > 0) {
+                var topUnit = data.byUnit[0];
+                var unitsWith5Plus = data.byUnit.filter(function(u) { return u.count >= 5; }).length;
+
+                if (unitsWith5Plus > 0) {
+                    insights.push({
+                        title: "Unit Analysis",
+                        description: unitsWith5Plus + " unit(s) have 5 or more issues, with " + topUnit.unitName +
+                                   " leading at " + topUnit.count + " issues. Consider reviewing teaching methods or unit content for these areas.",
+                        severity: 'info'
+                    });
+                }
+            }
+
+            /// <summary> overall data insights </summary>
+            if (data.totalIssues === 0) {
+                insights.push({
+                    title: "No Issues Recorded",
+                    description: "No issues were recorded for the selected period and filters. This could indicate excellent behavior or a need to review reporting processes.",
+                    severity: 'success'
+                });
+            } else if (data.totalIssues < 5) {
+                insights.push({
+                    title: "Low Issue Volume",
+                    description: "Only " + data.totalIssues + " issue(s) recorded. This suggests good overall behavior management.",
+                    severity: 'success'
+                });
+            }
+
+            return insights;
+        }
+    </script>
+}
