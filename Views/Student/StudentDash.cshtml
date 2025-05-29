@@ -85,6 +85,41 @@
                 color: #555;
                 margin-bottom: 4px;
             }
+
+        .online-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(0, 128, 0, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: green;
+            border-radius: 50%;
+        }
+
+        .online-text {
+            color: green;
+            font-weight: 600;
+        }
+
+        .online-badge.offline {
+            background-color: rgba(128, 128, 128, 0.15);
+        }
+
+        .dot.offline {
+            background-color: gray;
+        }
+
+        .online-text.offline {
+            color: gray;
+        }
+
     </style>
 </head>
 
@@ -96,7 +131,13 @@
             <div class="col-12" id="welcomeCard">
                 <div class="card welcome-card">
                     <div class="card-body">
-                        <h5 class="card-title">Hi, @Model.FirstName!</h5>
+                        <h5 class="card-title d-flex align-items-center gap-3">
+                            Hi, @Model.FirstName!
+                            <span class="online-badge" id="onlineStatusBadge">
+                                <span class="dot" id="onlineDot"></span>
+                                <span class="online-text" id="onlineText">Online</span>
+                            </span>
+                        </h5>
                         <p class="card-text">Welcome to your Student Dashboard.</p>
                         <p class="text-muted" id="currentDateTime"></p>
                     </div>
@@ -190,6 +231,19 @@
                     $(".alert-success").fadeOut("slow");
                 }, 3000);
             });
+
+            // Optional logic – based on real-time logic in future
+            document.addEventListener('DOMContentLoaded', function () {
+                // Example: if user chose to appear offline
+                const manuallyOffline = false; // replace with real setting if needed
+                if (manuallyOffline) {
+                    document.getElementById('onlineStatusBadge').classList.add('offline');
+                    document.getElementById('onlineDot').classList.add('offline');
+                    document.getElementById('onlineText').classList.add('offline');
+                    document.getElementById('onlineText').innerText = 'Offline';
+                }
+            });
+
         </script>
     }
 </body>

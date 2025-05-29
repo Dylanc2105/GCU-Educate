@@ -106,6 +106,41 @@
             align-items: center;
             flex-wrap: wrap;
         }
+
+        .online-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(0, 128, 0, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: green;
+            border-radius: 50%;
+        }
+
+        .online-text {
+            color: green;
+            font-weight: 600;
+        }
+
+        .online-badge.offline {
+            background-color: rgba(128, 128, 128, 0.15);
+        }
+
+        .dot.offline {
+            background-color: gray;
+        }
+
+        .online-text.offline {
+            color: gray;
+        }
+
     </style>
 </head>
 
@@ -119,7 +154,13 @@
                 <div class="card welcome-card">
                     <div class="card-body welcome-row">
                         <div>
-                            <h5>Hi, @Model.FirstName!</h5>
+                            <h5 class="d-flex align-items-center gap-3">
+                                Hi, @Model.FirstName!
+                                <span class="online-badge" id="onlineStatusBadge">
+                                    <span class="dot" id="onlineDot"></span>
+                                    <span class="online-text" id="onlineText">Online</span>
+                                </span>
+                            </h5>
                             <p>Welcome to your Guidance Dashboard.</p>
                             <p class="text-muted" id="currentDateTime"></p>
                         </div>
@@ -203,6 +244,17 @@
 
             updateClock();
             setInterval(updateClock, 1000);
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const manuallyOffline = false; // Replace with real logic if needed
+                if (manuallyOffline) {
+                    document.getElementById('onlineStatusBadge').classList.add('offline');
+                    document.getElementById('onlineDot').classList.add('offline');
+                    document.getElementById('onlineText').classList.add('offline');
+                    document.getElementById('onlineText').innerText = 'Offline';
+                }
+            });
+
         </script>
     }
 </body>

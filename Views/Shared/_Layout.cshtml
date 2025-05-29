@@ -375,6 +375,63 @@
             transition-delay: 0s, 0s;
             transition: transform 0.3s ease-in, opacity 0.3s ease-in;
         }
+
+        /* Popup container */
+        .swal-popup {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Title */
+        .swal-title {
+            color: #000;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* Body text */
+        .swal-body {
+            color: #000;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .swal-confirm {
+            background-color: #7F3D98 !important;
+            color: white !important;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .swal-cancel {
+            background-color: #ccc !important;
+            color: #333 !important;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        /* Force purple icon color and border */
+        .swal2-icon.swal2-warning {
+            border-color: #7F3D98 !important;
+        }
+
+            .swal2-icon.swal2-warning .swal2-icon-content {
+                color: #7F3D98 !important;
+            }
+
+
+
+
     </style>
 
     <!-- Add Font Awesome for icons -->
@@ -384,6 +441,8 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/Style.css")
+
+
 
 </head>
 
@@ -431,9 +490,10 @@
                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @class = "form-inline", id = "logoutForm" }))
                     {
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-link nav-link p-0" title="Log Out">
+                        <button type="button" onclick="confirmLogout()" class="btn btn-link nav-link p-0" title="Log Out">
                             <img src="~/Images/Icons/logOff.svg" alt="Log Out" width="40" height="40" />
                         </button>
+
                     }
                 </li>
             </ul>
@@ -649,6 +709,67 @@
             }
         }
 
+        function toggleAppearOffline(isOffline) {
+            localStorage.setItem('appearOffline', isOffline);
+            updateOnlineBadge();
+        }
+
+        function updateOnlineBadge() {
+            const isOffline = localStorage.getItem('appearOffline') === 'true';
+
+            const badge = document.getElementById('onlineStatusBadge');
+            const dot = document.getElementById('onlineDot');
+            const text = document.getElementById('onlineText');
+
+            if (isOffline) {
+                badge.classList.add('offline');
+                dot.classList.add('offline');
+                text.classList.add('offline');
+                text.textContent = 'Offline';
+            } else {
+                badge.classList.remove('offline');
+                dot.classList.remove('offline');
+                text.classList.remove('offline');
+                text.textContent = 'Online';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('appearOfflineToggle');
+            if (toggle) {
+                toggle.checked = localStorage.getItem('appearOffline') === 'true';
+            }
+            updateOnlineBadge();
+        });
+
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Confirm Logout',
+                text: 'Are you sure you want to log out of your account?',
+                icon: 'warning',
+                customClass: {
+                    popup: 'swal-popup',
+                    title: 'swal-title',
+                    htmlContainer: 'swal-body',
+                    confirmButton: 'swal-confirm',
+                    cancelButton: 'swal-cancel',
+                    icon: 'swal-custom-icon'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Yes, log me out',
+                cancelButtonText: 'Cancel',
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        }
+
+
+
+
+
     </script>
 
 
@@ -700,7 +821,7 @@
                 <div class="setting-row">
                     <span>Appear Offline</span>
                     <label class="toggle-label">
-                        <input type="checkbox" />
+                        <input type="checkbox" onchange="toggleAppearOffline(this.checked)" id="appearOfflineToggle" />
                         <span class="slider"></span>
                     </label>
                 </div>
