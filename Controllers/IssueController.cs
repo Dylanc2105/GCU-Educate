@@ -231,21 +231,21 @@ namespace GuidanceTracker.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var units = db.Units
-                .Where(u => u.LecturerId == currentUserId && 
-                           u.Classes.Any(c => c.ClassId == classId)) 
-                .Select(u => new { u.UnitId, u.UnitName })
-                .ToList();
-
-
-            //// Get the UnitIds manually from the join table (UnitClasses)
-            //var unitIds = db.Database.SqlQuery<int>(
-            //    "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
-
             //var units = db.Units
-            //    .Where(u => unitIds.Contains(u.UnitId))
+            //    .Where(u => u.LecturerId == currentUserId && 
+            //               u.Classes.Any(c => c.ClassId == classId)) 
             //    .Select(u => new { u.UnitId, u.UnitName })
             //    .ToList();
+
+
+            // Get the UnitIds manually from the join table (UnitClasses)
+            var unitIds = db.Database.SqlQuery<int>(
+                "SELECT UnitId FROM UnitClasses WHERE ClassId = @p0", classId).ToList();
+
+            var units = db.Units
+                .Where(u => unitIds.Contains(u.UnitId))
+                .Select(u => new { u.UnitId, u.UnitName })
+                .ToList();
 
             return Json(units, JsonRequestBehavior.AllowGet);
         }
