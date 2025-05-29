@@ -221,6 +221,47 @@
         vertical-align: middle;
         margin-left: 8px;
     }
+
+    .quick-btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 14px;
+    }
+
+    .quick-btn {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: 320px; /* All buttons same width, adjust as needed */
+        padding: 12px 20px;
+        background: #7F3D98; /* Purple background */
+        border: 1.2px solid #7F3D98;
+        border-radius: 8px;
+        color: #fff; /* White text */
+        font-weight: 700;
+        font-size: 1.1em;
+        text-decoration: none;
+        transition: background 0.18s, color 0.18s;
+        box-shadow: 0 1px 6px #e7d0fa34;
+    }
+
+        .quick-btn img {
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .quick-btn:hover,
+        .quick-btn:focus {
+            background: #985BAF; /* Slightly lighter purple on hover */
+            color: #fff;
+        }
+
+
 </style>
 
 <h1 class="dashboard-title">Issues Dashboard</h1>
@@ -350,11 +391,23 @@
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
                 <!-- Existing Quick Action Buttons -->
-                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn"><img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New</a>
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn"><img src="~/Images/Icons/OTHER/studentHub.svg" /> Student Hub</a>
-                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn"><img src="~/Images/Icons/OTHER/allIssues.svg" /> All</a>
-                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn"><img src="~/Images/Icons/OTHER/archived.svg" /> View Archived</a>
-        </div>
+                <div class="quick-btn-group">
+    <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">
+        <img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New Issue
+    </a>
+    <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">
+        <img src="~/Images/Icons/OTHER/studentHub.svg" /> Student Issues
+    </a>
+    <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">
+        <img src="~/Images/Icons/OTHER/allIssues.svg" /> All Issues
+    </a>
+    <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">
+        <img src="~/Images/Icons/OTHER/archived.svg" /> Archived Issues
+    </a>
+</div>
+
+
+            </div>
         </div>
     </div>
 

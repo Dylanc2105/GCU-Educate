@@ -482,6 +482,7 @@
     <Content Include="Content\kendo\2025.1.227\material-sky-dark.css" />
     <Content Include="Content\kendo\2025.1.227\material-sky.css" />
     <Content Include="Content\kendo\2025.1.227\material-smoke.css" />
+    <Content Include="Content\Style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />

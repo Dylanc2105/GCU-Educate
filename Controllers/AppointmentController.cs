@@ -58,26 +58,29 @@ namespace GuidanceTracker.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "GuidanceTeacher, Lecturer")]
+        [Authorize(Roles = "GuidanceTeacher, Lecturer, Student")]
         [HttpGet]
         public JsonResult GetUserMeetings()
         {
             var userId = User.Identity.GetUserId();
 
             var meetings = db.Appointments
-                 .Where(m => m.Student.Id == userId)
+                .Include(m => m.Student)
+                .Where(m => m.StudentId == userId || m.GuidanceTeacherId == userId)
                 .OrderByDescending(m => m.StartTime)
                 .ToList()
                 .Select(m => new
                 {
                     MeetingId = m.AppointmentId,
-                  
-                    Date = m.AppointmentDate.ToString("yyyy-MM-dd")
+                    Title = "Meeting with " + (m.Student != null ? m.Student.FirstName + " " + m.Student.LastName : ""),
+                    StudentName = m.Student != null ? m.Student.FirstName + " " + m.Student.LastName : "N/A",
+                    Date = m.AppointmentDate.ToString("o")
                 })
                 .ToList();
 
             return Json(meetings, JsonRequestBehavior.AllowGet);
         }
+
 
 
         [HttpPost]
