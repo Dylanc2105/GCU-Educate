@@ -552,7 +552,16 @@
         function toggleAppearOffline(isOffline) {
             localStorage.setItem('appearOffline', isOffline);
             updateOnlineBadge();
+
+            fetch('/Account/SetAppearOffline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `appearOffline=${isOffline}`
+            }).catch(err => console.error('Failed to update appearOffline:', err));
         }
+
 
         function updateOnlineBadge() {
             const isOffline = localStorage.getItem('appearOffline') === 'true';

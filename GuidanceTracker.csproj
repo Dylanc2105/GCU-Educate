@@ -2696,7 +2696,6 @@
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
     <Content Include="Views\Student\RequestAppointment.cshtml" />
-    <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
     <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
     <Content Include="Views\Student\UpcomingAppoinments.cshtml" />
@@ -2724,6 +2723,7 @@
     <Content Include="Views\Classes\UploadClasses.cshtml" />
     <Content Include="Views\Student\Create.cshtml" />
     <Content Include="Views\Student\UploadStudents.cshtml" />
+    <Content Include="Views\Message\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

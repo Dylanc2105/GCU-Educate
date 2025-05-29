@@ -1042,7 +1042,7 @@ namespace GuidanceTracker.Controllers
                 TempData["SuccessMessage"] = "Class feedback has been successfully submitted! The results have been sent to your guidance teacher/curriculum head.";
                 return RedirectToAction("ClassRepDashboard");
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 TempData["ErrorMessage"] = "An error occurred while submitting the feedback. Please try again.";
                 return RedirectToAction("ReviewAggregatedFeedback");

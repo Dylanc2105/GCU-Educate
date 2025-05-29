@@ -297,6 +297,23 @@ namespace GuidanceTracker.Controllers
             return View("ForgotPasswordConfirmation");
         }
 
+        [HttpPost]
+        public ActionResult SetAppearOffline(bool appearOffline)
+        {
+            var userId = User.Identity.GetUserId();
+            using (var db = new GuidanceTrackerDbContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                if (user == null) return HttpNotFound();
+
+                user.AppearOffline = appearOffline;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+        }
+
+
 
         //
         // GET: /Account/ForgotPasswordConfirmation
@@ -538,14 +555,25 @@ namespace GuidanceTracker.Controllers
         }
 
         //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            var userId = User.Identity.GetUserId();
+            using (var db = new GuidanceTrackerDbContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    user.LastSeen = null;
+                    db.SaveChanges();
+                }
+            }
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Login", "Account");
         }
+
 
         //
         // GET: /Account/ExternalLoginFailure

@@ -41,6 +41,7 @@ namespace GuidanceTracker.Controllers
                 return HttpNotFound("No guidance session found for this student's class");
             }
 
+
             // Build view model with ONLY available time slots
             var viewModel = new AppointmentViewModel
             {
@@ -56,6 +57,28 @@ namespace GuidanceTracker.Controllers
 
             return View(viewModel);
         }
+
+        [Authorize(Roles = "GuidanceTeacher, Lecturer")]
+        [HttpGet]
+        public JsonResult GetUserMeetings()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var meetings = db.Appointments
+                 .Where(m => m.Student.Id == userId)
+                .OrderByDescending(m => m.StartTime)
+                .ToList()
+                .Select(m => new
+                {
+                    MeetingId = m.AppointmentId,
+                  
+                    Date = m.AppointmentDate.ToString("yyyy-MM-dd")
+                })
+                .ToList();
+
+            return Json(meetings, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
