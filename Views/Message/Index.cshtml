@@ -16,7 +16,7 @@
                 <input type="text" id="inboxSearch" class="conversation-search" placeholder="Search messages..." onkeyup="applyInboxFilters()">
                 <button class="filter-icon-btn" onclick="toggleInboxFilterDropdown()"><span></span></button>
                 <button class="new-chat-btn" onclick="openNewChatModal()">+ New Chat</button>
-                <button class="gear-style" onclick="openSettingsModal()" title="Settings">⚙️</button>
+                <button class="gear-style" onclick="openMessageSettingsModal()" title="MessageSettings">⚙️</button>
             </div>
             <div id="inboxRoleFilterDropdown" class="role-dropdown static-dropdown" style="display: none;"></div>
         </div>
@@ -79,7 +79,7 @@
 
 <!-- View Archived Conversations Modal -->
 <div id="archivedModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content wide-settings">
+    <div class="modal-content wide-MessageSettings">
         <div class="modal-header">
             <h3>Archived Conversations</h3>
             <button class="close-btn" onclick="$('#archivedModal').hide();">×</button>
@@ -106,12 +106,12 @@
 </div>
 
 
-<!-- ⚙️ Settings Modal -->
-<div id="settingsModal" class="modal-overlay" style="display:none;">
-    <div class="modal-content wide-settings">
+<!-- ⚙️ MessageSettings Modal -->
+<div id="MessageSettingsModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content wide-MessageSettings">
         <div class="modal-header">
-            <h3>Message Settings</h3>
-            <button class="close-btn" onclick="closeSettingsModal()">×</button>
+            <h3>Message MessageSettings</h3>
+            <button class="close-btn" onclick="closeMessageSettingsModal()">×</button>
         </div>
 
         <!-- Archive Section -->
@@ -230,14 +230,14 @@
             font-weight: 500;
         }
 
-    /* Settings Area */
+    /* MessageSettings Area */
     .archived-header {
         background: #999 !important;
         opacity: 0.9;
     }
 
     /* Make modal wider */
-    .wide-settings {
+    .wide-MessageSettings {
         width: 900px;
     }
 
@@ -931,11 +931,11 @@
             const formattedDate = date.toLocaleDateString('en-GB', options);
             return `${formattedDate} at ${time}`;
         }
-     function openSettingsModal() {
-            $('#settingsModal').show();
+     function openMessageSettingsModal() {
+            $('#MessageSettingsModal').show();
         }
-    function closeSettingsModal() {
-            $('#settingsModal').hide();
+    function closeMessageSettingsModal() {
+            $('#MessageSettingsModal').hide();
         }
 
 
@@ -1213,7 +1213,7 @@
             archiveTargetType = type;
             archiveTargetId = convoId;
 
-            closeSettingsModal();
+            closeMessageSettingsModal();
 
             const text = type === 'all'
                 ? "Are you sure you want to archive all your conversations?"
@@ -1263,7 +1263,7 @@
 
 
         function openArchivedModal() {
-            closeSettingsModal();
+            closeMessageSettingsModal();
             $('#archivedModal').show();
             loadArchivedConversations();
         }
