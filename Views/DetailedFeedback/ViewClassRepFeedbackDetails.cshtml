@@ -1,0 +1,1148 @@
+﻿@model GuidanceTracker.Models.ClassRepFeedback
+@{
+    ViewBag.Title = "Class Feedback Details";
+}
+
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="h2 text-dark mb-2">Class Feedback Summary</h1>
+            <h4 class="text-muted">@Model.Class - @Model.Course</h4>
+            <div class="alert alert-light border mt-3" style="background-color: #f8f9fa;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <i class="fas fa-user mr-2" style="color: #7F3D98;"></i>
+                        <strong>Submitted by:</strong> @Model.Student.FirstName @Model.Student.LastName (Class Representative)
+                    </div>
+                    <div class="col-md-6 text-md-right">
+                        <i class="fas fa-calendar mr-2" style="color: #7F3D98;"></i>
+                        <strong>Date:</strong> @Model.DateSubmittedByClassRep
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Ratings Summary -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-chart-line mr-2"></i>Overall Ratings Summary
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row text-center">
+                        <div class="col-md-2 mb-3">
+                            <div class="p-3 rounded" style="background-color: white;">
+                                <h3 class="mb-1" style="color: @(Model.LearningExperienceRating >= 7 ? "#28a745" : Model.LearningExperienceRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.LearningExperienceRating<small>/10</small>
+                                </h3>
+                                <p class="text-muted mb-0">Learning Experience</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="p-3 rounded" style="background-color: white;">
+                                <h3 class="mb-1" style="color: @(Model.LearningTeachingRating >= 7 ? "#28a745" : Model.LearningTeachingRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.LearningTeachingRating<small>/10</small>
+                                </h3>
+                                <p class="text-muted mb-0">Teaching Methods</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="p-3 rounded" style="background-color: white;">
+                                <h3 class="mb-1" style="color: @(Model.AssessmentRating >= 7 ? "#28a745" : Model.AssessmentRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.AssessmentRating<small>/10</small>
+                                </h3>
+                                <p class="text-muted mb-0">Assessment</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="p-3 rounded" style="background-color: white;">
+                                <h3 class="mb-1" style="color: @(Model.ResourcesRating >= 7 ? "#28a745" : Model.ResourcesRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.ResourcesRating<small>/10</small>
+                                </h3>
+                                <p class="text-muted mb-0">Resources</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="p-3 rounded" style="background-color: white;">
+                                <h3 class="mb-1" style="color: @(Model.SupportEffectivenessRating >= 7 ? "#28a745" : Model.SupportEffectivenessRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.SupportEffectivenessRating<small>/10</small>
+                                </h3>
+                                <p class="text-muted mb-0">Support</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="p-4 rounded" style="background-color: white; border: 2px solid #7F3D98;">
+                                <h2 class="mb-1" style="color: @(Model.OverallRating >= 7 ? "#28a745" : Model.OverallRating >= 5 ? "#ffc107" : "#dc3545");">
+                                    @Model.OverallRating<small>/10</small>
+                                </h2>
+                                <p class="mb-0"><strong>Overall Rating</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Learning Experience Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-graduation-cap mr-2"></i>Current Learning Experience
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Does the course meet your expectations?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.MeetsExpectationsYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.MeetsExpectationsNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Would you recommend this course?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.WouldRecommendYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.WouldRecommendNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is the workload manageable?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.WorkloadManageableYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.WorkloadManageableNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningExperienceKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningExperienceKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningExperienceStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-thumbs-up text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningExperienceStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningExperienceImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningExperienceImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningExperienceComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningExperienceComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.LearningExperienceRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.LearningExperienceClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.LearningExperienceClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teaching & Learning Methods Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>Teaching & Learning Methods
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are concepts presented clearly?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.ConceptsPresentedYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.ConceptsPresentedNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are materials readily available?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.MaterialsAvailableYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.MaterialsAvailableNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Does teaching accommodate different learning styles?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.AccommodatesStylesYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.AccommodatesStylesNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is the lecturer responsive to student needs?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.LecturerResponsiveYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.LecturerResponsiveNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningTeachingKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningTeachingKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningTeachingStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-star text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningTeachingStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningTeachingImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningTeachingImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.LearningTeachingComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.LearningTeachingComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.LearningTeachingRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.LearningTeachingClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.LearningTeachingClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment & Progress Tracking Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-tasks mr-2"></i>Assessment & Progress Tracking
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are you confident about upcoming assessments?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.AssessmentConfidenceYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.AssessmentConfidenceNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is feedback being returned promptly?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.TimelyFeedbackYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.TimelyFeedbackNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is the feedback specific enough to help you improve?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.SpecificFeedbackYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.SpecificFeedbackNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Do assessments align with what's being taught?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.AssessmentsAlignedYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.AssessmentsAlignedNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is sufficient time provided to complete assigned work?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.SufficientTimeYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.SufficientTimeNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.AssessmentKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.AssessmentKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.AssessmentStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-thumbs-up text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.AssessmentStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.AssessmentImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.AssessmentImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.AssessmentComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.AssessmentComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.AssessmentRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.AssessmentClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.AssessmentClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning Resources & Environment Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-book mr-2"></i>Learning Resources & Environment
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are required materials easily accessible?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.MaterialsAccessibleYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.MaterialsAccessibleNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is the Canvas organised in a helpful way?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.PlatformOrganisedYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.PlatformOrganisedNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is necessary equipment available and working properly?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.EquipmentWorkingYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.EquipmentWorkingNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are additional resources provided for challenging topics?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.SupplementaryResourcesYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.SupplementaryResourcesNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Do you have sufficient access to specialised equipment?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.SpecialisedEquipmentYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.SpecialisedEquipmentNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are library resources adequate?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.LibraryResourcesYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.LibraryResourcesNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.ResourcesKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.ResourcesKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.ResourcesStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-thumbs-up text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.ResourcesStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.ResourcesImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.ResourcesImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.ResourcesComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.ResourcesComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.ResourcesRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.ResourcesClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.ResourcesClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Communication & Support Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-headset mr-2"></i>Communication & Support
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are staff responding to queries in a timely manner?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.StaffResponsiveYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.StaffResponsiveNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is additional help available when needed?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.AdditionalHelpAvailableYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.AdditionalHelpAvailableNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are accommodations being provided for students who require them?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.AccommodationsProvidedYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.AccommodationsProvidedNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is it clear who to approach with specific questions?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.ClearPointsOfContactYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.ClearPointsOfContactNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.SupportEffectivenesssKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SupportEffectivenesssKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.SupportEffectivenessStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-thumbs-up text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SupportEffectivenessStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.SupportEffectivenessImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SupportEffectivenessImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.SupportEffectivenessComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SupportEffectivenessComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.SupportEffectivenessRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.SupportEffectivenessClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.SupportEffectivenessClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Development Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-chart-line mr-2"></i>Skills Development
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Yes/No Questions with Counts -->
+                    <div class="mb-4">
+                        <h6 class="text-dark mb-3">Survey Responses:</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are you developing critical thinking skills?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.DevelopingCriticalThinkingYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.DevelopingCriticalThinkingNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are you enhancing your problem-solving abilities?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.EnhancingProblemSolvingYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.EnhancingProblemSolvingNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are you gaining practical skills relevant to your career?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.GainingPracticalSkillsYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.GainingPracticalSkillsNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Is the course helping improve your communication abilities?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.ImprovingCommunicationYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.ImprovingCommunicationNoCount
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <span class="text-dark">Are your research skills developing through assignments?</span>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <span class="badge badge-pill mr-2" style="background-color: #28a745; color: white;">
+                                    Yes: @Model.DevelopingResearchSkillsYesCount
+                                </span>
+                                <span class="badge badge-pill" style="background-color: #dc3545; color: white;">
+                                    No: @Model.DevelopingResearchSkillsNoCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aggregated Text Feedback -->
+                    <div class="mb-4">
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.SkillsDevelopmentKeyIssues))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Key Issues:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SkillsDevelopmentKeyIssues?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.SkillsDevelopmentStrengths))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-thumbs-up text-success mr-2"></i>Strengths:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SkillsDevelopmentStrengths?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row">
+                            @if (!string.IsNullOrWhiteSpace(Model.SkillsDevelopmentImprovements))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-lightbulb text-info mr-2"></i>Suggested Improvements:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SkillsDevelopmentImprovements?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.SkillsDevelopmentComments))
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-dark">
+                                        <i class="fas fa-comment text-primary mr-2"></i>Additional Comments:
+                                    </h6>
+                                    <div class="p-3 rounded" style="background-color: white; min-height: 100px;">
+                                        <small class="text-muted">@Html.Raw(Model.SkillsDevelopmentComments?.Replace("\n", "<br/>"))</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Section Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-dark mb-0">Average Section Rating:</h6>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h4" style="color: #7F3D98;">@Model.SkillsDevelopmentRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Discussion Notes -->
+                    @if (!string.IsNullOrWhiteSpace(Model.SkillsDevelopmentClassDiscussion))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Class Discussion Notes:
+                            </h6>
+                            <div class="alert alert-light border" style="background-color: #e3f2fd;">
+                                @Html.Raw(Model.SkillsDevelopmentClassDiscussion?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Summary Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                    <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                        <i class="fas fa-star mr-2"></i>Overall Course Summary
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="row mb-4">
+                        @if (!string.IsNullOrWhiteSpace(Model.BestFeatures))
+                        {
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-dark">
+                                    <i class="fas fa-trophy text-success mr-2"></i>Best Features:
+                                </h6>
+                                <div class="p-3 rounded" style="background-color: white; min-height: 120px;">
+                                    <small class="text-muted">@Html.Raw(Model.BestFeatures?.Replace("\n", "<br/>"))</small>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.AreasForImprovement))
+                        {
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-dark">
+                                    <i class="fas fa-tools text-warning mr-2"></i>Areas for Improvement:
+                                </h6>
+                                <div class="p-3 rounded" style="background-color: white; min-height: 120px;">
+                                    <small class="text-muted">@Html.Raw(Model.AreasForImprovement?.Replace("\n", "<br/>"))</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Overall Rating -->
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="text-dark mb-0">Overall Course Rating:</h5>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <span class="h3" style="color: #7F3D98;">@Model.OverallRating/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overall Class Discussion -->
+                    @if (!string.IsNullOrWhiteSpace(Model.OverallClassDiscussionNotes))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-users text-info mr-2"></i>Overall Class Discussion Summary:
+                            </h6>
+                            <div class="alert alert-info">
+                                @Html.Raw(Model.OverallClassDiscussionNotes?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Additional Comments -->
+                    @if (!string.IsNullOrWhiteSpace(Model.AdditionalClassComments))
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-dark mb-2">
+                                <i class="fas fa-comment-alt text-primary mr-2"></i>Additional Class Comments:
+                            </h6>
+                            <div class="alert alert-warning">
+                                @Html.Raw(Model.AdditionalClassComments?.Replace("\n", "<br/>"))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="card-body p-4 text-center">
+                    <a href="@Url.Action("ViewUnreadReceivedDetailedFeedbacks", "DetailedFeedback")"
+                       class="btn btn-outline-secondary btn-lg mr-3">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Unread Feedback
+                    </a>
+                    <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")"
+                       class="btn btn-lg text-white" style="background-color: #7F3D98; border-color: #7F3D98;">
+                        <i class="fas fa-dashboard mr-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

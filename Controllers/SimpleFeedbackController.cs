@@ -20,6 +20,25 @@ namespace GuidanceTracker.Controllers
 
             var currentStudent = db.Students.FirstOrDefault(s => s.Id == studentId);
 
+            ViewBag.IsClassRep = currentStudent?.IsClassRep ?? false;
+
+            if (currentStudent?.IsClassRep == true)
+            {
+                // Check if all students have submitted feedback (meaning class rep can review)
+                var totalStudentsInClass = db.Students.Count(s => s.ClassId == currentStudent.ClassId);
+                var submittedFeedbacks = db.DetailedFeedbacks
+                    .Count(f => f.ClassId == currentStudent.ClassId && f.IsSubmitted == true);
+                var pendingRequests = db.RequestedDetailedForms
+                    .Count(r => r.ClassId == currentStudent.ClassId);
+
+                // Check if class rep has already submitted their aggregated feedback
+                var submittedClassRepFeedback = db.ClassRepFeedbacks
+                    .Any(f => f.ClassId == currentStudent.ClassId && f.StudentId == currentStudent.Id && f.IsSubmittedByClassRep == true);
+
+                ViewBag.HasPendingClassFeedback = (submittedFeedbacks >= totalStudentsInClass && pendingRequests == 0 && !submittedClassRepFeedback);
+                ViewBag.HasSubmittedClassFeedback = submittedClassRepFeedback;
+            }
+
             // Check if there are any requests for this specific student
             var hasRequest = db.RequestedDetailedForms
                 .Any(r => r.StudentId == studentId);

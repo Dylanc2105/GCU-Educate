@@ -51,6 +51,8 @@ namespace GuidanceTracker.Models
         public DbSet<ProgressMeetingFeedbackForm> ProgressMeetingFeedbackForms { get; set; }
         public DbSet<AppointmentFeedbackForm> AppointmentFeedbackForms { get; set; }
 
+        public DbSet<ClassRepFeedback> ClassRepFeedbacks { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -197,6 +199,8 @@ namespace GuidanceTracker.Models
                 .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(m => m.ReceiverId)
                 .WillCascadeOnDelete(false);
+
+
 
         }
 

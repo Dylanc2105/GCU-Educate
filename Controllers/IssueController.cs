@@ -53,7 +53,7 @@ namespace GuidanceTracker.Controllers
         // GET: Issue/CreateIssue
         public ActionResult CreateIssue()
         {
-            /// <summary> karina: updating the create issue action to load only the classes, units and students associated with the logged in user </summary>
+            /// <summary> karina: updating the create issue action to load only the classes associated with the logged in user </summary>
             var userId = User.Identity.GetUserId();
 
             var model = new CreateIssueViewModel
@@ -104,7 +104,7 @@ namespace GuidanceTracker.Controllers
                 .Where(c => c.UserId == userId)
                 .Select(c => c.IssueId);
 
-            // Load the issues into memory first so we can use .ToString() safely
+           
             var issues = db.Issues
                 .Include(i => i.Student)
                 .Where(i =>
@@ -112,11 +112,10 @@ namespace GuidanceTracker.Controllers
                     i.GuidanceTeacherId == userId ||
                     commentedIssueIds.Contains(i.IssueId)
                 )
-                .ToList() // Materialize the query here
+                .ToList() 
                .Select(i => new
                {
                    IssueId = i.IssueId,
-                   StudentId = i.StudentId, // ADD THIS
                    StudentName = i.Student.FirstName + " " + i.Student.LastName,
                    Title = i.IssueTitle.ToString(),
                    Status = i.IssueStatus.ToString(),
@@ -178,7 +177,7 @@ namespace GuidanceTracker.Controllers
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
                         LecturerId = student.Class.Units.FirstOrDefault()?.LecturerId,
-                        GuidanceTeacherId = student.GuidanceTeacherId, // karina: issues are correctly assigned to the guidance teacher
+                        GuidanceTeacherId = student.GuidanceTeacherId, 
                         Comments = new List<Comment>()
                     };
 
@@ -227,15 +226,44 @@ namespace GuidanceTracker.Controllers
 
 
         // AJAX: Get Units by Class
+        /// <summary>
+        /// karina: adjusted so that if lecturer is loffed inthey only see the units they teach and if guidance they see al teh inits the classes have
+        /// </summary>
+        /// 
         public ActionResult GetUnits(int classId)
         {
             var currentUserId = User.Identity.GetUserId();
+            var units = new List<object>();
 
-            var units = db.Units
-                .Where(u => u.LecturerId == currentUserId && 
-                           u.Classes.Any(c => c.ClassId == classId)) 
-                .Select(u => new { u.UnitId, u.UnitName })
-                .ToList();
+            
+            var lecturer = db.Lecturers.FirstOrDefault(l => l.Id == currentUserId);
+
+            if (lecturer != null)
+            {
+                units = db.Units
+                    .Where(u => u.LecturerId == currentUserId &&
+                               u.Classes.Any(c => c.ClassId == classId))
+                    .Select(u => new { u.UnitId, u.UnitName })
+                    .ToList()
+                    .Cast<object>()
+                    .ToList();
+            }
+            else
+            {
+                var guidanceTeacher = db.GuidanceTeachers
+                    .Include(gt => gt.Classes)
+                    .FirstOrDefault(gt => gt.Id == currentUserId);
+
+                if (guidanceTeacher != null)
+                {
+                    units = db.Units
+                        .Where(u => u.Classes.Any(c => c.ClassId == classId))
+                        .Select(u => new { u.UnitId, u.UnitName })
+                        .ToList()
+                        .Cast<object>()
+                        .ToList();
+                }
+            }
 
 
             //// Get the UnitIds manually from the join table (UnitClasses)

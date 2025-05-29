@@ -81,6 +81,26 @@ namespace GuidanceTracker.Models
             Student student7 = null;
             Student student8 = null;
             Student student9 = null;
+            Student student10 = null;
+            Student student11 = null;
+            Student student12 = null;
+            Student student13 = null;
+            Student student14 = null;
+            Student student15 = null;
+            Student student16 = null;
+            Student student17 = null;
+            Student student18 = null;
+            Student student19 = null;
+            Student student20 = null;
+            Student student21 = null;
+            Student student22 = null;
+            Student student23 = null;
+            Student student24 = null;
+            Student student25 = null;
+            Student student26 = null;
+            Student student27 = null;
+            Student student28 = null;
+            Student student29 = null;
             Student financeStudent2 = null;
             //create guidance teacher
             //first check if admin exists in db
@@ -340,16 +360,7 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            // Create a new class for finance students
-            var financeClass = new Class
-            {
-                ClassId = 10, // Make sure this ID doesn't conflict with existing ones
-                ClassName = "HNC Finance Class A",
-                MaxCapacity = 20,
-                GuidanceTeacherId = newGuidanceTeacher.Id
-            };
-            context.Classes.Add(financeClass);
-            context.SaveChanges();
+            
 
             // Create classes
             var classes1 = new Class
@@ -445,24 +456,17 @@ namespace GuidanceTracker.Models
             context.Classes.Add(classes9);
             context.SaveChanges();
 
-            // Create courses
-
-            // Create a new course
-            var financeCourse = new Course
+            var financeClass = new Class
             {
-                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
-                CourseName = "HNC Business & Finance",
-                CourseReference = "BUHNFIN/F241A",
-                ModeOfStudy = "17: Full-Time",
-                DurationInWeeks = 37,
-                SCQFLevel = 7,
-                Site = "Edinburgh Campus",
-                StartDate = DateTime.Parse("2024-08-26"),
-                EndDate = DateTime.Parse("2025-06-13"),
-                DepartmentId = newDepartment.DepartmentId
+                ClassId = 11, // Make sure this ID doesn't conflict with existing ones
+                ClassName = "HNC Finance Class A",
+                MaxCapacity = 20,
+                GuidanceTeacherId = newGuidanceTeacher.Id
             };
-            context.Courses.Add(financeCourse);
+            context.Classes.Add(financeClass);
             context.SaveChanges();
+
+            // Create courses
 
             var courses1 = new Course
             {
@@ -607,6 +611,23 @@ namespace GuidanceTracker.Models
                 DepartmentId = department.DepartmentId
             };
             context.Courses.Add(courses9);
+            context.SaveChanges();
+
+            // Create a new course
+            var financeCourse = new Course
+            {
+                CourseId = 10, // Make sure this doesn't conflict with existing course IDs
+                CourseName = "HNC Business & Finance",
+                CourseReference = "BUHNFIN/F241A",
+                ModeOfStudy = "17: Full-Time",
+                DurationInWeeks = 37,
+                SCQFLevel = 7,
+                Site = "Edinburgh Campus",
+                StartDate = DateTime.Parse("2024-08-26"),
+                EndDate = DateTime.Parse("2025-06-13"),
+                DepartmentId = newDepartment.DepartmentId
+            };
+            context.Courses.Add(financeCourse);
             context.SaveChanges();
 
             // Create a new enrollment
@@ -1311,7 +1332,8 @@ namespace GuidanceTracker.Models
                     EmailConfirmed = true,
                     GuidanceTeacherId = newGuidanceTeacher.Id,
                     ClassId = financeClass.ClassId,
-                    StudentNumber = "42000123"
+                    StudentNumber = "42000123",
+                    IsClassRep = true
                 };
                 userManager.Create(financeStudent, "123");
                 userManager.AddToRole(financeStudent.Id, "Student");
@@ -1319,7 +1341,7 @@ namespace GuidanceTracker.Models
             context.SaveChanges();
 
             // Create a second finance student
-            
+
             if (userManager.FindByName("finstudent2@email.com") == null)
             {
                 financeStudent2 = new Student
@@ -1341,7 +1363,7 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(financeStudent2.Id, "Student");
             }
             context.SaveChanges();
-            
+
 
             // Student for HNC Computing Class A
             if (userManager.FindByName("student1@email.com") == null)
@@ -1544,7 +1566,7 @@ namespace GuidanceTracker.Models
 
             if (userManager.FindByName("student10@email.com") == null)
             {
-                var student = new Student
+                student10 = new Student
                 {
                     UserName = "student10@email.com",
                     Email = "student10@email.com",
@@ -1556,16 +1578,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.UtcNow.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 1,
+                    ClassId = classes1.ClassId,
                     StudentNumber = "42000125"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student10, "123");
+                userManager.AddToRole(student10.Id, "Student");
             }
 
             if (userManager.FindByName("student11@email.com") == null)
             {
-                var student = new Student
+                student11 = new Student
                 {
                     UserName = "student11@email.com",
                     Email = "student11@email.com",
@@ -1577,16 +1599,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.UtcNow.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 2,
+                    ClassId = classes2.ClassId,
                     StudentNumber = "42000126"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student11, "123");
+                userManager.AddToRole(student11.Id, "Student");
             }
 
             if (userManager.FindByName("student12@email.com") == null)
             {
-                var student = new Student
+                student12 = new Student
                 {
                     UserName = "student12@email.com",
                     Email = "student12@email.com",
@@ -1598,16 +1620,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.UtcNow.AddMonths(-2),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 3,
+                    ClassId = classes3.ClassId,
                     StudentNumber = "42000127"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student12, "123");
+                userManager.AddToRole(student12.Id, "Student");
             }
 
             if (userManager.FindByName("student13@email.com") == null)
             {
-                var student = new Student
+                student13 = new Student
                 {
                     UserName = "student13@email.com",
                     Email = "student13@email.com",
@@ -1619,15 +1641,15 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.UtcNow.AddMonths(-4),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 4,
+                    ClassId = classes4.ClassId,
                     StudentNumber = "42000128"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student13, "123");
+                userManager.AddToRole(student13.Id, "Student");
             }
             if (userManager.FindByName("student14@email.com") == null)
             {
-                var student = new Student
+                student14 = new Student
                 {
                     UserName = "student14@email.com",
                     Email = "student14@email.com",
@@ -1639,16 +1661,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-03-07T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 5,
+                    ClassId = classes5.ClassId,
                     StudentNumber = "42000129"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student14, "123");
+                userManager.AddToRole(student14.Id, "Student");
             }
 
             if (userManager.FindByName("student15@email.com") == null)
             {
-                var student = new Student
+                student15 = new Student
                 {
                     UserName = "student15@email.com",
                     Email = "student15@email.com",
@@ -1660,16 +1682,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-02-27T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 6,
+                    ClassId = classes6.ClassId,
                     StudentNumber = "42000130"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student15, "123");
+                userManager.AddToRole(student15.Id, "Student");
             }
 
             if (userManager.FindByName("student16@email.com") == null)
             {
-                var student = new Student
+                student16 = new Student
                 {
                     UserName = "student16@email.com",
                     Email = "student16@email.com",
@@ -1681,16 +1703,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-02-17T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 7,
+                    ClassId = classes7.ClassId,
                     StudentNumber = "42000131"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student16, "123");
+                userManager.AddToRole(student16.Id, "Student");
             }
 
             if (userManager.FindByName("student17@email.com") == null)
             {
-                var student = new Student
+                student17 = new Student
                 {
                     UserName = "student17@email.com",
                     Email = "student17@email.com",
@@ -1702,16 +1724,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-03-08T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 8,
+                    ClassId = classes8.ClassId,
                     StudentNumber = "42000132"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student17, "123");
+                userManager.AddToRole(student17.Id, "Student");
             }
 
             if (userManager.FindByName("student18@email.com") == null)
             {
-                var student = new Student
+                student18 = new Student
                 {
                     UserName = "student18@email.com",
                     Email = "student18@email.com",
@@ -1723,15 +1745,15 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-01-25T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 9,
+                    ClassId = classes9.ClassId,
                     StudentNumber = "42000133"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student18, "123");
+                userManager.AddToRole(student18.Id, "Student");
             }
             if (userManager.FindByName("student19@email.com") == null)
             {
-                var student = new Student
+                student19 = new Student
                 {
                     UserName = "student19@email.com",
                     Email = "student19@email.com",
@@ -1743,16 +1765,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-01-29T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 1,
+                    ClassId = classes1.ClassId,
                     StudentNumber = "42000134"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student19, "123");
+                userManager.AddToRole(student19.Id, "Student");
             }
 
             if (userManager.FindByName("student20@email.com") == null)
             {
-                var student = new Student
+                student20 = new Student
                 {
                     UserName = "student20@email.com",
                     Email = "student20@email.com",
@@ -1764,16 +1786,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-01-24T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 2,
+                    ClassId = classes2.ClassId,
                     StudentNumber = "42000135"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student20, "123");
+                userManager.AddToRole(student20.Id, "Student");
             }
 
             if (userManager.FindByName("student21@email.com") == null)
             {
-                var student = new Student
+                student21 = new Student
                 {
                     UserName = "student21@email.com",
                     Email = "student21@email.com",
@@ -1785,16 +1807,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-03-08T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 3,
+                    ClassId = classes3.ClassId,
                     StudentNumber = "42000136"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student21, "123");
+                userManager.AddToRole(student21.Id, "Student");
             }
 
             if (userManager.FindByName("student22@email.com") == null)
             {
-                var student = new Student
+                student22 = new Student
                 {
                     UserName = "student22@email.com",
                     Email = "student22@email.com",
@@ -1806,16 +1828,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-04-09T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 4,
+                    ClassId = classes4.ClassId,
                     StudentNumber = "42000137"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student22, "123");
+                userManager.AddToRole(student22.Id, "Student");
             }
 
             if (userManager.FindByName("student23@email.com") == null)
             {
-                var student = new Student
+                student23 = new Student
                 {
                     UserName = "student23@email.com",
                     Email = "student23@email.com",
@@ -1827,16 +1849,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-04-01T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 5,
+                    ClassId = classes5.ClassId,
                     StudentNumber = "42000138"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student23, "123");
+                userManager.AddToRole(student23.Id, "Student");
             }
 
             if (userManager.FindByName("student24@email.com") == null)
             {
-                var student = new Student
+                student24 = new Student
                 {
                     UserName = "student24@email.com",
                     Email = "student24@email.com",
@@ -1848,16 +1870,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-03-22T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 6,
+                    ClassId = classes6.ClassId,
                     StudentNumber = "42000139"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student24, "123");
+                userManager.AddToRole(student24.Id, "Student");
             }
 
             if (userManager.FindByName("student25@email.com") == null)
             {
-                var student = new Student
+                student25 = new Student
                 {
                     UserName = "student25@email.com",
                     Email = "student25@email.com",
@@ -1869,16 +1891,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-03-16T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 7,
+                    ClassId = classes7.ClassId,
                     StudentNumber = "42000140"
-                };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                };  
+                userManager.Create(student25, "123");
+                userManager.AddToRole(student25.Id, "Student");
             }
 
             if (userManager.FindByName("student26@email.com") == null)
             {
-                var student = new Student
+                student26 = new Student
                 {
                     UserName = "student26@email.com",
                     Email = "student26@email.com",
@@ -1890,16 +1912,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-01-31T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 8,
+                    ClassId = classes8.ClassId,
                     StudentNumber = "42000141"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student26, "123");
+                userManager.AddToRole(student26.Id, "Student");
             }
 
             if (userManager.FindByName("student27@email.com") == null)
             {
-                var student = new Student
+                student27 = new Student
                 {
                     UserName = "student27@email.com",
                     Email = "student27@email.com",
@@ -1911,16 +1933,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-02-17T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 9,
+                    ClassId = classes9.ClassId,
                     StudentNumber = "42000142"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student27, "123");
+                userManager.AddToRole(student27.Id, "Student");
             }
 
             if (userManager.FindByName("student28@email.com") == null)
             {
-                var student = new Student
+                student28 = new Student
                 {
                     UserName = "student28@email.com",
                     Email = "student28@email.com",
@@ -1932,16 +1954,16 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-02-18T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 1,
+                    ClassId = classes1.ClassId,
                     StudentNumber = "42000143"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student28, "123");
+                userManager.AddToRole(student28.Id, "Student");
             }
 
             if (userManager.FindByName("student29@email.com") == null)
             {
-                var student = new Student
+                student29 = new Student
                 {
                     UserName = "student29@email.com",
                     Email = "student29@email.com",
@@ -1953,11 +1975,11 @@ namespace GuidanceTracker.Models
                     RegistredAt = DateTime.Parse("2025-04-13T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = 2,
+                    ClassId = classes2.ClassId,
                     StudentNumber = "42000144"
                 };
-                userManager.Create(student, "123");
-                userManager.AddToRole(student.Id, "Student");
+                userManager.Create(student29, "123");
+                userManager.AddToRole(student29.Id, "Student");
             }
 
 
@@ -2523,6 +2545,460 @@ namespace GuidanceTracker.Models
                 throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
             }
 
+            var feedbackRequest1 = new RequestedDetailedForm
+            {
+                RequestId = Guid.NewGuid().ToString(),
+                ClassId = classes1.ClassId,
+                StudentId = student1.Id,
+                CreatorId = guidance.Id,
+                DateRequested = DateTime.UtcNow,
+
+            };
+            //var feedbackRequest2 = new RequestedDetailedForm
+            //{
+            //    RequestId = Guid.NewGuid().ToString(),
+            //    ClassId = classes1.ClassId,
+            //    StudentId = student11.Id,
+            //    CreatorId = guidance.Id,
+            //    DateRequested = DateTime.UtcNow,
+
+            //};
+            //var feedbackRequest3 = new RequestedDetailedForm
+            //{
+            //    RequestId = Guid.NewGuid().ToString(),
+            //    ClassId = classes1.ClassId,
+            //    StudentId = student20.Id,
+            //    CreatorId = guidance.Id,
+            //    DateRequested = DateTime.UtcNow,
+            //};
+
+            //var feedbackRequest4 = new RequestedDetailedForm
+            //{
+            //    RequestId = Guid.NewGuid().ToString(),
+            //    ClassId = classes1.ClassId,
+            //    StudentId = student29.Id,
+            //    CreatorId = guidance.Id,
+            //    DateRequested = DateTime.UtcNow,
+            //};
+            context.RequestedDetailedForms.Add(feedbackRequest1);
+            //context.RequestedDetailedForms.Add(feedbackRequest2);
+            //context.RequestedDetailedForms.Add(feedbackRequest3);
+            //context.RequestedDetailedForms.Add(feedbackRequest4);
+            //context.SaveChanges();
+
+
+
+            var detailedFeedback1 = new DetailedFeedback
+            {
+                FeedbackId = Guid.NewGuid().ToString(),
+                Course = courses1.CourseName,
+                Class = classes1.ClassName,
+                ClassId = classes1.ClassId,
+                IsSubmitted = true,
+                IsReadByClassRep = false,
+                StudentId = student1.Id,
+                CreatorId = guidance.Id,
+                ClassRepId = student1.Id,
+                MeetsExpectations = true,
+                MeetsExpectationsNotes = null,
+                WouldRecommend = true,
+                WouldRecommendNotes = null,
+                WorkloadManageable = false,
+                WorkloadManageableNotes = "The workload was quite heavy, especially during assessment periods.",
+                LearningExperienceKeyIssues = "Some lectures could be more engaging",
+                LearningExperienceStrengths = "The course content was very relevant and useful.",
+                LearningExperienceImprovements = "More interactive sessions would be beneficial.",
+                LearningExperienceComments = "Overall, a good learning experience with room for improvement.",
+                LearningExperienceRating = 4,
+                ConceptsPresented = true,
+                ConceptsPresentedNotes = null,
+                MaterialsAvailable = true,
+                MaterialsAvailableNotes = null,
+                AccommodatesStyles = false,
+                AccommodatesStylesNotes = "The course was primarily lecture-based and didn't cater well to visual or kinesthetic learners.",
+                LecturerResponsive = true,
+                LecturerResponsiveNotes = null,
+                LearningTeachingKeyIssues = "Limited variety in teaching methods",
+                LearningTeachingStrengths = "The teaching methods were clear and structured.",
+                LearningTeachingImprovements = "More group work and interactive activities could enhance learning.",
+                LearningTeachingComments = "The teaching was good but could be more diverse.",
+                LearningTeachingRating = 4,
+                AssessmentConfidence = true,
+                AssessmentConfidenceNotes = null,
+                TimelyFeedback = false,
+                TimelyFeedbackNotes = "Feedback was often delayed by 2-3 weeks, which impacted learning progression.",
+                SpecificFeedback = true,
+                SpecificFeedbackNotes = null,
+                AssessmentsAligned = true,
+                AssessmentsAlignedNotes = null,
+                SufficientTime = false,
+                SufficientTimeNotes = "The final assessment period was rushed with multiple deadlines overlapping.",
+                AssessmentKeyIssues = "Timing of assessments could be better spaced",
+                AssessmentStrengths = "The assessments were fair and relevant.",
+                AssessmentImprovements = "More practice assessments and better scheduling would be helpful.",
+                AssessmentComments = "Overall, the assessment process was decent but needs timing improvements.",
+                AssessmentRating = 3,
+                MaterialsAccessible = true,
+                MaterialsAccessibleNotes = null,
+                PlatformOrganised = true,
+                PlatformOrganisedNotes = null,
+                EquipmentWorking = false,
+                EquipmentWorkingNotes = "Some lab equipment was outdated and frequently malfunctioned during practical sessions.",
+                SupplementaryResources = true,
+                SupplementaryResourcesNotes = null,
+                SpecializedEquipment = false,
+                SpecializedEquipmentNotes = "Some specialized equipment was not available when needed for advanced projects.",
+                LibraryResources = true,
+                LibraryResourcesNotes = null,
+                ResourcesKeyIssues = "Equipment reliability and availability",
+                ResourcesStrengths = "The digital resources and library materials were excellent.",
+                ResourcesImprovements = "Equipment maintenance and specialized tool availability need improvement.",
+                ResourcesComments = "Good digital resources but physical equipment needs attention.",
+                ResourcesRating = 4,
+                StaffResponsive = true,
+                StaffResponsiveNotes = null,
+                AdditionalHelpAvailable = true,
+                AdditionalHelpAvailableNotes = null,
+                AccommodationsProvided = true,
+                AccommodationsProvidedNotes = null,
+                ClearPointsOfContact = false,
+                ClearPointsOfContactNotes = "It was sometimes unclear who to contact for specific issues, leading to delays in getting help.",
+                SupportEffectivenesssKeyIssues = "Communication clarity could be improved",
+                SupportEffectivenessStrengths = "Support services were helpful when accessed.",
+                SupportEffectivenessImprovements = "Clearer communication channels and contact information would be beneficial.",
+                SupportEffectivenessComments = "Good support services but communication could be clearer.",
+                SupportEffectivenessRating = 4,
+                DevelopingCriticalThinking = true,
+                DevelopingCriticalThinkingNotes = null,
+                EnhancingProblemSolving = true,
+                EnhancingProblemSolvingNotes = null,
+                GainingPracticalSkills = false,
+                GainingPracticalSkillsNotes = "The course was too theoretical and lacked sufficient hands-on practice opportunities.",
+                ImprovingCommunication = true,
+                ImprovingCommunicationNotes = null,
+                DevelopingResearchSkills = true,
+                DevelopingResearchSkillsNotes = null,
+                SkillsDevelopmentKeyIssues = "Lack of practical application opportunities",
+                SkillsDevelopmentStrengths = "The course was very effective in developing analytical and research skills.",
+                SkillsDevelopmentImprovements = "More practical workshops and real-world applications would be beneficial.",
+                SkillsDevelopmentComments = "Strong theoretical skills development but needs more practical focus.",
+                SkillsDevelopmentRating = 4,
+                BestFeatures = "The course content was comprehensive and the lecturer was knowledgeable and approachable.",
+                AreasForImprovement = "Better equipment maintenance, more practical sessions, and improved assessment timing.",
+                OverallRating = 4
+            };
+            context.DetailedFeedbacks.Add(detailedFeedback1);
+            context.SaveChanges();
+
+            var detailedfeedback2 = new DetailedFeedback
+            {
+                FeedbackId = Guid.NewGuid().ToString(),
+                Course = courses1.CourseName,
+                Class = classes1.ClassName,
+                ClassId = classes1.ClassId,
+                IsSubmitted = true,
+                IsReadByClassRep = false,
+                StudentId = student11.Id,
+                CreatorId = guidance.Id,
+                ClassRepId = student1.Id,
+                MeetsExpectations = false,
+                MeetsExpectationsNotes = "The course content was more basic than expected and didn't cover advanced topics mentioned in the syllabus.",
+                WouldRecommend = false,
+                WouldRecommendNotes = "I wouldn't recommend this course due to outdated content and poor organization.",
+                WorkloadManageable = true,
+                WorkloadManageableNotes = null,
+                LearningExperienceKeyIssues = "Outdated curriculum and lack of industry relevance",
+                LearningExperienceStrengths = "The basic concepts were explained clearly.",
+                LearningExperienceImprovements = "Update curriculum to include current industry practices and technologies.",
+                LearningExperienceComments = "The course needs significant updates to remain relevant.",
+                LearningExperienceRating = 2,
+                ConceptsPresented = false,
+                ConceptsPresentedNotes = "Some key concepts were glossed over or not covered adequately.",
+                MaterialsAvailable = false,
+                MaterialsAvailableNotes = "Course materials were often unavailable or provided late in the semester.",
+                AccommodatesStyles = true,
+                AccommodatesStylesNotes = null,
+                LecturerResponsive = false,
+                LecturerResponsiveNotes = "The lecturer was often unavailable and slow to respond to emails and questions.",
+                LearningTeachingKeyIssues = "Poor communication and outdated teaching methods",
+                LearningTeachingStrengths = "The lecturer had good subject knowledge.",
+                LearningTeachingImprovements = "Improve communication and modernize teaching approaches.",
+                LearningTeachingComments = "Teaching methods need significant improvement.",
+                LearningTeachingRating = 2,
+                AssessmentConfidence = false,
+                AssessmentConfidenceNotes = "Assessment criteria were unclear and expectations were not well communicated.",
+                TimelyFeedback = false,
+                TimelyFeedbackNotes = "Feedback was extremely delayed, sometimes taking over a month to receive.",
+                SpecificFeedback = false,
+                SpecificFeedbackNotes = "Feedback was vague and didn't provide clear guidance for improvement.",
+                AssessmentsAligned = false,
+                AssessmentsAlignedNotes = "Assessments often tested material not covered in class or emphasized in lectures.",
+                SufficientTime = true,
+                SufficientTimeNotes = null,
+                AssessmentKeyIssues = "Poor alignment with course content and unclear criteria",
+                AssessmentStrengths = "Assessment topics were relevant when they aligned with course content.",
+                AssessmentImprovements = "Better alignment with course content and clearer assessment criteria needed.",
+                AssessmentComments = "Assessment process needs major improvements.",
+                AssessmentRating = 2,
+                MaterialsAccessible = true,
+                MaterialsAccessibleNotes = null,
+                PlatformOrganised = false,
+                PlatformOrganisedNotes = "The online platform was poorly organized with files scattered across different sections.",
+                EquipmentWorking = true,
+                EquipmentWorkingNotes = null,
+                SupplementaryResources = false,
+                SupplementaryResourcesNotes = "Very limited supplementary resources were provided, making independent study difficult.",
+                SpecializedEquipment = true,
+                SpecializedEquipmentNotes = null,
+                LibraryResources = true,
+                LibraryResourcesNotes = null,
+                ResourcesKeyIssues = "Poor platform organization and limited supplementary materials",
+                ResourcesStrengths = "Library resources were adequate.",
+                ResourcesImprovements = "Better platform organization and more supplementary resources needed.",
+                ResourcesComments = "Resources were adequate but poorly organized.",
+                ResourcesRating = 3,
+                StaffResponsive = false,
+                StaffResponsiveNotes = "Staff were often unresponsive and difficult to reach when help was needed.",
+                AdditionalHelpAvailable = false,
+                AdditionalHelpAvailableNotes = "Additional help was rarely available and hard to access when needed.",
+                AccommodationsProvided = true,
+                AccommodationsProvidedNotes = null,
+                ClearPointsOfContact = true,
+                ClearPointsOfContactNotes = null,
+                SupportEffectivenesssKeyIssues = "Staff availability and responsiveness",
+                SupportEffectivenessStrengths = "Contact information was clearly provided.",
+                SupportEffectivenessImprovements = "Staff need to be more responsive and available for student support.",
+                SupportEffectivenessComments = "Support services were inadequate.",
+                SupportEffectivenessRating = 2,
+                DevelopingCriticalThinking = false,
+                DevelopingCriticalThinkingNotes = "The course was too focused on memorization rather than developing critical thinking skills.",
+                EnhancingProblemSolving = false,
+                EnhancingProblemSolvingNotes = "Limited opportunities for problem-solving exercises and practical application.",
+                GainingPracticalSkills = false,
+                GainingPracticalSkillsNotes = "The course was entirely theoretical with no practical components.",
+                ImprovingCommunication = true,
+                ImprovingCommunicationNotes = null,
+                DevelopingResearchSkills = false,
+                DevelopingResearchSkillsNotes = "Research components were minimal and not well-integrated into the curriculum.",
+                SkillsDevelopmentKeyIssues = "Lack of practical application and skill development opportunities",
+                SkillsDevelopmentStrengths = "Some improvement in written communication skills.",
+                SkillsDevelopmentImprovements = "Include more practical exercises and skill development opportunities.",
+                SkillsDevelopmentComments = "Skills development was inadequate.",
+                SkillsDevelopmentRating = 2,
+                BestFeatures = "The course schedule was flexible and accommodated different learning needs.",
+                AreasForImprovement = "Complete curriculum overhaul needed, better staff training, and improved resource organization.",
+                OverallRating = 2
+            };
+            context.DetailedFeedbacks.Add(detailedfeedback2);
+            context.SaveChanges();
+
+            var detailedFeedback3 = new DetailedFeedback
+            {
+                FeedbackId = Guid.NewGuid().ToString(),
+                Course = courses1.CourseName,
+                Class = classes1.ClassName,
+                IsSubmitted = true,
+                IsReadByClassRep = false,
+                ClassId = classes1.ClassId,
+                StudentId = student20.Id,
+                CreatorId = guidance.Id,
+                ClassRepId = student1.Id,
+                MeetsExpectations = true,
+                MeetsExpectationsNotes = null,
+                WouldRecommend = true,
+                WouldRecommendNotes = null,
+                WorkloadManageable = true,
+                WorkloadManageableNotes = null,
+                LearningExperienceKeyIssues = "None",
+                LearningExperienceStrengths = "Excellent balance of theory and practice with engaging delivery.",
+                LearningExperienceImprovements = "Perhaps more guest speakers from industry would add value.",
+                LearningExperienceComments = "Outstanding learning experience that exceeded expectations.",
+                LearningExperienceRating = 5,
+                ConceptsPresented = true,
+                ConceptsPresentedNotes = null,
+                MaterialsAvailable = true,
+                MaterialsAvailableNotes = null,
+                AccommodatesStyles = true,
+                AccommodatesStylesNotes = null,
+                LecturerResponsive = true,
+                LecturerResponsiveNotes = null,
+                LearningTeachingKeyIssues = "None",
+                LearningTeachingStrengths = "Innovative teaching methods and excellent use of technology.",
+                LearningTeachingImprovements = "Already excellent, minor improvements could include more peer learning opportunities.",
+                LearningTeachingComments = "Exemplary teaching that sets the standard for other courses.",
+                LearningTeachingRating = 5,
+                AssessmentConfidence = true,
+                AssessmentConfidenceNotes = null,
+                TimelyFeedback = true,
+                TimelyFeedbackNotes = null,
+                SpecificFeedback = true,
+                SpecificFeedbackNotes = null,
+                AssessmentsAligned = true,
+                AssessmentsAlignedNotes = null,
+                SufficientTime = true,
+                SufficientTimeNotes = null,
+                AssessmentKeyIssues = "None",
+                AssessmentStrengths = "Perfectly aligned assessments with clear criteria and excellent feedback.",
+                AssessmentImprovements = "Assessment process is already excellent.",
+                AssessmentComments = "Outstanding assessment process that enhanced learning.",
+                AssessmentRating = 5,
+                MaterialsAccessible = true,
+                MaterialsAccessibleNotes = null,
+                PlatformOrganised = true,
+                PlatformOrganisedNotes = null,
+                EquipmentWorking = true,
+                EquipmentWorkingNotes = null,
+                SupplementaryResources = true,
+                SupplementaryResourcesNotes = null,
+                SpecializedEquipment = true,
+                SpecializedEquipmentNotes = null,
+                LibraryResources = true,
+                LibraryResourcesNotes = null,
+                ResourcesKeyIssues = "None",
+                ResourcesStrengths = "Comprehensive and well-organized resources that enhanced learning.",
+                ResourcesImprovements = "Resources are already excellent.",
+                ResourcesComments = "Outstanding resource provision and organization.",
+                ResourcesRating = 5,
+                StaffResponsive = true,
+                StaffResponsiveNotes = null,
+                AdditionalHelpAvailable = true,
+                AdditionalHelpAvailableNotes = null,
+                AccommodationsProvided = true,
+                AccommodationsProvidedNotes = null,
+                ClearPointsOfContact = true,
+                ClearPointsOfContactNotes = null,
+                SupportEffectivenesssKeyIssues = "None",
+                SupportEffectivenessStrengths = "Proactive and highly effective support services.",
+                SupportEffectivenessImprovements = "Support services are already excellent.",
+                SupportEffectivenessComments = "Exemplary support that went above and beyond expectations.",
+                SupportEffectivenessRating = 5,
+                DevelopingCriticalThinking = true,
+                DevelopingCriticalThinkingNotes = null,
+                EnhancingProblemSolving = true,
+                EnhancingProblemSolvingNotes = null,
+                GainingPracticalSkills = true,
+                GainingPracticalSkillsNotes = null,
+                ImprovingCommunication = true,
+                ImprovingCommunicationNotes = null,
+                DevelopingResearchSkills = true,
+                DevelopingResearchSkillsNotes = null,
+                SkillsDevelopmentKeyIssues = "None",
+                SkillsDevelopmentStrengths = "Comprehensive skills development across all areas.",
+                SkillsDevelopmentImprovements = "Skills development is already excellent.",
+                SkillsDevelopmentComments = "Outstanding skills development that prepared me well for future challenges.",
+                SkillsDevelopmentRating = 5,
+                BestFeatures = "Exceptional teaching quality, comprehensive resources, and outstanding support services.",
+                AreasForImprovement = "Course is already excellent - perhaps more industry guest speakers could add value.",
+                OverallRating = 5
+            };
+            context.DetailedFeedbacks.Add(detailedFeedback3);
+            context.SaveChanges();
+
+            var detailedFeedback4 = new DetailedFeedback
+            {
+                FeedbackId = Guid.NewGuid().ToString(),
+                Course = courses1.CourseName,
+                Class = classes1.ClassName,
+                IsSubmitted = true,
+                IsReadByClassRep = false,
+                ClassId = classes1.ClassId,
+                StudentId = student29.Id,
+                CreatorId = guidance.Id,
+                ClassRepId = student1.Id,
+                MeetsExpectations = true,
+                MeetsExpectationsNotes = null,
+                WouldRecommend = true,
+                WouldRecommendNotes = null,
+                WorkloadManageable = false,
+                WorkloadManageableNotes = "The workload was challenging but manageable with good time management.",
+                LearningExperienceKeyIssues = "Some topics could have been covered in more depth",
+                LearningExperienceStrengths = "Good variety of learning activities and practical applications.",
+                LearningExperienceImprovements = "More time allocated to complex topics would be beneficial.",
+                LearningExperienceComments = "Solid learning experience with good practical elements.",
+                LearningExperienceRating = 1,
+                ConceptsPresented = true,
+                ConceptsPresentedNotes = null,
+                MaterialsAvailable = true,
+                MaterialsAvailableNotes = null,
+                AccommodatesStyles = true,
+                AccommodatesStylesNotes = null,
+                LecturerResponsive = true,
+                LecturerResponsiveNotes = null,
+                LearningTeachingKeyIssues = "Pace could be adjusted for complex topics",
+                LearningTeachingStrengths = "Clear explanations and good use of examples.",
+                LearningTeachingImprovements = "Slower pace for difficult concepts would help understanding.",
+                LearningTeachingComments = "Good teaching with room for pacing improvements.",
+                LearningTeachingRating = 1,
+                AssessmentConfidence = true,
+                AssessmentConfidenceNotes = null,
+                TimelyFeedback = true,
+                TimelyFeedbackNotes = null,
+                SpecificFeedback = false,
+                SpecificFeedbackNotes = "Feedback was helpful but could have been more detailed for complex assignments.",
+                AssessmentsAligned = true,
+                AssessmentsAlignedNotes = null,
+                SufficientTime = true,
+                SufficientTimeNotes = null,
+                AssessmentKeyIssues = "Feedback detail could be improved",
+                AssessmentStrengths = "Fair assessments that tested understanding well.",
+                AssessmentImprovements = "More detailed feedback would help with learning progression.",
+                AssessmentComments = "Good assessment process with room for feedback improvement.",
+                AssessmentRating = 1,
+                MaterialsAccessible = true,
+                MaterialsAccessibleNotes = null,
+                PlatformOrganised = true,
+                PlatformOrganisedNotes = null,
+                EquipmentWorking = true,
+                EquipmentWorkingNotes = null,
+                SupplementaryResources = false,
+                SupplementaryResourcesNotes = "Additional resources for advanced topics would have been helpful.",
+                SpecializedEquipment = true,
+                SpecializedEquipmentNotes = null,
+                LibraryResources = true,
+                LibraryResourcesNotes = null,
+                ResourcesKeyIssues = "Limited advanced supplementary materials",
+                ResourcesStrengths = "Good basic resources and well-organized platform.",
+                ResourcesImprovements = "More advanced supplementary resources would be beneficial.",
+                ResourcesComments = "Good resource provision with room for expansion.",
+                ResourcesRating = 1,
+                StaffResponsive = true,
+                StaffResponsiveNotes = null,
+                AdditionalHelpAvailable = true,
+                AdditionalHelpAvailableNotes = null,
+                AccommodationsProvided = true,
+                AccommodationsProvidedNotes = null,
+                ClearPointsOfContact = true,
+                ClearPointsOfContactNotes = null,
+                SupportEffectivenesssKeyIssues = "None",
+                SupportEffectivenessStrengths = "Responsive and helpful support services.",
+                SupportEffectivenessImprovements = "Support services are working well.",
+                SupportEffectivenessComments = "Excellent support services that were always available when needed.",
+                SupportEffectivenessRating = 5,
+                DevelopingCriticalThinking = true,
+                DevelopingCriticalThinkingNotes = null,
+                EnhancingProblemSolving = true,
+                EnhancingProblemSolvingNotes = null,
+                GainingPracticalSkills = true,
+                GainingPracticalSkillsNotes = null,
+                ImprovingCommunication = false,
+                ImprovingCommunicationNotes = "Limited opportunities for presentation and communication skill development.",
+                DevelopingResearchSkills = true,
+                DevelopingResearchSkillsNotes = null,
+                SkillsDevelopmentKeyIssues = "Limited communication skill development opportunities",
+                SkillsDevelopmentStrengths = "Good development of analytical and practical skills.",
+                SkillsDevelopmentImprovements = "More opportunities for presentation and communication skill development.",
+                SkillsDevelopmentComments = "Strong skills development with room for communication improvements.",
+                SkillsDevelopmentRating = 4,
+                BestFeatures = "Good balance of theory and practice with responsive support services.",
+                AreasForImprovement = "Better pacing for complex topics and more communication skill development opportunities.",
+                OverallRating = 4
+            };
+            context.DetailedFeedbacks.Add(detailedFeedback4);
+            context.SaveChanges();
+
+
+
+
             // Seed Conversations
             var conversation1 = new Conversation
             {
@@ -2604,6 +3080,7 @@ namespace GuidanceTracker.Models
 
 
         }
+
     }
 }
        

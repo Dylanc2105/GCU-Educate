@@ -12,6 +12,7 @@ namespace GuidanceTracker.Models
 	public class Class
 	{
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ClassId { get; set; }
 
         [Required]
@@ -19,6 +20,10 @@ namespace GuidanceTracker.Models
         public string ClassName { get; set; }
 
         public int MaxCapacity { get; set; }
+
+        public bool HasActiveDetailedFeedbackRequest { get; set; }
+
+        public DateTime? DateRequestStarted { get; set; }
 
         // Navigation properties
         public string GuidanceTeacherId { get; set; }
