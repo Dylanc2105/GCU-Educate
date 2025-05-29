@@ -66,11 +66,18 @@ namespace GuidanceTracker.Models
             GuidanceTeacher guidance = null;
             GuidanceTeacher guidance2 = null;
             GuidanceTeacher newGuidanceTeacher = null;
+            GuidanceTeacher guidance3 = null;
             CurriculumHead curriculumHead1 = null;
             Lecturer lecturer1 = null;
             Lecturer lecturer2 = null;
             Lecturer lecturer3 = null;
             Lecturer lecturer4 = null;
+            Lecturer lecturer5 = null;
+            Lecturer lecturer6 = null;
+            Lecturer lecturer7 = null;
+            Lecturer lecturer8 = null;
+            Lecturer lecturer9 = null;
+            Lecturer lecturer10 = null;
             Lecturer financeLecturer = null;
             Student student1 = null;
             Student student2 = null;
@@ -174,6 +181,24 @@ namespace GuidanceTracker.Models
 
                 userManager.Create(guidance2, "123"); 
                 userManager.AddToRole(guidance2.Id, "GuidanceTeacher");
+            }
+
+            if (userManager.FindByName("samir.zarrug@cogcgt.com") == null)
+            {
+                guidance3 = new GuidanceTeacher
+                {
+                    UserName = "samir.zarrug@cogcgt.com",
+                    Email = "samir.zarrug@cogcgt.com",
+                    FirstName = "Samir",
+                    LastName = "Zarrug",
+                    Street = "10 Boss St",
+                    City = "Fife",
+                    Postcode = "1L 8GT",
+                    RegistredAt = DateTime.UtcNow.AddYears(-8),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(guidance3, "123");
+                userManager.AddToRole(guidance3.Id, "GuidanceTeacher");
             }
 
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
@@ -337,6 +362,121 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(lecturer4.Id, "Lecturer");
             }
             context.SaveChanges();
+
+            if (userManager.FindByName("dana.carson@cogcgt.com") == null)
+            {
+                lecturer5 = new Lecturer
+                {
+                    UserName = "dana.carson@cogcgt.com",
+                    Email = "dana.carson@cogcgt.com",
+                    FirstName = "Dana",
+                    LastName = "Carson",
+                    Street = "45 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 45A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-15),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer5, "123");
+                userManager.AddToRole(lecturer5.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("garry.kelly@cogcgt.com") == null)
+            {
+                lecturer6 = new Lecturer
+                {
+                    UserName = "garry.kelly@cogcgt.com",
+                    Email = "garry.kelly@cogcgt.com",
+                    FirstName = "Garry",
+                    LastName = "Kelly",
+                    Street = "55 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 55A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-25),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer6, "123");
+                userManager.AddToRole(lecturer6.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("asmat.ullah@cogcgt.com") == null)
+            {
+                lecturer7 = new Lecturer
+                {
+                    UserName = "asmat.ullah@cogcgt.com",
+                    Email = "asmat.ullah@cogcgt.com",
+                    FirstName = "Asmat",
+                    LastName = "Ullah",
+                    Street = "65 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 65A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-35),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer7, "123");
+                userManager.AddToRole(lecturer7.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("james.hood@cogcgt.com") == null)
+            {
+                lecturer8 = new Lecturer
+                {
+                    UserName = "james.hood@cogcgt.com",
+                    Email = "james.hood@cogcgt.com",
+                    FirstName = "James",
+                    LastName = "Hood",
+                    Street = "75 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 75A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer8, "123");
+                userManager.AddToRole(lecturer8.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("jamie.stewart@cogcgt.com") == null)
+            {
+                lecturer9 = new Lecturer
+                {
+                    UserName = "jamie.stewart@cogcgt.com",
+                    Email = "jamie.stewart@cogcgt.com",
+                    FirstName = "Jamie",
+                    LastName = "Stewart",
+                    Street = "85 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 85A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-18),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer9, "123");
+                userManager.AddToRole(lecturer9.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("stella.martin@cogcgt.com") == null)
+            {
+                lecturer10 = new Lecturer
+                {
+                    UserName = "stella.martin@cogcgt.com",
+                    Email = "stella.martin@cogcgt.com",
+                    FirstName = "Stella",
+                    LastName = "Martin",
+                    Street = "95 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 95A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-40),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer10, "123");
+                userManager.AddToRole(lecturer10.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
 
             if (userManager.FindByName("financeLecturer@email.com") == null)
             {
