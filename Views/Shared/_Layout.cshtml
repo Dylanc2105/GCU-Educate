@@ -7,8 +7,6 @@
     <script src="https://cdn.syncfusion.com/ej2/23.2.4/dist/ej2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.print.min.css" media="print"/>*@
     <title>@ViewBag.Title</title>
 
     <style>
@@ -19,88 +17,60 @@
             padding: 0;
         }
 
-        .top-header {
-            background-color: #7F3D98;
-            color: white;
-            height: 70px;
-            line-height: 70px;
-            text-align: center;
-            width: 100%;
+        .center-logo {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 998;
+            transition: opacity 0.4s ease;
         }
 
-        .header-logo {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+            .center-logo img {
+                height: 100px;
+                width: auto;
+            }
 
-        .top-logo {
-            height: 65px;
-            width: auto;
-        }
 
-        .college-name {
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 70px;
-            font-size: 18px;
-        }
 
         .user-controls {
-            position: absolute;
-            top: 50%;
-            right: 50px;
-            transform: translateY(-50%);
+            position: fixed;
+            top: 20px;
+            left: 140px;
             display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 10px;
+            z-index: 999;
         }
 
+        .user-bubble {
+            background-color: #7F3D98;
+            border-radius: 20px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
 
-            .user-controls ul.navbar-nav {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-
-            .user-controls img {
-                width: 40px;
-                height: 40px;
-                object-fit: contain;
-            }
-
-
-            .user-controls ul.navbar-nav li {
-                margin: 0 10px;
-            }
-
-            .user-controls .nav-link {
-                color: white;
-                text-decoration: none;
-                padding: 5px;
+            .user-bubble img {
+                width: 30px;
+                height: 30px;
             }
 
         .sidebar {
             background-color: #7F3D98;
             width: 80px;
-            height: 100%;
+            height: calc(100vh - 40px);
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 20px;
+            left: 20px;
+            border-radius: 20px;
+            padding-top: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 80px;
         }
 
             .sidebar a {
@@ -116,245 +86,127 @@
             }
 
         .main-content {
-            margin-left: 100px;
-            margin-top: 60px;
+            margin-left: 120px;
+            margin-top: 100px;
             padding: 20px 30px;
         }
-
-        .dashboard-title {
-            color: #7F3D98;
-            font-size: 28px;
-            margin-bottom: 15px;
+        .top-controls-container {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            z-index: 999;
+            transition: opacity 0.4s ease;
         }
 
-        .welcome-text {
-            margin-bottom: 25px;
-        }
-
-        .cards-container {
+        .top-controls-box {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
+            background-color: #7F3D98;
+            border-radius: 30px;
+            padding: 10px 15px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
         }
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            min-height: 150px;
-        }
-
-        .small-card {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            color: #7F3D98;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .dropdown-menu {
-            position: absolute !important;
-            top: 100%;
-            right: 0;
-            left: auto;
-            z-index: 1050;
-            display: none;
-            min-width: 250px;
-            background-color: white;
-            color: black;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 0.25rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            padding: 0;
-            overflow: hidden;
-            width: 300px;
-        }
-
-        .dropdown-item-text {
-            color: black !important;
-            background-color: white;
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            box-sizing: border-box;
-        }
-
-        #notificationContent {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        #notificationScrollContainer {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-            /* Override Bootstrap hover highlight on dropdown notifications */
-            #notificationScrollContainer .dropdown-item:hover,
-            #notificationScrollContainer .dropdown-item:focus,
-            #notificationScrollContainer .dropdown-item:active {
-                background-color: #e0e0e0 !important; /* Replace with your dark grey */
-                color: inherit;
-                box-shadow: none;
-                outline: none;
+            .top-controls-box img {
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
             }
 
-
-        /* SETTINGS MODAL STYLES */
-
-        .setting-section {
-            margin-bottom: 30px;
+        /* === SystemSettings Modal Overlay === */
+        .modal-overlay {
+            position: fixed;
+            top: 90px;
+            right: 40px;
+            width: 360px;
+            max-height: 85vh;
+            background-color: white;
+            z-index: 2000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow-y: auto;
+            transform: translateX(150%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
         }
 
-        .section-title {
-            color: #7F3D98;
-            font-size: 18px;
-            margin-bottom: 10px;
+            .modal-overlay.show-modal {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+        .modal-content {
+            padding: 0;
+            margin: 0;
+            border-radius: 20px;
+            overflow: hidden;
         }
 
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 8px 0;
-            font-size: 14px;
-            color: #333;
-            padding: 4px 0;
-        }
-
-        .setting-btn {
+        .modal-header {
             background-color: #7F3D98;
             color: white;
-            border: none;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 18px 40px 25px;
+            font-size: 40px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-            .setting-btn:hover {
-                background-color: #985BAF;
+            .modal-header h3 {
+                margin: 0 auto;
+                font-size: 30px;
+                text-align: center;
+                flex: 1;
             }
-
-            .setting-btn:focus {
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(127, 61, 152, 0.4);
-            }
-
-        /* Toggle switch */
         .toggle-label {
-            position: relative; /* Add this to make absolute slider work */
+            position: relative;
             display: inline-block;
-            width: 40px;
-            height: 20px;
+            width: 42px;
+            height: 22px;
             cursor: pointer;
-            margin-left: 12px;
         }
 
             .toggle-label input {
-                display: none;
+                opacity: 0;
+                width: 0;
+                height: 0;
             }
 
         .slider {
             position: absolute;
             top: 0;
             left: 0;
-            height: 20px;
-            width: 40px;
-            background: #ccc;
-            border-radius: 20px;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 22px;
             transition: 0.3s;
         }
 
-            .slider::before {
+            .slider:before {
                 content: "";
                 position: absolute;
-                height: 16px;
-                width: 16px;
-                border-radius: 50%;
-                background: white;
-                top: 2px;
+                height: 18px;
+                width: 18px;
                 left: 2px;
+                bottom: 2px;
+                background-color: white;
+                border-radius: 50%;
                 transition: 0.3s;
             }
 
         .toggle-label input:checked + .slider {
-            background: #7F3D98;
+            background-color: #7F3D98;
         }
 
-            .toggle-label input:checked + .slider::before {
+            .toggle-label input:checked + .slider:before {
                 transform: translateX(20px);
             }
 
-        /* Modal overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 70px; /* below top nav */
-            right: 0;
-            width: 320px;
-            height: calc(100vh - 70px);
-            background-color: white;
-            z-index: 2000;
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            overflow-y: auto;
-            transform: translateX(100%); /* Start off-screen */
-            opacity: 0;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-            pointer-events: none;
-        }
-
-        .show-modal {
-            transform: translateX(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            width: 100%;
-            height: 100%;
-            background: white;
-            border-radius: 0;
-            box-shadow: none;
-            padding-bottom: 24px;
-        }
-
-        .setting-section {
-            margin-bottom: 30px;
-            padding: 0 30px;
-        }
-
-        .modal-header {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center title */
-            padding: 20px 16px;
-            background: #7F3D98;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            margin-bottom: 12px;
-        }
-
-        .modal-header {
-            margin-bottom: 12px;
-        }
-
-            .modal-header h3 {
-                color: white;
-                font-size: 25px;
-                margin: 0 auto;
-                flex: 1;
-                text-align: center;
-            }
 
             .modal-header .close-btn {
                 position: absolute;
@@ -363,64 +215,102 @@
                 transform: translateY(-50%);
                 background: none;
                 border: none;
+                font-size: 24px;
                 color: white;
-                font-size: 30px;
-                font-weight: bold;
                 cursor: pointer;
-                padding: 0;
-                line-height: 1;
             }
 
-        .modal-overlay:not(.show-modal) {
-            transition-delay: 0s, 0s;
-            transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+        /* === Section === */
+        .setting-section {
+            padding: 24px;
+            border-bottom: 1px solid #eee;
         }
 
-        /* Popup container */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #7F3D98;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 15px;
+        }
+
+        .setting-btn {
+            background-color: #7F3D98;
+            color: white;
+            border: none;
+            font-size: 13px;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+            .setting-btn:hover {
+                background-color: #985BAF;
+            }
+
+        /* === Link note === */
+        .setting-row small a {
+            color: #7F3D98;
+            text-decoration: underline;
+        }
+
+        /* === Popup Container === */
         .swal-popup {
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
 
-        /* Title */
+        /* === Title === */
         .swal-title {
-            color: #000;
+            color: #333;
             font-size: 22px;
             font-weight: bold;
+            text-align: center;
         }
 
-        /* Body text */
+        /* === Body Text === */
         .swal-body {
-            color: #000;
+            color: #555;
             font-size: 16px;
             margin-top: 10px;
+            text-align: center;
         }
 
-        /* Buttons */
+        /* === Confirm Button === */
         .swal-confirm {
             background-color: #7F3D98 !important;
             color: white !important;
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             margin: 5px;
             cursor: pointer;
         }
 
+        /* === Cancel Button === */
         .swal-cancel {
             background-color: #ccc !important;
             color: #333 !important;
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             margin: 5px;
             cursor: pointer;
         }
 
-        /* Force purple icon color and border */
+        /* === Icon Customization === */
         .swal2-icon.swal2-warning {
             border-color: #7F3D98 !important;
         }
@@ -429,106 +319,63 @@
                 color: #7F3D98 !important;
             }
 
-
-
-
     </style>
 
-    <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/Style.css")
-
-
-
 </head>
-
 <body>
-    <!-- Top header with college name -->
-    <div class="top-header">
-        <div class="header-logo">
-            <img src="~/Images/Icons/Logo-white.png" alt="Logo" class="top-logo">
-        </div>
+    <!-- Floating Logo -->
+    <div class="center-logo">
+        <img src="~/Images/Icons/Logo-Purple.png" alt="Logo">
+    </div>
 
+    <!-- User Controls -->
+    <div class="top-controls-container">
+        <div class="top-controls-box">
+            <img src="~/Images/Icons/notifications.svg" alt="Notifications" onclick="toggleNotificationDropdown()" />
+            <img src="~/Images/Icons/settings.svg" alt="SystemSettings" onclick="openSystemSettingsModal()" />
 
-        <!-- Icons: Notifications, Settings, Log Out -->
-        <div class="user-controls">
-            <ul class="navbar-nav d-flex align-items-center">
-                <!-- Notifications Icon -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div style="position: relative; display: inline-block;">
-                            <img src="~/Images/Icons/notifications.svg" alt="Notifications" width="40" height="40" />
-                            <span id="notificationBadge"
-                                  class="badge rounded-pill bg-danger"
-                                  style="position: absolute; top: 10px; right: -5px; font-size: 0.65rem; display: none;">
-                                0
-                            </span>
-                        </div>
-                    </a>
-
-
-                    <div class="dropdown-menu dropdown-menu-right" id="notificationContent">
-                        <span class="dropdown-item-text">Loading...</span>
-                    </div>
-                </li>
-
-                <!-- Settings Icon -->
-                <li class="nav-item">
-                    <a class="nav-link" title="Settings" onclick="openSettingsModal()">
-                        <img src="~/Images/Icons/settings.svg" alt="Settings" width="40" height="40">
-                    </a>
-                </li>
-
-
-                <!-- Log Out Icon -->
-                <li class="nav-item">
-                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @class = "form-inline", id = "logoutForm" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <button type="button" onclick="confirmLogout()" class="btn btn-link nav-link p-0" title="Log Out">
-                            <img src="~/Images/Icons/logOff.svg" alt="Log Out" width="40" height="40" />
-                        </button>
-
-                    }
-                </li>
-            </ul>
+            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <img src="~/Images/Icons/logOff.svg" alt="Log Out" onclick="confirmLogout()" title="Log Out" style="cursor:pointer;" />
+            }
         </div>
     </div>
 
-    <!-- Left sidebar navigation -->
+
+
+    <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <!-- Home -->
-        <a href="@{
-            string url = Url.Action("Index", "Home");
+        <!-- Home Link with Role Logic -->
+        @{
+            string homeUrl = Url.Action("Index", "Home");
             if (Request.IsAuthenticated)
             {
                 if (User.IsInRole("GuidanceTeacher"))
                 {
-                    url = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
+                    homeUrl = Url.Action("GuidanceTeacherDash", "GuidanceTeacher");
                 }
                 else if (User.IsInRole("Lecturer"))
                 {
-                    url = Url.Action("LecturerDash", "Lecturer");
+                    homeUrl = Url.Action("LecturerDash", "Lecturer");
                 }
                 else if (User.IsInRole("Student"))
                 {
-                    url = Url.Action("StudentDash", "Student");
+                    homeUrl = Url.Action("StudentDash", "Student");
                 }
                 else if (User.IsInRole("CurriculumHead"))
                 {
-                    url = Url.Action("CurriculumHeadDash", "CurriculumHead");
+                    homeUrl = Url.Action("CurriculumHeadDash", "CurriculumHead");
                 }
+            }
         }
-        @url
-    }" title="Home">
+        <a href="@homeUrl" title="Home">
             <img src="~/Images/Icons/home.svg" alt="Home" width="47" height="47" />
         </a>
-
         <!-- Issues -->
         @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("Lecturer")))
         {
@@ -538,7 +385,7 @@
         }
 
         <!-- Students -->
-        @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher")))
+        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
         {
             <a href="@Url.Action("ViewAllStudents", "GuidanceTeacher")" title="Students">
                 <img src="~/Images/Icons/student.svg" alt="Students" width="47" height="47" />
@@ -571,7 +418,7 @@
         }
 
         <!-- Metrics -->
-        @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead"))
+        @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead")))
         {
             <a href="@Url.Action("Index", "Metrics")" title="Metrics">
                 <img src="~/Images/Icons/metrics.svg" alt="Metrics" width="47" height="47" />
@@ -586,7 +433,7 @@
             </a>
         }
 
-        <!-- Detailed Feedback (Guidance/Curriculum) -->
+        <!-- Detailed Feedback -->
         @if (Request.IsAuthenticated && (User.IsInRole("GuidanceTeacher") || User.IsInRole("CurriculumHead")))
         {
             <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" title="Feedback">
@@ -594,15 +441,14 @@
             </a>
         }
     </div>
-
-
-    <!-- Main content area -->
+    <!-- Main Content Area -->
     <div class="main-content">
         <div class="content-container">
             @RenderBody()
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="~/Scripts/site.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
@@ -619,7 +465,6 @@
                 e.stopPropagation();
 
                 $.get('/Notification/GetRecentNotifications', function (data) {
-                    // Extract notification IDs from the HTML (assuming each has ID like 'notification-123')
                     const newIds = [];
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = data;
@@ -648,14 +493,12 @@
                 }
             });
 
-            // Init badge
             updateNotificationBadge();
 
             setTimeout(function () {
                 $(".alert-success").fadeOut("slow");
             }, 3000);
 
-            // Set toggle from localStorage
             const setting = localStorage.getItem('playNotificationSound') === 'true';
             document.querySelectorAll('input[type=checkbox]').forEach(cb => {
                 if (cb.parentElement.previousElementSibling?.textContent?.includes("Notification Sounds")) {
@@ -668,15 +511,13 @@
             localStorage.setItem('playNotificationSound', enabled);
         }
 
-        function openSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.add('show-modal');
+        function openSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.add('show-modal');
+        }
+        function closeSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
         }
 
-        function closeSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.remove('show-modal');
-        }
 
         function updateNotificationBadge() {
             $.get('/Notification/GetUnreadCount', function (data) {
@@ -689,7 +530,6 @@
                 }
             });
         }
-
         function markAsRead(id, url) {
             const item = document.getElementById("notification-" + id);
             if (item) item.classList.remove("font-weight-bold");
@@ -716,21 +556,20 @@
 
         function updateOnlineBadge() {
             const isOffline = localStorage.getItem('appearOffline') === 'true';
-
             const badge = document.getElementById('onlineStatusBadge');
             const dot = document.getElementById('onlineDot');
             const text = document.getElementById('onlineText');
 
             if (isOffline) {
-                badge.classList.add('offline');
-                dot.classList.add('offline');
-                text.classList.add('offline');
-                text.textContent = 'Offline';
+                badge?.classList.add('offline');
+                dot?.classList.add('offline');
+                text?.classList.add('offline');
+                if (text) text.textContent = 'Offline';
             } else {
-                badge.classList.remove('offline');
-                dot.classList.remove('offline');
-                text.classList.remove('offline');
-                text.textContent = 'Online';
+                badge?.classList.remove('offline');
+                dot?.classList.remove('offline');
+                text?.classList.remove('offline');
+                if (text) text.textContent = 'Online';
             }
         }
 
@@ -752,8 +591,7 @@
                     title: 'swal-title',
                     htmlContainer: 'swal-body',
                     confirmButton: 'swal-confirm',
-                    cancelButton: 'swal-cancel',
-                    icon: 'swal-custom-icon'
+                    cancelButton: 'swal-cancel'
                 },
                 showCancelButton: true,
                 confirmButtonText: 'Yes, log me out',
@@ -767,19 +605,56 @@
         }
 
 
+    </script>
+    <script>
+        const logo = document.querySelector('.center-logo');
+        const controls = document.querySelector('.top-controls-container');
 
+        window.addEventListener("scroll", function () {
+            let scrollTop = window.scrollY || document.documentElement.scrollTop;
 
+            if (scrollTop > 20) {
+                logo.style.opacity = "0";
+                logo.style.pointerEvents = "none";
 
+                controls.style.opacity = "0";
+                controls.style.pointerEvents = "none";
+            } else {
+                logo.style.opacity = "1";
+                logo.style.pointerEvents = "auto";
+
+                controls.style.opacity = "1";
+                controls.style.pointerEvents = "auto";
+            }
+        });
+    </script>
+
+    <script>
+        const logo = document.querySelector('.center-logo');
+
+        window.addEventListener("scroll", function () {
+            let scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+            if (scrollTop > 20) {
+                // Scrolled down - hide logo
+                logo.style.opacity = "0";
+                logo.style.pointerEvents = "none";
+            } else {
+                // Back at top - show logo
+                logo.style.opacity = "1";
+                logo.style.pointerEvents = "auto";
+            }
+        });
     </script>
 
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal-overlay">
 
+    <!-- SystemSettings Modal -->
+    <div id="SystemSettingsModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Account Settings</h3>
-                <button class="close-btn" onclick="closeSettingsModal()">×</button>
+                <button class="close-btn" onclick="closeSystemSettingsModal()">×</button>
             </div>
 
             <!-- Preferences Section -->
@@ -850,6 +725,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Notification Sound -->
     <audio id="notificationSound" src="~/Sounds/notification.mp3" preload="auto"></audio>
 </body>
 </html>
