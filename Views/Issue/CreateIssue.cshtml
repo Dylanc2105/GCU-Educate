@@ -6,25 +6,50 @@
 }
 
 <style>
-    .page-title {
-        font-size: 26px;
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #7F3D98;
+        color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
         font-weight: 600;
-        color: #7F3D98;
-        margin-bottom: 10px;
-        text-align: center;
+        margin: 0;
+    }
+    .card-body {
+        padding: 30px;
     }
 
     .back-button {
         display: inline-block;
-        margin: 10px 0 20px 0;
+        margin: 20px 0 0 0;
+        background-color: transparent;
         color: #7F3D98;
-        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 6px;
         text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid #7F3D98;
+        cursor: pointer;
     }
 
         .back-button:hover {
-            text-decoration: underline;
+            background-color: #7F3D98;
+            text-decoration: none;
+            color: white;
         }
+
 
     .split-form {
         max-width: 1200px;
@@ -122,61 +147,65 @@
         }
 </style>
 
-
-<h2 class="page-title">Create New</h2>
-
-<a href="@Url.Action("StudentIssue", "Issue")" class="back-button">← Back to Hub</a>
-
-@using (Html.BeginForm("CreateIssue", "Issue", FormMethod.Post, new { @class = "split-form" }))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-section-container">
-        <div class="form-left container-box">
-            <div class="form-group">
-                @Html.LabelFor(m => m.SelectedClassId, "Select Class")
-                @Html.DropDownListFor(m => m.SelectedClassId, new SelectList(Model.Classes, "ClassId", "ClassName"), "Choose a class", new { @class = "form-control", @id = "classDropdown" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.SelectedUnitId, "Select Unit")
-                @Html.DropDownList("SelectedUnitId", new SelectList(Model.Units, "UnitId", "UnitName"), "Choose a unit", new { @class = "form-control", @id = "unitDropdown" })
-            </div>
-
-            <div class="form-group">
-                @Html.Label("Select Students")
-                <div class="student-select-actions">
-                    <button type="button" id="toggleSelectAll" class="btn-small">Select All</button>
-                </div>
-                <div class="student-checkbox-list" id="studentDropdown">
-                    @foreach (var student in Model.Students)
-                    {
-                        <div class="student-option">
-                            <label>
-                                <input type="checkbox" name="SelectedStudentIds" value="@student.Id" />
-                                @student.FullName
-                            </label>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <div class="form-right container-box">
-            <div class="form-group">
-                @Html.LabelFor(m => m.IssueTitle)
-                @Html.EnumDropDownListFor(m => m.IssueTitle, new { @class = "form-control" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.Description)
-                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 6 })
-            </div>
-
-            <button type="submit" class="btn-submit">Raise Issue</button>
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">Create New</h2>
     </div>
-}
+    <div class="card-body">
+
+        @using (Html.BeginForm("CreateIssue", "Issue", FormMethod.Post, new { @class = "split-form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-section-container">
+                <div class="form-left container-box">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.SelectedClassId, "Select Class")
+                        @Html.DropDownListFor(m => m.SelectedClassId, new SelectList(Model.Classes, "ClassId", "ClassName"), "Choose a class", new { @class = "form-control", @id = "classDropdown" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.SelectedUnitId, "Select Unit")
+                        @Html.DropDownList("SelectedUnitId", new SelectList(Model.Units, "UnitId", "UnitName"), "Choose a unit", new { @class = "form-control", @id = "unitDropdown" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Select Students")
+                        <div class="student-select-actions">
+                            <button type="button" id="toggleSelectAll" class="btn-small">Select All</button>
+                        </div>
+                        <div class="student-checkbox-list" id="studentDropdown">
+                            @foreach (var student in Model.Students)
+                            {
+                                <div class="student-option">
+                                    <label>
+                                        <input type="checkbox" name="SelectedStudentIds" value="@student.Id" />
+                                        @student.FullName
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-right container-box">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IssueTitle)
+                        @Html.EnumDropDownListFor(m => m.IssueTitle, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 6 })
+                    </div>
+
+                    <button type="submit" class="btn-submit">Raise Issue</button>
+                </div>
+            </div>
+        }
+        <a href="@Url.Action("Index", "Issue")" class="back-button">← Back to Issues Dashboard</a>
+    </div>
+</div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

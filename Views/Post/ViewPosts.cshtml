@@ -91,6 +91,7 @@
         color: var(--text-light);
     }
 
+
     .quick-actions {
         background-color: white;
         border-radius: 10px;
@@ -98,25 +99,41 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
     }
-
-    .action-button {
-        display: block;
+    .quick-btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        text-align: center;
-        text-decoration: none;
-        transition: background-color 0.2s;
+        gap: 14px;
     }
+    .action-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: 320px;
+        padding: 12px 20px;
+        background: #7F3D98;
+        border: 1.2px solid #7F3D98;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1em;
+        text-decoration: none;
+        transition: background 0.18s, color 0.18s;
+        box-shadow: 0 1px 6px #e7d0fa34;
+    }
+        .action-button img {
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
 
-        .action-button:hover {
-            background-color: var(--primary-hover);
-            color: white;
-            text-decoration: none;
+        .action-button:hover,
+        .action-button:focus {
+            background: #985BAF;
+            color: #fff
         }
 
     .section-count {
@@ -210,8 +227,10 @@
         <div class="col-md-4">
             <div class="quick-actions">
                 <div class="section-title">Quick Actions</div>
-                <a href="@Url.Action("CreateNewPost", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New</a>
-                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/allIssues.svg" /> View My Posts</a>
+                <div class="quick-btn-group">
+                    <a href="@Url.Action("CreateNewPost", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New</a>
+                    <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/allIssues.svg" /> View My Posts</a>
+                </div>
             </div>
         </div>
     </div>

@@ -4,24 +4,51 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
+    
+    .main-card {
+        max-width: 1400px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #7F3D98;
+        color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
     .page-title {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 600;
-        color: #7F3D98;
-        margin-bottom: 10px;
-        text-align: center;
+        margin: 0;
     }
 
-    .back-button {
-        display: inline-block;
-        margin: 10px 0 20px 0;
+    .card-body {
+        padding: 30px;
+    }
+    .btn-outline {
+        background-color: transparent;
         color: #7F3D98;
-        font-weight: bold;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
     }
 
-        .back-button:hover {
-            text-decoration: underline;
+        .btn-outline:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
         }
 
     .selection-container {
@@ -157,46 +184,55 @@
         font-style: italic;
     }
 </style>
-<h2 class="page-title">Schedule an Appointment</h2>
-<a href="@Url.Action("AppointmentsDash", "GuidanceTeacher")" class="back-button">← Back to Appointments Centre</a>
-<div class="selection-container">
-    <div class="selection-section">
-        <div class="container-box">
-            <div class="form-group">
-                <label for="classDropdown">Select Class</label>
-                @Html.DropDownListFor(m => m.SelectedClassId, new SelectList(Model.Classes, "ClassId", "ClassName"), "Choose a class", new { @class = "form-control", @id = "classDropdown" })
+
+<<div class="main-card">
+    <div class="card-header">
+        <h2 class="page-title">Schedule an Appointment</h2>
+    </div>
+    <div class="card-body">
+        <div class="selection-container">
+            <div class="selection-section">
+                <div class="container-box">
+                    <div class="form-group">
+                        <label for="classDropdown">Select Class</label>
+                        @Html.DropDownListFor(m => m.SelectedClassId, new SelectList(Model.Classes, "ClassId", "ClassName"), "Choose a class", new { @class = "form-control", @id = "classDropdown" })
+                    </div>
+                    <div class="form-group">
+                        <label for="studentDropdown">Select Student</label>
+                        <select id="studentDropdown" class="form-control">
+                            <option value="">Choose a student</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="studentDropdown">Select Student</label>
-                <select id="studentDropdown" class="form-control">
-                    <option value="">Choose a student</option>
-                </select>
+
+            <div id="issuesContainer" class="selection-section">
+                <div class="container-box" style="flex: 1 0 100%;">
+                    <div class="student-info">
+                        <div class="student-name" id="selectedStudentName"></div>
+                    </div>
+
+                    <h3>Select an Issue for Appointment</h3>
+                    <div id="issuesList" class="issues-list">
+                        <div class="loading">Loading issues...</div>
+                    </div>
+
+                    <div class="progress-meeting-section">
+                        <div class="progress-meeting-title">Schedule a Progress Meeting</div>
+                        <p>If you prefer to schedule a general progress meeting instead of addressing a specific issue, click below:</p>
+                        <button id="progressMeetingBtn" class="action-btn" disabled>Schedule Progress Meeting</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div id="issuesContainer" class="selection-section">
-        <div class="container-box" style="flex: 1 0 100%;">
-            <div class="student-info">
-                <div class="student-name" id="selectedStudentName"></div>
-            </div>
-
-            <h3>Select an Issue for Appointment</h3>
-            <div id="issuesList" class="issues-list">
-                <div class="loading">Loading issues...</div>
-            </div>
-
-            <div class="progress-meeting-section">
-                <div class="progress-meeting-title">Schedule a Progress Meeting</div>
-                <p>If you prefer to schedule a general progress meeting instead of addressing a specific issue, click below:</p>
-                <button id="progressMeetingBtn" class="action-btn" disabled>Schedule Progress Meeting</button>
-            </div>
+        <div style="padding: 20px">
+            <a href="@Url.Action("AppointmentsDash", "GuidanceTeacher")" class="btn-outline">← Back to Appointments Dashboard</a>
         </div>
     </div>
 </div>
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+        @section Scripts {
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
     $(document).ready(function () {
         let selectedStudentId = '';
         let selectedStudentName = '';
@@ -301,5 +337,5 @@
             $('#progressMeetingBtn').prop('disabled', true);
         }
     });
-    </script>
-}
+            </script>
+        }
