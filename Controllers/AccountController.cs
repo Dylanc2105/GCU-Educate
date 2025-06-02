@@ -18,6 +18,9 @@ namespace GuidanceTracker.Controllers
     public class AccountController : Controller
     {
 
+        private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
+
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -646,8 +649,20 @@ namespace GuidanceTracker.Controllers
             return false;
         }
 
+        // GET: /Account/Details
+        [Authorize]
+        public ActionResult Details()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.FirstOrDefault(u => u.Id == userId);
 
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
 
+            return View(user); // Views/Account/Details.cshtml
+        }
         #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
