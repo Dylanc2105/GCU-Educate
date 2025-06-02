@@ -6,6 +6,33 @@
 
 <!-- CSS Styles for the student directory -->
 <style>
+    .main-card {
+        max-width: 1400px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        color: #7F3D98;
+        padding: 20px 30px;
+        text-align: left;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .card-title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #7F3D98;
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
     /* Grid layout for student cards */
     .student-cards {
         display: grid;
@@ -154,7 +181,8 @@
 
         /* Hover state for create button */
         .create-btn:hover {
-            background-color: #7a3fef;
+            background-color: #985BAF;
+            color: white;
         }
 
     /* Search box container */
@@ -175,190 +203,195 @@
 </style>
 
 <!-- Page header with title and create button -->
-<div class="page-header">
-    <h2>Student Directory</h2>
-    @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
-    {
-<a href="@Url.Action("Create", "Student")" class="create-btn">
-    <i class="fas fa-plus"></i> Add New Student
-</a>
-    }
-</div>
+<div class="main-card">
+    <div class="card-header">
+        <div class="page-header">
+            <h1 class="card-title">Student Directory</h1>
+            @if (Request.IsAuthenticated && User.IsInRole("GuidanceTeacher"))
+            {
+                <a href="@Url.Action("Create", "Student")" class="create-btn">
+                    <i class="fas fa-plus"></i> Add New Student
+                </a>
+            }
+        </div>
+    </div>
 
-<!-- Search functionality -->
-<div class="search-box">
-    <input type="text" id="studentSearch" class="search-input" placeholder="Search students..." />
-</div>
+    <div class="card-body">
+        <!-- Search functionality -->
+        <div class="search-box">
+            <input type="text" id="studentSearch" class="search-input" placeholder="Search students..." />
+        </div>
 
-<!-- Filter and Sort Controls -->
-<div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-    <!-- Class Filter -->
-    <select id="classFilter" class="search-input" style="max-width: 200px;">
-        <option value="">All Classes</option>
-        @foreach (var cls in Model.Select(s => s.Class.ClassName).Distinct())
-        {
-            <option value="@cls">@cls</option>
-        }
-    </select>
+        <!-- Filter and Sort Controls -->
+        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+            <!-- Class Filter -->
+            <select id="classFilter" class="search-input" style="max-width: 200px;">
+                <option value="">All Classes</option>
+                @foreach (var cls in Model.Select(s => s.Class.ClassName).Distinct())
+                {
+                    <option value="@cls">@cls</option>
+                }
+            </select>
 
-    <!-- Sort Options -->
-    <select id="sortFilter" class="search-input" style="max-width: 200px;">
-        <option value="name-asc">Sort by Name (A-Z)</option>
-        <option value="name-desc">Sort by Name (Z-A)</option>
-    </select>
-</div>
+            <!-- Sort Options -->
+            <select id="sortFilter" class="search-input" style="max-width: 200px;">
+                <option value="name-asc">Sort by Name (A-Z)</option>
+                <option value="name-desc">Sort by Name (Z-A)</option>
+            </select>
+        </div>
 
-<!-- Container for all student cards -->
-<div class="student-cards">
-    @foreach (var item in Model)
-    {
-        <!-- Individual student card with data attributes for search functionality -->
-        <div class="student-card" data-student-name="@item.FirstName @item.LastName" data-course="@item.Class.ClassName">
-            <!-- Card header that toggles expansion when clicked -->
-            <div class="student-card-header" onclick="toggleCard(this)">
-                <div>
-                    <div class="student-name">@item.FirstName @item.LastName</div>
-                    <div class="student-course">@item.Class.ClassName</div>
-                </div>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <!-- Expandable card body with student details -->
-            <div class="student-card-body">
-                <div class="student-details">
-                    <!-- Email information -->
-                    <div class="detail-group">
-                        <div class="detail-label">Email</div>
-                        <div class="detail-value">@item.Email</div>
+        <!-- Container for all student cards -->
+        <div class="student-cards">
+            @foreach (var item in Model)
+            {
+                <!-- Individual student card with data attributes for search functionality -->
+                <div class="student-card" data-student-name="@item.FirstName @item.LastName" data-course="@item.Class.ClassName">
+                    <!-- Card header that toggles expansion when clicked -->
+                    <div class="student-card-header" onclick="toggleCard(this)">
+                        <div>
+                            <div class="student-name">@item.FirstName @item.LastName</div>
+                            <div class="student-course">@item.Class.ClassName</div>
+                        </div>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
                     </div>
-                    <!-- Phone information -->
-                    <div class="detail-group">
-                        <div class="detail-label">Phone</div>
-                        <div class="detail-value">@item.PhoneNumber</div>
-                    </div>
-                    <!-- Address information with line break -->
-                    <div class="detail-group">
-                        <div class="detail-label">Address</div>
-                        <div class="detail-value">
-                            @item.Street<br />
-                            @item.City, @item.Postcode
+                    <!-- Expandable card body with student details -->
+                    <div class="student-card-body">
+                        <div class="student-details">
+                            <!-- Email information -->
+                            <div class="detail-group">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value">@item.Email</div>
+                            </div>
+                            <!-- Phone information -->
+                            <div class="detail-group">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">@item.PhoneNumber</div>
+                            </div>
+                            <!-- Address information with line break -->
+                            <div class="detail-group">
+                                <div class="detail-label">Address</div>
+                                <div class="detail-value">
+                                    @item.Street<br />
+                                    @item.City, @item.Postcode
+                                </div>
+                            </div>
+                            <!-- Registration date with formatted display -->
+                            <div class="detail-group">
+                                <div class="detail-label">Registered</div>
+                                <div class="detail-value">@item.RegistredAt.ToString("d MMMM yyyy")</div>
+                            </div>
+                        </div>
+                        <!-- Action buttons for each student -->
+                        <div class="card-actions">
+                            <!-- Student Details link -->
+                            @if (User.IsInRole("GuidanceTeacher"))
+                            {
+                                <a href="@Url.Action("StudentDetails", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                            }
+                            @if (User.IsInRole("CurriculumHead"))
+                            {
+                                <!-- View Student link -->
+                                <a href="@Url.Action("StudentDetails", "CurriculumHead", new { id = item.Id })" class="action-link details">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                            }
+                            @*@if (User.IsInRole("GuidanceTeacher"))
+                                {-->
+                                    <!-- Edit Student link -->
+                                    <!--<a href="@Url.Action("EditStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>-->
+                                    <!-- Delete Student link -->
+                                    <!--<a href="@Url.Action("DeleteStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                }*@
                         </div>
                     </div>
-                    <!-- Registration date with formatted display -->
-                    <div class="detail-group">
-                        <div class="detail-label">Registered</div>
-                        <div class="detail-value">@item.RegistredAt.ToString("d MMMM yyyy")</div>
-                    </div>
                 </div>
-                <!-- Action buttons for each student -->
-                <div class="card-actions">
-                    <!-- Student Details link -->
-                    @if (User.IsInRole("GuidanceTeacher"))
-                    {
-                        <a href="@Url.Action("StudentDetails", "GuidanceTeacher", new { id = item.Id })" class="action-link details">
-                            <i class="fas fa-info-circle"></i> Details
-                        </a>
-                    }
-                    @if (User.IsInRole("CurriculumHead"))
-                    {
-                        <!-- View Student link -->
-                        <a href="@Url.Action("StudentDetails", "CurriculumHead", new { id = item.Id })" class="action-link details">
-                            <i class="fas fa-info-circle"></i> Details
-                        </a>
-                    }
-                    @*@if (User.IsInRole("GuidanceTeacher"))
-                    {-->
-                        <!-- Edit Student link -->
-                        <!--<a href="@Url.Action("EditStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link edit">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>-->
-                        <!-- Delete Student link -->
-                        <!--<a href="@Url.Action("DeleteStudent", "GuidanceTeacher", new { id = item.Id })" class="action-link delete">
-                            <i class="fas fa-trash"></i> Delete
-                        </a>
-                    }*@
-                </div>
-            </div>
+            }
         </div>
-    }
+    </div>
 </div>
-
-<!-- Scripts section for JavaScript functionality -->
-@section Scripts {
-    <script>
-        // Function to toggle card expansion when header is clicked
-        function toggleCard(header) {
-            const card = header.closest('.student-card');
-            card.classList.toggle('expanded');
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('studentSearch');
-            const studentCards = document.querySelectorAll('.student-card');
-
-
-            searchInput.addEventListener('input', function () {
-                const searchTerm = this.value.toLowerCase();
-
-                // Filter cards based on name or course containing search term
-                studentCards.forEach(card => {
-                    const studentName = card.getAttribute('data-student-name').toLowerCase();
-                    const courseName = card.getAttribute('data-course').toLowerCase();
-
-                    // Show/hide cards based on search criteria
-                    if (studentName.includes(searchTerm) || courseName.includes(searchTerm)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('studentSearch');
-            const classFilter = document.getElementById('classFilter');
-            const sortFilter = document.getElementById('sortFilter');
-            const studentCardsContainer = document.querySelector('.student-cards');
-
-            function applyFilters() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const selectedClass = classFilter.value.toLowerCase();
-                const sortBy = sortFilter.value;
-                const cards = Array.from(document.querySelectorAll('.student-card'));
-
-                // Filter logic
-                cards.forEach(card => {
-                    const studentName = card.getAttribute('data-student-name').toLowerCase();
-                    const courseName = card.getAttribute('data-course').toLowerCase();
-
-                    const matchesSearch = studentName.includes(searchTerm) || courseName.includes(searchTerm);
-                    const matchesClass = !selectedClass || courseName === selectedClass;
-
-                    card.style.display = (matchesSearch && matchesClass) ? '' : 'none';
-                });
-
-                // Sort logic
-                const visibleCards = cards.filter(c => c.style.display !== 'none');
-                visibleCards.sort((a, b) => {
-                    if (sortBy === 'name-asc' || sortBy === 'name-desc') {
-                        const nameA = a.getAttribute('data-student-name').toLowerCase();
-                        const nameB = b.getAttribute('data-student-name').toLowerCase();
-                        return sortBy === 'name-asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-                    } else {
-                        const dateA = new Date(a.querySelector('.detail-value').innerText);
-                        const dateB = new Date(b.querySelector('.detail-value').innerText);
-                        return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
-                    }
-                });
-
-                // Reorder DOM
-                visibleCards.forEach(card => studentCardsContainer.appendChild(card));
+    <!-- Scripts section for JavaScript functionality -->
+    @section Scripts {
+        <script>
+            // Function to toggle card expansion when header is clicked
+            function toggleCard(header) {
+                const card = header.closest('.student-card');
+                card.classList.toggle('expanded');
             }
 
-            searchInput.addEventListener('input', applyFilters);
-            classFilter.addEventListener('change', applyFilters);
-            sortFilter.addEventListener('change', applyFilters);
-        });
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('studentSearch');
+                const studentCards = document.querySelectorAll('.student-card');
 
-    </script>
-}
+
+                searchInput.addEventListener('input', function () {
+                    const searchTerm = this.value.toLowerCase();
+
+                    // Filter cards based on name or course containing search term
+                    studentCards.forEach(card => {
+                        const studentName = card.getAttribute('data-student-name').toLowerCase();
+                        const courseName = card.getAttribute('data-course').toLowerCase();
+
+                        // Show/hide cards based on search criteria
+                        if (studentName.includes(searchTerm) || courseName.includes(searchTerm)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('studentSearch');
+                const classFilter = document.getElementById('classFilter');
+                const sortFilter = document.getElementById('sortFilter');
+                const studentCardsContainer = document.querySelector('.student-cards');
+
+                function applyFilters() {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const selectedClass = classFilter.value.toLowerCase();
+                    const sortBy = sortFilter.value;
+                    const cards = Array.from(document.querySelectorAll('.student-card'));
+
+                    // Filter logic
+                    cards.forEach(card => {
+                        const studentName = card.getAttribute('data-student-name').toLowerCase();
+                        const courseName = card.getAttribute('data-course').toLowerCase();
+
+                        const matchesSearch = studentName.includes(searchTerm) || courseName.includes(searchTerm);
+                        const matchesClass = !selectedClass || courseName === selectedClass;
+
+                        card.style.display = (matchesSearch && matchesClass) ? '' : 'none';
+                    });
+
+                    // Sort logic
+                    const visibleCards = cards.filter(c => c.style.display !== 'none');
+                    visibleCards.sort((a, b) => {
+                        if (sortBy === 'name-asc' || sortBy === 'name-desc') {
+                            const nameA = a.getAttribute('data-student-name').toLowerCase();
+                            const nameB = b.getAttribute('data-student-name').toLowerCase();
+                            return sortBy === 'name-asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+                        } else {
+                            const dateA = new Date(a.querySelector('.detail-value').innerText);
+                            const dateB = new Date(b.querySelector('.detail-value').innerText);
+                            return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
+                        }
+                    });
+
+                    // Reorder DOM
+                    visibleCards.forEach(card => studentCardsContainer.appendChild(card));
+                }
+
+                searchInput.addEventListener('input', applyFilters);
+                classFilter.addEventListener('change', applyFilters);
+                sortFilter.addEventListener('change', applyFilters);
+            });
+
+        </script>
+    }
