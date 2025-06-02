@@ -109,7 +109,7 @@
         border-radius: 10px;
     }
 
-    .quick-btn {
+    /*.quick-btn {
         padding: 10px;
         border-radius: 5px;
         text-align: center;
@@ -122,7 +122,7 @@
 
         .quick-btn:hover {
             background: #985BAF;
-        }
+        }*/
 
     /* Right Container */
     .right-container {
@@ -161,6 +161,11 @@
         cursor: pointer;
         margin-left: 10px;
     }
+    .view-more-btn:hover,
+    .view-more-btn:focus {
+        background: #985BAF;
+        color: #fff;
+    }
 
 
     .full-issues-list {
@@ -193,7 +198,8 @@
 
     .modal-header {
         padding: 15px;
-        background-color: #f5f5f5;
+        background-color: #7F3D98;
+        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -250,12 +256,12 @@
         flex-direction: row;
         justify-content: flex-end;
         align-items: center;
-        width: 320px; /* All buttons same width, adjust as needed */
+        width: 320px; 
         padding: 12px 20px;
-        background: #7F3D98; /* Purple background */
+        background: #7F3D98; 
         border: 1.2px solid #7F3D98;
         border-radius: 8px;
-        color: #fff; /* White text */
+        color: #fff; 
         font-weight: 700;
         font-size: 1.1em;
         text-decoration: none;
@@ -272,7 +278,7 @@
 
         .quick-btn:hover,
         .quick-btn:focus {
-            background: #985BAF; /* Slightly lighter purple on hover */
+            background: #985BAF; 
             color: #fff;
         }
 
@@ -347,7 +353,7 @@
             <div class="modal-backdrop">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2><img src="~/Images/Icons/OTHER/new.svg" /> All New Issues</h2>
+                        <h2><img src="~/Images/Icons/OTHER/newWhite.svg" /> All New Issues</h2>
                         <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
                     </div>
                     <div class="modal-body">
@@ -374,7 +380,7 @@
             <div class="modal-backdrop">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2><img src="~/Images/Icons/OTHER/inProgress.svg" /> All In Progress Issues</h2>
+                        <h2><img src="~/Images/Icons/OTHER/inProgressWhite.svg" /> All In Progress Issues</h2>
                         <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
                     </div>
                     <div class="modal-body">

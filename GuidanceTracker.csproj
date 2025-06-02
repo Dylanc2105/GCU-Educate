@@ -524,7 +524,9 @@
     <Content Include="Images\Icons\OTHER\archived.svg" />
     <Content Include="Images\Icons\OTHER\createIssue.svg" />
     <Content Include="Images\Icons\OTHER\inProgress.svg" />
+    <Content Include="Images\Icons\OTHER\inProgressWhite.svg" />
     <Content Include="Images\Icons\OTHER\new.svg" />
+    <Content Include="Images\Icons\OTHER\newWhite.svg" />
     <Content Include="Images\Icons\OTHER\studentHub.svg" />
     <Content Include="Images\Icons\posts.svg" />
     <Content Include="Images\Icons\PURPLE\calendarToday.svg" />
