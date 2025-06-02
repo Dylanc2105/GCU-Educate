@@ -669,6 +669,51 @@
             }
         });
     }
+
+    function toggleNotificationDropdown() {
+        const dropdown = $('#notificationContent');
+        const modal = $('#SystemSettingsModal');
+
+        // Close modal if open
+        if (modal.hasClass('show-modal')) {
+            modal.removeClass('show-modal');
+        }
+
+        if (dropdown.is(':visible')) {
+            dropdown.hide();
+        } else {
+            $.get('/Notification/GetRecentNotifications', function (data) {
+                const newIds = [];
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                    const id = el.id.split('-')[1];
+                    if (id) newIds.push(id);
+                });
+
+                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                    const audio = document.getElementById('notificationSound');
+                    if (audio) audio.play();
+                }
+
+                previousNotificationIds = newIds;
+                $('#notificationContent').html(data).css('display', 'block');
+            });
+        }
+    }
+
+    function openSystemSettingsModal() {
+        const modal = document.getElementById('SystemSettingsModal');
+        const dropdown = $('#notificationContent');
+
+        if (dropdown.is(':visible')) {
+            dropdown.hide(); // Close notifications if open
+        }
+
+        modal.classList.add('show-modal');
+    }
+
 </script>
     <script>
         const logo = document.querySelector('.center-logo');
