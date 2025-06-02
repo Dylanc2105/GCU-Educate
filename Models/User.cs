@@ -38,6 +38,10 @@ namespace GuidanceTracker.Models
         public virtual ICollection<Conversation> ConversationsAsUserOne { get; set; }
         public virtual ICollection<Conversation> ConversationsAsUserTwo { get; set; }
 
+        public DateTime? LastSeen { get; set; } = DateTime.UtcNow;
+        public bool AppearOffline { get; set; } = false;
+
+
 
         private ApplicationUserManager userManager;
 

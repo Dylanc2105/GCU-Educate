@@ -692,6 +692,38 @@ namespace GuidanceTracker.Controllers
             }
         }
 
+        [Authorize(Roles = "GuidanceTeacher, Lecturer")]
+        [HttpGet]
+        public JsonResult GetUserIssues()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var commentedIssueIds = db.Comments
+                .Where(c => c.UserId == userId)
+                .Select(c => c.IssueId);
+
+            var issues = db.Issues
+                .Include(i => i.Student)
+                .Where(i =>
+                    i.LecturerId == userId ||
+                    i.GuidanceTeacherId == userId ||
+                    commentedIssueIds.Contains(i.IssueId))
+                .OrderByDescending(i => i.CreatedAt)
+                .ToList()
+                .Select(i => new
+                {
+                    IssueId = i.IssueId,
+                    IssueTitle = i.IssueTitle.ToString(),
+                    CreatedAt = i.CreatedAt.ToString("yyyy-MM-dd"),
+                    StudentName = i.Student.FirstName + " " + i.Student.LastName,
+                    IssueStatus = i.IssueStatus.ToString()
+                })
+                .ToList();
+
+            return Json(issues, JsonRequestBehavior.AllowGet);
+        }
+
+
         /// <summary>
         /// karina: method to add to an existing issue for lecturers
         /// </summary>

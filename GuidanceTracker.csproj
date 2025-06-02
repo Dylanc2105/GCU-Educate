@@ -482,6 +482,7 @@
     <Content Include="Content\kendo\2025.1.227\material-sky-dark.css" />
     <Content Include="Content\kendo\2025.1.227\material-sky.css" />
     <Content Include="Content\kendo\2025.1.227\material-smoke.css" />
+    <Content Include="Content\Style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -505,6 +506,7 @@
     <Content Include="Content\kendo\2025.1.227\font-icons\kendo-font-icons.ttf" />
     <Content Include="App_Browsers\qt.browser" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\GuidanceTracker - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\GuidanceTracker20250227222444 - Web Deploy.pubxml" />
     <Content Include="Images\Icons\calendar.svg" />
     <Content Include="Images\Icons\feedback.svg" />
@@ -2695,7 +2697,6 @@
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
     <Content Include="Views\Student\RequestAppointment.cshtml" />
-    <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
     <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
     <Content Include="Views\Student\UpcomingAppoinments.cshtml" />
@@ -2723,6 +2724,7 @@
     <Content Include="Views\Classes\UploadClasses.cshtml" />
     <Content Include="Views\Student\Create.cshtml" />
     <Content Include="Views\Student\UploadStudents.cshtml" />
+    <Content Include="Views\Message\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
