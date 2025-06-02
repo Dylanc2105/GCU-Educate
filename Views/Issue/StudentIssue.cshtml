@@ -14,242 +14,362 @@
 }
 
 
-<h1 class="dashboard-title">Student Issue Center</h1>
-
-<div class="d-flex" style="height: 80vh;">
-    <!-- Sidebar: Classes -->
-    <div id="classSidebar" class="border-end shadow-sm p-3 bg-white" style="width: 280px; overflow-y: auto;">
-        <h5 class="text-center mb-3">Classes</h5>
-        <div class="btn-group-vertical w-100">
-            @foreach (var classes in Model)
-            {
-                <button class="btn btn-purple text-start mb-2 class-btn" data-courseid="@classes.ClassId">
-                    @classes.ClassName
-                </button>
-            }
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h1 class="card-title">Student Issue Center</h1>
     </div>
 
-    <!-- Main Panel Wrapped in Prominent Container -->
-    <div class="flex-grow-1 p-4">
-        <div class="main-container shadow-sm p-4 bg-white rounded-3 h-100 overflow-auto">
-            <!-- Top Row -->
-            <div class="d-flex align-items-center mb-4 flex-wrap" style="gap: 10px;">
-                <select id="studentSelect" class="form-control" style="max-width: 250px;">
-                    <option value="">Select a Student</option>
-                </select>
-                <div class="form-check form-switch">
-                    <input class="form-check-input toggle-purple" type="checkbox" id="toggleArchived">
-                    <label class="form-check-label" for="toggleArchived">Show Archived</label>
+    <div class="card-body">
+        <div class="d-flex" style="height: 80vh;">
+            <!-- Sidebar: Classes -->
+            <div id="classSidebar" class="border-end shadow-sm p-3 bg-white" style="width: 280px; overflow-y: auto;">
+                <h5 class="text-center mb-3">Classes</h5>
+                <div class="btn-group-vertical w-100">
+                    @foreach (var classes in Model)
+                    {
+                        <button class="btn btn-purple text-start mb-2 class-btn" data-courseid="@classes.ClassId">
+                            @classes.ClassName
+                        </button>
+                    }
                 </div>
-                <a id="createNewIssue" class="btn btn-purple ms-auto" href="javascript:void(0);">Create New</a>
             </div>
 
-            <!-- Student Details -->
-            <div id="studentDetails" style="display: none;" class="mb-4">
-                <h5>Student Details</h5>
-                <p><strong>Name:</strong> <span id="studentName"></span></p>
-            </div>
+            <!-- Main Panel Wrapped in Prominent Container -->
+            <div class="main-content">
+                <!-- Top Row -->
+                <div class="controls-row">
+                    <select id="studentSelect" class="student-select">
+                        <option value="">Select a Student</option>
+                    </select>
 
-            <!-- Issues -->
-            <div id="issueList" style="display: none;">
-                <h5 class="mb-3">Issues</h5>
-                <div id="issueCards" class="row g-3"></div>
+                    <div class="toggle-container">
+                        <input class="toggle-switch" type="checkbox" id="toggleArchived">
+                        <label for="toggleArchived">Show Archived</label>
+                    </div>
+
+                    <a id="createNewIssue" class="btn-purple" href="javascript:void(0);" style="margin-left: auto;">Create New</a>
+                </div>
+
+                <!-- Student Details -->
+                <div id="studentDetails" class="student-details" style="display: none;">
+                    <h5>Student Details</h5>
+                    <p><strong>Name:</strong> <span id="studentName"></span></p>
+                </div>
+
+                <!-- Issues -->
+                <div id="issueList" class="issues-section" style="display: none;">
+                    <h5>Issues</h5>
+                    <div id="issueCards"></div>
+                </div>
             </div>
+        </div>
+        <div>
+            <a href="@Url.Action("Index", "Issue")" class="back-button">← Back to Issues Dashboard</a>
         </div>
     </div>
 </div>
-
-<style>
-    /* Purple button base */
-    .btn-purple {
-        background-color: #7F3D98 !important;
-        color: white !important;
-        border: none !important;
-        padding: 8px 15px !important;
-        text-align: center !important;
-    }
-
-        .btn-purple:hover {
-            background-color: #985BAF !important;
-        }
-
-    .btn-selected {
-        background-color: #5C2D7A !important;
-        color: white !important;
-    }
-
-    /* Sidebar Buttons */
-    #classSidebar .class-btn {
-        width: 100%;
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        text-align: left;
-        padding: 10px 15px;
-        transition: background-color 0.2s ease;
-    }
-
-    /* Right Panel Container */
-    .main-container {
-        border: 1px solid #ddd;
-        background-color: #fff;
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        height: 100%;
-    }
-
-    /* Issue Card Styling */
-    .issue-card {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        border-left: 5px solid #7F3D98;
-        transition: transform 0.2s;
-    }
-
-        .issue-card:hover {
-            transform: translateY(-3px);
-        }
-
-    .toggle-purple:checked {
-        background-color: #7F3D98 !important;
-        border-color: #7F3D98 !important;
-    }
-</style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        let allIssues = [];
-
-        $(document).on("click", ".class-btn", function () {
-            var courseId = $(this).data("courseid");
-
-            if (!courseId) {
-                alert("❌ Invalid Class ID!");
-                return;
+        <style>
+            .back-button {
+                display: inline-block;
+                margin: 20px 0 0 0;
+                background-color: transparent;
+                color: #7F3D98;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border: 2px solid #7F3D98;
+                cursor: pointer;
             }
 
-            $(".class-btn").removeClass("btn-selected").addClass("btn-purple");
-            $(this).removeClass("btn-purple").addClass("btn-selected");
+                .back-button:hover {
+                    background-color: #7F3D98;
+                    text-decoration: none;
+                    color: white;
+                }
 
-            $.ajax({
-                url: "/Issue/GetStudents",
-                type: "GET",
-                data: { classId: courseId },
-                success: function (response) {
-                    var studentSelect = $("#studentSelect");
-                    studentSelect.empty().append('<option value="">Select a Student</option>');
+            .main-card {
+                max-width: 1400px;
+                margin: 20px auto;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                overflow: hidden;
+                min-height: 80vh;
+            }
 
-                    $.each(response, function (i, student) {
-                        studentSelect.append(`<option value="${student.Id}" data-number="${student.StudentNumber}">${student.Name}</option>`);
+            .card-header {
+                background-color: #7F3D98;
+                color: white;
+                padding: 20px 30px;
+                text-align: left;
+            }
+
+            .card-title {
+                font-size: 24px;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            .card-body {
+                padding: 0;
+                height: calc(80vh - 80px);
+                display: flex;
+            }
+            .main-content {
+                flex: 1;
+                padding: 25px;
+                overflow-y: auto;
+                background: white;
+            }
+
+            .controls-row {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
+            }
+
+            .student-select {
+                min-width: 250px;
+                padding: 10px 14px;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+            }
+
+            .toggle-container {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .toggle-switch {
+                appearance: none;
+                width: 50px;
+                height: 24px;
+                background: #ccc;
+                border-radius: 12px;
+                position: relative;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+                .toggle-switch:checked {
+                    background: #7F3D98;
+                }
+
+                .toggle-switch::before {
+                    content: '';
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: white;
+                    top: 2px;
+                    left: 2px;
+                    transition: transform 0.3s ease;
+                }
+
+                .toggle-switch:checked::before {
+                    transform: translateX(26px);
+                }
+            /* Purple button base */
+            .btn-purple {
+                background-color: #7F3D98;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+                cursor: pointer;
+            }
+
+                .btn-purple:hover {
+                    background-color: #985BAF;
+                    color: white;
+                    text-decoration: none;
+                }
+
+                .btn-purple:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                }
+
+            /* Sidebar Buttons */
+            #classSidebar .class-btn {
+                width: 100%;
+                border-radius: 10px;
+                border: 1px solid #e0e0e0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: left;
+                padding: 10px 15px;
+                transition: background-color 0.2s ease;
+            }
+
+            /* Right Panel Container */
+            .main-container {
+                border: 1px solid #ddd;
+                background-color: #fff;
+                border-radius: 10px;
+                border: 1px solid #e0e0e0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                height: 100%;
+            }
+
+            /* Issue Card Styling */
+            .issue-card {
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                padding: 15px;
+                border-left: 5px solid #7F3D98;
+                transition: transform 0.2s;
+            }
+
+                .issue-card:hover {
+                    transform: translateY(-3px);
+                }
+
+            .toggle-purple:checked {
+                background-color: #7F3D98 !important;
+                border-color: #7F3D98 !important;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                let allIssues = [];
+
+                $(document).on("click", ".class-btn", function () {
+                    var courseId = $(this).data("courseid");
+
+                    if (!courseId) {
+                        alert("❌ Invalid Class ID!");
+                        return;
+                    }
+
+                    $(".class-btn").removeClass("btn-selected").addClass("btn-purple");
+                    $(this).removeClass("btn-purple").addClass("btn-selected");
+
+                    $.ajax({
+                        url: "/Issue/GetStudents",
+                        type: "GET",
+                        data: { classId: courseId },
+                        success: function (response) {
+                            var studentSelect = $("#studentSelect");
+                            studentSelect.empty().append('<option value="">Select a Student</option>');
+
+                            $.each(response, function (i, student) {
+                                studentSelect.append(`<option value="${student.Id}" data-number="${student.StudentNumber}">${student.Name}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert("Failed to load students.");
+                        }
                     });
-                },
-                error: function () {
-                    alert("Failed to load students.");
+                });
+
+                $(document).on("change", "#studentSelect", function () {
+                    var selectedStudent = $(this).find(":selected");
+                    var studentId = selectedStudent.val();
+                    var studentName = selectedStudent.text();
+
+                    $("#studentName").text(studentName);
+                    $("#studentDetails").show();
+
+                    $.ajax({
+                        url: "/Issue/GetStudentIssues",
+                        type: "GET",
+                        data: { studentId: studentId },
+                        success: function (issues) {
+                            allIssues = issues;
+                            displayIssues(false);
+                        },
+                        error: function () {
+                            alert("Failed to load issues.");
+                        }
+                    });
+                });
+
+                $(document).on("click", "#createNewIssue", function (e) {
+                    e.preventDefault();
+                    var studentId = $("#studentSelect").val();
+                    if (!studentId) {
+                        alert("Please select a student first.");
+                        return;
+                    }
+                    window.location.href = "/Issue/CreateIssue?studentId=" + studentId;
+                });
+
+                $(document).on("change", "#toggleArchived", function () {
+                    displayIssues(this.checked);
+                });
+
+                $(document).on("click", ".archive-issue", function () {
+                    var issueId = $(this).data("issueid");
+
+                    $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Archived" })
+                        .done(function (response) {
+                            if (response.success) {
+                                allIssues.find(i => i.TicketId == issueId).TicketStatus = "Archived";
+                                displayIssues(false);
+                            }
+                        });
+                });
+
+                $(document).on("click", ".reinstate-issue", function () {
+                    var issueId = $(this).data("issueid");
+
+                    $.post("/Issue/ReinstateIssue", { issueId: issueId })
+                        .done(function (response) {
+                            if (response.success) {
+                                allIssues.find(i => i.TicketId == issueId).TicketStatus = "Open";
+                                displayIssues(true);
+                            }
+                        });
+                });
+
+                function displayIssues(showArchived) {
+                    var issueCards = $("#issueCards");
+                    issueCards.empty();
+
+                    var filtered = allIssues.filter(i => showArchived ? i.TicketStatus === "Archived" : i.TicketStatus !== "Archived");
+
+                    if (filtered.length === 0) {
+                        issueCards.append(`<p>No ${showArchived ? "archived" : "active"} issues found.</p>`);
+                        return;
+                    }
+
+                    $.each(filtered, function (i, issue) {
+                        var actionButton = showArchived
+                            ? `<button class="btn btn-purple btn-sm reinstate-issue" data-issueid="${issue.TicketId}" style="width: 100%;">Reinstate Issue</button>`
+                            : `<div class="btn-group mt-2" style="width: 100%; gap: 10px;">
+                                   <a class="btn btn-purple btn-sm add-to-issue" href="/Issue/ViewIssue/${issue.TicketId}" style="width: 48%;">Add to Issue</a>
+                                   <button class="btn btn-purple btn-sm archive-issue" data-issueid="${issue.TicketId}" style="width: 48%;">Archive Issue</button>
+                               </div>`;
+
+                        var issueHtml = `
+                            <div class="col-12">
+                                <div class="issue-card">
+                                    <h5>${issue.TicketTitle || "No Title"}</h5>
+                                    <p><strong>Date:</strong> ${issue.CreatedAt || "Unknown"}</p>
+                                    <p><strong>Status:</strong> ${issue.TicketStatus}</p>
+                                    <p>${issue.TicketDescription || "No description."}</p>
+                                    ${actionButton}
+                                </div>
+                            </div>`;
+                        issueCards.append(issueHtml);
+                    });
+
+                    $("#issueList").show();
                 }
             });
-        });
 
-        $(document).on("change", "#studentSelect", function () {
-            var selectedStudent = $(this).find(":selected");
-            var studentId = selectedStudent.val();
-            var studentName = selectedStudent.text();
 
-            $("#studentName").text(studentName);
-            $("#studentDetails").show();
 
-            $.ajax({
-                url: "/Issue/GetStudentIssues",
-                type: "GET",
-                data: { studentId: studentId },
-                success: function (issues) {
-                    allIssues = issues;
-                    displayIssues(false);
-                },
-                error: function () {
-                    alert("Failed to load issues.");
-                }
-            });
-        });
-
-        $(document).on("click", "#createNewIssue", function (e) {
-            e.preventDefault();
-            var studentId = $("#studentSelect").val();
-            if (!studentId) {
-                alert("Please select a student first.");
-                return;
-            }
-            window.location.href = "/Issue/CreateIssue?studentId=" + studentId;
-        });
-
-        $(document).on("change", "#toggleArchived", function () {
-            displayIssues(this.checked);
-        });
-
-        $(document).on("click", ".archive-issue", function () {
-            var issueId = $(this).data("issueid");
-
-            $.post("/Issue/UpdateIssueStatus", { issueId: issueId, status: "Archived" })
-                .done(function (response) {
-                    if (response.success) {
-                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Archived";
-                        displayIssues(false);
-                    }
-                });
-        });
-
-        $(document).on("click", ".reinstate-issue", function () {
-            var issueId = $(this).data("issueid");
-
-            $.post("/Issue/ReinstateIssue", { issueId: issueId })
-                .done(function (response) {
-                    if (response.success) {
-                        allIssues.find(i => i.TicketId == issueId).TicketStatus = "Open";
-                        displayIssues(true);
-                    }
-                });
-        });
-
-        function displayIssues(showArchived) {
-            var issueCards = $("#issueCards");
-            issueCards.empty();
-
-            var filtered = allIssues.filter(i => showArchived ? i.TicketStatus === "Archived" : i.TicketStatus !== "Archived");
-
-            if (filtered.length === 0) {
-                issueCards.append(`<p>No ${showArchived ? "archived" : "active"} issues found.</p>`);
-                return;
-            }
-
-            $.each(filtered, function (i, issue) {
-                var actionButton = showArchived
-                    ? `<button class="btn btn-purple btn-sm reinstate-issue" data-issueid="${issue.TicketId}" style="width: 100%;">Reinstate Issue</button>`
-                    : `<div class="btn-group mt-2" style="width: 100%; gap: 10px;">
-                           <a class="btn btn-purple btn-sm add-to-issue" href="/Issue/ViewIssue/${issue.TicketId}" style="width: 48%;">Add to Issue</a>
-                           <button class="btn btn-purple btn-sm archive-issue" data-issueid="${issue.TicketId}" style="width: 48%;">Archive Issue</button>
-                       </div>`;
-
-                var issueHtml = `
-                    <div class="col-12">
-                        <div class="issue-card">
-                            <h5>${issue.TicketTitle || "No Title"}</h5>
-                            <p><strong>Date:</strong> ${issue.CreatedAt || "Unknown"}</p>
-                            <p><strong>Status:</strong> ${issue.TicketStatus}</p>
-                            <p>${issue.TicketDescription || "No description."}</p>
-                            ${actionButton}
-                        </div>
-                    </div>`;
-                issueCards.append(issueHtml);
-            });
-
-            $("#issueList").show();
-        }
-    });
-
-        
-
-</script>
+        </script>
