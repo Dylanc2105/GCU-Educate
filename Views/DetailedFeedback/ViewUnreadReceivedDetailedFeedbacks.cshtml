@@ -17,10 +17,70 @@
         margin-bottom: 8px;
     }
 
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #7F3D98;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
     .subtitle {
         color: #6b7280;
         font-size: 16px;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+    }
+
+    .subtitle-actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .back-button {
+        display: inline-block;
+        margin-bottom: 25px;
+        background-color: transparent;
+        color: #7F3D98;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid #7F3D98;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .back-button:hover {
+            background-color: #7F3D98;
+            text-decoration: none;
+            color: white;
+        }
+
+
+    .actions-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     .btn-default {
@@ -144,80 +204,82 @@
             font-weight: 600;
             margin-bottom: 8px;
         }
+
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Your Detailed Feedback</h2>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-clipboard-list"></i>
+            Your Detailed Feedback
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="subtitle-actions-row">
             <p class="subtitle">View the detailed feedback you have submitted</p>
-            <hr style="display: none;" />
+            <div class="actions-group">
+                <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" class="back-button">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+            </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" class="btn btn-default">
-                <i class="fa fa-arrow-left"></i> Back
-            </a>
-        </div>
-    </div>
-
-    @if (Model.Any())
-    {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="table-container">
-                    <h3 class="table-header">Submitted Feedback</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Class</th>
-                                    <th>Course</th>
-                                    <th>Class Representative</th>
-                                    <th>Submitted Date</th>
-                                    <th>Overall Rating</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var feedback in Model)
-                                {
+        @if (Model.Any())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-container">
+                        <h3 class="table-header">Submitted Feedback</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
                                     <tr>
-                                        <td>@feedback.Class</td>
-                                        <td>@feedback.Course</td>
-                                        <td>@feedback.Student.FirstName @feedback.Student.LastName</td>
-                                        <td>@feedback.DateSubmittedByClassRep</td>
-                                        <td>
-                                            <span class="badge badge-@(feedback.OverallRating >= 4 ? "success" : feedback.OverallRating >= 3 ? "warning" : "danger")">
-                                                @feedback.OverallRating/10
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="@Url.Action("ViewClassRepFeedbackDetails", "DetailedFeedback", new { id = feedback.FeedbackId })"
-                                               class="btn btn-primary btn-sm">
-                                                <i class="fa fa-eye"></i> View Details
-                                            </a>
-                                        </td>
+                                        <th>Class</th>
+                                        <th>Course</th>
+                                        <th>Class Representative</th>
+                                        <th>Submitted Date</th>
+                                        <th>Overall Rating</th>
+                                        <th>Actions</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var feedback in Model)
+                                    {
+                                        <tr>
+                                            <td>@feedback.Class</td>
+                                            <td>@feedback.Course</td>
+                                            <td>@feedback.Student.FirstName @feedback.Student.LastName</td>
+                                            <td>@feedback.DateSubmittedByClassRep</td>
+                                            <td>
+                                                <span class="badge badge-@(feedback.OverallRating >= 4 ? "success" : feedback.OverallRating >= 3 ? "warning" : "danger")">
+                                                    @feedback.OverallRating/10
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("ViewClassRepFeedbackDetails", "DetailedFeedback", new { id = feedback.FeedbackId })"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-eye"></i> View Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-info">
-                    <h4>No Unread Class Feedback</h4>
-                    <p>You currently have no unread class feedback submissions.</p>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <h4>No Unread Class Feedback</h4>
+                        <p>You currently have no unread class feedback submissions.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+        
+    </div>
 </div>
