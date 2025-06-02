@@ -67,7 +67,10 @@
                 {
                     <p>No appointments recorded.</p>
                 }
-                @Html.ActionLink("Create Appointment", "CreateAppointmentWithIssue", "Appointment", new { issueId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
+                @if (User.IsInRole("GuidanceTeacher"))
+                {
+                    @Html.ActionLink("Create Appointment", "CreateAppointmentWithIssue", "Appointment", new { issueId = Model.IssueId }, new { @class = "btn btn-purple mt-2" })
+                }
             </div>
         </div>
 
@@ -319,6 +322,7 @@
 
             .btn-purple:hover {
                 background-color: #985BAF;
+                color: white;
             }
 
         .issue-comments-panel {
