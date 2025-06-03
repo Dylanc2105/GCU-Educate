@@ -164,9 +164,7 @@
                             <p>Welcome to your Guidance Dashboard.</p>
                             <p class="text-muted" id="currentDateTime"></p>
                         </div>
-                        <div class="welcome-illustration">
-                            <img src="~/Images/Icons/PURPLE/student.svg" alt="Welcome Icon" />
-                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -174,54 +172,51 @@
 
         <!-- Stat Cards -->
         <div class="row g-4">
-            <!-- New Feedback -->
+            <!-- Feedback -->
             <div class="col-12 col-sm-6 col-md-4">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/feedback.svg" alt="Feedback Icon" class="stat-icon-img" />
+                        <img src="~/Images/Icons/PURPLE/feedback.svg" alt="Feedback" class="stat-icon-img" />
                         <p class="stat-title">New Feedback</p>
                         <p class="stat-number">@Model.NewFeedbackCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewUnreadReceivedSimpleFeedbacks", "DetailedFeedback", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
-            <!-- New Messages -->
+            <!-- Messages -->
             <div class="col-12 col-sm-6 col-md-4">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("Index", "Message")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/messages.svg" alt="Messages Icon" class="stat-icon-img" />
-                        <p class="stat-title">New Messages</p>
+                        <img src="~/Images/Icons/PURPLE/messages.svg" alt="Messages" class="stat-icon-img" />
+                        <p class="stat-title">Unread Messages</p>
                         <p class="stat-number">@Model.UnreadMessagesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
-            <!-- New Posts -->
+            <!-- Posts -->
             <div class="col-12 col-sm-6 col-md-4">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("ViewPosts", "Post")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
-                        <img src="~/Images/Icons/PURPLE/posts.svg" alt="Posts Icon" class="stat-icon-img" />
-                        <p class="stat-title">New Posts</p>
+                        <img src="~/Images/Icons/PURPLE/posts.svg" alt="Posts" class="stat-icon-img" />
+                        <p class="stat-title">Latest Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
-            <!-- Enrollment & Academic Operations Center Card -->
+            <!-- Enrollment & Academic Operations Center -->
             <div class="col-12 col-md-4">
-                <div class="card custom-card">
-                    <div class="card-body text-center">
-                        <i class="fa-solid fa-scroll stat-icon"></i>
-                        <p class="stat-title">Enrollment & Academic Operations Center</p>
-                        <p class="stat-number"> </p>
-                        <p>@Html.ActionLink("View more >", "EnrollmentAcademicOperationsCenter", "CurriculumHead", null, new { @class = "view-more-link" })</p>
+                <a href="@Url.Action("EnrollmentAcademicOperationsCenter", "CurriculumHead")" class="card custom-card text-center" style="text-decoration:none;">
+                    <div class="card-body">
+                        <i class="fa-solid fa-scroll stat-icon" style="font-size:70px;color:#7F3D98;margin-bottom:10px;"></i>
+                        <p class="stat-title">Academic Operations Center</p>
+                        <p class="stat-number"></p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
+
     </div>
 
     @section Scripts {

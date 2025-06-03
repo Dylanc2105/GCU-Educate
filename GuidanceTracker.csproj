@@ -510,8 +510,11 @@
     <None Include="Properties\PublishProfiles\GuidanceTracker20250227222444 - Web Deploy.pubxml" />
     <Content Include="Images\Icons\calendar.svg" />
     <Content Include="Images\Icons\feedback.svg" />
+    <Content Include="Images\Icons\guidance.png" />
+    <Content Include="Images\Icons\head.png" />
     <Content Include="Images\Icons\home.svg" />
     <Content Include="Images\Icons\issues.svg" />
+    <Content Include="Images\Icons\lecture.png" />
     <Content Include="Images\Icons\Logo-Purple.png" />
     <Content Include="Images\Icons\Logo-stacked.png" />
     <Content Include="Images\Icons\Logo-white.png" />
