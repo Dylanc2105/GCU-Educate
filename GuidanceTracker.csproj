@@ -486,6 +486,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\coatOfArms.svg" />
+    <Content Include="Images\favicon16white.svg" />
+    <Content Include="Images\favicon16x16old.svg" />
     <Content Include="Images\GTLogo.png" />
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />
@@ -541,6 +544,7 @@
     <Content Include="Images\Icons\PURPLE\myVoice.svg" />
     <Content Include="Images\Icons\PURPLE\posts.svg" />
     <Content Include="Images\Icons\PURPLE\requestAppointment.svg" />
+    <Content Include="Images\Icons\PURPLE\scroll-purple.svg" />
     <Content Include="Images\Icons\PURPLE\settings.svg" />
     <Content Include="Images\Icons\PURPLE\student.svg" />
     <Content Include="Images\Icons\settings.svg" />

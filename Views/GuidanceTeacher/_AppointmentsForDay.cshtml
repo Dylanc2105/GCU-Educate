@@ -22,6 +22,7 @@
             @Html.DisplayNameFor(model => model.Room)
         </th>
         <th></th>
+        <th></th>
     </tr>
 
 @foreach (var item in Model)
@@ -44,7 +45,17 @@
             @Html.DisplayFor(modelItem => item.Room)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit" }) 
+            @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn" })
+        </td>
+        <td>
+            @if (item.IssueId == null)
+            {
+                <span></span>@Html.ActionLink("Start", "ProgressMeetingForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn" })
+            }
+            else
+            {
+                <span></span>@Html.ActionLink("Start", "AppointmentForm", "Appointment", new { id = item.AppointmentId }, new { @class = "btn" })
+            }
         </td>
     </tr>
 }
@@ -57,30 +68,22 @@ else
 
 
 <style>
-    .btn-edit {
-        background: #7F3D98;
-    }
-
     .btn {
+        background-color: #7F3D98;
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 6px;
         padding: 8px 16px;
         cursor: pointer;
         font-size: 14px;
-        transition: background-color 0.3s ease; 
+        transition: background-color 0.3s ease;
     }
 
-
-    .btn-edit:hover {
-        background-color: #985BAF;
-        color: white;
-    }
-
-    .btn-back:hover {
-        background-color: #985BAF;
-        color: white;
-    }
+        .btn:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
     
 
 </style>

@@ -26,8 +26,8 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
-                                <td>@item.StartTime.ToString() - @item.StartTime.Add(TimeSpan.FromMinutes(10)).ToString()</td>
+                                <td>@item.AppointmentDate.ToString("dd/MM/yy")</td>
+                                <td>@item.StartTime.ToString("hh\\:mm") - @item.StartTime.Add(TimeSpan.FromMinutes(10)).ToString("hh\\:mm")</td>
                                 <td>@Html.DisplayFor(modelItem => item.Room)</td>
                                 <td>
                                     <span class="label @(item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Scheduled ? "label-success" :
@@ -49,9 +49,11 @@
             </div>
         }
         <div class="form-group">
-            @Html.ActionLink("Request New Appointment", "RequestAppointment", "Student", null, new { @class = "btn btn-back" })
+            @Html.ActionLink("Request New Appointment", "RequestAppointment", "Student", null, new { @class = "btn" })
             <p></p>
-            @Html.ActionLink("← Back to Dashboard", "StudentDash", "Student", null, new { @class = "btn btn-back" })
+            <a href="javascript:history.back()" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
         </div>
     </div>
 </div>
@@ -84,21 +86,40 @@
             }
 
             .btn-back {
-                background: #7F3D98;
+                background-color: transparent;
+                color: #7F3D98;
+                border: 2px solid #7F3D98;
+                border-radius: 6px;
+                padding: 8px 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
             }
 
+                .btn-back:hover {
+                    background-color: #7F3D98;
+                    color: white;
+                    text-decoration: none;
+                }
+
             .btn {
+                background-color: #7F3D98;
                 color: white;
                 border: none;
-                border-radius: 20px;
+                border-radius: 6px;
                 padding: 8px 16px;
                 cursor: pointer;
                 font-size: 14px;
                 transition: background-color 0.3s ease;
             }
 
-            .btn-back:hover {
-                background-color: #5c2b70;
-                color: white;
-            }
+                .btn:hover {
+                    background-color: #985BAF;
+                    color: white;
+                    text-decoration: none;
+                }
         </style>

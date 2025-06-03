@@ -16,7 +16,6 @@
 <head>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: white;
             margin: 0;
             padding: 0;
@@ -56,12 +55,7 @@
             margin-bottom: 10px;
         }
 
-        .view-more-link {
-            font-size: 1rem;
-            color: #7F3D98;
-            text-decoration: underline;
-        }
-
+       
         .custom-card {
             padding: 20px;
             border-radius: 10px;
@@ -160,60 +154,55 @@
 
             <!-- Upcoming Appointments -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("UpcomingAppoinments", "Student")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/calendarWeek.svg" class="stat-icon-img" alt="Appointments" />
                         <p class="stat-title">Upcoming Appointments</p>
                         <p class="stat-number">@Model.UpcomingAppointmentsCount</p>
-                        <p>@Html.ActionLink("View more >", "UpcomingAppoinments", "Student", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Request Appointment -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("RequestAppointment", "Student")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/requestAppointment.svg" class="stat-icon-img" alt="Request Appointment" />
                         <p class="stat-title">Request Appointment</p>
-                        <p>@Html.ActionLink("View more >", "RequestAppointment", "Student", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- New Messages -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("Index", "Message")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/messages.svg" class="stat-icon-img" alt="Messages" />
                         <p class="stat-title">New Messages</p>
                         <p class="stat-number">@Model.NewMessagesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- New Posts -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("ViewPosts", "Post")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/posts.svg" class="stat-icon-img" alt="Posts" />
                         <p class="stat-title">New Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Leave Feedback -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("StudentFeedbackDashboard", "SimpleFeedback")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/feedback.svg" class="stat-icon-img" alt="Leave Feedback" />
                         <p class="stat-title">Leave Feedback</p>
-                        <p>@Html.ActionLink("To the form >", "StudentFeedbackDashboard", "SimpleFeedback", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
         </div>

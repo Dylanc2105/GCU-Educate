@@ -24,10 +24,34 @@
 <head>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #F4F4F4;
             margin: 0;
             padding: 0;
+        }
+        .main-card {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #7F3D98;
+            color: white;
+            padding: 20px 30px;
+            text-align: left;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 30px;
         }
 
         .custom-card {
@@ -113,70 +137,93 @@
                 text-decoration: none;
             }
 
-        .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Distributes content and pushes button to bottom */
-            height: 100%; /* Make card-body take full height of custom-card */
+        .btn-outline {
+            background-color: transparent;
+            color: #7F3D98;
+            border: 2px solid #7F3D98;
+            border-radius: 6px;
+            padding: 8px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
         }
+
+            .btn-outline:hover {
+                background-color: #7F3D98;
+                color: white;
+                text-decoration: none;
+            }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
-    <body>
-        <div class="container-fluid py-4">
-            <h2 class="dashboard-title">Enrollment & Academic Operations Center</h2> @* Main dashboard title *@
+<body>
+    <div class="main-card">
+        <div class="card-header">
+            <h2 class="card-title">Enrollment & Academic Operations Center</h2>
+        </div>
+        <div class="card-body">
 
-<div class="row g-4 stats-row">
-    <div class="col-12 col-md-4">
-        <div class="card custom-card">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-user-plus stat-icon"></i>
-                <p class="stat-title">Create Guidance Teacher</p>
-                @Html.ActionLink("Go to Form", "Create", "GuidanceTeacher", null, new { @class = "action-button" })
+            <div class="row g-4 stats-row">
+                <div class="col-12 col-md-4">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <i class="fa-solid fa-user-plus stat-icon"></i>
+                            <p class="stat-title">Create Guidance Teacher</p>
+                            @Html.ActionLink("Go to Form", "Create", "GuidanceTeacher", null, new { @class = "action-button" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <i class="fa-solid fa-chalkboard-user stat-icon"></i>
+                            <p class="stat-title">Create Lecturer</p>
+                            @Html.ActionLink("Go to Form", "Create", "Lecturer", null, new { @class = "action-button" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <i class="fa-solid fa-book-open stat-icon"></i>
+                            <p class="stat-title">Create Course</p>
+                            @Html.ActionLink("Go to Form", "Create", "Course", null, new { @class = "action-button" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <i class="fa-solid fa-chalkboard stat-icon"></i>
+                            <p class="stat-title">Create Class</p>
+                            @Html.ActionLink("Go to Form", "Create", "Classes", null, new { @class = "action-button" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <i class="fa-solid fa-user-graduate stat-icon"></i>
+                            <p class="stat-title">Create Students</p>
+                            @Html.ActionLink("Go to Form", "Create", "Student", null, new { @class = "action-button" })
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="col-12 col-md-4">
-        <div class="card custom-card">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-chalkboard-user stat-icon"></i>
-                <p class="stat-title">Create Lecturer</p>
-                @Html.ActionLink("Go to Form", "Create", "Lecturer", null, new { @class = "action-button" })
-            </div>
+        <div style="padding: 20px;">
+            <a href="javascript:history.back()" class="btn-outline">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
         </div>
-    </div>
-
-    <div class="col-12 col-md-4">
-        <div class="card custom-card">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-book-open stat-icon"></i>
-                <p class="stat-title">Create Course</p>
-                @Html.ActionLink("Go to Form", "Create", "Course", null, new { @class = "action-button" })
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-4">
-        <div class="card custom-card">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-chalkboard stat-icon"></i>
-                <p class="stat-title">Create Class</p>
-                @Html.ActionLink("Go to Form", "Create", "Classes", null, new { @class = "action-button" })
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-4">
-        <div class="card custom-card">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-user-graduate stat-icon"></i>
-                <p class="stat-title">Create Students</p>
-                @Html.ActionLink("Go to Form", "Create", "Student", null, new { @class = "action-button" })
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 </body>

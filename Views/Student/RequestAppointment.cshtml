@@ -54,9 +54,11 @@
         <br />
         <div class="form-group">
             <div>
-                <input type="submit" value="Request Appointment" class="btn btn-back" />
+                <input type="submit" value="Request Appointment" class="btn" />
                 <p></p>
-                @Html.ActionLink("← Back to Dashboard", "StudentDash", "Student", null, new { @class = "btn btn-back" })
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
         </div>
         }
@@ -90,23 +92,42 @@
     }
 
     .btn-back {
-        background: #7F3D98;
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
     }
 
+        .btn-back:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+
     .btn {
+        background-color: #7F3D98;
         color: white;
         border: none;
-        border-radius: 20px;
+        border-radius: 6px;
         padding: 8px 16px;
         cursor: pointer;
         font-size: 14px;
-        transition: background-color 0.3s ease; 
+        transition: background-color 0.3s ease;
     }
 
-    .btn-back:hover {
-        background-color: #5c2b70; 
-        color: white;
-    }
+        .btn:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
 </style>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

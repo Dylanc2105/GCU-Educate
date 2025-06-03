@@ -6,11 +6,11 @@
 <div class="main-card">
     <div class="main-header">
         <h2 class="card-title">Request Detailed Feedback</h2>
-        <p class="card-subtitle">Send a detailed feedback request to students in a class</p>
     </div>
 
     <div class="card">
         <div style="padding:20px;">
+            <p class="card-subtitle">Send a detailed feedback request to students in a class</p>
             <h4>Select a Class for Feedback</h4>
         </div>
         <div class="card-body">
@@ -32,8 +32,8 @@
                         <button type="submit" class="btn-purple">
                             <i class="fas fa-paper-plane"></i> Request Feedback
                         </button>
-                        <a href="@Url.Action("ReceivedFeedbackDash", "DetailedFeedback")" class="btn-outline">
-                            <i class="fas fa-arrow-left" style="color: #7F3D98; "></i> Back to Dashboard
+                        <a href="javascript:history.back()" class="btn-outline">
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
         font-size: 16px;
         margin: 10px;
         opacity: 0.9;
-        color: white;
+        color: #6b7280;
     }
 
     .card-body {

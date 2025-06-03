@@ -37,12 +37,12 @@
                         <td>
                             @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
                             {
-                                @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action" })
+                                @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action btn-fixed-width" })
                                 <span></span>
-                                @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action" })
+                                @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action btn-fixed-width" })
                                 <span></span>
                                 <a href="@Url.Action("CancelAppointment", "Appointment", new { id = item.AppointmentId })"
-                                   class="btn btn-danger btn-action"
+                                   class="btn btn-danger btn-action btn-fixed-width"
                                    onclick="return confirm('Are you sure you want to cancel this appointment?');">
                                     Cancel
                                 </a>
@@ -60,6 +60,10 @@
     </div>
 </div>
         <style>
+            .btn-fixed-width {
+                width: 120px; 
+                text-align: center;
+            }
             .main-card {
                 max-width: 1400px;
                 margin: 20px auto;

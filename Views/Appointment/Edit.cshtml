@@ -75,8 +75,11 @@
                 <input type="submit" value="Save Changes" class="btn-purple" />
                 <p></p>
                 <p>
-                    @Html.ActionLink("← Back to Dashboard", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn-outline" })
+                    <a href="javascript:history.back()" class="btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
                 </p>
+                
             </div>
         }
     </div>
