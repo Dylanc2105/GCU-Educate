@@ -2728,6 +2728,7 @@
     <Content Include="Views\Student\UploadStudents.cshtml" />
     <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Post\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

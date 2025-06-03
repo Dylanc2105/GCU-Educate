@@ -193,9 +193,11 @@
                 {
                     foreach (var post in Model)
                     {
-                        <div class="post-item">
-                            <div class="post-content-wrapper">
-                                <div class="post-title">@post.Title
+                        <a href="@Url.Action("Details", "Post", new { id = post.PostId })" class="text-decoration-none">
+                            <div class="post-item">
+                                <div class="post-content-wrapper">
+                                    <div class="post-title">
+                                        @post.Title
                                     @if (!ViewBag.ReadPostIds.Contains(post.PostId))
                                     {
                                         <span class="badge bg-new">New</span>
@@ -217,10 +219,12 @@
                                 </div>
                             </div>
                         </div>
-                    }
+                    </a>
 
-                    <div class="section-count">Total Posts: @Model.Count()</div>
                 }
+
+                <div class="section-count">Total Posts: @Model.Count()</div>
+            }
             </div>
         </div>
 
