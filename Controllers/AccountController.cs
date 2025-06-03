@@ -93,21 +93,31 @@ namespace GuidanceTracker.Controllers
                     if (user != null)
                     {
                         var roles = await UserManager.GetRolesAsync(user.Id);
-                        if (roles.Contains("Student"))
+                        if (user.MustChangePassword == true)
                         {
-                            return RedirectToAction("StudentDash", "Student");
+                            return RedirectToAction("ForgotPassword", "Account");
                         }
-                        else if (roles.Contains("Lecturer"))
-                        {
-                            return RedirectToAction("LecturerDash", "Lecturer");
-                        }
-                        else if (roles.Contains("GuidanceTeacher"))
-                        {
-                            return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
-                        }
-                        else if (roles.Contains("CurriculumHead"))
-                        {
-                            return RedirectToAction("CurriculumHeadDash", "CurriculumHead");
+                        else
+                        {                            
+
+                            if (roles.Contains("Student"))
+                            {
+
+                                return RedirectToAction("StudentDash", "Student");
+
+                            }
+                            else if (roles.Contains("Lecturer"))
+                            {
+                                return RedirectToAction("LecturerDash", "Lecturer");
+                            }
+                            else if (roles.Contains("GuidanceTeacher"))
+                            {
+                                return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
+                            }
+                            else if (roles.Contains("CurriculumHead"))
+                            {
+                                return RedirectToAction("CurriculumHeadDash", "CurriculumHead");
+                            }
                         }
                     }
                     return RedirectToLocal(returnUrl);
@@ -418,6 +428,10 @@ namespace GuidanceTracker.Controllers
 
             // Set the new password
             var addPasswordResult = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+            if (addPasswordResult.Succeeded)
+            {
+                user.MustChangePassword = false;
+            }
             if (!addPasswordResult.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to set new password.");

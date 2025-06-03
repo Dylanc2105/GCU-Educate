@@ -30,6 +30,7 @@ namespace GuidanceTracker.Models
         // For resetting password
         public string ResetCode { get; set; } // Stores the 8-digit reset code
         public DateTime? ResetCodeExpiry { get; set; } // Expiration time of reset code
+        public bool MustChangePassword { get; set; } //when account created password is too generic
 
         // Messaging relationships
         public virtual ICollection<Message> SentMessages { get; set; }
