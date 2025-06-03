@@ -205,11 +205,20 @@ namespace GuidanceTracker.Controllers
 
                 db.SaveChanges();
 
+                // After creating issues for each selected student we get the id of the created issue
+                var firstStudentId = model.SelectedStudentIds.FirstOrDefault();
+                var issueId = db.Issues
+                    .Where(i => i.StudentId == firstStudentId && i.IssueTitle == model.IssueTitle)
+                    .OrderByDescending(i => i.CreatedAt)
+                    .Select(i => i.IssueId)
+                    .FirstOrDefault();
+
                 // send notification
                 new NotificationService().NotifyGuidanceForClassIssues
                 (
                     model.SelectedStudentIds,
-                    User.Identity.GetUserId()
+                    User.Identity.GetUserId(),
+                    issueId
                 );
 
                 TempData["Success"] = "Issue raised successfully.";
