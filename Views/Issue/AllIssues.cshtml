@@ -159,6 +159,12 @@
                     <option value="oldest" @(Request.QueryString["sortOrder"] == "oldest" ? "selected" : "")>Oldest</option>
                 </select>
 
+               
+                <!-- Date Range Filter -->
+                <input type="date" id="startDate" class="filter-control" onchange="updateFilters()" value="@Request.QueryString["startDate"]" />
+                <span style="align-self: center;">to</span>
+                <input type="date" id="endDate" class="filter-control" onchange="updateFilters()" value="@Request.QueryString["endDate"]" />
+
                 <!-- Issue Type Filter -->
                 <select id="issueType" class="filter-control" onchange="updateFilters()">
                     <option value="">Filter By Type</option>
@@ -217,31 +223,29 @@
         <script>
             let typingTimeout;
 
-            function updateFilters() {
-                // Clear any previously set timeout
-                clearTimeout(typingTimeout);
+           
 
-                // Set a new timeout to trigger the search after 1 second
+            function updateFilters() {
+                clearTimeout(typingTimeout);
                 typingTimeout = setTimeout(function () {
                     var sortOrder = document.getElementById("sortOrder").value;
                     var issueType = document.getElementById("issueType").value;
                     var searchInput = document.getElementById("searchInput").value;
+                    var startDate = document.getElementById("startDate").value;
+                    var endDate = document.getElementById("endDate").value;
 
-                    // Prepare the query parameters
                     var queryParams = new URLSearchParams(window.location.search);
-                    if (sortOrder) queryParams.set("sortOrder", sortOrder);
-                    else queryParams.delete("sortOrder");
 
-                    if (issueType) queryParams.set("issueType", issueType);
-                    else queryParams.delete("issueType");
+                    if (sortOrder) queryParams.set("sortOrder", sortOrder); else queryParams.delete("sortOrder");
+                    if (issueType) queryParams.set("issueType", issueType); else queryParams.delete("issueType");
+                    if (searchInput) queryParams.set("searchString", searchInput); else queryParams.delete("searchString");
+                    if (startDate) queryParams.set("startDate", startDate); else queryParams.delete("startDate");
+                    if (endDate) queryParams.set("endDate", endDate); else queryParams.delete("endDate");
 
-                    if (searchInput) queryParams.set("searchString", searchInput);
-                    else queryParams.delete("searchString");
-
-                    // Update the URL with the new query parameters (without refreshing the page)
                     window.location.search = queryParams.toString();
-                }, 500);  // Set the delay for 1 second after typing stops
+                }, 500);
             }
+
         </script>
 
 

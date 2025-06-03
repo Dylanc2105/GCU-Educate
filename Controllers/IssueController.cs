@@ -366,18 +366,16 @@ namespace GuidanceTracker.Controllers
             return View(classList);
         }
 
-        public ActionResult AllIssues(string sortOrder, string issueType, string searchString)
+        public ActionResult AllIssues(string sortOrder, string issueType, string searchString, string startDate, string endDate)
         {
             var issuesQuery = db.Issues
-                .Include("Lecturer")  // Use string-based Include to load Lecturer
-                .Include("Student")   // Use string-based Include to load Student
+                .Include("Lecturer")
+                .Include("Student")
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                // SQL LIKE pattern with '%' for partial matching
                 var searchPattern = "%" + searchString.ToLower() + "%";
-
                 issuesQuery = issuesQuery.Where(i =>
                     SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
                     SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
@@ -385,13 +383,23 @@ namespace GuidanceTracker.Controllers
                     SqlFunctions.PatIndex(searchPattern, i.Lecturer.LastName.ToLower()) > 0);
             }
 
-            // Apply filter for issue type
             if (!string.IsNullOrEmpty(issueType))
             {
                 issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
             }
 
-            // Sorting
+            // --- Date range filter ---
+            if (DateTime.TryParse(startDate, out var start))
+            {
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt >= start);
+            }
+            if (DateTime.TryParse(endDate, out var end))
+            {
+                // If you want endDate to be inclusive, add a day
+                end = end.Date.AddDays(1).AddTicks(-1);
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt <= end);
+            }
+
             if (sortOrder == "newest")
             {
                 issuesQuery = issuesQuery.OrderByDescending(i => i.CreatedAt);
@@ -401,15 +409,20 @@ namespace GuidanceTracker.Controllers
                 issuesQuery = issuesQuery.OrderBy(i => i.CreatedAt);
             }
 
-            // Execute the query and return the results
             var issues = issuesQuery.ToList();
             return View(issues);
         }
 
 
 
+
         //View Archived Issues
-        public ActionResult ArchivedIssues(string sortOrder, string issueType, string searchString)
+        // new signature
+        public ActionResult ArchivedIssues(string sortOrder,
+                                   string issueType,
+                                   string searchString,
+                                   string startDate,
+                                   string endDate)
         {
             var issuesQuery = db.Issues
                 .Include("Lecturer")
@@ -420,7 +433,6 @@ namespace GuidanceTracker.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 var searchPattern = "%" + searchString.ToLower() + "%";
-
                 issuesQuery = issuesQuery.Where(i =>
                     SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
                     SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
@@ -431,6 +443,18 @@ namespace GuidanceTracker.Controllers
             if (!string.IsNullOrEmpty(issueType))
             {
                 issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
+            }
+
+            // --- Date range filter (new) ---
+            if (DateTime.TryParse(startDate, out var start))
+            {
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt >= start);
+            }
+            if (DateTime.TryParse(endDate, out var end))
+            {
+                // Make end inclusive
+                end = end.Date.AddDays(1).AddTicks(-1);
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt <= end);
             }
 
             if (sortOrder == "newest")
@@ -445,6 +469,8 @@ namespace GuidanceTracker.Controllers
             var issues = issuesQuery.ToList();
             return View(issues);
         }
+
+
 
         public List<Appointment> GetAppointments(string studentId)
         {
