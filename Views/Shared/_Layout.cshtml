@@ -497,224 +497,224 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
-<script>
-    // Tracks previously loaded notification IDs to detect new ones
-    let previousNotificationIds = [];
+    <script>
+        // Tracks previously loaded notification IDs to detect new ones
+        let previousNotificationIds = [];
 
-    $(document).ready(function () {
-        const bell = $('#notificationsDropdown');
-        const dropdown = $('#notificationContent');
+        $(document).ready(function () {
+            const bell = $('#notificationsDropdown');
+            const dropdown = $('#notificationContent');
 
-        // Fetch notifications on bell click
-        bell.on('click', function (e) {
-            e.stopPropagation();
+            // Fetch notifications on bell click
+            bell.on('click', function (e) {
+                e.stopPropagation();
 
-            $.get('/Notification/GetRecentNotifications', function (data) {
-                const newIds = [];
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data;
-                tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
-                    const id = el.id.split('-')[1];
-                    if (id) newIds.push(id);
+                $.get('/Notification/GetRecentNotifications', function (data) {
+                    const newIds = [];
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                        const id = el.id.split('-')[1];
+                        if (id) newIds.push(id);
+                    });
+
+                    // Play sound if new notifications are found
+                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                        const audio = document.getElementById('notificationSound');
+                        if (audio) audio.play();
+                    }
+
+                    previousNotificationIds = newIds;
+                    dropdown.html(data).addClass('show').css('display', 'block');
+                }).fail(function (xhr, status, error) {
+                    console.error("❌ AJAX failed:", error);
                 });
+            });
 
-                // Play sound if new notifications are found
-                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
-                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
-                    const audio = document.getElementById('notificationSound');
-                    if (audio) audio.play();
+            // Hide dropdown when clicking outside
+            $(document).on('click', function (e) {
+                if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0) {
+                    dropdown.hide();
                 }
+            });
 
-                previousNotificationIds = newIds;
-                dropdown.html(data).addClass('show').css('display', 'block');
-            }).fail(function (xhr, status, error) {
-                console.error("❌ AJAX failed:", error);
+            updateNotificationBadge(); // initial badge update
+            setInterval(updateNotificationBadge, 60000); // poll every 60s
+
+            // Auto-fade success alerts
+            setTimeout(function () {
+                $(".alert-success").fadeOut("slow");
+            }, 3000);
+
+            // Load and apply sound toggle preference
+            const setting = localStorage.getItem('playNotificationSound') === 'true';
+            document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                if (cb.parentElement.previousElementSibling?.textContent?.includes("Notification Sounds")) {
+                    cb.checked = setting;
+                }
             });
         });
 
-        // Hide dropdown when clicking outside
-        $(document).on('click', function (e) {
-            if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0) {
-                dropdown.hide();
+        // Store sound toggle setting
+        function toggleSoundSetting(enabled) {
+            localStorage.setItem('playNotificationSound', enabled);
+        }
+
+        // Open/close system settings modal
+        function openSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.add('show-modal');
+        }
+        function closeSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
+        }
+
+        // Update badge with unread count
+        function updateNotificationBadge() {
+            $.get('/Notification/GetUnreadCount', function (data) {
+                const badge = $('#notificationBadge');
+                if (data.count > 0) {
+                    badge.text(data.count);
+                    badge.show();
+                } else {
+                    badge.hide();
+                }
+            });
+        }
+
+        // Mark one notification as read then redirect
+        function markAsRead(id, url) {
+            const item = document.getElementById("notification-" + id);
+            if (item) item.classList.remove("font-weight-bold");
+
+            $.post('/Notification/MarkAsRead', { id: id }, function () {
+                window.location.href = url;
+            }).fail(function () {
+                window.location.href = url;
+            });
+        }
+
+        // Store welcome message toggle
+        function toggleWelcomeSetting(enabled) {
+            localStorage.setItem('hideWelcome', enabled);
+            const welcomeCard = document.getElementById('welcomeCard');
+            if (welcomeCard) {
+                welcomeCard.style.display = enabled ? 'none' : '';
             }
-        });
+        }
 
-        updateNotificationBadge(); // initial badge update
-        setInterval(updateNotificationBadge, 60000); // poll every 60s
+        // Store and reflect appear offline toggle
+        function toggleAppearOffline(isOffline) {
+            localStorage.setItem('appearOffline', isOffline);
+            updateOnlineBadge();
 
-        // Auto-fade success alerts
-        setTimeout(function () {
-            $(".alert-success").fadeOut("slow");
-        }, 3000);
+            fetch('/Account/SetAppearOffline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `appearOffline=${isOffline}`
+            }).catch(err => console.error('Failed to update appearOffline:', err));
+        }
 
-        // Load and apply sound toggle preference
-        const setting = localStorage.getItem('playNotificationSound') === 'true';
-        document.querySelectorAll('input[type=checkbox]').forEach(cb => {
-            if (cb.parentElement.previousElementSibling?.textContent?.includes("Notification Sounds")) {
-                cb.checked = setting;
-            }
-        });
-    });
+        // Update online badge visual
+        function updateOnlineBadge() {
+            const isOffline = localStorage.getItem('appearOffline') === 'true';
+            const badge = document.getElementById('onlineStatusBadge');
+            const dot = document.getElementById('onlineDot');
+            const text = document.getElementById('onlineText');
 
-    // Store sound toggle setting
-    function toggleSoundSetting(enabled) {
-        localStorage.setItem('playNotificationSound', enabled);
-    }
-
-    // Open/close system settings modal
-    function openSystemSettingsModal() {
-        document.getElementById('SystemSettingsModal').classList.add('show-modal');
-    }
-    function closeSystemSettingsModal() {
-        document.getElementById('SystemSettingsModal').classList.remove('show-modal');
-    }
-
-    // Update badge with unread count
-    function updateNotificationBadge() {
-        $.get('/Notification/GetUnreadCount', function (data) {
-            const badge = $('#notificationBadge');
-            if (data.count > 0) {
-                badge.text(data.count);
-                badge.show();
+            if (isOffline) {
+                badge?.classList.add('offline');
+                dot?.classList.add('offline');
+                text?.classList.add('offline');
+                if (text) text.textContent = 'Offline';
             } else {
-                badge.hide();
+                badge?.classList.remove('offline');
+                dot?.classList.remove('offline');
+                text?.classList.remove('offline');
+                if (text) text.textContent = 'Online';
             }
-        });
-    }
-
-    // Mark one notification as read then redirect
-    function markAsRead(id, url) {
-        const item = document.getElementById("notification-" + id);
-        if (item) item.classList.remove("font-weight-bold");
-
-        $.post('/Notification/MarkAsRead', { id: id }, function () {
-            window.location.href = url;
-        }).fail(function () {
-            window.location.href = url;
-        });
-    }
-
-    // Store welcome message toggle
-    function toggleWelcomeSetting(enabled) {
-        localStorage.setItem('hideWelcome', enabled);
-        const welcomeCard = document.getElementById('welcomeCard');
-        if (welcomeCard) {
-            welcomeCard.style.display = enabled ? 'none' : '';
         }
-    }
 
-    // Store and reflect appear offline toggle
-    function toggleAppearOffline(isOffline) {
-        localStorage.setItem('appearOffline', isOffline);
-        updateOnlineBadge();
-
-        fetch('/Account/SetAppearOffline', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `appearOffline=${isOffline}`
-        }).catch(err => console.error('Failed to update appearOffline:', err));
-    }
-
-    // Update online badge visual
-    function updateOnlineBadge() {
-        const isOffline = localStorage.getItem('appearOffline') === 'true';
-        const badge = document.getElementById('onlineStatusBadge');
-        const dot = document.getElementById('onlineDot');
-        const text = document.getElementById('onlineText');
-
-        if (isOffline) {
-            badge?.classList.add('offline');
-            dot?.classList.add('offline');
-            text?.classList.add('offline');
-            if (text) text.textContent = 'Offline';
-        } else {
-            badge?.classList.remove('offline');
-            dot?.classList.remove('offline');
-            text?.classList.remove('offline');
-            if (text) text.textContent = 'Online';
-        }
-    }
-
-    // On DOM load, apply offline toggle
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggle = document.getElementById('appearOfflineToggle');
-        if (toggle) {
-            toggle.checked = localStorage.getItem('appearOffline') === 'true';
-        }
-        updateOnlineBadge();
-    });
-
-    // SweetAlert logout confirmation
-    function confirmLogout() {
-        Swal.fire({
-            title: 'Confirm Logout',
-            text: 'Are you sure you want to log out of your account?',
-            icon: 'warning',
-            customClass: {
-                popup: 'swal-popup',
-                title: 'swal-title',
-                htmlContainer: 'swal-body',
-                confirmButton: 'swal-confirm',
-                cancelButton: 'swal-cancel'
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Yes, log me out',
-            cancelButtonText: 'Cancel',
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logoutForm').submit();
+        // On DOM load, apply offline toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('appearOfflineToggle');
+            if (toggle) {
+                toggle.checked = localStorage.getItem('appearOffline') === 'true';
             }
+            updateOnlineBadge();
         });
-    }
 
-    function toggleNotificationDropdown() {
-        const dropdown = $('#notificationContent');
-        const modal = $('#SystemSettingsModal');
-
-        // Close modal if open
-        if (modal.hasClass('show-modal')) {
-            modal.removeClass('show-modal');
-        }
-
-        if (dropdown.is(':visible')) {
-            dropdown.hide();
-        } else {
-            $.get('/Notification/GetRecentNotifications', function (data) {
-                const newIds = [];
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data;
-                tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
-                    const id = el.id.split('-')[1];
-                    if (id) newIds.push(id);
-                });
-
-                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
-                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
-                    const audio = document.getElementById('notificationSound');
-                    if (audio) audio.play();
+        // SweetAlert logout confirmation
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Confirm Logout',
+                text: 'Are you sure you want to log out of your account?',
+                icon: 'warning',
+                customClass: {
+                    popup: 'swal-popup',
+                    title: 'swal-title',
+                    htmlContainer: 'swal-body',
+                    confirmButton: 'swal-confirm',
+                    cancelButton: 'swal-cancel'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Yes, log me out',
+                cancelButtonText: 'Cancel',
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
                 }
-
-                previousNotificationIds = newIds;
-                $('#notificationContent').html(data).css('display', 'block');
             });
         }
-    }
 
-    function openSystemSettingsModal() {
-        const modal = document.getElementById('SystemSettingsModal');
-        const dropdown = $('#notificationContent');
+        function toggleNotificationDropdown() {
+            const dropdown = $('#notificationContent');
+            const modal = $('#SystemSettingsModal');
 
-        if (dropdown.is(':visible')) {
-            dropdown.hide(); // Close notifications if open
+            // Close modal if open
+            if (modal.hasClass('show-modal')) {
+                modal.removeClass('show-modal');
+            }
+
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+            } else {
+                $.get('/Notification/GetRecentNotifications', function (data) {
+                    const newIds = [];
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                        const id = el.id.split('-')[1];
+                        if (id) newIds.push(id);
+                    });
+
+                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                        const audio = document.getElementById('notificationSound');
+                        if (audio) audio.play();
+                    }
+
+                    previousNotificationIds = newIds;
+                    $('#notificationContent').html(data).css('display', 'block');
+                });
+            }
         }
 
-        modal.classList.add('show-modal');
-    }
+        function openSystemSettingsModal() {
+            const modal = document.getElementById('SystemSettingsModal');
+            const dropdown = $('#notificationContent');
 
-</script>
+            if (dropdown.is(':visible')) {
+                dropdown.hide(); // Close notifications if open
+            }
+
+            modal.classList.add('show-modal');
+        }
+
+    </script>
     <script>
         const logo = document.querySelector('.center-logo');
         const controls = document.querySelector('.top-controls-container');
@@ -834,6 +834,90 @@
             </div>
         </div>
     </div>
+
+    <script>
+    // Inactivity + Secure Timeout (only for logged in users)
+    let inactivityTimer, warningTimer, countdownInterval;
+    let warningModalShown = false;
+    let countdown = 60;
+
+    function startInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        clearTimeout(warningTimer);
+
+        inactivityTimer = setTimeout(showInactivityWarning, 5 * 60 * 1000); // 5 minutes
+        warningModalShown = false;
+    }
+
+    function resetInactivityTimer() {
+        // Only reset if warning not active
+        if (!warningModalShown) startInactivityTimer();
+    }
+
+    function showInactivityWarning() {
+        warningModalShown = true;
+        countdown = 60;
+
+        Swal.fire({
+            title: 'Are you still active?',
+            html: '<b id="inactivity-countdown">60</b> seconds remaining before logout.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, I am!',
+            cancelButtonText: 'Log me out',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                htmlContainer: 'swal-body',
+                confirmButton: 'swal-confirm',
+                cancelButton: 'swal-cancel'
+            },
+            didOpen: () => {
+                // Start countdown display
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    document.getElementById('inactivity-countdown').textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        logoutNow();
+                    }
+                }, 1000);
+            }
+        }).then((result) => {
+            clearInterval(countdownInterval);
+            if (result.isConfirmed) {
+                warningModalShown = false;
+                startInactivityTimer();
+            } else {
+                logoutNow();
+            }
+        });
+    }
+
+    function logoutNow() {
+        let logoutForm = document.getElementById('logoutForm');
+        if (logoutForm) logoutForm.submit();
+        else window.location.href = '/Account/LogOff';
+    }
+
+    // Attach events on page load
+    $(function () {
+        // Only activate on authenticated pages (hide by role if needed)
+        @if (Request.IsAuthenticated)
+        {
+            <text>
+            startInactivityTimer();
+            // Reset timer on mouse/keyboard/touch/scroll activity
+            ['mousemove', 'keydown', 'mousedown', 'scroll', 'touchstart'].forEach(evt => {
+                window.addEventListener(evt, resetInactivityTimer, true);
+            });
+            </text>
+        }
+    });
+    </script>
+
 
     <!-- Notification Sound -->
     <audio id="notificationSound" src="~/Sounds/notification.mp3" preload="auto"></audio>
