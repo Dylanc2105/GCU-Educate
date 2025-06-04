@@ -513,39 +513,26 @@
     @RenderSection("scripts", required: false)
 
     <script>
-        // Tracks previously loaded notification IDs to detect new ones
-        let previousNotificationIds = [];
+        // Tracks loaded notification IDs for sound detection
+        let previousNotificationIds = JSON.parse(localStorage.getItem('previousNotificationIds') || '[]');
+
 
         $(document).ready(function () {
             const bell = $('#notificationsDropdown');
             const dropdown = $('#notificationContent');
 
-            // Fetch notifications on bell click
+            // On bell click, load notifications and check for new ones
             bell.on('click', function (e) {
                 e.stopPropagation();
-
-                $.get('/Notification/GetRecentNotifications', function (data) {
-                    const newIds = [];
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = data;
-                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
-                        const id = el.id.split('-')[1];
-                        if (id) newIds.push(id);
-                    });
-
-                    // Play sound if new notifications are found
-                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
-                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
-                        const audio = document.getElementById('notificationSound');
-                        if (audio) audio.play();
-                    }
-
-                    previousNotificationIds = newIds;
-                    dropdown.html(data).addClass('show').css('display', 'block');
-                }).fail(function (xhr, status, error) {
-                    console.error("❌ AJAX failed:", error);
-                });
+                loadNotifications();
             });
+
+            // Poll unread badge count every 60 seconds
+            updateNotificationBadge();
+            setInterval(updateNotificationBadge, 60000);
+
+            // Poll for new notifications and play sound if needed
+            setInterval(checkNewNotifications, 60000);
 
             // Hide dropdown when clicking outside
             $(document).on('click', function (e) {
@@ -554,13 +541,8 @@
                 }
             });
 
-            updateNotificationBadge(); // initial badge update
-            setInterval(updateNotificationBadge, 60000); // poll every 60s
-
             // Auto-fade success alerts
-            setTimeout(function () {
-                $(".alert-success").fadeOut("slow");
-            }, 3000);
+            setTimeout(() => $(".alert-success").fadeOut("slow"), 3000);
 
             // Load and apply sound toggle preference
             const setting = localStorage.getItem('playNotificationSound') === 'true';
@@ -569,22 +551,59 @@
                     cb.checked = setting;
                 }
             });
+
         });
 
-        // Store sound toggle setting
-        function toggleSoundSetting(enabled) {
-            localStorage.setItem('playNotificationSound', enabled);
+        // Checks for new notifications via polling
+        function checkNewNotifications() {
+            $.get('/Notification/GetRecentNotifications', function (data) {
+                const newIds = extractNotificationIds(data);
+                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+
+                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                    const audio = document.getElementById('notificationSound');
+                    if (audio) audio.play();
+                }
+
+                previousNotificationIds = newIds;
+                localStorage.setItem('previousNotificationIds', JSON.stringify(newIds));
+            });
         }
 
-        // Open/close system settings modal
-        function openSystemSettingsModal() {
-            document.getElementById('SystemSettingsModal').classList.add('show-modal');
-        }
-        function closeSystemSettingsModal() {
-            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
+        // Loads and displays notifications; plays sound if new ones found
+        function loadNotifications() {
+            $.get('/Notification/GetRecentNotifications', function (data) {
+                const newIds = extractNotificationIds(data);
+                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+
+                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                    const audio = document.getElementById('notificationSound');
+                    if (audio) audio.play();
+                }
+
+                previousNotificationIds = newIds;
+                localStorage.setItem('previousNotificationIds', JSON.stringify(newIds));
+                $('#notificationContent').html(data).addClass('show').css('display', 'block');
+            }).fail(function (xhr, status, error) {
+                console.error("❌ AJAX failed:", error);
+            });
         }
 
-        // Update badge with unread count
+        // Extracts notification IDs from raw HTML string
+        function extractNotificationIds(htmlString) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+            const ids = [];
+            tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                const id = el.id.split('-')[1];
+                if (id) ids.push(id);
+            });
+            return ids;
+        }
+
+        // Updates unread count badge
+        let lastBadgeCount = 0;
+
         function updateNotificationBadge() {
             $.get('/Notification/GetUnreadCount', function (data) {
                 const badge = $('#notificationBadge');
@@ -594,10 +613,18 @@
                 } else {
                     badge.hide();
                 }
+
+                // Check for new notifications if count increased
+                if (data.count > lastBadgeCount) {
+                    checkNewNotifications();
+                }
+
+                lastBadgeCount = data.count;
             });
         }
 
-        // Mark one notification as read then redirect
+
+        // Marks notification as read and redirects
         function markAsRead(id, url) {
             const item = document.getElementById("notification-" + id);
             if (item) item.classList.remove("font-weight-bold");
@@ -609,7 +636,44 @@
             });
         }
 
-        // Store welcome message toggle
+        // Toggle notification sound setting
+        function toggleSoundSetting(enabled) {
+            localStorage.setItem('playNotificationSound', enabled);
+        }
+
+        // Open and close system settings modal
+        function openSystemSettingsModal() {
+            const modal = document.getElementById('SystemSettingsModal');
+            const dropdown = $('#notificationContent');
+
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+            }
+
+            modal.classList.add('show-modal');
+        }
+
+        function closeSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
+        }
+
+        // Show/hide notification dropdown
+        function toggleNotificationDropdown() {
+            const dropdown = $('#notificationContent');
+            const modal = $('#SystemSettingsModal');
+
+            if (modal.hasClass('show-modal')) {
+                modal.removeClass('show-modal');
+            }
+
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+            } else {
+                loadNotifications();
+            }
+        }
+
+        // Store and reflect welcome setting
         function toggleWelcomeSetting(enabled) {
             localStorage.setItem('hideWelcome', enabled);
             const welcomeCard = document.getElementById('welcomeCard');
@@ -618,7 +682,7 @@
             }
         }
 
-        // Store and reflect appear offline toggle
+        // Toggle and sync offline status
         function toggleAppearOffline(isOffline) {
             localStorage.setItem('appearOffline', isOffline);
             updateOnlineBadge();
@@ -632,7 +696,7 @@
             }).catch(err => console.error('Failed to update appearOffline:', err));
         }
 
-        // Update online badge visual
+        // Update online badge styling
         function updateOnlineBadge() {
             const isOffline = localStorage.getItem('appearOffline') === 'true';
             const badge = document.getElementById('onlineStatusBadge');
@@ -652,7 +716,7 @@
             }
         }
 
-        // On DOM load, apply offline toggle
+        // Apply offline toggle on load
         document.addEventListener('DOMContentLoaded', function () {
             const toggle = document.getElementById('appearOfflineToggle');
             if (toggle) {
@@ -661,7 +725,7 @@
             updateOnlineBadge();
         });
 
-        // SweetAlert logout confirmation
+        // SweetAlert confirmation before logout
         function confirmLogout() {
             Swal.fire({
                 title: 'Confirm Logout',
@@ -684,51 +748,6 @@
                 }
             });
         }
-
-        function toggleNotificationDropdown() {
-            const dropdown = $('#notificationContent');
-            const modal = $('#SystemSettingsModal');
-
-            // Close modal if open
-            if (modal.hasClass('show-modal')) {
-                modal.removeClass('show-modal');
-            }
-
-            if (dropdown.is(':visible')) {
-                dropdown.hide();
-            } else {
-                $.get('/Notification/GetRecentNotifications', function (data) {
-                    const newIds = [];
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = data;
-                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
-                        const id = el.id.split('-')[1];
-                        if (id) newIds.push(id);
-                    });
-
-                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
-                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
-                        const audio = document.getElementById('notificationSound');
-                        if (audio) audio.play();
-                    }
-
-                    previousNotificationIds = newIds;
-                    $('#notificationContent').html(data).css('display', 'block');
-                });
-            }
-        }
-
-        function openSystemSettingsModal() {
-            const modal = document.getElementById('SystemSettingsModal');
-            const dropdown = $('#notificationContent');
-
-            if (dropdown.is(':visible')) {
-                dropdown.hide(); // Close notifications if open
-            }
-
-            modal.classList.add('show-modal');
-        }
-
     </script>
     <script>
         const logo = document.querySelector('.center-logo');

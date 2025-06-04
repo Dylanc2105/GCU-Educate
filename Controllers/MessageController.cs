@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using System.Collections.Generic;
+using GuidanceTracker.Services;
 
 namespace GuidanceTracker.Controllers
 {
@@ -148,6 +149,12 @@ namespace GuidanceTracker.Controllers
             convo.LastUpdated = DateTime.UtcNow;
             db.Messages.Add(message);
             await db.SaveChangesAsync();
+
+            // Assuming _notificationService is injected in your controller
+
+            // Send notification
+            new NotificationService().NotifyNewMessage(receiverId);
+
 
             return Json(new { success = true });
         }
