@@ -2,63 +2,157 @@
 @{
     ViewBag.Title = "Your Detailed Feedback";
 }
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h2>Your Detailed Feedback</h2>
-            <p class="text-muted">View the detailed feedback you have submitted</p>
-            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7F3D98; ">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            Your Detailed Feedback
+        </h2>
     </div>
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">
-            <i class="fas fa-info-circle"></i> You haven't submitted any detailed feedback yet.
-        </div>
-    }
-    else
-    {
-        <div class="card">
-            <div class="card-header" style="background-color: #7F3D98; color: white;">
-                <h4>Submitted Feedback</h4>
+    <div class="card-body">
+        <div class="subtitle-actions-row">
+            <p class="subtitle">View the detailed feedback you have submitted</p>
+            <div class="actions-group">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead style="background-color: #f2e9ff;">
-                            <tr>
-                                <th>Course</th>
-                                <th>Class</th>
-                                <th>Requested By</th>
-                                <th>Date Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.OrderByDescending(f => f.DateCreated))
-                            {
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">
+                <i class="fas fa-info-circle"></i> You haven't submitted any detailed feedback yet.
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4>Submitted Feedback</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background-color: #f2e9ff;">
                                 <tr>
-                                    <td>@item.Course</td>
-                                    <td>@item.Class</td>
-                                    <td>
-                                        @ViewData[$"CreatorName_{item.FeedbackId}"]
-                                        <div class="small text-muted">@ViewData[$"CreatorRole_{item.FeedbackId}"]</div>
-                                    </td>
-                                    <td>@item.DateCreated</td>
-                                    <td>
-                                        <a href="@Url.Action("ViewDetailedFeedbackDetails", "DetailedFeedback", new { id = item.FeedbackId })"
-                                           class="btn btn-sm" style="background-color: #7F3D98; color: white;">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </td>
+                                    <th>Course</th>
+                                    <th>Class</th>
+                                    <th>Requested By</th>
+                                    <th>Date Created</th>
+                                    <th>Actions</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderByDescending(f => f.DateCreated))
+                                {
+                                    <tr>
+                                        <td>@item.Course</td>
+                                        <td>@item.Class</td>
+                                        <td>
+                                            @ViewData[$"CreatorName_{item.FeedbackId}"]
+                                            <div class="small text-muted">@ViewData[$"CreatorRole_{item.FeedbackId}"]</div>
+                                        </td>
+                                        <td>@item.DateCreated</td>
+                                        <td>
+                                            <a href="@Url.Action("ViewDetailedFeedbackDetails", "DetailedFeedback", new { id = item.FeedbackId })"
+                                               class="btn btn-sm" style="background-color: #7F3D98; color: white;">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
+<style>
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #7F3D98;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
+
+    .subtitle-actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-back {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-back:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+</style>

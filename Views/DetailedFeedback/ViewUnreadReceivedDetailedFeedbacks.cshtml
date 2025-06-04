@@ -76,6 +76,26 @@
             color: white;
         }
 
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
 
     .actions-group {
         display: flex;
@@ -256,8 +276,8 @@
                                             </td>
                                             <td>
                                                 <a href="@Url.Action("ViewClassRepFeedbackDetails", "DetailedFeedback", new { id = feedback.FeedbackId })"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-eye"></i> View Details
+                                                    class="btn-purple">
+                                                    <i class="fa fa-eye"></i> View
                                                 </a>
                                             </td>
                                         </tr>

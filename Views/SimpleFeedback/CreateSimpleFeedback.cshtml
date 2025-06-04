@@ -3,107 +3,179 @@
 @{
     ViewBag.Title = "Submit Feedback";
 }
-
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h2>Submit Feedback</h2>
-            <p class="text-muted">Share your thoughts with your teachers</p>
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-comment"></i>
+            Submit Feedback
+        </h2>
     </div>
-
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert" style="background-color: #ffe0e0; color: #850000; border-color: #ff7b7b;">
-            <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
-        </div>
-    }
-
-    <div class="card">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h4>Feedback Form</h4>
-        </div>
-        <div class="card-body">
-            @using (Html.BeginForm())
+    <div class="card-body">
+        <p class="text-muted">Share your thoughts with your teachers</p>
+            @if (TempData["ErrorMessage"] != null)
             {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                @Html.HiddenFor(model => model.GuidanceTeacherId)
-                @Html.HiddenFor(model => model.CurriculumHeadId)
-                @Html.HiddenFor(model => model.GuidanceTeacherName)
-                @Html.HiddenFor(model => model.CurriculumHeadName)
-
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.content, "Feedback Content", new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.TextAreaFor(model => model.content, new { @class = "form-control", rows = 6 })
-                        @Html.ValidationMessageFor(model => model.content, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label class="control-label col-md-2">Send To</label>
-                    <div class="col-md-10">
-                        <div class="card mb-3" style="background-color: #f2e9ff;">
-                            <div class="card-body">
-                                <div class="custom-control custom-checkbox mb-2">
-                                    <label>
-                                        @Html.CheckBoxFor(model => model.SendToGuidanceTeacher, new { @class = "mr-2" })
-                                        Guidance Teacher: <strong>@Model.GuidanceTeacherName</strong>
-                                    </label>
-                                </div>
-
-                                <div class="custom-control custom-checkbox">
-                                    <label>
-                                        @Html.CheckBoxFor(model => model.SendToCurriculumHead, new { @class = "mr-2" })
-                                        Curriculum Head: <strong>@Model.CurriculumHeadName</strong>
-                                    </label>
-                                </div>
-
-                                <!-- Error message for no recipients selected -->
-                                <span id="recipientError" class="text-danger" style="display: none;">
-                                    Please select at least one recipient.
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row mb-4">
-                    @Html.LabelFor(model => model.UnitId, new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.UnitId,
-                            Model.Units,
-                            "- Select a specific unit (Optional) -",
-                            new { @class = "form-control" })
-                        <small class="form-text text-muted">Select a unit if your feedback is about a specific unit</small>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div class="col-md-12 text-center">
-                        <button type="submit" id="submitBtn" class="btn" style="background-color: #7F3D98; color: white;">
-                            <i class="fas fa-paper-plane"></i> Submit Feedback
-                        </button>
-                        <a href="@Url.Action("StudentDash", "Student")" class="btn btn-outline-secondary">
-                            <i class="fas fa-times"></i> Cancel
-                        </a>
-                    </div>
+                <div class="alert" style="background-color: #ffe0e0; color: #850000; border-color: #ff7b7b;">
+                    <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
                 </div>
             }
-        </div>
+
+            <div class="card">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4>Feedback Form</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        @Html.HiddenFor(model => model.GuidanceTeacherId)
+                        @Html.HiddenFor(model => model.CurriculumHeadId)
+                        @Html.HiddenFor(model => model.GuidanceTeacherName)
+                        @Html.HiddenFor(model => model.CurriculumHeadName)
+
+                        <div class="form-group row mb-3">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            @Html.LabelFor(model => model.content, "Feedback Content", new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.content, new { @class = "form-control", rows = 6 })
+                                @Html.ValidationMessageFor(model => model.content, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="control-label col-md-2">Send To</label>
+                            <div class="col-md-10">
+                                <div class="card mb-3" style="background-color: #f2e9ff;">
+                                    <div class="card-body">
+                                        <div class="custom-control custom-checkbox mb-2">
+                                            <label>
+                                                @Html.CheckBoxFor(model => model.SendToGuidanceTeacher, new { @class = "mr-2" })
+                                                Guidance Teacher: <strong>@Model.GuidanceTeacherName</strong>
+                                            </label>
+                                        </div>
+
+                                        <div class="custom-control custom-checkbox">
+                                            <label>
+                                                @Html.CheckBoxFor(model => model.SendToCurriculumHead, new { @class = "mr-2" })
+                                                Curriculum Head: <strong>@Model.CurriculumHeadName</strong>
+                                            </label>
+                                        </div>
+
+                                        <!-- Error message for no recipients selected -->
+                                        <span id="recipientError" class="text-danger" style="display: none;">
+                                            Please select at least one recipient.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-4">
+                            @Html.LabelFor(model => model.UnitId, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.UnitId,
+                                    Model.Units,
+                                    "- Select a specific unit (Optional) -",
+                                    new { @class = "form-control" })
+                                <small class="form-text text-muted">Select a unit if your feedback is about a specific unit</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" id="submitBtn" class="btn-purple">
+                                    <i class="fas fa-paper-plane"></i> Submit Feedback
+                                </button>
+                                <a href="javascript:history.back()" class="btn-cancel">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
     </div>
 </div>
 
+<style>
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #7F3D98;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-cancel {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-cancel:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+</style>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 

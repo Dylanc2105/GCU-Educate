@@ -9,15 +9,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@ViewBag.Title</title>
     <link rel="icon" type="image/x-icon" href="~/Images/favicon16x16old.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select, label, td, th, li {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
         body {
             background-color: #f5f5fa !important;
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-
+        .fa, .fas, .far, .fal, .fab, .fad, .fat, .fass, .fasr, .fasl,
+        [class^="fa-"], [class*=" fa-"],
+        .fa::before, .fas::before, .far::before, .fal::before, .fab::before,
+        .fad::before, .fat::before, .fass::before, .fasr::before, .fasl::before {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+            font-weight: 900 !important; 
+        }
 
 
         .center-logo {
