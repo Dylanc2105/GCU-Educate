@@ -1512,8 +1512,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student1@email.com",
                     Email = "student1@email.com",
-                    FirstName = "David",
-                    LastName = "Wilson",
+                    FirstName = "Billy",
+                    LastName = "Mclean",
                     Street = "45 High Street",
                     City = "London",
                     Postcode = "E18 2XP",
@@ -1897,8 +1897,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student19@email.com",
                     Email = "student19@email.com",
-                    FirstName = "Chloe",
-                    LastName = "Clark",
+                    FirstName = "Ben",
+                    LastName = "Atagan",
                     Street = "9 George Sq",
                     City = "Stirling",
                     Postcode = "DD1 3CC",
@@ -2086,8 +2086,8 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student28@email.com",
                     Email = "student28@email.com",
-                    FirstName = "Sophie",
-                    LastName = "Gray",
+                    FirstName = "Mykailo",
+                    LastName = "Shavlin",
                     Street = "57 Station Rd",
                     City = "Edinburgh",
                     Postcode = "AB10 1XY",
@@ -2107,15 +2107,15 @@ namespace GuidanceTracker.Models
                 {
                     UserName = "student29@email.com",
                     Email = "student29@email.com",
-                    FirstName = "Sean",
-                    LastName = "Murray",
+                    FirstName = "Karina",
+                    LastName = "Fatkullina",
                     Street = "24 Union St",
                     City = "Edinburgh",
                     Postcode = "DD1 3CC",
                     RegistredAt = DateTime.Parse("2025-04-13T10:40:08"),
                     EmailConfirmed = true,
                     GuidanceTeacherId = guidance.Id,
-                    ClassId = classes2.ClassId,
+                    ClassId = classes1.ClassId,
                     StudentNumber = "42000144"
                 };
                 userManager.Create(student29, "123");
