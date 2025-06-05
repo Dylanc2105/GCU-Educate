@@ -144,14 +144,14 @@ namespace GuidanceTracker.Models
             }
 
             // Seed Guidance Teacher 1
-            if (userManager.FindByName("guidance1@email.com") == null)
+            if (userManager.FindByName("Denise.Doyle@cityofglasgowcollege.ac.uk") == null)
             {
                 newGuidanceTeacher = new GuidanceTeacher
                 {
-                    UserName = "guidance1@email.com",
-                    Email = "guidance1@email.com",
-                    FirstName = "Sarah",
-                    LastName = "Connor",
+                    UserName = "Denise.Doyle@cityofglasgowcollege.ac.uk",
+                    Email = "Denise.Doyle@cityofglasgowcollege.ac.uk",
+                    FirstName = "Denise",
+                    LastName = "Doyle",
                     Street = "123 Oak Avenue",
                     City = "London",
                     Postcode = "SW1A 0AA", 
@@ -978,7 +978,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Troubleshooting Computing Problems",
                 UnitDescription = "Practical problem-solving in computing environments",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(troubleshootingUnit);
@@ -2109,6 +2109,27 @@ namespace GuidanceTracker.Models
                     Email = "student29@email.com",
                     FirstName = "Sean",
                     LastName = "Murray",
+                    Street = "24 Union St",
+                    City = "Edinburgh",
+                    Postcode = "DD1 3CC",
+                    RegistredAt = DateTime.Parse("2025-04-13T10:40:08"),
+                    EmailConfirmed = true,
+                    GuidanceTeacherId = guidance.Id,
+                    ClassId = classes2.ClassId,
+                    StudentNumber = "42000144"
+                };
+                userManager.Create(student29, "123");
+                userManager.AddToRole(student29.Id, "Student");
+            }
+
+            if (userManager.FindByName("student35@email.com") == null)
+            {
+                student29 = new Student
+                {
+                    UserName = "student35@email.com",
+                    Email = "student35@email.com",
+                    FirstName = "Mark",
+                    LastName = "Rossiter",
                     Street = "24 Union St",
                     City = "Edinburgh",
                     Postcode = "DD1 3CC",
