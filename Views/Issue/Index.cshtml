@@ -5,7 +5,6 @@
     ViewBag.Title = "Issues Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <!-- Ensure jQuery is loaded -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -18,59 +17,83 @@
     }
 
     .dashboard-card {
-        padding: 20px;
+        padding: 18px 0;
         background-color: white;
         border-radius: 10px;
         border: 1px solid #e0e0e0;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        max-width: 1500px;
+        margin: 0 auto;
     }
 
     .dashboard-title {
-        font-size: 30px;
+        font-size: 28px;
         font-weight: bold;
         color: #7F3D98;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
+        text-align: center;
     }
 
-    /* Dashboard Grid */
+    /* Three column layout */
     .dashboard-container {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 1fr 1fr 0.7fr;
         gap: 20px;
-        padding: 20px;
+        padding: 0 22px 20px 22px;
     }
 
-    /* Left Side Containers (New & In Progress Issues) */
-    .left-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        border-radius: 10px;
-    }
-
-    /* Each container style */
-    .container {
+    .container,
+    .bottom-right-container {
         background: white;
-        padding: 15px;
+        padding: 13px;
         border-radius: 10px;
         border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
         min-height: 180px;
+    }
+
+    .container {
+        min-width: 0;
+    }
+
+    .bottom-right-container {
+        min-width: 220px;
+        max-width: 320px;
+        padding: 13px 7px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #7F3D98;
+        margin-bottom: 12px;
+        text-align: center;
     }
 
     /* Issue Cards */
     .issue-card {
-        padding: 10px;
+        padding: 7px 8px;
         border-left: 5px solid #7F3D98;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         background: #FAFAFA;
         border-radius: 5px;
         cursor: pointer;
-        transition: background 0.3s ease;
+        transition: background 0.2s;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 10px;
     }
+
+        .issue-card.issue-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #eaecef;
+            border-left: none;
+            font-weight: bold;
+            cursor: default;
+            pointer-events: none;
+            margin-bottom: 5px;
+        }
 
         .issue-card:hover {
             background: #EEE;
@@ -78,7 +101,7 @@
 
     .issue-main {
         font-weight: bold;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .issue-update {
@@ -91,11 +114,10 @@
         color: #888;
     }
 
-    /* Issue Footer */
     .issue-footer {
         font-size: 10px;
         text-align: right;
-        padding-top: 5px;
+        padding-top: 3px;
         font-style: italic;
         color: black;
     }
@@ -104,56 +126,69 @@
     .quick-actions {
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        padding: 10px;
-        border-radius: 10px;
+        gap: 10px;
+        padding: 0;
+        border-radius: 8px;
     }
 
-
-    /* Right Container */
-    .right-container {
+    .quick-btn-group {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        height: 100%;
+        align-items: stretch;
+        width: 100%;
+        gap: 9px;
     }
 
-    /* Right Container Box */
-    .bottom-right-container {
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        min-height: 320px;
+    .quick-btn {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 10px 10px;
+        background: #7F3D98;
+        border: 1px solid #7F3D98;
+        border-radius: 7px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1em;
+        text-decoration: none;
+        transition: background 0.18s, color 0.18s;
+        box-shadow: 0 1px 6px #e7d0fa34;
+        min-height: 36px;
+        min-width: 120px;
     }
 
-    /* Section Titles */
-    .section-title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #7F3D98;
-        margin-bottom: 15px;
-        text-align: center;
-    }
+        .quick-btn img {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
 
-    /* karina: styling for view more buttons and stuff */
+        .quick-btn:hover,
+        .quick-btn:focus {
+            background: #985BAF;
+            color: #fff;
+        }
+
+    /* View More Button */
     .view-more-btn {
         background-color: #7F3D98;
         color: white;
         border: none;
-        padding: 5px 10px;
+        padding: 4px 9px;
         border-radius: 4px;
         cursor: pointer;
-        margin-left: 10px;
-    }
-    .view-more-btn:hover,
-    .view-more-btn:focus {
-        background: #985BAF;
-        color: #fff;
+        margin-left: 5px;
+        font-size: 0.98em;
     }
 
+        .view-more-btn:hover,
+        .view-more-btn:focus {
+            background: #985BAF;
+            color: #fff;
+        }
 
+    /* Modal Styles */
     .full-issues-list {
         position: fixed;
         top: 0;
@@ -174,16 +209,16 @@
 
     .modal-content {
         background-color: white;
-        width: 80%;
+        width: 82%;
         max-width: 800px;
         max-height: 80vh;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.19);
         overflow: hidden;
     }
 
     .modal-header {
-        padding: 15px;
+        padding: 11px 15px;
         background-color: #7F3D98;
         color: white;
         display: flex;
@@ -193,18 +228,18 @@
     }
 
         .modal-header img {
-            width: 25px;
-            height: 25px;
+            width: 22px;
+            height: 22px;
         }
 
     .modal-body {
-        padding: 15px;
+        padding: 13px 15px;
         max-height: calc(80vh - 60px);
         overflow-y: auto;
     }
 
     .close-btn {
-        font-size: 24px;
+        font-size: 22px;
         cursor: pointer;
     }
 
@@ -212,225 +247,153 @@
             color: #666;
         }
 
-    .issue-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #eaecef;
-        border-left: none;
-        font-weight: bold;
-        cursor: default;
-        pointer-events: none;
-    }
-
-
     .section-title img {
-        width: 25px;
-        height: 25px;
+        width: 22px;
+        height: 22px;
         vertical-align: middle;
-        margin-left: 8px;
+        margin-left: 7px;
     }
-
-    .quick-btn-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        gap: 14px;
-    }
-
-    .quick-btn {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-        width: 320px; 
-        padding: 12px 20px;
-        background: #7F3D98; 
-        border: 1.2px solid #7F3D98;
-        border-radius: 8px;
-        color: #fff; 
-        font-weight: 700;
-        font-size: 1.1em;
-        text-decoration: none;
-        transition: background 0.18s, color 0.18s;
-        box-shadow: 0 1px 6px #e7d0fa34;
-    }
-
-        .quick-btn img {
-            margin-right: 12px;
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .quick-btn:hover,
-        .quick-btn:focus {
-            background: #985BAF; 
-            color: #fff;
-        }
-
-
 </style>
+
 <div class="dashboard-card">
     <h1 class="dashboard-title">Issues Dashboard</h1>
-    <!-- Dashboard Layout -->
     <div class="dashboard-container">
-        <!-- Left Containers (New & In Progress Issues) -->
-        <div class="left-container">
-            <!-- New Issues -->
-            <div class="container">
-                <div class="section-title"><img src="~/Images/Icons/OTHER/new.svg" /> New</div>
-                <!-- karina: headings for the table-->
-                <div class="issue-card issue-header">
-                    <div class="issue-main">Student</div>
-                    <div class="issue-main">Issue</div>
-                    <div class="issue-main">Date</div>
+        <!-- New Issues -->
+        <div class="container">
+            <div class="section-title"><img src="~/Images/Icons/OTHER/new.svg" /> New</div>
+            <div class="issue-card issue-header">
+                <div class="issue-main">Student</div>
+                <div class="issue-main">Issue</div>
+                <div class="issue-main">Date</div>
+            </div>
+            @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt).Take(4))
+            {
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
+                    <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
+                    <div class="issue-update">@issue.IssueTitle.ToString()</div>
+                    <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
                 </div>
-                @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt).Take(4))
+            }
+            <div class="issue-footer">
+                Total New Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.New)</strong>
+                @if (Model.Count(t => t.IssueStatus == IssueStatus.New) > 4)
                 {
-                    <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
-                        <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
-                        <div class="issue-update">@issue.IssueTitle.ToString()</div>
-                        <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
-                    </div>
+                    <button id="view-more-new" class="view-more-btn" onclick="toggleIssues('new')">View More</button>
                 }
-
-                <div class="issue-footer">
-                    Total New Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.New)</strong>
-                    <!-- karina: if t here are more that 4 issues a button view more appears to see them all-->
-                    @if (Model.Count(t => t.IssueStatus == IssueStatus.New) > 4)
-                    {
-                        <button id="view-more-new" class="view-more-btn" onclick="toggleIssues('new')">View More</button>
-                    }
-                </div>
             </div>
+        </div>
 
-            <!-- In Progress Issues -->
-            <div class="container">
-                <div class="section-title"><img src="~/Images/Icons/OTHER/inProgress.svg" /> In Progress</div>
-                <!-- karina: headings for the table-->
-                <div class="issue-card issue-header">
-                    <div class="issue-main">Student</div>
-                    <div class="issue-main">Issue</div>
-                    <div class="issue-main">Date</div>
+        <!-- In Progress Issues -->
+        <div class="container">
+            <div class="section-title"><img src="~/Images/Icons/OTHER/inProgress.svg" /> In Progress</div>
+            <div class="issue-card issue-header">
+                <div class="issue-main">Student</div>
+                <div class="issue-main">Issue</div>
+                <div class="issue-main">Date</div>
+            </div>
+            @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt).Take(4))
+            {
+                <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
+                    <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
+                    <div class="issue-update">Update to @issue.IssueTitle.ToString()</div>
+                    <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
                 </div>
-
-                @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt).Take(4))
+            }
+            <div class="issue-footer">
+                Total In Progress Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.InProgress)</strong>
+                @if (Model.Count(t => t.IssueStatus == IssueStatus.InProgress) > 4)
                 {
-                    <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
-                        <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
-                        <div class="issue-update">Update to @issue.IssueTitle.ToString()</div>
-                        <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
-                    </div>
+                    <button id="view-more-inprogress" class="view-more-btn" onclick="toggleIssues('inprogress')">View More</button>
                 }
-
-                <div class="issue-footer">
-                    Total In Progress Issues: <strong>@Model.Count(t => t.IssueStatus == IssueStatus.InProgress)</strong>
-                    <!-- karina: if t here are more that 4 issues a button view more appears to see them all-->
-                    @if (Model.Count(t => t.IssueStatus == IssueStatus.InProgress) > 4)
-                    {
-                        <button id="view-more-inprogress" class="view-more-btn" onclick="toggleIssues('inprogress')">View More</button>
-                    }
-                </div>
             </div>
         </div>
 
-        <!-- karina: hidden full lists for new issues that will be shown when view more is clicked -->
-        <div id="new-issues-full" class="full-issues-list" style="display: none;">
-            <div class="modal-backdrop">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2><img src="~/Images/Icons/OTHER/newWhite.svg" /> All New Issues</h2>
-                        <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <!--  headings for the table-->
-                        <div class="issue-card issue-header">
-                            <div class="issue-main">Student</div>
-                            <div class="issue-main">Issue</div>
-                            <div class="issue-main">Date</div>
-                        </div>
-                        @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt))
-                        {
-                            <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
-                                <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
-                                <div class="issue-update">@issue.IssueTitle.ToString()</div>
-                                <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- karina: hidden full lists for in progress issues that will be shown when view more is clicked -->
-        <div id="in-progress-issues-full" class="full-issues-list" style="display: none;">
-            <div class="modal-backdrop">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2><img src="~/Images/Icons/OTHER/inProgressWhite.svg" /> All In Progress Issues</h2>
-                        <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <!--  headings for the table-->
-                        <div class="issue-card issue-header">
-                            <div class="issue-main">Student</div>
-                            <div class="issue-main">Issue</div>
-                            <div class="issue-main">Date</div>
-                        </div>
-                        @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt))
-                        {
-                            <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
-                                <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
-                                <div class="issue-update">Update to @issue.IssueTitle.ToString()</div>
-                                <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <!-- Right Containers (Quick Actions) -->
-    <div class="right-container">
         <!-- Quick Actions -->
         <div class="bottom-right-container">
             <div class="section-title">Quick Actions</div>
             <div class="quick-actions">
-                <!-- Existing Quick Action Buttons -->
                 <div class="quick-btn-group">
-                <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">
-                    <img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New issue
-                </a>
-                <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">
-                    <img src="~/Images/Icons/OTHER/studentHub.svg" /> Student Issue finder
-                </a>
-                <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">
-                    <img src="~/Images/Icons/OTHER/allIssues.svg" /> All active issues
-                </a>
-                <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">
-                    <img src="~/Images/Icons/OTHER/archived.svg" /> Archived issues
-                </a>
-            </div>
-
-
+                    <a href="@Url.Action("CreateIssue", "Issue")" class="quick-btn">
+                        <img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New 
+                    </a>
+                    <a href="@Url.Action("StudentIssue", "Issue")" class="quick-btn">
+                        <img src="~/Images/Icons/OTHER/studentHub.svg" /> Student Finder
+                    </a>
+                    <a href="@Url.Action("AllIssues", "Issue")" class="quick-btn">
+                        <img src="~/Images/Icons/OTHER/allIssues.svg" /> All Active 
+                    </a>
+                    <a href="@Url.Action("ArchivedIssues", "Issue")" class="quick-btn">
+                        <img src="~/Images/Icons/OTHER/archived.svg" /> Archived Issues
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
+    <!-- Modal: Full lists for New and In Progress issues -->
+    <div id="new-issues-full" class="full-issues-list" style="display: none;">
+        <div class="modal-backdrop">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><img src="~/Images/Icons/OTHER/newWhite.svg" /> All New Issues</h2>
+                    <span class="close-btn" onclick="toggleIssues('new')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="issue-card issue-header">
+                        <div class="issue-main">Student</div>
+                        <div class="issue-main">Issue</div>
+                        <div class="issue-main">Date</div>
+                    </div>
+                    @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.New).OrderByDescending(t => t.CreatedAt))
+                    {
+                        <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
+                            <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
+                            <div class="issue-update">@issue.IssueTitle.ToString()</div>
+                            <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="in-progress-issues-full" class="full-issues-list" style="display: none;">
+        <div class="modal-backdrop">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><img src="~/Images/Icons/OTHER/inProgressWhite.svg" /> All In Progress Issues</h2>
+                    <span class="close-btn" onclick="toggleIssues('inprogress')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="issue-card issue-header">
+                        <div class="issue-main">Student</div>
+                        <div class="issue-main">Issue</div>
+                        <div class="issue-main">Date</div>
+                    </div>
+                    @foreach (var issue in Model.Where(t => t.IssueStatus == IssueStatus.InProgress).OrderByDescending(t => t.CreatedAt))
+                    {
+                        <div class="issue-card" onclick="window.location.href='@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })'">
+                            <div class="issue-main">@issue.Student.FirstName @issue.Student.LastName</div>
+                            <div class="issue-update">Update to @issue.IssueTitle.ToString()</div>
+                            <div class="issue-date">@issue.CreatedAt.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-    <script>
-        // karina: this is for the view more issues button
-        function toggleIssues(type) {
-            var fullListId = type === 'new' ? 'new-issues-full' : 'in-progress-issues-full';
-            var fullList = document.getElementById(fullListId);
+<script>
+    // karina: this is for the view more issues button
+    function toggleIssues(type) {
+        var fullListId = type === 'new' ? 'new-issues-full' : 'in-progress-issues-full';
+        var fullList = document.getElementById(fullListId);
 
-            if (fullList.style.display === 'none') {
-                fullList.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // prevents scrolling behind modal
-            } else {
-                fullList.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
+        if (fullList.style.display === 'none') {
+            fullList.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // prevents scrolling behind modal
+        } else {
+            fullList.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
-    </script>
+    }
+</script>
