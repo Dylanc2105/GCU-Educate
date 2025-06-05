@@ -84,20 +84,41 @@
         background: #7F3D98;
         color: white;
         border: none;
-        border-radius: 50%;
-        font-size: 24px;
-        width: 44px;
-        height: 44px;
+        border-radius: 10px;
+        font-size: 1em;
+        font-weight: 700;
+        padding: 11px 32px;
         cursor: pointer;
         display: flex;
-        justify-content: center;
         align-items: center;
-        transition: background .15s;
+        gap: 10px;
+        min-width: 180px;
+        max-width: 220px;
         box-shadow: 0 0 10px rgb(127 61 152 / 0.18);
     }
 
         #newChatBtn:hover {
             background: #642b7b;
+        }
+
+    #viewArchiveBtn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f5f5fa;
+        color: #7F3D98;
+        border: 1.5px solid #eee;
+        border-radius: 10px;
+        font-size: 1em;
+        padding: 11px 22px;
+        font-weight: 700;
+        cursor: pointer;
+        min-width: 120px;
+        max-width: 160px;
+    }
+
+        #viewArchiveBtn:hover {
+            background: #ece1f9;
         }
 
     #inboxList {
@@ -273,12 +294,18 @@
         color: #7F3D98;
         display: flex;
         align-items: center;
+        transition: background 0.18s, color 0.18s;
     }
 
         .chat-header .status-label {
             margin-left: 8px;
             font-weight: 600;
             font-size: 0.96em;
+        }
+
+        .chat-header.archived {
+            background: #ededed !important;
+            color: #757575 !important;
         }
 
     .chat-body {
@@ -514,7 +541,6 @@
         .start-chat-btn:hover, .link-btn:hover {
             background: #642b7b;
         }
-
     /* Mini Issue Card Styles for Chat */
     .mini-issue-card {
         background: #fff;
@@ -584,31 +610,28 @@
         border-radius: 50%;
     }
 
-    #inboxSearch {
-        flex: 0 0 220px !important;
-        min-width: 165px !important;
-        max-width: 200px !important;
+    /* Make SweetAlert2 .swal2-question (the question mark) purple */
+    .swal2-question {
+        color: #7F3D98 !important;
+    }
+    /* Make SweetAlert2 confirm button purple, even the checkmark SVG */
+    .swal2-confirm {
+        background-color: #7F3D98 !important;
+        border-color: #7F3D98 !important;
     }
 
-    #newChatBtn {
-        min-width: 165px !important;
-        max-width: 230px !important;
-        padding: 11px 20px !important;
-        font-size: 1em !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-        background: #7F3D98 !important;
-        color: #fff !important;
-        border: none !important;
-        border-radius: 10px !important;
-        font-weight: 700 !important;
-        cursor: pointer !important;
-    }
-
-        #newChatBtn:hover {
-            background: #642b7b;
+        .swal2-confirm:focus, .swal2-confirm:hover {
+            background-color: #642b7b !important;
+            border-color: #642b7b !important;
         }
+
+    .swal2-icon.swal2-success .swal2-success-ring {
+        border: 4px solid #7F3D98 !important;
+    }
+
+    .swal2-icon.swal2-success [class^='swal2-success-line'] {
+        background-color: #7F3D98 !important;
+    }
 
 </style>
 
@@ -616,10 +639,16 @@
     <section class="inbox-pane" id="inboxPane" aria-label="Message Inbox">
         <header class="inbox-header" style="display: flex; align-items: center; justify-content: space-between;">
             <span>Message Inbox</span>
-            <button id="settingsBtn" title="Settings"
-                    style="background: none; border: none; font-size: 1.2em; width: 30px; height: 30px; color: #7F3D98; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 12px;">
-                &#9881;
+            <button id="archiveHeaderBtn" title="View Archived"
+                    style="background: none; border: none; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin-left: 12px; cursor:pointer;">
+                <!-- White file cabinet SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 20 20" fill="none">
+                    <rect x="2" y="4" width="16" height="12" rx="2" stroke="#fff" stroke-width="2" fill="#7F3D98" />
+                    <rect x="6" y="10" width="8" height="2" rx="1" fill="#fff" />
+                    <rect x="7" y="6" width="6" height="2" rx="1" fill="#fff" />
+                </svg>
             </button>
+
         </header>
         <div class="inbox-controls" style="display: flex; gap: 10px; align-items: center; padding: 14px 26px;">
             <input type="search" id="inboxSearch"
@@ -635,11 +664,9 @@
             <button id="newChatBtn"
                     title="New Chat"
                     aria-haspopup="dialog"
-                    aria-expanded="false"
-                    style="display: flex; align-items: center; gap: 10px; background: #7F3D98; color: #fff; border: none; border-radius: 10px; font-size: 1em; padding: 11px 32px; font-weight: 700; cursor: pointer; min-width: 220px; max-width: 260px;">
+                    aria-expanded="false">
                 <span style="font-size: 1.23em; line-height: 1;">+</span> New Chat
             </button>
-
         </div>
         <div id="inboxList" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
     </section>
@@ -656,9 +683,7 @@
     </section>
 </div>
 
-
-
-<!-- Reusable Modal -->
+<!-- Reusable Modal (for new chat, link, and archive popups) -->
 <div id="customModal" style="display:none; position:fixed; z-index:1200; left:0; right:0; top:0; bottom:0; background:rgba(127,61,152,0.07); justify-content:center; align-items:center;">
     <div class="modal-content" role="document">
         <div class="modal-header-bar">
@@ -674,22 +699,55 @@
         </div>
     </div>
 </div>
+<!-- Archived Conversations Modal -->
+<div id="archiveModal" style="display:none; position:fixed; z-index:1500; left:0; right:0; top:0; bottom:0; background:rgba(127,61,152,0.15); justify-content:center; align-items:center;">
+    <div class="modal-content" style="max-width:680px; width:95%; border:2px solid #e0e0e0; background:#fafafa;">
+        <div class="modal-header-bar">
+            <span class="modal-title" id="archiveModalTitle">Archived Conversations</span>
+            <button onclick="closeArchiveModal()" class="close-modal-btn">Close</button>
+        </div>
+        <div class="modal-toolbar">
+            <input type="search" id="archiveModalSearch" placeholder="Search archived..." oninput="filterArchiveModalTable()" />
+        </div>
+        <div class="modal-table-scroll" style="max-height:300px;">
+            <table id="archiveModalTable" class="modal-user-table" aria-label="Archive table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Preview</th>
+                        <th>Archived At</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let fullInbox = [], fullUsers = [], currentConversationId = null, modalMode = '';
         let currentConversationRole = null;
+        let archiveList = [];
+        let isArchiveOpen = false;
+        let lastArchiveConvoId = null;
+
         document.addEventListener("DOMContentLoaded", function () {
             loadInbox();
             document.getElementById('newChatBtn').addEventListener('click', openNewChatModal);
             document.getElementById('linkDropdownBtn').addEventListener('click', openLinkDropdownModal);
+            document.getElementById('archiveHeaderBtn').addEventListener('click', openArchiveModal);
             document.querySelector('.chat-footer button[aria-label="Send message"]').addEventListener('click', sendMessage);
-            document.querySelector('.chat-footer input').addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+            document.querySelector('.chat-footer input').addEventListener('keydown', e => {
+                if (e.key === 'Enter') sendMessage();
+            });
             document.addEventListener('click', function (e) {
                 if (!e.target.closest('.options-icon') && !e.target.closest('.options-menu')) closeAllOptionsMenus();
+                if (isArchiveOpen && !e.target.closest('#archiveModal') && !e.target.closest('#archiveHeaderBtn')) clearArchiveChatPane();
             });
         });
+
         async function loadInbox() {
             const res = await fetch('/Message/Inbox');
             const data = await res.json();
@@ -738,10 +796,8 @@
                                 <span class="${convo.IsOnline ? 'online-dot' : 'offline-dot'}" title="${convo.IsOnline ? 'Online' : 'Offline'}"></span>
                             </div>
                             <div style="position:relative;">
-                                ${convo.IsPinned ? '<span class="pin-icon" title="Pinned">📌</span>' : ''}
                                 <span class="options-icon" onclick="event.stopPropagation();toggleOptionsMenu(event, ${convo.Id})">⋮</span>
                                 <div class="options-menu" id="options-menu-${convo.Id}">
-                                    <div onclick="event.stopPropagation();togglePin(event, ${convo.Id})">${convo.IsPinned ? 'Unpin Chat' : 'Pin Chat'}</div>
                                     <div onclick="event.stopPropagation();archiveConversation(event, ${convo.Id})">Archive Conversation</div>
                                 </div>
                             </div>
@@ -770,20 +826,20 @@
         }
         async function openConversation(id, name) {
             currentConversationId = id;
+            lastArchiveConvoId = null;
             const res = await fetch(`/Message/GetMessages?conversationId=${id}`);
             const data = await res.json();
 
-            // --- SET THE ROLE HERE ---
             currentConversationRole = data.Role;
-            // --------------------------
 
             const header = document.getElementById('chatHeader');
+            header.classList.remove('archived');
             header.innerHTML = `
-                <span class="${data.IsOnline ? 'online-dot' : 'offline-dot'}"></span>
-                ${name}
-                <span class="status-label">${data.IsOnline ? 'Online' : 'Offline'}</span>`;
-            const chatBody = document.getElementById('chatBody');
-            chatBody.innerHTML = '';
+                    <span class="${data.IsOnline ? 'online-dot' : 'offline-dot'}"></span>
+                    ${name}
+                    <span class="status-label">${data.IsOnline ? 'Online' : 'Offline'}</span>`;
+
+            document.getElementById('chatBody').innerHTML = '';
             data.Messages.forEach(msg => {
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('chat-message', msg.IsMine ? 'mine' : 'theirs');
@@ -792,17 +848,20 @@
                     contentHtml = msg.Content;
                 } else {
                     contentHtml = `
-                        <div class="msg-name">${msg.SenderName}</div>
-                        <div class="msg-content">${msg.Content}</div>
-                        <div class="msg-time">${formatDate(msg.SentAt)}</div>`;
+                            <div class="msg-name">${msg.SenderName}</div>
+                            <div class="msg-content">${msg.Content}</div>
+                            <div class="msg-time">${formatDate(msg.SentAt)}</div>`;
                 }
                 msgDiv.innerHTML = `<div class="msg-bubble">${contentHtml}</div>`;
-                chatBody.appendChild(msgDiv);
+                document.getElementById('chatBody').appendChild(msgDiv);
             });
-            chatBody.scrollTop = chatBody.scrollHeight;
+            document.getElementById('chatBody').scrollTop = document.getElementById('chatBody').scrollHeight;
+
+            // Enable input
             document.querySelector('.chat-footer input').disabled = false;
             document.querySelector('.chat-footer button[aria-label="Send message"]').disabled = false;
             document.getElementById('linkDropdownBtn').disabled = false;
+
             fetch('/Message/MarkAllAsRead', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -810,66 +869,115 @@
             }).then(() => loadInbox());
         }
 
-        async function sendMessage() {
-            const input = document.querySelector('.chat-footer input');
-            const content = input.value.trim();
-            if (!content || !currentConversationId) return;
-            const res = await fetch('/Message/SendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `conversationId=${encodeURIComponent(currentConversationId)}&content=${encodeURIComponent(content)}`
-            });
-            const data = await res.json();
-            currentConversationRole = data.Role;
-            if (data.success) {
-                input.value = '';
-                openConversation(currentConversationId, document.getElementById('chatHeader').textContent.trim());
+        // Archive Modal Logic
+        async function openArchiveModal() {
+            isArchiveOpen = true;
+            document.getElementById('archiveModal').style.display = 'flex';
+            document.getElementById('archiveModalSearch').value = '';
+            // Load archived conversations from the server
+            const res = await fetch('/Message/GetArchivedConversations');
+            archiveList = await res.json();
+            renderArchiveModalTable(archiveList);
+        }
+        function renderArchiveModalTable(list) {
+            const tbody = document.querySelector('#archiveModalTable tbody');
+            tbody.innerHTML = '';
+            if (!list || list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="color:#888; text-align:center; padding: 32px 0;">No archived conversations.</td></tr>`;
+                return;
             }
+            list.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = () => openArchivedConversation(c.Id, c.Name, c.ArchivedAt);
+                tr.innerHTML = `
+                        <td>${c.Name}</td>
+                        <td>${c.LastMessage ? c.LastMessage.substring(0, 48) : '(No messages)'}</td>
+                        <td>${formatDate(c.ArchivedAt)}</td>
+                    `;
+                tbody.appendChild(tr);
+            });
         }
-        async function togglePin(e, convoId) {
-            e.stopPropagation();
-            const res = await fetch('/Message/TogglePin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `conversationId=${convoId}`
-            });
-            const data = await res.json();
-            if (data.success) loadInbox();
+        function filterArchiveModalTable() {
+            const search = document.getElementById('archiveModalSearch').value.toLowerCase();
+            const filtered = archiveList.filter(c =>
+                c.Name.toLowerCase().includes(search) ||
+                (c.LastMessage && c.LastMessage.toLowerCase().includes(search))
+            );
+            renderArchiveModalTable(filtered);
         }
-        async function archiveConversation(e, convoId) {
-            e.stopPropagation();
-            const confirmed = await Swal.fire({
-                icon: 'warning',
-                title: 'Archive this conversation?',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#7F3D98',
-                customClass: { popup: 'swal2-theme-purple' }
-            });
-            if (!confirmed.isConfirmed) return;
-            const res = await fetch('/Message/ArchiveConversation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `conversationId=${convoId}`
-            });
+        function closeArchiveModal() {
+            isArchiveOpen = false;
+            document.getElementById('archiveModal').style.display = 'none';
+            clearArchiveChatPane();
+        }
+        // Archive Chat Rendering
+        async function openArchivedConversation(id, name, archivedAt) {
+            isArchiveOpen = true;
+            lastArchiveConvoId = id;
+            document.getElementById('archiveModal').style.display = 'none';
+
+            // Get archived messages for this conversation
+            const res = await fetch(`/Message/GetArchivedMessages?conversationId=${id}`);
             const data = await res.json();
-            if (data.success) {
-                if (currentConversationId === convoId) {
-                    currentConversationId = null;
-                    document.getElementById('chatHeader').textContent = 'No conversation selected';
-                    document.getElementById('chatBody').innerHTML = '<div class="chat-placeholder">Select a conversation to begin</div>';
-                    document.querySelector('.chat-footer input').disabled = true;
-                    document.querySelector('.chat-footer button[aria-label="Send message"]').disabled = true;
-                    document.getElementById('linkDropdownBtn').disabled = true;
+
+            // 1. Gray out the chat header and show archive details
+            const header = document.getElementById('chatHeader');
+            header.classList.add('archived');
+            header.innerHTML = `
+        <span style="font-weight:bold;">(Archived)</span>
+        <span class="offline-dot"></span>
+        ${name}
+        <span class="status-label" style="margin-left:14px;">Archived: ${formatDate(archivedAt)}</span>
+    `;
+
+            // 2. Display all messages
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML = '';
+            (data.Messages || []).forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('chat-message', msg.IsMine ? 'mine' : 'theirs');
+                let contentHtml = '';
+                if (msg.Content.includes('mini-issue-card') || msg.Content.includes('mini-meeting-card')) {
+                    contentHtml = msg.Content;
+                } else {
+                    contentHtml = `
+                <div class="msg-name">${msg.SenderName}</div>
+                <div class="msg-content">${msg.Content}</div>
+                <div class="msg-time">${formatDate(msg.SentAt)}</div>
+            `;
                 }
-                loadInbox();
-            } else {
-                Swal.fire({ icon: 'error', title: 'Failed to archive conversation.', customClass: { popup: 'swal2-theme-purple' } });
-            }
+                msgDiv.innerHTML = `<div class="msg-bubble">${contentHtml}</div>`;
+                chatBody.appendChild(msgDiv);
+            });
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // 3. Disable the input and send/link buttons
+            document.querySelector('.chat-footer input').disabled = true;
+            document.querySelector('.chat-footer button[aria-label="Send message"]').disabled = true;
+            document.getElementById('linkDropdownBtn').disabled = true;
         }
 
-        // ---------- NEW CHAT / LINK POPUPS ----------
+
+        // Clicking outside modal or away from chat clears archive view
+        function clearArchiveChatPane() {
+            if (lastArchiveConvoId) {
+                lastArchiveConvoId = null;
+                // Blank chat pane
+                const header = document.getElementById('chatHeader');
+                header.classList.remove('archived');
+                header.innerHTML = 'No conversation selected';
+                document.getElementById('chatBody').innerHTML = '<div class="chat-placeholder">Select a conversation to begin</div>';
+                document.querySelector('.chat-footer input').disabled = true;
+                document.querySelector('.chat-footer button[aria-label="Send message"]').disabled = true;
+                document.getElementById('linkDropdownBtn').disabled = true;
+            }
+            // Hide modal if it's open
+            document.getElementById('archiveModal').style.display = 'none';
+            isArchiveOpen = false;
+        }
+
+        // ---------- NEW CHAT / LINK POPUPS & FILTERS ----------
 
         function closeCustomModal() {
             document.getElementById('customModal').style.display = 'none';
@@ -891,7 +999,6 @@
                 });
                 return;
             }
-
             // Only allow certain link options based on role
             let inputOptions = {};
             if (currentConversationRole === "Student") {
@@ -899,7 +1006,6 @@
             } else {
                 inputOptions = { issue: 'Link Issue', meeting: 'Link Meeting' };
             }
-
             Swal.fire({
                 title: 'Link Message',
                 input: 'select',
@@ -918,19 +1024,20 @@
             });
         }
 
-
         async function openLinkIssueModal() {
             modalMode = "issue";
             const res = await fetch('/Issue/GetUserIssues');
             const issues = await res.json();
             showCustomModal("Link Issue", "Issue", issues, linkIssue);
         }
+
         async function openLinkMeetingModal() {
             modalMode = "meeting";
             const res = await fetch('/Appointment/GetUserMeetings');
             const meetings = await res.json();
             showCustomModal("Link Meeting", "Meeting", meetings, linkMeeting);
         }
+
         function showCustomModal(title, type, items, callback) {
             document.getElementById('customModalTitle').textContent = title;
             // toolbar
@@ -959,6 +1066,7 @@
             // store all for filtering
             window._customModalData = { items, callback, type };
         }
+
         function fillCustomModalTable(type, items, callback) {
             const thead = document.querySelector("#customModalTable thead");
             const tbody = document.querySelector("#customModalTable tbody");
@@ -1002,6 +1110,7 @@
                 });
             }
         }
+
         function filterCustomModalTable() {
             if (!window._customModalData) return;
             const { items, callback, type } = window._customModalData;
@@ -1027,6 +1136,7 @@
             }
             fillCustomModalTable(type, filtered, callback);
         }
+
         // Modal action callbacks
         async function startConversation(userId) {
             const response = await fetch('/Message/StartConversation', {
@@ -1039,6 +1149,7 @@
             loadInbox();
             openConversation(result.conversationId, result.name);
         }
+
         async function linkIssue(issueId) {
             const res = await fetch('/Message/SendIssueCardMessage', {
                 method: 'POST',
@@ -1051,6 +1162,7 @@
                 openConversation(currentConversationId, document.getElementById('chatHeader').textContent);
             }
         }
+
         async function linkMeeting(meetingId) {
             const res = await fetch('/Message/SendMeetingCardMessage', {
                 method: 'POST',
@@ -1064,5 +1176,62 @@
             }
         }
 
+        // --- ARCHIVE/DELETE FUNCTION ---
+        async function archiveConversation(event, convoId) {
+            event.stopPropagation();
+            Swal.fire({
+                title: "Archive Conversation?",
+                text: "Are you sure you want to move this conversation to your archive?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#7F3D98",
+                cancelButtonColor: "#bbb",
+                confirmButtonText: "Yes, archive it",
+                background: "#fff"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const response = await fetch('/Message/ArchiveConversation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `conversationId=${convoId}`
+                    });
+                    if (response.ok) {
+                        loadInbox();
+                        Swal.fire({
+                            icon: "success",
+                            title: "Conversation Archived",
+                            timer: 1200,
+                            showConfirmButton: false,
+                            background: "#fff"
+                        });
+                    }
+                }
+            });
+        }
+
+        // --- SEND MESSAGE FUNCTION ---
+        async function sendMessage() {
+            const input = document.querySelector('.chat-footer input');
+            const btn = document.querySelector('.chat-footer button[aria-label="Send message"]');
+            if (input.disabled || btn.disabled) return;
+            const content = input.value.trim();
+            if (!content) return;
+            btn.disabled = true;
+
+            const res = await fetch('/Message/SendMessage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `conversationId=${currentConversationId}&content=${encodeURIComponent(content)}`
+            });
+            input.value = '';
+            btn.disabled = false;
+            // Reload current conversation messages
+            openConversation(currentConversationId, document.getElementById('chatHeader').textContent);
+        }
     </script>
 }
+
+
+
+
+

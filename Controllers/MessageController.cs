@@ -32,8 +32,7 @@ namespace GuidanceTracker.Controllers
                 .Include(c => c.UserOne)
                 .Include(c => c.UserTwo)
                 .Include(c => c.Messages)
-                .OrderByDescending(c => c.UserOneId == userId ? (c.IsPinnedByUserOne ? 1 : 0) : (c.IsPinnedByUserTwo ? 1 : 0))
-                .ThenByDescending(c => c.LastUpdated)
+                .OrderByDescending(c => c.LastUpdated)
                 .ToListAsync();
 
             var result = new List<object>();
@@ -56,7 +55,6 @@ namespace GuidanceTracker.Controllers
                     Id = convo.Id,
                     Name = $"{otherUser.FirstName} {otherUser.LastName}",
                     Role = role,
-                    IsPinned = convo.UserOneId == userId ? convo.IsPinnedByUserOne : convo.IsPinnedByUserTwo,
                     LastMessage = GetMessagePreview(lastMsg),
                     UnreadCount = convo.Messages.Count(m => m.ReceiverId == userId && !m.IsRead),
                     UpdatedAt = convo.LastUpdated,
@@ -66,6 +64,7 @@ namespace GuidanceTracker.Controllers
 
             return Json(new { conversations = result, roles = uniqueRoles.ToList() }, JsonRequestBehavior.AllowGet);
         }
+
 
         // Get messages for a conversation with user status
         public async Task<ActionResult> GetMessages(int conversationId)
@@ -388,9 +387,86 @@ namespace GuidanceTracker.Controllers
             else
                 return new HttpStatusCodeResult(403, "You are not part of this conversation.");
 
+            convo.ArchivedAt = DateTime.UtcNow; // <-- THIS LINE IS IMPORTANT!
             await db.SaveChangesAsync();
             return Json(new { success = true });
         }
+
+        public async Task<ActionResult> GetArchivedConversations()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var archived = await db.Conversations
+                .Include(c => c.UserOne)
+                .Include(c => c.UserTwo)
+                .Include(c => c.Messages)
+                .Where(c =>
+                    (c.UserOneId == userId && c.IsArchivedByUserOne) ||
+                    (c.UserTwoId == userId && c.IsArchivedByUserTwo))
+                .OrderByDescending(c => c.ArchivedAt ?? c.LastUpdated)
+                .ToListAsync();
+
+            var result = archived.Select(convo => {
+                var otherUser = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+                var lastMsg = convo.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
+                return new
+                {
+                    Id = convo.Id,
+                    Name = $"{otherUser.FirstName} {otherUser.LastName}",
+                    LastMessage = lastMsg != null ? StripHtml(lastMsg.Content).Truncate(40) : "",
+                    ArchivedAt = convo.ArchivedAt ?? convo.LastUpdated
+                };
+            }).ToList();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> GetArchivedMessages(int conversationId)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var convo = await db.Conversations
+                .Include(c => c.UserOne)
+                .Include(c => c.UserTwo)
+                .Include(c => c.Messages.Select(m => m.Sender))
+                .FirstOrDefaultAsync(c => c.Id == conversationId);
+
+            // Only allow user to see archived conversations they own
+            if (convo == null)
+                return HttpNotFound("Conversation not found.");
+
+            bool isArchived =
+                (convo.UserOneId == userId && convo.IsArchivedByUserOne)
+                || (convo.UserTwoId == userId && convo.IsArchivedByUserTwo);
+
+            if (!isArchived)
+                return new HttpStatusCodeResult(403, "Not archived for current user.");
+
+            var otherUser = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+
+            var messages = convo.Messages
+                .Where(m => m.ConversationId == conversationId && (m.SenderId == userId || m.ReceiverId == userId))
+                .OrderBy(m => m.SentAt)
+                .ToList();
+
+            var result = new
+            {
+                Messages = messages.Select(m => new
+                {
+                    m.Id,
+                    m.SenderId,
+                    SenderName = $"{m.Sender.FirstName} {m.Sender.LastName}",
+                    m.Content,
+                    SentAt = m.SentAt.ToString("o"),
+                    IsMine = m.SenderId == userId
+                })
+            };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+
 
         // GET: /Meeting/GetUserMeetings
         public ActionResult GetUserMeetings()
