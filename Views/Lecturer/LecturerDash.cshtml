@@ -153,38 +153,35 @@
 
             <!-- Active Issues -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("Index", "Issue")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/issues.svg" class="stat-icon-img" alt="Issues" />
                         <p class="stat-title">Active Issues</p>
                         <p class="stat-number">@Model.ActiveIssuesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Issue", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- New Messages -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("Index", "Message")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/messages.svg" class="stat-icon-img" alt="Messages" />
                         <p class="stat-title">New Messages</p>
                         <p class="stat-number">@Model.NewMessagesCount</p>
-                        <p>@Html.ActionLink("View more >", "Index", "Message", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- New Posts -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card custom-card text-center">
+                <a href="@Url.Action("ViewPosts", "Post")" class="card custom-card text-center" style="text-decoration:none;">
                     <div class="card-body">
                         <img src="~/Images/Icons/PURPLE/posts.svg" class="stat-icon-img" alt="Posts" />
                         <p class="stat-title">New Posts</p>
                         <p class="stat-number">@Model.NewAnnouncementsCount</p>
-                        <p>@Html.ActionLink("View more >", "ViewPosts", "Post", null, new { @class = "view-more-link" })</p>
                     </div>
-                </div>
+                </a>
             </div>
 
         </div>
