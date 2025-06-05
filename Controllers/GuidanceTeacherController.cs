@@ -310,7 +310,8 @@ namespace GuidanceTracker.Controllers
                     Street = model.Street,
                     City = model.City,
                     Postcode = model.Postcode,
-                    RegistredAt = DateTime.UtcNow // Set the registration date to the current UTC time
+                    RegistredAt = DateTime.UtcNow, // Set the registration date to the current UTC time
+                    MustChangePassword = true
                 };
 
                 // Attempt to create the user in the ASP.NET Identity system with the provided password

@@ -3,78 +3,154 @@
     ViewBag.Title = "Simple Feedback";
 }
 
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h2><i class="fas fa-comment"></i> Simple Feedback</h2>
-            <p class="text-muted">Simple feedback received from students</p>
-        </div>
-        <div class="col-auto">
-            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7F3D98; border-color: #7F3D98; ">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-comment"></i>
+            Unread Simple Feedback
+        </h2>
     </div>
-
-    @if (!Model.Any())
-    {
-        <div class="alert" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">
-            <i class="fas fa-info-circle"></i> You haven't received any simple feedback yet.
-        </div>
-    }
-    else
-    {
-        <div class="card">
-            <div class="card-header" style="background-color: #7F3D98; color: white;">
-                <h4>Received Feedback</h4>
+    <div class="card-body">
+        <div class="subtitle-actions-row">
+            <p class="subtitle">Unread simple feedback received from students</p>
+            <div class="actions-group">
+                <a href="javascript:history.back()" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead style="background-color: #f2e9ff;">
-                            <tr>
-                                <th>Student</th>
-                                <th>Title</th>
-                                <th>Unit</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.OrderByDescending(f => f.DateOfCreation))
-                            {
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="alert" style="background-color: #e0c6ff; color: #4b0082; border-color: #7F3D98;">
+                <i class="fas fa-info-circle"></i> You haven't received any simple feedback yet.
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-header" style="background-color: #7F3D98; color: white;">
+                    <h4>Received Feedback</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #f2e9ff;">
                                 <tr>
-                                    <td>
-                                        @if (item.Student != null)
-                                        {
-                                            <span>@item.Student.FirstName @item.Student.LastName</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">Unknown</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <strong>@item.FeedbackTitle</strong>
-                                    </td>
-                                    <td>
-                                        @(item.Unit?.UnitName ?? "N/A")
-                                    </td>
-                                    <td>
-                                        @item.DateOfCreation.ToString("MMM d, yyyy")
-                                    </td>
-                                    <td>
-                                        <a href="@Url.Action("ViewSimpleFeedbackDetails", "SimpleFeedback", new { id = item.FeedbackId })"
-                                           class="btn btn-sm" style="background-color: #7F3D98; color: white;">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </td>
+                                    <th>Student</th>
+                                    <th>Title</th>
+                                    <th>Unit</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderByDescending(f => f.DateOfCreation))
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (item.Student != null)
+                                            {
+                                                <span>@item.Student.FirstName @item.Student.LastName</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Unknown</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>@item.FeedbackTitle</strong>
+                                        </td>
+                                        <td>
+                                            @(item.Unit?.UnitName ?? "N/A")
+                                        </td>
+                                        <td>
+                                            @item.DateOfCreation.ToString("MMM d, yyyy")
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("ViewSimpleFeedbackDetails", "SimpleFeedback", new { id = item.FeedbackId })"
+                                               class="btn btn-sm" style="background-color: #7F3D98; color: white;">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
+<style>
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #7F3D98;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .subtitle {
+        color: #6b7280;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    .subtitle-actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-bottom: 25px;
+        background-color: transparent;
+        color: #7F3D98;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid #7F3D98;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .back-button:hover {
+            background-color: #7F3D98;
+            text-decoration: none;
+            color: white;
+        }
+</style>

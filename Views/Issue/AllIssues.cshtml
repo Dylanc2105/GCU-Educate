@@ -6,105 +6,254 @@
     ViewBag.Title = "All Issues";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .main-card {
+        max-width: 1400px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
 
-<h1>All Issues</h1>
+    .card-header {
+        background-color: #7F3D98;
+        color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
 
-<!-- SEARCH AND FILTERS -->
-<div style="display: flex; gap: 10px; margin-bottom: 20px;">
-    <!-- Sort Order -->
-    <select id="sortOrder" onchange="updateFilters()">
-        <option value="">Sort By</option>
-        <option value="newest" @(Request.QueryString["sortOrder"] == "newest" ? "selected" : "")>Newest</option>
-        <option value="oldest" @(Request.QueryString["sortOrder"] == "oldest" ? "selected" : "")>Oldest</option>
-    </select>
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0;
+    }
 
-    <!-- Issue Type Filter -->
-    <select id="issueType" onchange="updateFilters()">
-        <option value="">Filter By Type</option>
-        @foreach (var issue in Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>())
-        {
-            <option value="@issue.ToString()" @(Request.QueryString["issueType"] == issue.ToString() ? "selected" : "")>@GetEnumDisplayName(issue)</option>
+    .card-body {
+        padding: 30px;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin: 20px 0 0 0;
+        background-color: transparent;
+        color: #7F3D98;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid #7F3D98;
+        cursor: pointer;
+    }
+
+        .back-button:hover {
+            background-color: #7F3D98;
+            text-decoration: none;
+            color: white;
         }
-    </select>
 
-    <!-- Search Bar -->
-    <input type="text" id="searchInput" class="search-input" placeholder="Search Students..." onkeyup="updateFilters()" value="@Request.QueryString["searchString"]" />
-</div>
+    .filters-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
 
-<!-- ISSUES TABLE -->
-<table style="width: 100%; border-collapse: collapse;">
-    <thead>
-        <tr style="background: #7F3D98; color: white; text-align: left;">
-            <th style="padding: 10px;">Student Name</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Created On</th>
-            <th>Lecturer Name</th>  <!-- Added Lecturer Name column -->
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="issuesTable">
-        @if (Model.Any())
-        {
-            foreach (var issue in Model)
-            {
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 10px;">@issue.Student.FirstName @issue.Student.LastName</td>
-                    <td>@issue.IssueTitle.ToString()</td>
-                    <td>@issue.IssueStatus.ToString()</td>
-                    <td>@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
-                    <td>@issue.Lecturer.FirstName @issue.Lecturer.LastName</td>  <!-- Display Lecturer's Full Name -->
-                    <td>
-                        <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })" style="color: #7F3D98;">View</a>
-                    </td>
+    .filter-control {
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        background: white;
+        min-width: 150px;
+    }
+
+    .search-input {
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        min-width: 200px;
+        flex: 1;
+        max-width: 300px;
+    }
+
+    .issues-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-header {
+        background: #7F3D98;
+        color: white;
+    }
+
+        .table-header th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+    .table-row {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s ease;
+    }
+
+        .table-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+    .table-cell {
+        padding: 12px;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .view-link {
+        color: #7F3D98;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+        .view-link:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+
+    .no-issues {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+        font-style: italic;
+    }
+
+
+</style>
+<div class="main-card">
+    <div class="card-header">
+        <h1 class="card-title">All Issues</h1>
+    </div>
+
+    <div class="card-body">
+
+        <!-- SEARCH AND FILTERS -->
+        <div class="filters-container">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <!-- Sort Order -->
+                <select id="sortOrder" class="filter-control" onchange="updateFilters()">
+                    <option value="">Sort By</option>
+                    <option value="newest" @(Request.QueryString["sortOrder"] == "newest" ? "selected" : "")>Newest</option>
+                    <option value="oldest" @(Request.QueryString["sortOrder"] == "oldest" ? "selected" : "")>Oldest</option>
+                </select>
+
+               
+                <!-- Date Range Filter -->
+                <input type="date" id="startDate" class="filter-control" onchange="updateFilters()" value="@Request.QueryString["startDate"]" />
+                <span style="align-self: center;">to</span>
+                <input type="date" id="endDate" class="filter-control" onchange="updateFilters()" value="@Request.QueryString["endDate"]" />
+
+                <!-- Issue Type Filter -->
+                <select id="issueType" class="filter-control" onchange="updateFilters()">
+                    <option value="">Filter By Type</option>
+                    @foreach (var issue in Enum.GetValues(typeof(IssueTitle)).Cast<IssueTitle>())
+                    {
+                        <option value="@issue.ToString()" @(Request.QueryString["issueType"] == issue.ToString() ? "selected" : "")>@GetEnumDisplayName(issue)</option>
+                    }
+                </select>
+
+                <!-- Search Bar -->
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Students..." onkeyup="updateFilters()" value="@Request.QueryString["searchString"]" />
+            </div>
+        </div>
+
+        <!-- ISSUES TABLE -->
+        <table class="issues-table">
+            <thead class="table-header">
+                <tr>
+                    <th>Student Name</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Created On</th>
+                    <th>Lecturer Name</th>  <!-- Added Lecturer Name column -->
+                    <th>Actions</th>
                 </tr>
+            </thead>
+            <tbody id="issuesTable">
+                @if (Model.Any())
+                {
+                    foreach (var issue in Model)
+                    {
+                        <tr class="table-row">
+                            <td class="table-cell">@issue.Student.FirstName @issue.Student.LastName</td>
+                            <td class="table-cell">@issue.IssueTitle.ToString()</td>
+                            <td class="table-cell">@issue.IssueStatus.ToString()</td>
+                            <td class="table-cell">@issue.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="table-cell">@issue.Lecturer.FirstName @issue.Lecturer.LastName</td>  <!-- Display Lecturer's Full Name -->
+                            <td class="table-cell">
+                                <a href="@Url.Action("ViewIssue", "Issue", new { id = issue.IssueId })" class="view-link">View</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="no-issues">No issues found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a href="@Url.Action("Index", "Issue")" class="back-button">← Back to Issues Dashboard</a>
+        </div>
+    </div>
+
+        <script>
+            let typingTimeout;
+
+           
+
+            function updateFilters() {
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(function () {
+                    var sortOrder = document.getElementById("sortOrder").value;
+                    var issueType = document.getElementById("issueType").value;
+                    var searchInput = document.getElementById("searchInput").value;
+                    var startDate = document.getElementById("startDate").value;
+                    var endDate = document.getElementById("endDate").value;
+
+                    var queryParams = new URLSearchParams(window.location.search);
+
+                    if (sortOrder) queryParams.set("sortOrder", sortOrder); else queryParams.delete("sortOrder");
+                    if (issueType) queryParams.set("issueType", issueType); else queryParams.delete("issueType");
+                    if (searchInput) queryParams.set("searchString", searchInput); else queryParams.delete("searchString");
+                    if (startDate) queryParams.set("startDate", startDate); else queryParams.delete("startDate");
+                    if (endDate) queryParams.set("endDate", endDate); else queryParams.delete("endDate");
+
+                    window.location.search = queryParams.toString();
+                }, 500);
+            }
+
+        </script>
+
+
+        @functions {
+            public string GetEnumDisplayName(Enum value)
+            {
+                var field = value.GetType().GetField(value.ToString());
+                var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+                return attribute?.Name ?? value.ToString();
             }
         }
-        else
-        {
-            <tr>
-                <td colspan="6" style="text-align: center; padding: 15px;">No issues found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<script>
-    let typingTimeout;
-
-    function updateFilters() {
-        // Clear any previously set timeout
-        clearTimeout(typingTimeout);
-
-        // Set a new timeout to trigger the search after 1 second
-        typingTimeout = setTimeout(function () {
-            var sortOrder = document.getElementById("sortOrder").value;
-            var issueType = document.getElementById("issueType").value;
-            var searchInput = document.getElementById("searchInput").value;
-
-            // Prepare the query parameters
-            var queryParams = new URLSearchParams(window.location.search);
-            if (sortOrder) queryParams.set("sortOrder", sortOrder);
-            else queryParams.delete("sortOrder");
-
-            if (issueType) queryParams.set("issueType", issueType);
-            else queryParams.delete("issueType");
-
-            if (searchInput) queryParams.set("searchString", searchInput);
-            else queryParams.delete("searchString");
-
-            // Update the URL with the new query parameters (without refreshing the page)
-            window.location.search = queryParams.toString();
-        }, 500);  // Set the delay for 1 second after typing stops
-    }
-</script>
-
-
-@functions {
-    public string GetEnumDisplayName(Enum value)
-    {
-        var field = value.GetType().GetField(value.ToString());
-        var attribute = field?.GetCustomAttribute<DisplayAttribute>();
-        return attribute?.Name ?? value.ToString();
-    }
-}

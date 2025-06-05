@@ -3,77 +3,125 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Appointments for the week</h2>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">Appointments for the Week</h2>
+    </div>
+    <div class="card-body">
 
-<table class="table">
-    <tr>
-        <th>
-            <p><strong>Student Name</strong></p>
-        </th>
-        <th>
-            Date
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Notes
-        </th>
-        <th>
-            Room
-        </th>
-        <th></th>
-    </tr>
+        <table class="table table-striped">
+            <tr>
+                <th>
+                    <p><strong>Student Name</strong></p>
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Notes
+                </th>
+                <th>
+                    Room
+                </th>
+                <th></th>
+            </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.FirstName)
-                @Html.DisplayFor(modelItem => item.Student.LastName)
-            </td>
-            <td>
-                @item.AppointmentDate.ToString("dd/MM")
-                @item.StartTime.ToString("hh\\:mm")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentNotes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit" })
-            </td>
-        </tr>
-    }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Student.FirstName)
+                        @Html.DisplayFor(modelItem => item.Student.LastName)
+                    </td>
+                    <td>
+                        @item.AppointmentDate.ToString("dd/MM")
+                        @item.StartTime.ToString("hh\\:mm")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AppointmentNotes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Room)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Appointment", new { id = item.AppointmentId }, new { @class = "btn btn-edit" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div style="padding: 20px">
+    @Html.ActionLink("← Back to Appointments Dashboard", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn-outline" })
+     </div>
+</div>
+        
+       
+        <style>
+            .main-card {
+                max-width: 1400px;
+                margin: 20px auto;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
 
+            .card-header {
+                background-color: #7F3D98;
+                color: white;
+                padding: 20px 30px;
+                text-align: left;
+            }
 
-</table>
-@Html.ActionLink("back to appointments center", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
-<style>
-    .btn-back {
-        background: #7F3D98;
-    }
-    .btn-edit {
-        background: #7F3D98;
-    }
+            .card-title {
+                font-size: 24px;
+                font-weight: 600;
+                margin: 0;
+            }
 
-    .btn {
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
-    }
+            .card-body {
+                padding: 30px;
+            }
 
-    .btn-back:hover {
-        background-color: #5c2b70; /* A darker shade of your original purple */
-        color: white;
-    }
-</style>
+            .btn-edit {
+                background: #7F3D98;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                padding: 8px 16px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.3s ease;
+            }
+
+                .btn-edit:hover {
+                    background-color: #7F3D98;
+                    color: white;
+                }
+            .btn-outline {
+                background-color: transparent;
+                color: #7F3D98;
+                border: 2px solid #7F3D98;
+                border-radius: 6px;
+                padding: 8px 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+            }
+
+                .btn-outline:hover {
+                    background-color: #7F3D98;
+                    color: white;
+                    text-decoration: none;
+                }
+        </style>

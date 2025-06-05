@@ -591,6 +591,29 @@ namespace GuidanceTracker.Controllers
             return RedirectToAction("ViewPosts");
         }
 
+        // Get Post Details
+        [HttpGet]
+        [Authorize]
+        public ActionResult Details(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var post = db.Posts
+                .Include(p => p.Author)
+                .FirstOrDefault(p => p.PostId == id);
+
+            if (post == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(post);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -773,6 +796,7 @@ namespace GuidanceTracker.Controllers
 
                 return visiblePosts;
             }
+
         }
     }
 }

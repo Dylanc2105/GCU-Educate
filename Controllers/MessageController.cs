@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using System.Collections.Generic;
+using GuidanceTracker.Services;
 
 namespace GuidanceTracker.Controllers
 {
@@ -19,46 +20,54 @@ namespace GuidanceTracker.Controllers
         {
             return View();
         }
+
+        // Returns all conversations with roles list for filter
         public async Task<ActionResult> Inbox()
         {
             var userId = User.Identity.GetUserId();
             var userManager = new UserManager<User>(new UserStore<User>(db));
 
             var conversations = await db.Conversations
-                .Where(c =>
-                    (c.UserOneId == userId && !c.IsArchivedByUserOne) ||
-                    (c.UserTwoId == userId && !c.IsArchivedByUserTwo))
+                .Where(c => (c.UserOneId == userId && !c.IsArchivedByUserOne) || (c.UserTwoId == userId && !c.IsArchivedByUserTwo))
                 .Include(c => c.UserOne)
                 .Include(c => c.UserTwo)
                 .Include(c => c.Messages)
-                .OrderByDescending(c => c.LastUpdated)
+                .OrderByDescending(c => c.UserOneId == userId ? (c.IsPinnedByUserOne ? 1 : 0) : (c.IsPinnedByUserTwo ? 1 : 0))
+                .ThenByDescending(c => c.LastUpdated)
                 .ToListAsync();
 
             var result = new List<object>();
             var uniqueRoles = new HashSet<string>();
 
-            foreach (var c in conversations)
+            foreach (var convo in conversations)
             {
-                var otherUser = c.UserOneId == userId ? c.UserTwo : c.UserOne;
-                var role = (await userManager.GetRolesAsync(otherUser.Id)).FirstOrDefault();
+                var otherUser = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+                var isOnline = !otherUser.AppearOffline
+                               && otherUser.LastSeen.HasValue
+                               && (DateTime.UtcNow - otherUser.LastSeen.Value).TotalMinutes <= 3;
+
+                var role = (await userManager.GetRolesAsync(otherUser.Id)).FirstOrDefault() ?? "Unknown";
                 uniqueRoles.Add(role);
+
+                var lastMsg = convo.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
 
                 result.Add(new
                 {
-                    Id = c.Id,
+                    Id = convo.Id,
                     Name = $"{otherUser.FirstName} {otherUser.LastName}",
                     Role = role,
-                    IsPinned = c.UserOneId == userId ? c.IsPinnedByUserOne : c.IsPinnedByUserTwo,
-                    LastMessage = GetMessagePreview(c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault()),
-                    UnreadCount = c.Messages.Count(m => m.ReceiverId == userId && !m.IsRead),
-                    UpdatedAt = c.LastUpdated
+                    IsPinned = convo.UserOneId == userId ? convo.IsPinnedByUserOne : convo.IsPinnedByUserTwo,
+                    LastMessage = GetMessagePreview(lastMsg),
+                    UnreadCount = convo.Messages.Count(m => m.ReceiverId == userId && !m.IsRead),
+                    UpdatedAt = convo.LastUpdated,
+                    IsOnline = isOnline
                 });
             }
 
             return Json(new { conversations = result, roles = uniqueRoles.ToList() }, JsonRequestBehavior.AllowGet);
         }
 
-
+        // Get messages for a conversation with user status
         public async Task<ActionResult> GetMessages(int conversationId)
         {
             var userId = User.Identity.GetUserId();
@@ -72,8 +81,13 @@ namespace GuidanceTracker.Controllers
                 return HttpNotFound("Conversation not found.");
 
             var otherUser = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+
+            var isOnline = !otherUser.AppearOffline
+                && otherUser.LastSeen.HasValue
+                && (DateTime.UtcNow - otherUser.LastSeen.Value).TotalMinutes <= 3;
+
             var userManager = new UserManager<User>(new UserStore<User>(db));
-            var otherRole = (await userManager.GetRolesAsync(otherUser.Id)).FirstOrDefault();
+            var otherRole = (await userManager.GetRolesAsync(otherUser.Id)).FirstOrDefault() ?? "Unknown";
 
             var messages = await db.Messages
                 .Where(m => m.ConversationId == conversationId &&
@@ -87,13 +101,13 @@ namespace GuidanceTracker.Controllers
             {
                 foreach (var msg in unread)
                     msg.IsRead = true;
-
                 await db.SaveChangesAsync();
             }
 
             var result = new
             {
                 Role = otherRole,
+                IsOnline = isOnline,
                 Messages = messages.Select(m => new
                 {
                     m.Id,
@@ -111,13 +125,16 @@ namespace GuidanceTracker.Controllers
         [HttpPost]
         public async Task<ActionResult> SendMessage(int conversationId, string content)
         {
+            if (string.IsNullOrWhiteSpace(content))
+                return Json(new { success = false, error = "Message content cannot be empty." });
+
             var userId = User.Identity.GetUserId();
             var convo = await db.Conversations.FindAsync(conversationId);
 
             if (convo == null)
                 return HttpNotFound("Conversation not found.");
 
-            var receiverId = convo.UserOneId == userId ? convo.UserTwoId : convo.UserOneId;
+            var receiverId = (convo.UserOneId == userId) ? convo.UserTwoId : convo.UserOneId;
 
             var message = new Message
             {
@@ -133,14 +150,19 @@ namespace GuidanceTracker.Controllers
             db.Messages.Add(message);
             await db.SaveChangesAsync();
 
+            // Assuming _notificationService is injected in your controller
+
+            // Send notification
+            new NotificationService().NotifyNewMessage(receiverId);
+
+
             return Json(new { success = true });
         }
 
+        // Get users allowed to start conversations with current user
         public async Task<ActionResult> GetAvailableUsers()
         {
             var userId = User.Identity.GetUserId();
-            var currentUser = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
             var userManager = new UserManager<User>(new UserStore<User>(db));
             var currentRoles = await userManager.GetRolesAsync(userId);
             var currentRole = currentRoles.FirstOrDefault();
@@ -151,7 +173,7 @@ namespace GuidanceTracker.Controllers
             foreach (var user in allUsers)
             {
                 var roles = await userManager.GetRolesAsync(user.Id);
-                var role = roles.FirstOrDefault();
+                var role = roles.FirstOrDefault() ?? "Unknown";
 
                 bool isAllowed =
                     (currentRole == "Lecturer" && (role == "Lecturer" || role == "GuidanceTeacher" || role == "Student")) ||
@@ -184,24 +206,43 @@ namespace GuidanceTracker.Controllers
             if (convo == null)
                 return HttpNotFound("Conversation not found.");
 
+            // Determine the receiver
             var receiver = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+
+            // Prevent linking issues in student conversations
             var userManager = new UserManager<User>(new UserStore<User>(db));
             var role = (await userManager.GetRolesAsync(receiver.Id)).FirstOrDefault();
-
             if (role == "Student")
                 return new HttpStatusCodeResult(403, "Cannot link issues in student conversations.");
 
-            var issue = await db.Issues.Include(i => i.Student).FirstOrDefaultAsync(i => i.IssueId == issueId);
+            // Get the issue with student details
+            var issue = await db.Issues
+                .Include(i => i.Student)
+                .FirstOrDefaultAsync(i => i.IssueId == issueId);
 
             if (issue == null)
                 return HttpNotFound("Issue not found.");
 
+            // Mini issue card HTML
+            var html = $@"
+<div class='mini-issue-card' style='background:#fff;border-radius:8px;box-shadow:0 1.5px 6px #bda9da27;padding:14px 17px 13px 17px;margin:8px 0 3px 0;border-left:5px solid #7F3D98;max-width:380px;'>
+    <div class='mini-issue-title' style='font-size:1.12em;font-weight:700;color:#7F3D98;margin-bottom:2px;'>{issue.IssueTitle}</div>
+    <div class='mini-issue-meta' style='font-size:0.93em;color:#7F3D98;margin-bottom:4px;'>
+        <span class='mini-issue-date' style='margin-right:15px;'><b>Date:</b> {issue.CreatedAt:dd MMM yyyy}</span>
+        <span class='mini-issue-status'><b>Status:</b> {issue.IssueStatus}</span>
+    </div>
+    <div style='display:flex;gap:7px;'>
+        <a href='/Issue/ViewIssue/{issue.IssueId}' target='_blank' class='mini-issue-btn' style='background:#7F3D98;color:#fff;padding:5px 16px;border-radius:7px;text-decoration:none;font-weight:700;font-size:0.96em;'>View in Student Hub</a>
+    </div>
+</div>";
+
+            // Create and save the message
             var message = new Message
             {
                 ConversationId = conversationId,
                 SenderId = userId,
                 ReceiverId = receiver.Id,
-                Content = $@"<div class='mini-issue-card'><div class='mini-issue-header'><strong>{issue.IssueTitle}</strong><span class='mini-date'>{issue.CreatedAt.ToShortDateString()}</span></div><div class='mini-status'><strong>Status:</strong> {issue.IssueStatus}</div><div class='mini-description'><strong>For:</strong> {issue.Student.FirstName} {issue.Student.LastName}</div><div class='mini-actions'><a href='/Issue/ViewIssue?id={issue.IssueId}' class='mini-btn' target='_blank'>View Details</a></div></div>",
+                Content = html,
                 SentAt = DateTime.UtcNow,
                 IsRead = false
             };
@@ -213,22 +254,123 @@ namespace GuidanceTracker.Controllers
             return Json(new { success = true });
         }
 
-        [HttpPost]
-        public ActionResult ArchiveAllMessages()
-        {
-            var userId = User.Identity.GetUserId();
-            var messages = db.Messages
-                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
-                .ToList();
 
-            foreach (var msg in messages)
+        [HttpPost]
+        public async Task<ActionResult> SendMeetingCardMessage(int conversationId, int meetingId)
+        {
+            try
             {
-                msg.IsArchived = true;
+                var userId = User.Identity.GetUserId();
+                var convo = await db.Conversations
+                    .Include(c => c.UserOne)
+                    .Include(c => c.UserTwo)
+                    .FirstOrDefaultAsync(c => c.Id == conversationId);
+
+                if (convo == null)
+                    return HttpNotFound("Conversation not found.");
+
+                var receiver = convo.UserOneId == userId ? convo.UserTwo : convo.UserOne;
+                var userManager = new UserManager<User>(new UserStore<User>(db));
+                var role = (await userManager.GetRolesAsync(receiver.Id)).FirstOrDefault();
+
+                // Prevent linking meetings in student conversations
+                if (role == "Student")
+                    return new HttpStatusCodeResult(403, "Cannot link meetings in student conversations.");
+
+                var meeting = await db.Appointments
+                    .Include(a => a.Student)
+                    .Include(a => a.GuidanceTeacher)
+                    .Include(a => a.GuidanceSession)
+                    .FirstOrDefaultAsync(m => m.AppointmentId == meetingId);
+
+                if (meeting == null)
+                    return HttpNotFound("Meeting not found.");
+
+                var html = $@"
+<div class='mini-meeting-card' style='background:#fff;border-radius:8px;box-shadow:0 1.5px 6px #bda9da27;padding:14px 17px 13px 17px;margin:8px 0 3px 0;border-left:5px solid #B61A25;max-width:410px;'>
+    <div class='mini-meeting-title' style='font-size:1.12em;font-weight:700;color:#B61A25;margin-bottom:2px;'>
+        Meeting with {meeting.Student?.FirstName} {meeting.Student?.LastName}
+    </div>
+    <div class='mini-meeting-meta' style='font-size:0.93em;color:#B61A25;margin-bottom:2px;'>
+        <span style='margin-right:15px;'><b>Date:</b> {meeting.AppointmentDate:dddd, dd MMM yyyy}</span>
+        <span><b>Status:</b> {meeting.AppointmentStatus}</span>
+    </div>
+    <div class='mini-meeting-meta' style='font-size:0.93em;color:#B61A25;margin-bottom:6px;'>
+        <span style='margin-right:15px;'><b>Time:</b> {meeting.StartTime:hh\\:mm} - {meeting.EndTime:hh\\:mm}</span>
+        <span><b>Room:</b> {meeting.Room ?? "N/A"}</span>
+    </div>
+    <div class='mini-meeting-notes' style='font-size:1em;color:#444;margin-bottom:7px;word-break:break-word;'>
+        {(string.IsNullOrWhiteSpace(meeting.AppointmentNotes) ? "<i>No notes</i>" : meeting.AppointmentNotes)}
+    </div>
+    <div style='display:flex;gap:7px;'>
+        <a href='/Meeting/ViewMeeting?id={meeting.AppointmentId}' target='_blank' class='mini-issue-btn' style='background:#B61A25;color:#fff;padding:5px 16px;border-radius:7px;text-decoration:none;font-weight:700;font-size:0.96em;'>View Meeting Details</a>
+    </div>
+</div>";
+
+                var message = new Message
+                {
+                    ConversationId = conversationId,
+                    SenderId = userId,
+                    ReceiverId = receiver.Id,
+                    Content = html,
+                    SentAt = DateTime.UtcNow,
+                    IsRead = false
+                };
+
+                convo.LastUpdated = DateTime.UtcNow;
+                db.Messages.Add(message);
+                await db.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return message for debug
+                return Json(new { success = false, error = ex.Message, stack = ex.StackTrace });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> StartConversation(string userId)
+        {
+            var myId = User.Identity.GetUserId();
+            if (userId == myId)
+                return Json(new { success = false, error = "You can't chat with yourself." });
+
+            // Try find existing conversation (order does not matter)
+            var convo = await db.Conversations
+                .FirstOrDefaultAsync(c =>
+                    (c.UserOneId == myId && c.UserTwoId == userId) ||
+                    (c.UserOneId == userId && c.UserTwoId == myId)
+                );
+
+            // Create new conversation if doesn't exist
+            if (convo == null)
+            {
+                convo = new Conversation
+                {
+                    UserOneId = myId,
+                    UserTwoId = userId,
+                    LastUpdated = DateTime.UtcNow,
+                    IsPinnedByUserOne = false,
+                    IsPinnedByUserTwo = false,
+                    IsArchivedByUserOne = false,
+                    IsArchivedByUserTwo = false
+                };
+                db.Conversations.Add(convo);
+                await db.SaveChangesAsync();
             }
 
-            db.SaveChanges();
-            return Json(new { success = true });
+            // Get the name of the other user for displaying in the chat header
+            var otherUser = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var otherName = otherUser != null
+                ? (otherUser.FirstName + " " + otherUser.LastName).Trim()
+                : "Unknown User";
+
+            return Json(new { success = true, conversationId = convo.Id, name = otherName });
         }
+
 
         [HttpPost]
         public async Task<ActionResult> ArchiveConversation(int conversationId)
@@ -250,61 +392,32 @@ namespace GuidanceTracker.Controllers
             return Json(new { success = true });
         }
 
-        [HttpPost]
-        public async Task<ActionResult> ArchiveAllMessagesForCurrentUser()
+        // GET: /Meeting/GetUserMeetings
+        public ActionResult GetUserMeetings()
         {
             var userId = User.Identity.GetUserId();
 
-            var conversations = await db.Conversations
-                .Where(c => c.UserOneId == userId || c.UserTwoId == userId)
-                .ToListAsync();
-
-            foreach (var convo in conversations)
-            {
-                if (convo.UserOneId == userId) convo.IsArchivedByUserOne = true;
-                else if (convo.UserTwoId == userId) convo.IsArchivedByUserTwo = true;
-            }
-
-            await db.SaveChangesAsync();
-            return Json(new { success = true });
-        }
-
-
-        [HttpGet]
-        public async Task<ActionResult> GetArchivedConversations()
-        {
-            var userId = User.Identity.GetUserId();
-            var userManager = new UserManager<User>(new UserStore<User>(db));
-
-            var archived = await db.Conversations
-                .Where(c =>
-                    (c.UserOneId == userId && c.IsArchivedByUserOne) ||
-                    (c.UserTwoId == userId && c.IsArchivedByUserTwo))
-                .Include(c => c.UserOne)
-                .Include(c => c.UserTwo)
-                .Include(c => c.Messages)
-                .OrderByDescending(c => c.LastUpdated)
-                .ToListAsync();
-
-            var result = new List<object>();
-
-            foreach (var c in archived)
-            {
-                var otherUser = c.UserOneId == userId ? c.UserTwo : c.UserOne;
-                var role = (await userManager.GetRolesAsync(otherUser.Id)).FirstOrDefault();
-
-                result.Add(new
+            // Only show meetings for the user (adapt if roles differ)
+            var meetings = db.Appointments
+                .Include(a => a.Student)
+                .Where(a => a.StudentId == userId || a.GuidanceTeacherId == userId)
+                .OrderByDescending(a => a.AppointmentDate)
+                .ThenByDescending(a => a.StartTime)
+                .Select(a => new
                 {
-                    Id = c.Id,
-                    Name = $"{otherUser.FirstName} {otherUser.LastName}",
-                    Role = role,
-                    LastMessage = GetMessagePreview(c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault()),
-                    ArchivedAt = c.LastUpdated.ToString("o")
-                });
-            }
+                    MeetingId = a.AppointmentId,
+                    Title = "Meeting with " + ((a.Student != null) ? (a.Student.FirstName + " " + a.Student.LastName) : "N/A"),
+                    StudentName = (a.Student != null) ? (a.Student.FirstName + " " + a.Student.LastName) : "N/A",
+                    Date = a.AppointmentDate != null ? a.AppointmentDate.ToString("o") : null,
+                })
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+
+                .ToList();
+
+            return Json(meetings, JsonRequestBehavior.AllowGet);
         }
+
+        // Helpers
         private string GetMessagePreview(Message msg)
         {
             if (msg == null) return null;
@@ -317,58 +430,6 @@ namespace GuidanceTracker.Controllers
         {
             return System.Text.RegularExpressions.Regex.Replace(input ?? "", "<.*?>", string.Empty);
         }
-
-        [HttpPost]
-        public async Task<ActionResult> MarkAllAsRead()
-        {
-            var userId = User.Identity.GetUserId();
-
-            var unreadMessages = await db.Messages
-                .Where(m => m.ReceiverId == userId && !m.IsRead)
-                .ToListAsync();
-
-            foreach (var message in unreadMessages)
-            {
-                message.IsRead = true;
-            }
-
-            await db.SaveChangesAsync();
-
-            return Json(new { success = true });
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> StartConversation(string userId)
-        {
-            var myId = User.Identity.GetUserId();
-
-            // Look for existing conversation that is NOT archived for either user
-            var convo = await db.Conversations.FirstOrDefaultAsync(c =>
-                ((c.UserOneId == myId && c.UserTwoId == userId && !c.IsArchivedByUserOne && !c.IsArchivedByUserTwo) ||
-                 (c.UserOneId == userId && c.UserTwoId == myId && !c.IsArchivedByUserOne && !c.IsArchivedByUserTwo))
-            );
-
-            if (convo == null)
-            {
-                // No unarchived convo exists — start a new one
-                convo = new Conversation
-                {
-                    UserOneId = myId,
-                    UserTwoId = userId,
-                    LastUpdated = DateTime.UtcNow,
-                    IsArchivedByUserOne = false,
-                    IsArchivedByUserTwo = false
-                };
-
-                db.Conversations.Add(convo);
-                await db.SaveChangesAsync();
-            }
-
-            var otherUser = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            return Json(new { conversationId = convo.Id, name = $"{otherUser.FirstName} {otherUser.LastName}" });
-        }
-
     }
 }
 

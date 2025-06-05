@@ -442,21 +442,42 @@ namespace GuidanceTracker.Controllers
             {
                 // Curriculum heads can request feedback from any class studying courses in their department
                 var curriculumHead = db.CurriculumHeads.FirstOrDefault(c => c.Id == currentUserId);
+                //if (curriculumHead != null)
+                //{
+                //    var departmentClasses = db.Classes
+                //        .Where(c => c.Enrollments.Any(e => e.Course.DepartmentId == curriculumHead.DepartmentId))
+                //        .Distinct()
+                //        .ToList();
+
+                //    viewModel.Classes = departmentClasses.Select(c => new SelectListItem
+                //    {
+                //        Value = c.ClassId.ToString(),
+                //        Text = c.ClassName
+                //    }).ToList();
+                //}
                 if (curriculumHead != null)
                 {
-                    var departmentClasses = db.Classes
-                        .Where(c => c.Enrollments.Any(e => e.Course.DepartmentId == curriculumHead.DepartmentId))
-                        .Distinct()
-                        .ToList();
+                    var classes = db.Classes
+                    .Include("Enrollments.Course.Department")
+                    .Where(c => c.Enrollments.Any(e =>
+                     e.Course.Department.CurriculumHead.Id == curriculumHead.Id))
+                    .ToList();
 
-                    viewModel.Classes = departmentClasses.Select(c => new SelectListItem
+
+                    var selectList = new List<SelectListItem>();
+                    foreach (var c in classes)
                     {
-                        Value = c.ClassId.ToString(),
-                        Text = c.ClassName
-                    }).ToList();
-                }
-            }
+                        selectList.Add(new SelectListItem
+                        {
+                            Value = c.ClassId.ToString(),
+                            Text = c.ClassName
+                        });
+                    }
+                    viewModel.Classes = selectList;
 
+                }
+                
+            }
             return View(viewModel);
         }
 
@@ -1042,7 +1063,7 @@ namespace GuidanceTracker.Controllers
                 TempData["SuccessMessage"] = "Class feedback has been successfully submitted! The results have been sent to your guidance teacher/curriculum head.";
                 return RedirectToAction("ClassRepDashboard");
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 TempData["ErrorMessage"] = "An error occurred while submitting the feedback. Please try again.";
                 return RedirectToAction("ReviewAggregatedFeedback");

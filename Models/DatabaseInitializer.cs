@@ -66,12 +66,18 @@ namespace GuidanceTracker.Models
             GuidanceTeacher guidance = null;
             GuidanceTeacher guidance2 = null;
             GuidanceTeacher newGuidanceTeacher = null;
+            GuidanceTeacher guidance3 = null;
             CurriculumHead curriculumHead1 = null;
             Lecturer lecturer1 = null;
             Lecturer lecturer2 = null;
             Lecturer lecturer3 = null;
             Lecturer lecturer4 = null;
             Lecturer lecturer5 = null;
+            Lecturer lecturer6 = null;
+            Lecturer lecturer7 = null;
+            Lecturer lecturer8 = null;
+            Lecturer lecturer9 = null;
+            Lecturer lecturer10 = null;
             Lecturer financeLecturer = null;
             Student student1 = null;
             Student student2 = null;
@@ -104,7 +110,8 @@ namespace GuidanceTracker.Models
             Student student29 = null;
             Student financeStudent2 = null;
             //create guidance teacher
-            if (userManager.FindByName("Jamie.Stewart@cityofglasgowcollege.ac.uk") == null)
+            //first check if admin exists in db
+            if (userManager.FindByName("guidance@email.com") == null)
             {
                 //very easy password validation 
                 userManager.PasswordValidator = new PasswordValidator
@@ -119,10 +126,10 @@ namespace GuidanceTracker.Models
 
                 guidance = new GuidanceTeacher
                 {
-                    UserName = "Jamie.Stewart@cityofglasgowcollege.ac.uk",
-                    Email = "Jamie.Stewart@cityofglasgowcollege.ac.uk",
-                    FirstName = "Jamie",
-                    LastName = "Stewart",
+                    UserName = "guidance@email.com",
+                    Email = "guidance@email.com",
+                    FirstName = "John",
+                    LastName = "Smith",
                     Street = "35 Washington st",
                     City = "London",
                     Postcode = "E12 8UP",
@@ -176,6 +183,24 @@ namespace GuidanceTracker.Models
                 userManager.AddToRole(guidance2.Id, "GuidanceTeacher");
             }
 
+            if (userManager.FindByName("samir.zarrug@cogcgt.com") == null)
+            {
+                guidance3 = new GuidanceTeacher
+                {
+                    UserName = "samir.zarrug@cogcgt.com",
+                    Email = "samir.zarrug@cogcgt.com",
+                    FirstName = "Samir",
+                    LastName = "Zarrug",
+                    Street = "10 Boss St",
+                    City = "Fife",
+                    Postcode = "1L 8GT",
+                    RegistredAt = DateTime.UtcNow.AddYears(-8),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(guidance3, "123");
+                userManager.AddToRole(guidance3.Id, "GuidanceTeacher");
+            }
+
             if (userManager.FindByName("beno.atagan@gmail.com") == null)
             {
                 lecturer3 = new Lecturer
@@ -195,14 +220,14 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            if (userManager.FindByName("Samir.Zarrug@cityofglasgowcollege.ac.uk") == null)
+            if (userManager.FindByName("CurriculumHead@email.com") == null)
             {
                 curriculumHead1 = new CurriculumHead
                 {
-                    UserName = "Samir.Zarrug@cityofglasgowcollege.ac.uk",
-                    Email = "Samir.Zarrug@cityofglasgowcollege.ac.uk",
-                    FirstName = "Samir",
-                    LastName = "Zarrug",
+                    UserName = "CurriculumHead@email.com",
+                    Email = "CurriculumHead@email.com",
+                    FirstName = "John",
+                    LastName = "Johnson",
                     Street = "25 glasgow road",
                     City = "Glasgow",
                     Postcode = "G31 29H",
@@ -259,15 +284,15 @@ namespace GuidanceTracker.Models
 
             //add some lecturers
             //first check if lecturer already exists in db
-            if (userManager.FindByName("dana.carson@cityofglasgowcollege.ac.uk") == null)
+            if (userManager.FindByName("lecturer@email.com") == null)
             {
                 //if no then create him
                 lecturer1 = new Lecturer
                 {
-                    UserName = "dana.carson@cityofglasgowcollege.ac.uk",
-                    Email = "dana.carson@cityofglasgowcollege.ac.uk",
-                    FirstName = "Dana",
-                    LastName = "Carson",
+                    UserName = "lecturer@email.com",
+                    Email = "lecturer@email.com",
+                    FirstName = "Michael",
+                    LastName = "Johnson",
                     Street = "25 LA st",
                     City = "London",
                     Postcode = "E52 9UP",
@@ -281,14 +306,14 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            if (userManager.FindByName("Garry.Kelly@cityofglasgowcollege.ac.uk") == null)
+            if (userManager.FindByName("lecturer2@email.com") == null)
             {
                 lecturer2 = new Lecturer
                 {
-                    UserName = "Garry.Kelly@cityofglasgowcollege.ac.uk",
-                    Email = "Garry.Kelly@cityofglasgowcollege.ac.uk",
-                    FirstName = "Garry",
-                    LastName = "Kelly",
+                    UserName = "lecturer2@email.com",
+                    Email = "lecturer2@email.com",
+                    FirstName = "Laura",
+                    LastName = "Smith",
                     Street = "33 Oxford st",
                     City = "London",
                     Postcode = "SW1 2AA",
@@ -319,14 +344,14 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            if (userManager.FindByName("Asmat.Ullah@cityofglasgowcollege.ac.uk") == null)
+            if (userManager.FindByName("lecturer4@email.com") == null)
             {
                 lecturer4 = new Lecturer
                 {
-                    UserName = "Asmat.Ullah@cityofglasgowcollege.ac.uk",
-                    Email = "Asmat.Ullah@cityofglasgowcollege.ac.uk",
-                    FirstName = "Asmat",
-                    LastName = "Ullah",
+                    UserName = "lecturer4@email.com",
+                    Email = "lecturer4@email.com",
+                    FirstName = "David",
+                    LastName = "Brown",
                     Street = "27 King Street",
                     City = "Manchester",
                     Postcode = "M2 6LE",
@@ -338,24 +363,120 @@ namespace GuidanceTracker.Models
             }
             context.SaveChanges();
 
-            if (userManager.FindByName("James.Hood@cityofglasgowcollege.ac.uk") == null)
+            if (userManager.FindByName("dana.carson@cogcgt.com") == null)
             {
                 lecturer5 = new Lecturer
                 {
-                    UserName = "James.Hood@cityofglasgowcollege.ac.uk",
-                    Email = "James.Hood@cityofglasgowcollege.ac.uk",
-                    FirstName = "James",
-                    LastName = "Hood",
-                    Street = "27 King Street",
-                    City = "Manchester",
-                    Postcode = "M2 6LE",
-                    RegistredAt = DateTime.UtcNow.AddYears(-2),
+                    UserName = "dana.carson@cogcgt.com",
+                    Email = "dana.carson@cogcgt.com",
+                    FirstName = "Dana",
+                    LastName = "Carson",
+                    Street = "45 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 45A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-15),
                     EmailConfirmed = true,
                 };
                 userManager.Create(lecturer5, "123");
                 userManager.AddToRole(lecturer5.Id, "Lecturer");
             }
             context.SaveChanges();
+
+            if (userManager.FindByName("garry.kelly@cogcgt.com") == null)
+            {
+                lecturer6 = new Lecturer
+                {
+                    UserName = "garry.kelly@cogcgt.com",
+                    Email = "garry.kelly@cogcgt.com",
+                    FirstName = "Garry",
+                    LastName = "Kelly",
+                    Street = "55 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 55A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-25),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer6, "123");
+                userManager.AddToRole(lecturer6.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("asmat.ullah@cogcgt.com") == null)
+            {
+                lecturer7 = new Lecturer
+                {
+                    UserName = "asmat.ullah@cogcgt.com",
+                    Email = "asmat.ullah@cogcgt.com",
+                    FirstName = "Asmat",
+                    LastName = "Ullah",
+                    Street = "65 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 65A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-35),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer7, "123");
+                userManager.AddToRole(lecturer7.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("james.hood@cogcgt.com") == null)
+            {
+                lecturer8 = new Lecturer
+                {
+                    UserName = "james.hood@cogcgt.com",
+                    Email = "james.hood@cogcgt.com",
+                    FirstName = "James",
+                    LastName = "Hood",
+                    Street = "75 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 75A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-5),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer8, "123");
+                userManager.AddToRole(lecturer8.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("jamie.stewart@cogcgt.com") == null)
+            {
+                lecturer9 = new Lecturer
+                {
+                    UserName = "jamie.stewart@cogcgt.com",
+                    Email = "jamie.stewart@cogcgt.com",
+                    FirstName = "Jamie",
+                    LastName = "Stewart",
+                    Street = "85 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 85A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-18),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer9, "123");
+                userManager.AddToRole(lecturer9.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
+            if (userManager.FindByName("stella.martin@cogcgt.com") == null)
+            {
+                lecturer10 = new Lecturer
+                {
+                    UserName = "stella.martin@cogcgt.com",
+                    Email = "stella.martin@cogcgt.com",
+                    FirstName = "Stella",
+                    LastName = "Martin",
+                    Street = "95 Baloney St",
+                    City = "Antarctica",
+                    Postcode = "GB 95A",
+                    RegistredAt = DateTime.UtcNow.AddYears(-40),
+                    EmailConfirmed = true,
+                };
+                userManager.Create(lecturer10, "123");
+                userManager.AddToRole(lecturer10.Id, "Lecturer");
+            }
+            context.SaveChanges();
+
 
             if (userManager.FindByName("financeLecturer@email.com") == null)
             {
@@ -857,7 +978,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Troubleshooting Computing Problems",
                 UnitDescription = "Practical problem-solving in computing environments",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(troubleshootingUnit);
@@ -867,7 +988,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Team Working in Computing",
                 UnitDescription = "Collaborative work in computing projects",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(teamWorkingUnit);
@@ -877,7 +998,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Professionalism and Ethics in Computing",
                 UnitDescription = "Ethical considerations in computing industry",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(ethicsUnit);
@@ -887,7 +1008,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Big Data",
                 UnitDescription = "Introduction to big data concepts and technologies",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(bigDataUnit);
@@ -897,7 +1018,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Software Development: Developing Websites",
                 UnitDescription = "Web development fundamentals",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(webDevUnit);
@@ -907,7 +1028,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Graded Unit 1",
                 UnitDescription = "Integration of knowledge across the HNC",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(gradedUnit1);
@@ -917,7 +1038,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Data Science",
                 UnitDescription = "Introduction to data science principles and practices",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
 
             };
@@ -928,7 +1049,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Statistics for Science 1",
                 UnitDescription = "Statistical methods for scientific applications",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(statisticsUnit);
@@ -938,7 +1059,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Developing Mobile Web Based Applications",
                 UnitDescription = "Mobile app development principles",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes1, classes2 } // Link to HNC Computing Class A and B
             };
             context.Units.Add(mobileWebUnit);
@@ -949,7 +1070,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Systems Development: Introduction",
                 UnitDescription = "Introduction to systems analysis and design",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
             };
             context.Units.Add(systemsDevUnit);
@@ -959,7 +1080,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Systems Development: Testing Software",
                 UnitDescription = "Software testing methodologies",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
             };
             context.Units.Add(testingUnit);
@@ -969,7 +1090,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Emerging Technologies and Experiences",
                 UnitDescription = "Current trends in software development",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes3, classes4 } // Link to HNC Software Development Class A and B
             };
             context.Units.Add(emergingTechUnit);
@@ -980,7 +1101,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computer Science",
                 UnitDescription = "Advanced computing principles",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
             };
             context.Units.Add(computerScienceUnit);
@@ -990,7 +1111,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Relational Database Management Systems",
                 UnitDescription = "Advanced database design and management",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
             };
             context.Units.Add(rdbmsUnit);
@@ -1000,7 +1121,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Software Development: Object Oriented Programming",
                 UnitDescription = "OOP techniques and patterns",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
             };
             context.Units.Add(oopUnit);
@@ -1010,7 +1131,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Systems Development: Object Oriented Analysis & Design",
                 UnitDescription = "OO analysis methodologies",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
             };
             context.Units.Add(ooadUnit);
@@ -1060,7 +1181,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Artificial Intelligence",
                 UnitDescription = "AI concepts and applications",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes5 } // Link to HND Computer Science Class
             };
             context.Units.Add(aiUnit);
@@ -1071,7 +1192,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Software Development",
                 UnitDescription = "Advanced software development concepts",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes6, classes7 } // Link to HNC Software Development Class A and B
             };
             context.Units.Add(softwareDevUnit);
@@ -1081,7 +1202,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Multi User Operating Systems",
                 UnitDescription = "Operating systems for software developers",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
             };
             context.Units.Add(multiUserOsUnit);
@@ -1091,7 +1212,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Project Management for IT",
                 UnitDescription = "IT project management methodologies",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
             };
             context.Units.Add(projectMgmtUnit);
@@ -1101,7 +1222,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Software Development Graded Unit",
                 UnitDescription = "Project-based assessment",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes6, classes7 } // Link to HND Software Development Class A and B
             };
             context.Units.Add(softwareDevGradedUnit);
@@ -1112,7 +1233,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Introduction to Computer Programming",
                 UnitDescription = "Fundamentals of programming",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(introToProgrammingUnit);
@@ -1122,7 +1243,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Digital Media Elements",
                 UnitDescription = "Working with digital media",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(digitalMediaUnit);
@@ -1132,7 +1253,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computer Systems Architecture",
                 UnitDescription = "Understanding computer hardware and systems",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(compSysArchUnit);
@@ -1142,7 +1263,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Networking Technologies",
                 UnitDescription = "Introduction to computer networks",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(networkingUnit);
@@ -1152,7 +1273,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Troubleshoot Desktop Problems",
                 UnitDescription = "Basic computer troubleshooting",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(desktopTroubleshootUnit);
@@ -1162,7 +1283,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Data Security",
                 UnitDescription = "Introduction to cybersecurity",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
 
             };
@@ -1173,7 +1294,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Numeracy",
                 UnitDescription = "Essential math for computing",
-                LecturerId = lecturer1.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(numeracyUnit);
@@ -1183,7 +1304,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Installing and Maintaining Hardware",
                 UnitDescription = "Hardware maintenance fundamentals",
-                LecturerId = lecturer2.Id,
+                LecturerId = lecturer1.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(hardwareUnit);
@@ -1193,7 +1314,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Authoring a Website",
                 UnitDescription = "Basic web development",
-                LecturerId = lecturer3.Id,
+                LecturerId = lecturer2.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(authoringWebsiteUnit);
@@ -1203,7 +1324,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Green IT",
                 UnitDescription = "Sustainable computing practices",
-                LecturerId = lecturer4.Id,
+                LecturerId = lecturer3.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(greenITUnit);
@@ -1213,7 +1334,7 @@ namespace GuidanceTracker.Models
             {
                 UnitName = "Computing: Project",
                 UnitDescription = "Practical computing project",
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer4.Id,
                 Classes = new List<Class> { classes8, classes9 } // Link to NQ Computing Class A
             };
             context.Units.Add(computingProjectUnit);
@@ -2108,7 +2229,7 @@ namespace GuidanceTracker.Models
                 IssueStatus = IssueStatus.New,
                 CreatedAt = DateTime.UtcNow.AddYears(-2),
                 UpdatedAt = DateTime.UtcNow,
-                LecturerId = lecturer5.Id,
+                LecturerId = lecturer1.Id,
                 GuidanceTeacherId = guidance.Id,
                 StudentId = student8.Id
             };
@@ -2536,7 +2657,33 @@ namespace GuidanceTracker.Models
                 Visibility = VisibilityType.Staff
             };
             context.Posts.Add(Post7);
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder errorMessage = new StringBuilder("Entity Validation Failed - Errors: ");
+
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    errorMessage.AppendLine($"\nEntity of type '{validationErrors.Entry.Entity.GetType().Name}' in state '{validationErrors.Entry.State}' has the following validation errors:");
+
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        var propertyValue = validationErrors.Entry.CurrentValues[validationError.PropertyName];
+                        errorMessage.AppendLine($"- Property: '{validationError.PropertyName}', Value: '{propertyValue}', Error: '{validationError.ErrorMessage}'");
+                    }
+                }
+
+                // Output to debug window
+                System.Diagnostics.Debug.WriteLine(errorMessage.ToString());
+
+                // If you're using logging
+
+                // You might want to throw a more informative exception or handle it differently
+                throw new Exception($"Validation failed: {errorMessage.ToString()}", ex);
+            }
 
             var feedbackRequest1 = new RequestedDetailedForm
             {

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 
 namespace GuidanceTracker.Models.ViewModels
 {
     /// <summary>
-    /// ViewModel for manually creating a single student. StudentNumber is auto-generated.
+    /// ViewModel for manually creating a single student.
     /// </summary>
     public class CreateStudentViewModel
     {
@@ -29,33 +28,22 @@ namespace GuidanceTracker.Models.ViewModels
         [Display(Name = "Email Address")]
         public string Email { get; set; }
 
-        // Password field - ConfirmPassword and its [Compare] attribute are removed
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Student Number is required.")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "Student Number must be exactly 8 digits.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "Student Number must be an 8-digit number.")]
+        [Display(Name = "Student Number (8 digits, will be initial password)")]
+        public string StudentNumber { get; set; }
 
-        // New Address Fields
-        [Display(Name = "Street")]
-        [StringLength(200, ErrorMessage = "Street cannot exceed 200 characters.")]
-        public string Street { get; set; }
+        [Required(ErrorMessage = "Phone Number is required.")]
+        [Display(Name = "Phone Number")]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\d{6,12}$", ErrorMessage = "Phone Number must consist of 6 to 12 digits only.")]
+        public string PhoneNumber { get; set; }
 
-        [Display(Name = "City")]
-        [StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
-        public string City { get; set; }
-
-       
-        [Display(Name = "Postcode")]
-        [StringLength(10, ErrorMessage = "Postcode cannot exceed 10 characters.")]
-        public string Postcode { get; set; }
-
-
-        [Display(Name = "Is Class Representative")]
-        public bool IsClassRep { get; set; }
-
-        [Display(Name = "Is Deputy Class Representative")]
-        public bool IsDeputyClassRep { get; set; }
+        [Required(ErrorMessage = "Address is required.")]
+        [Display(Name = "Address")]
+        [StringLength(300, ErrorMessage = "Address cannot exceed 300 characters.")]
+        public string Address { get; set; }
 
         // Dropdown list for Classes
         public IEnumerable<SelectListItem> Classes { get; set; }

@@ -18,6 +18,9 @@ namespace GuidanceTracker.Controllers
     public class AccountController : Controller
     {
 
+        private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
+
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -90,21 +93,31 @@ namespace GuidanceTracker.Controllers
                     if (user != null)
                     {
                         var roles = await UserManager.GetRolesAsync(user.Id);
-                        if (roles.Contains("Student"))
+                        if (user.MustChangePassword == true)
                         {
-                            return RedirectToAction("StudentDash", "Student");
+                            return RedirectToAction("ForgotPassword", "Account");
                         }
-                        else if (roles.Contains("Lecturer"))
-                        {
-                            return RedirectToAction("LecturerDash", "Lecturer");
-                        }
-                        else if (roles.Contains("GuidanceTeacher"))
-                        {
-                            return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
-                        }
-                        else if (roles.Contains("CurriculumHead"))
-                        {
-                            return RedirectToAction("CurriculumHeadDash", "CurriculumHead");
+                        else
+                        {                            
+
+                            if (roles.Contains("Student"))
+                            {
+
+                                return RedirectToAction("StudentDash", "Student");
+
+                            }
+                            else if (roles.Contains("Lecturer"))
+                            {
+                                return RedirectToAction("LecturerDash", "Lecturer");
+                            }
+                            else if (roles.Contains("GuidanceTeacher"))
+                            {
+                                return RedirectToAction("GuidanceTeacherDash", "GuidanceTeacher");
+                            }
+                            else if (roles.Contains("CurriculumHead"))
+                            {
+                                return RedirectToAction("CurriculumHeadDash", "CurriculumHead");
+                            }
                         }
                     }
                     return RedirectToLocal(returnUrl);
@@ -297,6 +310,23 @@ namespace GuidanceTracker.Controllers
             return View("ForgotPasswordConfirmation");
         }
 
+        [HttpPost]
+        public ActionResult SetAppearOffline(bool appearOffline)
+        {
+            var userId = User.Identity.GetUserId();
+            using (var db = new GuidanceTrackerDbContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                if (user == null) return HttpNotFound();
+
+                user.AppearOffline = appearOffline;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+        }
+
+
 
         //
         // GET: /Account/ForgotPasswordConfirmation
@@ -398,6 +428,10 @@ namespace GuidanceTracker.Controllers
 
             // Set the new password
             var addPasswordResult = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+            if (addPasswordResult.Succeeded)
+            {
+                user.MustChangePassword = false;
+            }
             if (!addPasswordResult.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to set new password.");
@@ -538,14 +572,25 @@ namespace GuidanceTracker.Controllers
         }
 
         //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            var userId = User.Identity.GetUserId();
+            using (var db = new GuidanceTrackerDbContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    user.LastSeen = null;
+                    db.SaveChanges();
+                }
+            }
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Login", "Account");
         }
+
 
         //
         // GET: /Account/ExternalLoginFailure
@@ -618,8 +663,20 @@ namespace GuidanceTracker.Controllers
             return false;
         }
 
+        // GET: /Account/Details
+        [Authorize]
+        public ActionResult Details()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.FirstOrDefault(u => u.Id == userId);
 
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
 
+            return View(user); // Views/Account/Details.cshtml
+        }
         #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";

@@ -8,14 +8,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@ViewBag.Title</title>
-
+    <link rel="icon" type="image/x-icon" href="~/Images/favicon16x16old.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select, label, td, th, li {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
         body {
-            background-color: #7F3D98;
-            font-family: Arial, sans-serif;
+            background-color: #f5f5fa !important;
             margin: 0;
             padding: 0;
         }
+
+        .fa, .fas, .far, .fal, .fab, .fad, .fat, .fass, .fasr, .fasl,
+        [class^="fa-"], [class*=" fa-"],
+        .fa::before, .fas::before, .far::before, .fal::before, .fab::before,
+        .fad::before, .fat::before, .fass::before, .fasr::before, .fasl::before {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+            font-weight: 900 !important; 
+        }
+
 
         .center-logo {
             position: fixed;
@@ -90,6 +105,7 @@
             margin-top: 100px;
             padding: 20px 30px;
         }
+
         .top-controls-container {
             position: fixed;
             top: 20px;
@@ -100,16 +116,16 @@
 
         .top-controls-box {
             display: flex;
-            gap: 10px;
+            gap: 20px;
             background-color: #7F3D98;
-            border-radius: 30px;
-            padding: 10px 15px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+            border-radius: 40px;
+            padding: 12px 18px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         }
 
             .top-controls-box img {
-                width: 30px;
-                height: 30px;
+                width: 40px;
+                height: 40px;
                 cursor: pointer;
             }
 
@@ -162,6 +178,7 @@
                 text-align: center;
                 flex: 1;
             }
+
         .toggle-label {
             position: relative;
             display: inline-block;
@@ -208,17 +225,17 @@
             }
 
 
-            .modal-header .close-btn {
-                position: absolute;
-                right: 16px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: none;
-                border: none;
-                font-size: 24px;
-                color: white;
-                cursor: pointer;
-            }
+        .modal-header .close-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
 
         /* === Section === */
         .setting-section {
@@ -319,6 +336,36 @@
                 color: #7F3D98 !important;
             }
 
+        /* notification styling, dylan stay away */
+        #notificationContent {
+            position: absolute !important;
+            top: 60px;
+            right: 40px;
+            z-index: 2001;
+            display: none;
+            min-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: white;
+            color: black;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 0.25rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            width: 300px;
+        }
+
+        .dropdown-item-text {
+            color: black !important;
+            background-color: white;
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            box-sizing: border-box;
+        }
+
+        .font-weight-bold {
+            font-weight: bold;
+        }
     </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -335,7 +382,15 @@
     <!-- User Controls -->
     <div class="top-controls-container">
         <div class="top-controls-box">
-            <img src="~/Images/Icons/notifications.svg" alt="Notifications" onclick="toggleNotificationDropdown()" />
+            <img src="~/Images/Icons/notifications.svg" alt="Notifications" onclick="toggleNotificationDropdown()" id="notificationsDropdown" />
+            <span id="notificationBadge" class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; display: none;">
+                0
+            </span>
+
+            <div class="dropdown-menu dropdown-menu-right" id="notificationContent">
+                <span class="dropdown-item-text">Loading...</span>
+            </div>
+
             <img src="~/Images/Icons/settings.svg" alt="SystemSettings" onclick="openSystemSettingsModal()" />
 
             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
@@ -440,6 +495,9 @@
                 <img src="~/Images/Icons/feedback.svg" alt="Feedback" width="47" height="47" />
             </a>
         }
+
+        <!-- cogc coat of arms -->
+        <img src="~/Images/coatOfArms.svg" alt="City of Glasgow College" width="47" height="47" />
     </div>
     <!-- Main Content Area -->
     <div class="main-content">
@@ -455,69 +513,96 @@
     @RenderSection("scripts", required: false)
 
     <script>
-        let previousNotificationIds = [];
+        // Tracks loaded notification IDs for sound detection
+        let previousNotificationIds = JSON.parse(localStorage.getItem('previousNotificationIds') || '[]');
+
 
         $(document).ready(function () {
             const bell = $('#notificationsDropdown');
             const dropdown = $('#notificationContent');
 
+            // On bell click, load notifications and check for new ones
             bell.on('click', function (e) {
                 e.stopPropagation();
-
-                $.get('/Notification/GetRecentNotifications', function (data) {
-                    const newIds = [];
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = data;
-                    tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
-                        const id = el.id.split('-')[1];
-                        if (id) newIds.push(id);
-                    });
-
-                    const isNew = newIds.some(id => !previousNotificationIds.includes(id));
-                    if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
-                        const audio = document.getElementById('notificationSound');
-                        if (audio) audio.play();
-                    }
-
-                    previousNotificationIds = newIds;
-
-                    $('#notificationContent').html(data).addClass('show').css('display', 'block');
-                }).fail(function (xhr, status, error) {
-                    console.error("❌ AJAX failed:", error);
-                });
+                loadNotifications();
             });
 
+            // Poll unread badge count every 60 seconds
+            updateNotificationBadge();
+            setInterval(updateNotificationBadge, 60000);
+
+            // Poll for new notifications and play sound if needed
+            setInterval(checkNewNotifications, 60000);
+
+            // Hide dropdown when clicking outside
             $(document).on('click', function (e) {
-                if (!$('#notificationContent').is(e.target) && $('#notificationContent').has(e.target).length === 0) {
-                    $('#notificationContent').hide();
+                if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0) {
+                    dropdown.hide();
                 }
             });
 
-            updateNotificationBadge();
+            // Auto-fade success alerts
+            setTimeout(() => $(".alert-success").fadeOut("slow"), 3000);
 
-            setTimeout(function () {
-                $(".alert-success").fadeOut("slow");
-            }, 3000);
-
+            // Load and apply sound toggle preference
             const setting = localStorage.getItem('playNotificationSound') === 'true';
             document.querySelectorAll('input[type=checkbox]').forEach(cb => {
                 if (cb.parentElement.previousElementSibling?.textContent?.includes("Notification Sounds")) {
                     cb.checked = setting;
                 }
             });
+
         });
 
-        function toggleSoundSetting(enabled) {
-            localStorage.setItem('playNotificationSound', enabled);
+        // Checks for new notifications via polling
+        function checkNewNotifications() {
+            $.get('/Notification/GetRecentNotifications', function (data) {
+                const newIds = extractNotificationIds(data);
+                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+
+                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                    const audio = document.getElementById('notificationSound');
+                    if (audio) audio.play();
+                }
+
+                previousNotificationIds = newIds;
+                localStorage.setItem('previousNotificationIds', JSON.stringify(newIds));
+            });
         }
 
-        function openSystemSettingsModal() {
-            document.getElementById('SystemSettingsModal').classList.add('show-modal');
-        }
-        function closeSystemSettingsModal() {
-            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
+        // Loads and displays notifications; plays sound if new ones found
+        function loadNotifications() {
+            $.get('/Notification/GetRecentNotifications', function (data) {
+                const newIds = extractNotificationIds(data);
+                const isNew = newIds.some(id => !previousNotificationIds.includes(id));
+
+                if (isNew && localStorage.getItem('playNotificationSound') === 'true') {
+                    const audio = document.getElementById('notificationSound');
+                    if (audio) audio.play();
+                }
+
+                previousNotificationIds = newIds;
+                localStorage.setItem('previousNotificationIds', JSON.stringify(newIds));
+                $('#notificationContent').html(data).addClass('show').css('display', 'block');
+            }).fail(function (xhr, status, error) {
+                console.error("❌ AJAX failed:", error);
+            });
         }
 
+        // Extracts notification IDs from raw HTML string
+        function extractNotificationIds(htmlString) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+            const ids = [];
+            tempDiv.querySelectorAll('[id^="notification-"]').forEach(el => {
+                const id = el.id.split('-')[1];
+                if (id) ids.push(id);
+            });
+            return ids;
+        }
+
+        // Updates unread count badge
+        let lastBadgeCount = 0;
 
         function updateNotificationBadge() {
             $.get('/Notification/GetUnreadCount', function (data) {
@@ -528,8 +613,18 @@
                 } else {
                     badge.hide();
                 }
+
+                // Check for new notifications if count increased
+                if (data.count > lastBadgeCount) {
+                    checkNewNotifications();
+                }
+
+                lastBadgeCount = data.count;
             });
         }
+
+
+        // Marks notification as read and redirects
         function markAsRead(id, url) {
             const item = document.getElementById("notification-" + id);
             if (item) item.classList.remove("font-weight-bold");
@@ -541,6 +636,44 @@
             });
         }
 
+        // Toggle notification sound setting
+        function toggleSoundSetting(enabled) {
+            localStorage.setItem('playNotificationSound', enabled);
+        }
+
+        // Open and close system settings modal
+        function openSystemSettingsModal() {
+            const modal = document.getElementById('SystemSettingsModal');
+            const dropdown = $('#notificationContent');
+
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+            }
+
+            modal.classList.add('show-modal');
+        }
+
+        function closeSystemSettingsModal() {
+            document.getElementById('SystemSettingsModal').classList.remove('show-modal');
+        }
+
+        // Show/hide notification dropdown
+        function toggleNotificationDropdown() {
+            const dropdown = $('#notificationContent');
+            const modal = $('#SystemSettingsModal');
+
+            if (modal.hasClass('show-modal')) {
+                modal.removeClass('show-modal');
+            }
+
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+            } else {
+                loadNotifications();
+            }
+        }
+
+        // Store and reflect welcome setting
         function toggleWelcomeSetting(enabled) {
             localStorage.setItem('hideWelcome', enabled);
             const welcomeCard = document.getElementById('welcomeCard');
@@ -549,11 +682,21 @@
             }
         }
 
+        // Toggle and sync offline status
         function toggleAppearOffline(isOffline) {
             localStorage.setItem('appearOffline', isOffline);
             updateOnlineBadge();
+
+            fetch('/Account/SetAppearOffline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `appearOffline=${isOffline}`
+            }).catch(err => console.error('Failed to update appearOffline:', err));
         }
 
+        // Update online badge styling
         function updateOnlineBadge() {
             const isOffline = localStorage.getItem('appearOffline') === 'true';
             const badge = document.getElementById('onlineStatusBadge');
@@ -573,6 +716,7 @@
             }
         }
 
+        // Apply offline toggle on load
         document.addEventListener('DOMContentLoaded', function () {
             const toggle = document.getElementById('appearOfflineToggle');
             if (toggle) {
@@ -581,6 +725,7 @@
             updateOnlineBadge();
         });
 
+        // SweetAlert confirmation before logout
         function confirmLogout() {
             Swal.fire({
                 title: 'Confirm Logout',
@@ -603,8 +748,6 @@
                 }
             });
         }
-
-
     </script>
     <script>
         const logo = document.querySelector('.center-logo');
@@ -708,12 +851,12 @@
 
                 <div class="setting-row">
                     <span>My details</span>
-                    <button class="setting-btn" onclick="viewMyDetails()">View Details</button>
+                    <button class="setting-btn" onclick="window.location.href='/Account/Details'">View Details</button>
                 </div>
 
                 <div class="setting-row">
                     <span>Notification History</span>
-                    <button class="setting-btn" onclick="viewMyDetails()">View History</button>
+                    <button class="setting-btn" onclick="window.location.href='/Notification/All'">View History</button>
                 </div>
 
                 <div class="setting-row">
@@ -725,6 +868,90 @@
             </div>
         </div>
     </div>
+
+    <script>
+    // Inactivity + Secure Timeout (only for logged in users)
+    let inactivityTimer, warningTimer, countdownInterval;
+    let warningModalShown = false;
+    let countdown = 60;
+
+    function startInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        clearTimeout(warningTimer);
+
+        inactivityTimer = setTimeout(showInactivityWarning, 5 * 60 * 1000); // 5 minutes
+        warningModalShown = false;
+    }
+
+    function resetInactivityTimer() {
+        // Only reset if warning not active
+        if (!warningModalShown) startInactivityTimer();
+    }
+
+    function showInactivityWarning() {
+        warningModalShown = true;
+        countdown = 60;
+
+        Swal.fire({
+            title: 'Are you still active?',
+            html: '<b id="inactivity-countdown">60</b> seconds remaining before logout.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, I am!',
+            cancelButtonText: 'Log me out',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                htmlContainer: 'swal-body',
+                confirmButton: 'swal-confirm',
+                cancelButton: 'swal-cancel'
+            },
+            didOpen: () => {
+                // Start countdown display
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    document.getElementById('inactivity-countdown').textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        logoutNow();
+                    }
+                }, 1000);
+            }
+        }).then((result) => {
+            clearInterval(countdownInterval);
+            if (result.isConfirmed) {
+                warningModalShown = false;
+                startInactivityTimer();
+            } else {
+                logoutNow();
+            }
+        });
+    }
+
+    function logoutNow() {
+        let logoutForm = document.getElementById('logoutForm');
+        if (logoutForm) logoutForm.submit();
+        else window.location.href = '/Account/LogOff';
+    }
+
+    // Attach events on page load
+    $(function () {
+        // Only activate on authenticated pages (hide by role if needed)
+        @if (Request.IsAuthenticated)
+        {
+            <text>
+            startInactivityTimer();
+            // Reset timer on mouse/keyboard/touch/scroll activity
+            ['mousemove', 'keydown', 'mousedown', 'scroll', 'touchstart'].forEach(evt => {
+                window.addEventListener(evt, resetInactivityTimer, true);
+            });
+            </text>
+        }
+    });
+    </script>
+
 
     <!-- Notification Sound -->
     <audio id="notificationSound" src="~/Sounds/notification.mp3" preload="auto"></audio>

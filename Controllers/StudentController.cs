@@ -8,22 +8,32 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using static GuidanceTracker.Controllers.PostController; // Assuming this is needed
+using static GuidanceTracker.Controllers.PostController; // Assuming PostController exists and PostVisibilityHelper is public/static
 
 namespace GuidanceTracker.Controllers
 {
+    [Authorize(Roles = "Student, CurriculumHead, GuidanceTeacher")]
     public class StudentController : Controller
     {
         private GuidanceTrackerDbContext db = new GuidanceTrackerDbContext();
         private readonly UserManager<Student> _userManager;
 
-        // Constructor for dependency injection of UserManager
         public StudentController()
         {
             _userManager = new UserManager<Student>(new UserStore<Student>(db));
+            // IMPORTANT: Configure PasswordValidator to allow 8-digit numbers if StudentNumber is used as password.
+            _userManager.PasswordValidator = new PasswordValidator
+            {
+                RequiredLength = 8, // Student Number must be 8 digits
+                RequireNonLetterOrDigit = false, // Allow only digits
+                RequireDigit = true,
+                RequireLowercase = false,
+                RequireUppercase = false,
+            };
         }
 
         protected override void Dispose(bool disposing)
@@ -39,20 +49,25 @@ namespace GuidanceTracker.Controllers
             base.Dispose(disposing);
         }
 
-        [Authorize(Roles = "Student, CurriculumHead, GuidanceTeacher")]
         // GET: Student
         public ActionResult StudentDash()
         {
             var userId = User.Identity.GetUserId();
             var user = db.Students.Find(userId);
 
+            if (user == null)
+            {
+                // Handle case where student user is not found (e.g., redirect to logout or error)
+                return RedirectToAction("Login", "Account");
+            }
+
             // Count unread announcements
-            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User);
+            var visiblePosts = PostVisibilityHelper.GetVisiblePosts(userId, db, User); // Assuming PostVisibilityHelper is accessible
             var newAnnouncementsCount = visiblePosts
                 .Where(p => !db.PostReads.Any(pr => pr.PostId == p.PostId && pr.UserId == userId))
                 .Count();
 
-            // ✅ Count unread messages for student
+            // Count unread messages for student
             var unreadMessagesCount = db.Messages
                 .Where(m => m.ReceiverId == userId && !m.IsRead)
                 .Count();
@@ -64,26 +79,30 @@ namespace GuidanceTracker.Controllers
                 .Where(a => a.StudentId == userId && a.AppointmentDate >= DateTime.Today)
                 .Count(),
                 NewAnnouncementsCount = newAnnouncementsCount,
-                NewMessagesCount = unreadMessagesCount // ✅ Add this to the view model
+                NewMessagesCount = unreadMessagesCount
             };
 
             return View(model);
         }
 
+        // GET: Student/UpcomingAppoinments
         public ActionResult UpcomingAppoinments()
         {
             var userId = User.Identity.GetUserId();
 
             var appointments = db.Appointments
                 .Where(a => a.StudentId == userId && a.AppointmentDate >= DateTime.Today)
+                .OrderBy(a => a.AppointmentDate)
+                .ThenBy(a => a.StartTime)
                 .ToList();
             return View(appointments);
         }
 
+        // GET: Student/RequestAppointment
         public ActionResult RequestAppointment()
         {
             var studentId = User.Identity.GetUserId();
-            var student = db.Students.Find(studentId);
+            var student = db.Students.Include(s => s.Class).FirstOrDefault(s => s.Id == studentId);
 
             if (student == null)
             {
@@ -98,7 +117,9 @@ namespace GuidanceTracker.Controllers
 
             if (guidanceSession == null)
             {
-                return HttpNotFound("No guidance session found for this student's class");
+                // You might want a more user-friendly message for the student
+                TempData["ErrorMessage"] = "No guidance session found for your class. Please contact your teacher.";
+                return RedirectToAction("StudentDash"); // Redirect to dashboard or another appropriate page
             }
 
             // Create view model with only available time slots
@@ -109,7 +130,7 @@ namespace GuidanceTracker.Controllers
                 AppointmentDate = guidanceSession.Day,
                 GuidanceSessionId = guidanceSession.GuidanceSessionId,
                 Room = guidanceSession.Room,
-                AppointmentStatus = AppointmentStatus.Requested,
+                AppointmentStatus = AppointmentStatus.Requested, // Set default status
                 // Only include available time slots
                 AvailableTimeSlots = GetOnlyAvailableTimeSlots(guidanceSession)
             };
@@ -121,9 +142,9 @@ namespace GuidanceTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RequestAppointment(AppointmentViewModel model)
         {
+            // Reload available time slots if ModelState is invalid to ensure dropdown is populated
             if (!ModelState.IsValid)
             {
-                // Reload available time slots
                 var session = db.GuidanceSessions
                     .Include(g => g.Appointments)
                     .FirstOrDefault(g => g.GuidanceSessionId == model.GuidanceSessionId);
@@ -133,7 +154,8 @@ namespace GuidanceTracker.Controllers
             }
 
             var studentId = User.Identity.GetUserId();
-            var student = db.Students.Find(studentId);
+            var student = db.Students.Include(s => s.Class).FirstOrDefault(s => s.Id == studentId);
+
 
             if (student == null)
             {
@@ -146,13 +168,23 @@ namespace GuidanceTracker.Controllers
 
             if (guidanceSession == null)
             {
-                return HttpNotFound("Guidance session not found");
+                ModelState.AddModelError("", "Guidance session not found.");
+                model.AvailableTimeSlots = GetOnlyAvailableTimeSlots(null); // Pass null to clear slots
+                return View(model);
             }
 
             // Double-check that the time slot is still available (for concurrent submissions)
             if (!guidanceSession.IsTimeSlotAvailable(model.StartTime))
             {
-                ModelState.AddModelError("StartTime", "This time slot is no longer available");
+                ModelState.AddModelError("StartTime", "This time slot is no longer available. Please choose another.");
+                model.AvailableTimeSlots = GetOnlyAvailableTimeSlots(guidanceSession);
+                return View(model);
+            }
+
+            // Check if the student already has an appointment for this session/day to prevent multiple bookings
+            if (db.Appointments.Any(a => a.StudentId == studentId && a.GuidanceSessionId == model.GuidanceSessionId && a.AppointmentDate == model.AppointmentDate && a.AppointmentStatus != AppointmentStatus.Cancelled))
+            {
+                ModelState.AddModelError("", "You already have an appointment booked for this guidance session.");
                 model.AvailableTimeSlots = GetOnlyAvailableTimeSlots(guidanceSession);
                 return View(model);
             }
@@ -165,15 +197,15 @@ namespace GuidanceTracker.Controllers
                 AppointmentDate = model.AppointmentDate,
                 StartTime = model.StartTime,
                 AppointmentNotes = model.AppointmentNotes,
-                AppointmentStatus = AppointmentStatus.Requested,
-                GuidanceTeacherId = student.Class.GuidanceTeacherId,
-                Room = model.Room
+                AppointmentStatus = AppointmentStatus.Requested, // Default status for student requests
+                GuidanceTeacherId = student.Class.GuidanceTeacherId, // Assign to the teacher of the student's class
+                Room = model.Room // Take room from the guidance session model
             };
 
             db.Appointments.Add(appointment);
             db.SaveChanges();
 
-            TempData["Success"] = "Appointment requested successfully.";
+            TempData["Success"] = "Appointment requested successfully. Your guidance teacher will review it.";
             return RedirectToAction("StudentDash");
         }
 
@@ -185,10 +217,13 @@ namespace GuidanceTracker.Controllers
 
             var timeSlots = new List<TimeSlotViewModel>();
 
+            // Assuming GuidanceSession has a property like AllTimeSlots which returns a list of TimeSpans
+            // representing all possible slots for that session.
+            // If AllTimeSlots doesn't exist, you'll need to generate them based on StartTime, EndTime, and SlotDuration.
             foreach (var slot in session.AllTimeSlots)
             {
-                // Check if slot is available
-                bool isAvailable = session.IsTimeSlotAvailable(slot);
+                // Check if slot is available (i.e., no existing appointment for this slot in this session)
+                bool isAvailable = !session.Appointments.Any(a => a.StartTime == slot);
 
                 // Only add available time slots to the list
                 if (isAvailable)
@@ -196,7 +231,7 @@ namespace GuidanceTracker.Controllers
                     timeSlots.Add(new TimeSlotViewModel
                     {
                         StartTime = slot,
-                        EndTime = slot.Add(TimeSpan.FromMinutes(10)),
+                        EndTime = slot.Add(TimeSpan.FromMinutes(10)), // Assuming 10-minute slots
                         IsAvailable = true
                     });
                 }
@@ -206,127 +241,123 @@ namespace GuidanceTracker.Controllers
         }
 
 
-        // Helper method to generate a unique student number
-        private string GenerateUniqueStudentNumber()
-        {
-            string newStudentNumber;
-            // Loop until a unique number is found
-            do
-            {
-                Random rand = new Random();
-                string randomNumber = rand.Next(10000000, 99999999).ToString(); // 8-digit random number
-                newStudentNumber = randomNumber;
-
-            }
-            while (db.Students.Any(s => s.StudentNumber == newStudentNumber));
-
-            return newStudentNumber;
-        }
-
-
         // GET: Student/Create (Manual Creation)
+        [Authorize(Roles = "CurriculumHead, GuidanceTeacher")]
         [HttpGet]
         public ActionResult Create()
         {
-            var classes = db.Classes.ToList();
+            var classes = db.Classes.Select(c => new SelectListItem
+            {
+                Value = c.ClassId.ToString(),
+                Text = c.ClassName
+            }).ToList();
+
             var viewModel = new CreateStudentViewModel
             {
-                Classes = new SelectList(classes, "ClassId", "ClassName")
+                Classes = classes
             };
             return View(viewModel);
         }
 
         // POST: Student/Create (Manual Creation)
+        [Authorize(Roles = "CurriculumHead, GuidanceTeacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateStudentViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Find the class to get its assigned GuidanceTeacher
-                var assignedClass = await db.Classes
-                                          .Include(c => c.GuidanceTeacher)
-                                          .FirstOrDefaultAsync(c => c.ClassId == viewModel.ClassId);
-
-                if (assignedClass == null)
+                // Check if Student Number is already taken
+                if (await db.Students.AnyAsync(s => s.StudentNumber == viewModel.StudentNumber))
                 {
-                    ModelState.AddModelError("ClassId", "Selected class not found.");
+                    ModelState.AddModelError("StudentNumber", "This Student Number is already taken. Please use a unique one.");
                 }
-                else if (assignedClass.GuidanceTeacherId == null)
+                // Check if Email is already in use
+                if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
                 {
-                    ModelState.AddModelError("ClassId", "The selected class does not have an assigned guidance teacher.");
+                    ModelState.AddModelError("Email", "A user with this email address already exists.");
                 }
-                else
+
+                if (ModelState.IsValid) // Re-check ModelState after custom validations
                 {
-                    // Generate a unique student number (now only system-generated)
-                    string generatedStudentNumber = GenerateUniqueStudentNumber();
+                    // Find the class to get its assigned GuidanceTeacher
+                    var assignedClass = await db.Classes
+                                                 .Include(c => c.GuidanceTeacher)
+                                                 .FirstOrDefaultAsync(c => c.ClassId == viewModel.ClassId);
 
-                    // Create the Student object
-                    var newStudent = new Student
+                    if (assignedClass == null)
                     {
-                        // IdentityUser properties
-                        UserName = viewModel.Email,
-                        Email = viewModel.Email,
-                        EmailConfirmed = true,
-
-                        // Student-specific properties
-                        FirstName = viewModel.FirstName,
-                        LastName = viewModel.LastName,
-                        StudentNumber = generatedStudentNumber, // System-generated
-                        IsClassRep = viewModel.IsClassRep,
-                        IsDeputyClassRep = viewModel.IsDeputyClassRep,
-                        GuidanceTeacherId = assignedClass.GuidanceTeacherId,
-                        ClassId = viewModel.ClassId,
-                        RegistredAt = DateTime.UtcNow, // Set creation timestamp (use UtcNow for consistency)
-
-                        // NEW: Address fields
-                        Street = viewModel.Street,
-                        City = viewModel.City,
-                        Postcode = viewModel.Postcode
-                    };
-
-                    // Use UserManager to create the user and hash the password
-                    var createResult = await _userManager.CreateAsync(newStudent, viewModel.Password);
-
-                    if (createResult.Succeeded)
+                        ModelState.AddModelError("ClassId", "Selected class not found.");
+                    }
+                    else if (assignedClass.GuidanceTeacherId == null)
                     {
-                        // Assign student to "Student" role
-                        var roleResult = await _userManager.AddToRoleAsync(newStudent.Id, "Student");
-
-                        if (roleResult.Succeeded)
-                        {
-                            TempData["Message"] = $"Student '{newStudent.FullName}' (Student No: {newStudent.StudentNumber}) created successfully!";
-                            return RedirectToAction("EnrollmentAcademicOperationsCenter", "CurriculumHead");
-                        }
-                        else
-                        {
-                            // If role assignment fails, optionally delete the user that was just created
-                            // to prevent an account existing without the correct role.
-                            await _userManager.DeleteAsync(newStudent); // Clean up
-                            foreach (var error in roleResult.Errors)
-                            {
-                                ModelState.AddModelError("", $"Role assignment failed: {error}");
-                            }
-                        }
+                        ModelState.AddModelError("ClassId", "The selected class does not have an assigned guidance teacher.");
                     }
                     else
                     {
-                        // Handle errors from user creation (e.g., duplicate email, weak password)
-                        foreach (var error in createResult.Errors)
+                        var newStudent = new Student
                         {
-                            ModelState.AddModelError("", error);
+                            UserName = viewModel.Email,
+                            Email = viewModel.Email,
+                            EmailConfirmed = true,
+                            PhoneNumber = viewModel.PhoneNumber,
+                            FirstName = viewModel.FirstName,
+                            LastName = viewModel.LastName,
+                            StudentNumber = viewModel.StudentNumber,
+                            IsClassRep = false, // Default to false
+                            IsDeputyClassRep = false, // Default to false
+                            GuidanceTeacherId = assignedClass.GuidanceTeacherId,
+                            ClassId = viewModel.ClassId,
+                            RegistredAt = DateTime.UtcNow,
+                            Street = viewModel.Address, // Map ViewModel.Address to Student.AddressLine1
+                            MustChangePassword = true
+                        };
+
+                        // Use UserManager to create the user and hash the password
+                        var createResult = await _userManager.CreateAsync(newStudent, viewModel.StudentNumber);
+
+                        if (createResult.Succeeded)
+                        {
+                            // Assign student to "Student" role
+                            var roleResult = await _userManager.AddToRoleAsync(newStudent.Id, "Student");
+
+                            if (roleResult.Succeeded)
+                            {
+                                TempData["Message"] = $"Student '{newStudent.FullName}' (Student No: {newStudent.StudentNumber}) created successfully!";
+                                return RedirectToAction("EnrollmentAcademicOperationsCenter", "CurriculumHead");
+                            }
+                            else
+                            {
+                                await _userManager.DeleteAsync(newStudent);
+                                foreach (var error in roleResult.Errors)
+                                {
+                                    ModelState.AddModelError("", $"Role assignment failed: {error}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var error in createResult.Errors)
+                            {
+                                ModelState.AddModelError("", error);
+                            }
                         }
                     }
                 }
             }
 
             // If ModelState is not valid or there were Identity errors, repopulate classes and return to view
-            var classes = db.Classes.ToList();
-            viewModel.Classes = new SelectList(classes, "ClassId", "ClassName", viewModel.ClassId);
+            var classes = db.Classes.Select(c => new SelectListItem
+            {
+                Value = c.ClassId.ToString(),
+                Text = c.ClassName
+            }).ToList();
+            viewModel.Classes = classes; // Assign repopulated classes
             return View(viewModel);
         }
 
         // GET: Student/UploadStudents
+        [Authorize(Roles = "CurriculumHead, GuidanceTeacher")]
         [HttpGet]
         public ActionResult UploadStudents()
         {
@@ -341,6 +372,7 @@ namespace GuidanceTracker.Controllers
         }
 
         // POST: Student/UploadStudents
+        [Authorize(Roles = "CurriculumHead, GuidanceTeacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadStudents(UploadStudentsViewModel viewModel)
@@ -390,8 +422,8 @@ namespace GuidanceTracker.Controllers
                         }
                     }
 
-                    // Define required headers for Students, now including Password
-                    var requiredHeaders = new List<string> { "FirstName", "LastName", "Email", "Password", "Street", "City", "Postcode", "ClassId" };
+                    // Define required headers for Students
+                    var requiredHeaders = new List<string> { "FirstName", "LastName", "Email", "StudentNumber", "Address", "PhoneNumber", "ClassId" };
                     foreach (var header in requiredHeaders)
                     {
                         if (!headerMap.ContainsKey(header))
@@ -411,36 +443,32 @@ namespace GuidanceTracker.Controllers
                     var allClasses = await db.Classes.Include(c => c.GuidanceTeacher).ToListAsync();
                     var allClassesDict = allClasses.ToDictionary(c => c.ClassId, c => c);
 
-                    var existingStudentNumbers = await db.Students.Select(s => s.StudentNumber).ToListAsync();
+                    // Check for existing StudentNumbers and Emails in the database
+                    var existingStudentNumbers = new HashSet<string>(await db.Students.Select(s => s.StudentNumber).ToListAsync(), StringComparer.OrdinalIgnoreCase);
+                    var existingEmails = new HashSet<string>(await db.Students.Select(s => s.Email).ToListAsync(), StringComparer.OrdinalIgnoreCase);
 
-                    var studentsToProcess = new List<(Student student, string password)>();
+                    // Use temporary hashsets to check for duplicates within the same uploaded batch
+                    var studentNumbersInCurrentBatch = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var emailsInCurrentBatch = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                    var studentsToProcess = new List<Student>();
 
                     for (int row = 2; row <= rowCount; row++)
                     {
                         var firstName = worksheet.Cells[row, headerMap["FirstName"]]?.Text?.Trim();
                         var lastName = worksheet.Cells[row, headerMap["LastName"]]?.Text?.Trim();
                         var email = worksheet.Cells[row, headerMap["Email"]]?.Text?.Trim();
-                        var password = worksheet.Cells[row, headerMap["Password"]]?.Text?.Trim();
-                        // StudentNumber is no longer read from Excel during upload, it's always generated if not present.
-                        // However, to avoid issues if a file still *contains* the column,
-                        // we'll read it and validate it if present, but always generate if empty.
-                        string studentNumber = headerMap.ContainsKey("StudentNumber") ? worksheet.Cells[row, headerMap["StudentNumber"]]?.Text?.Trim() : null;
-
-                        // Read address fields from Excel (if available)
-                        var street = headerMap.ContainsKey("Street") ? worksheet.Cells[row, headerMap["Street"]]?.Text?.Trim() : null;
-                        var city = headerMap.ContainsKey("City") ? worksheet.Cells[row, headerMap["City"]]?.Text?.Trim() : null;
-                        var postcode = headerMap.ContainsKey("Postcode") ? worksheet.Cells[row, headerMap["Postcode"]]?.Text?.Trim() : null;
-
+                        var studentNumber = worksheet.Cells[row, headerMap["StudentNumber"]]?.Text?.Trim();
+                        var addressLine1 = worksheet.Cells[row, headerMap["Address"]]?.Text?.Trim();
+                        var phoneNumber = worksheet.Cells[row, headerMap["PhoneNumber"]]?.Text?.Trim();
 
                         var classIdString = worksheet.Cells[row, headerMap["ClassId"]]?.Text?.Trim();
-                        var isClassRepString = headerMap.ContainsKey("IsClassRep") ? worksheet.Cells[row, headerMap["IsClassRep"]]?.Text?.Trim() : "FALSE";
-                        var isDeputyClassRepString = headerMap.ContainsKey("IsDeputyClassRep") ? worksheet.Cells[row, headerMap["IsDeputyClassRep"]]?.Text?.Trim() : "FALSE";
 
                         // Skip completely empty rows
                         if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName) &&
-                            string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(password) &&
-                            string.IsNullOrWhiteSpace(studentNumber) && string.IsNullOrWhiteSpace(classIdString) &&
-                            string.IsNullOrWhiteSpace(street) && string.IsNullOrWhiteSpace(city) && string.IsNullOrWhiteSpace(postcode))
+                            string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(studentNumber) &&
+                            string.IsNullOrWhiteSpace(addressLine1) && string.IsNullOrWhiteSpace(phoneNumber) &&
+                            string.IsNullOrWhiteSpace(classIdString))
                         {
                             continue;
                         }
@@ -449,22 +477,20 @@ namespace GuidanceTracker.Controllers
 
                         if (string.IsNullOrWhiteSpace(firstName)) rowErrors.Add("First Name is required.");
                         if (string.IsNullOrWhiteSpace(lastName)) rowErrors.Add("Last Name is required.");
+
                         if (string.IsNullOrWhiteSpace(email)) rowErrors.Add("Email Address is required.");
                         else if (!IsValidEmail(email)) rowErrors.Add($"Invalid Email Address format for '{email}'.");
+                        else if (existingEmails.Contains(email)) rowErrors.Add($"Email '{email}' already exists in the system.");
+                        else if (emailsInCurrentBatch.Contains(email)) rowErrors.Add($"Duplicate Email '{email}' found in current upload batch.");
 
-                        if (string.IsNullOrWhiteSpace(password)) rowErrors.Add("Password is required.");
-                        else if (password.Length < 6) rowErrors.Add("Password must be at least 6 characters long."); // Basic check, UserManager will do more
+                        if (string.IsNullOrWhiteSpace(studentNumber)) rowErrors.Add("Student Number is required.");
+                        // Specific validation for 8-digit student number
+                        else if (!Regex.IsMatch(studentNumber, @"^\d{8}$")) rowErrors.Add($"Student Number '{studentNumber}' must be exactly an 8-digit number.");
+                        else if (existingStudentNumbers.Contains(studentNumber)) rowErrors.Add($"Student with number '{studentNumber}' already exists in the system.");
+                        else if (studentNumbersInCurrentBatch.Contains(studentNumber)) rowErrors.Add($"Duplicate Student Number '{studentNumber}' found in current upload batch.");
 
-                        // If studentNumber is empty or not provided, generate a new one
-                        if (string.IsNullOrWhiteSpace(studentNumber))
-                        {
-                            studentNumber = GenerateUniqueStudentNumber();
-                        }
-                        // If a student number *was* provided in the file, ensure it's unique
-                        else if (existingStudentNumbers.Contains(studentNumber, StringComparer.OrdinalIgnoreCase))
-                        {
-                            rowErrors.Add($"Student with number '{studentNumber}' already exists. Cannot upload duplicate.");
-                        }
+                        if (string.IsNullOrWhiteSpace(addressLine1)) rowErrors.Add("Address is required.");
+                        if (string.IsNullOrWhiteSpace(phoneNumber)) rowErrors.Add("Phone Number is required.");
 
                         int classId = 0;
                         Class assignedClass = null;
@@ -491,9 +517,6 @@ namespace GuidanceTracker.Controllers
                             assignedGuidanceTeacherId = assignedClass.GuidanceTeacherId;
                         }
 
-                        bool isClassRep = !string.IsNullOrWhiteSpace(isClassRepString) && bool.TryParse(isClassRepString, out isClassRep) && isClassRep;
-                        bool isDeputyClassRep = !string.IsNullOrWhiteSpace(isDeputyClassRepString) && bool.TryParse(isDeputyClassRepString, out isDeputyClassRep) && isDeputyClassRep;
-
                         if (rowErrors.Any())
                         {
                             foreach (var error in rowErrors)
@@ -503,45 +526,47 @@ namespace GuidanceTracker.Controllers
                             continue;
                         }
 
+                        // Add to batch sets only after all checks pass for the row
+                        studentNumbersInCurrentBatch.Add(studentNumber);
+                        emailsInCurrentBatch.Add(email);
+
                         var newStudent = new Student
                         {
                             UserName = email,
                             Email = email,
                             EmailConfirmed = true,
+                            PhoneNumber = phoneNumber,
                             FirstName = firstName,
                             LastName = lastName,
-                            StudentNumber = studentNumber, // Will be generated if not provided in Excel
-                            IsClassRep = isClassRep,
-                            IsDeputyClassRep = isDeputyClassRep,
+                            StudentNumber = studentNumber,
+                            IsClassRep = false, // Default to false
+                            IsDeputyClassRep = false, // Default to false
                             GuidanceTeacherId = assignedGuidanceTeacherId,
                             ClassId = classId,
-                            RegistredAt = DateTime.UtcNow, // Set creation timestamp
-                            Street = street,
-                            City = city,
-                            Postcode = postcode
+                            RegistredAt = DateTime.UtcNow,
+                            Street = addressLine1
                         };
 
-                        studentsToProcess.Add((newStudent, password));
+                        studentsToProcess.Add(newStudent);
                     }
 
                     // Process students using UserManager
-                    foreach (var (student, pwd) in studentsToProcess)
+                    foreach (var student in studentsToProcess)
                     {
-                        var createResult = await _userManager.CreateAsync(student, pwd);
+                        var createResult = await _userManager.CreateAsync(student, student.StudentNumber);
                         if (createResult.Succeeded)
                         {
-                            // Assign student to "Student" role
                             var roleResult = await _userManager.AddToRoleAsync(student.Id, "Student");
 
                             if (roleResult.Succeeded)
                             {
                                 uploadedStudentsCount++;
-                                existingStudentNumbers.Add(student.StudentNumber);
+                                existingStudentNumbers.Add(student.StudentNumber); // Update master set
+                                existingEmails.Add(student.Email); // Update master set
                             }
                             else
                             {
-                                // If role assignment fails, optionally delete the user that was just created
-                                await _userManager.DeleteAsync(student); // Clean up
+                                await _userManager.DeleteAsync(student);
                                 foreach (var error in roleResult.Errors)
                                 {
                                     excelErrors.Add($"Failed to assign role for '{student.Email}': {error}");
@@ -550,7 +575,6 @@ namespace GuidanceTracker.Controllers
                         }
                         else
                         {
-                            // Handle errors from user creation (e.g., duplicate email, weak password)
                             foreach (var error in createResult.Errors)
                             {
                                 excelErrors.Add($"Failed to create student '{student.Email}': {error}");
@@ -582,6 +606,7 @@ namespace GuidanceTracker.Controllers
         }
 
         // GET: Student/DownloadStudentTemplate
+        [Authorize(Roles = "CurriculumHead, GuidanceTeacher")]
         [HttpGet]
         public ActionResult DownloadStudentTemplate()
         {
@@ -589,20 +614,17 @@ namespace GuidanceTracker.Controllers
             {
                 var worksheet = package.Workbook.Worksheets.Add("Student Data");
 
-                // Set headers for the template. StudentNumber column is removed.
+                // Set headers for the template
                 worksheet.Cells[1, 1].Value = "FirstName";
                 worksheet.Cells[1, 2].Value = "LastName";
                 worksheet.Cells[1, 3].Value = "Email";
-                worksheet.Cells[1, 4].Value = "Password";
-                worksheet.Cells[1, 5].Value = "Street";
-                worksheet.Cells[1, 6].Value = "City";
-                worksheet.Cells[1, 7].Value = "Postcode";
-                worksheet.Cells[1, 8].Value = "IsClassRep";
-                worksheet.Cells[1, 9].Value = "IsDeputyClassRep";
-                worksheet.Cells[1, 10].Value = "ClassId";
+                worksheet.Cells[1, 4].Value = "StudentNumber";
+                worksheet.Cells[1, 5].Value = "Address";
+                worksheet.Cells[1, 6].Value = "PhoneNumber";
+                worksheet.Cells[1, 7].Value = "ClassId";
 
                 // Apply some basic styling to the header row
-                using (var range = worksheet.Cells[1, 1, 1, 10]) // Adjusted column count to 10
+                using (var range = worksheet.Cells[1, 1, 1, 7])
                 {
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;

@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Upload Lecturers from Excel";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this is set
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
 
 @if (!string.IsNullOrEmpty(TempData["Message"] as string))
@@ -270,21 +270,6 @@
                                         <td><strong>LastName</strong></td>
                                         <td>The lecturer's last name.</td>
                                         <td class="required-cell">Yes</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Street</strong></td>
-                                        <td>The lecturer's street address.</td>
-                                        <td>No</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>City</strong></td>
-                                        <td>The city where the lecturer resides.</td>
-                                        <td>No</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Postcode</strong></td>
-                                        <td>The lecturer's postcode.</td>
-                                        <td>No</td>
                                     </tr>
                                 </tbody>
                             </table>

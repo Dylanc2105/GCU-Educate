@@ -11,68 +11,104 @@
     </div>
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">@ViewBag.Title</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointmentNotes)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime.ToString("hh\\:mm")</td>
+                        <td>@item.Student.FirstName @item.Student.LastName</td>
+                        <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>
+                        <td>
+                            @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
+                            {
+                                @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action btn-fixed-width" })
+                                <span></span>
+                                @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action btn-fixed-width" })
+                                <span></span>
+                                <a href="@Url.Action("CancelAppointment", "Appointment", new { id = item.AppointmentId })"
+                                   class="btn btn-danger btn-action btn-fixed-width"
+                                   onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                    Cancel
+                                </a>
+                            }
+                        </td>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Date & Time</th>
-            <th>Student Name</th>
-            <th>Class</th>
-            <th>@Html.DisplayNameFor(model => model.AppointmentNotes)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.AppointmentDate.ToString("dd/MM") @item.StartTime.ToString("hh\\:mm")</td>
-                <td>@item.Student.FirstName @item.Student.LastName</td>
-                <td>@Html.DisplayFor(modelItem => item.Student.Class.ClassName)</td>
-                <td>@Html.DisplayFor(modelItem => item.AppointmentNotes)</td>
-                <td>
-                    @if (item.AppointmentStatus == GuidanceTracker.Models.AppointmentStatus.Requested)
-                    {
-                        @Html.ActionLink("Approve", "ApproveAppointment", new { id = item.AppointmentId }, new { @class = "btn btn-success btn-action" })
-                        <span></span>
-                        @Html.ActionLink("Reschedule", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-warning btn-action" })
-                        <span></span>
-                        <a href="@Url.Action("CancelAppointment", "Appointment", new { id = item.AppointmentId })"
-                           class="btn btn-danger btn-action"
-                           onclick="return confirm('Are you sure you want to cancel this appointment?');">
-                            Cancel
-                        </a>
-                    }
-                </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <p>
+            @Html.ActionLink("← Back to Dashboard", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn-outline" })
+        </p>
+    </div>
+</div>
+        <style>
+            .btn-fixed-width {
+                width: 120px; 
+                text-align: center;
+            }
+            .main-card {
+                max-width: 1400px;
+                margin: 20px auto;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
 
-            </tr>
-        }
-    </tbody>
-</table>
-<br />
-<p>
-    @Html.ActionLink("Back to Dashboard", "AppointmentsDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
-</p>
+            .card-header {
+                background-color: #7F3D98;
+                color: white;
+                padding: 20px 30px;
+                text-align: left;
+            }
 
-<style>
+            .card-title {
+                font-size: 24px;
+                font-weight: 600;
+                margin: 0;
+            }
 
-    .btn-back {
-        background: #7F3D98;
-    }
+            .card-body {
+                padding: 30px;
+            }
 
-    .btn {
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
-    }
 
-    .btn-back:hover {
-        background-color: #5c2b70; /* A darker shade of your original purple */
-        color: white;
-    }
-</style>
+            .btn-outline {
+                background-color: transparent;
+                color: #7F3D98;
+                border: 2px solid #7F3D98;
+                border-radius: 6px;
+                padding: 8px 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+            }
+
+                .btn-outline:hover {
+                    background-color: #7F3D98;
+                    color: white;
+                    text-decoration: none;
+                }
+        </style>

@@ -4,23 +4,62 @@
 }
 
 <style>
-    .container-fluid {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px;
+    .body {
+        background-color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
     }
 
-    h2 {
-        font-size: 32px;
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
         font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 8px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #7F3D98;
+    }
+
+    .subtitle-actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
     }
 
     .subtitle {
-        color: #6b7280;
+        color: #6c757d;
         font-size: 16px;
-        margin-bottom: 30px;
+        margin: 0;
+        flex: 1;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .card-body {
+        padding: 30px;
     }
 
     .btn-default {
@@ -42,10 +81,10 @@
 
     .btn-request {
         background-color: #7F3D98;
-        border: 1px solid #7F3D98;
+        border: 2px solid #7F3D98;
         color: white;
         padding: 8px 16px;
-        border-radius: 8px;
+        border-radius: 6px;
         font-size: 14px;
         font-weight: 500;
         margin-bottom: 24px;
@@ -53,8 +92,8 @@
     }
 
         .btn-request:hover {
-            background-color: #6d28d9;
-            border-color: #6d28d9;
+            background-color: #985BAF;
+            border-color: #985BAF;
             color: white;
         }
 
@@ -135,87 +174,115 @@
             color: #7F3D98;
             font-weight: 600;
         }
+
+    .btn-back {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+        .btn-back:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8">
-            <h2><i class="fas fa-clipboard-list"></i> Detailed Feedback</h2>
-            <p class="subtitle">Comprehensive feedback received from students</p>
-        </div>
-        <div class="col-md-4 text-right">
-            <a href="javascript:history.back()" class="btn btn-default">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-            <a href="@Url.Action("CreateDetailedFeedbackRequest", "DetailedFeedback")" class="btn btn-request">
-                <i class="fas fa-plus"></i> Request Feedback
-            </a>
-        </div>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-clipboard-list"></i>
+            Detailed Feedback
+        </h2>
     </div>
+    <div class="card-body">
+        <div class="subtitle-actions-row">
+            <p class="subtitle">Comprehensive feedback received from students</p>
+            <div class="actions-group">
+                <a href="@Url.Action("CreateDetailedFeedbackRequest", "DetailedFeedback")" class="btn btn-request">
+                    <i class="fas fa-plus"></i> Request Feedback
+                </a>
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
 
-    @if (!Model.Any())
-    {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-info">
-                    <h4><i class="fas fa-info-circle"></i> No Detailed Feedback Yet</h4>
-                    <p>
-                        You haven't received any detailed feedback yet.
-                        <a href="@Url.Action("CreateDetailedFeedbackRequest", "DetailedFeedback")" class="alert-link">
-                            Request detailed feedback from your students
-                        </a>
-                    </p>
-                </div>
             </div>
         </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="table-container">
-                    <h3 class="table-header">Received Feedback</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Class</th>
-                                    <th>Course</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.OrderByDescending(f => f.DateSubmittedByClassRep))
-                                {
-                                    <tr>
-                                        <td>
-                                            @if (item.Student != null)
-                                            {
-                                                <span>@item.Student.FirstName @item.Student.LastName</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">Unknown</span>
-                                            }
-                                        </td>
-                                        <td>@item.Class</td>
-                                        <td>@item.Course</td>
-                                        <td>@item.DateSubmittedByClassRep</td>
-                                        <td>
-                                            <a href="@Url.Action("ViewClassRepFeedbackDetails", "DetailedFeedback", new { id = item.FeedbackId })"
-                                               class="btn btn-primary btn-sm">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+
+        @if (!Model.Any())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <h4><i class="fas fa-info-circle"></i> No Detailed Feedback Yet</h4>
+                        <p>
+                            You haven't received any detailed feedback yet.
+                            <a href="@Url.Action("CreateDetailedFeedbackRequest", "DetailedFeedback")" class="alert-link">
+                                Request detailed feedback from your students
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-container">
+                        <h3 class="table-header">Received Feedback</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Class</th>
+                                        <th>Course</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderByDescending(f => f.DateSubmittedByClassRep))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.Student != null)
+                                                {
+                                                    <span>@item.Student.FirstName @item.Student.LastName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Unknown</span>
+                                                }
+                                            </td>
+                                            <td>@item.Class</td>
+                                            <td>@item.Course</td>
+                                            <td>@item.DateSubmittedByClassRep</td>
+                                            <td>
+                                                <a href="@Url.Action("ViewClassRepFeedbackDetails", "DetailedFeedback", new { id = item.FeedbackId })"
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

@@ -205,11 +205,20 @@ namespace GuidanceTracker.Controllers
 
                 db.SaveChanges();
 
+                // After creating issues for each selected student we get the id of the created issue
+                var firstStudentId = model.SelectedStudentIds.FirstOrDefault();
+                var issueId = db.Issues
+                    .Where(i => i.StudentId == firstStudentId && i.IssueTitle == model.IssueTitle)
+                    .OrderByDescending(i => i.CreatedAt)
+                    .Select(i => i.IssueId)
+                    .FirstOrDefault();
+
                 // send notification
                 new NotificationService().NotifyGuidanceForClassIssues
                 (
                     model.SelectedStudentIds,
-                    User.Identity.GetUserId()
+                    User.Identity.GetUserId(),
+                    issueId
                 );
 
                 TempData["Success"] = "Issue raised successfully.";
@@ -366,18 +375,16 @@ namespace GuidanceTracker.Controllers
             return View(classList);
         }
 
-        public ActionResult AllIssues(string sortOrder, string issueType, string searchString)
+        public ActionResult AllIssues(string sortOrder, string issueType, string searchString, string startDate, string endDate)
         {
             var issuesQuery = db.Issues
-                .Include("Lecturer")  // Use string-based Include to load Lecturer
-                .Include("Student")   // Use string-based Include to load Student
+                .Include("Lecturer")
+                .Include("Student")
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                // SQL LIKE pattern with '%' for partial matching
                 var searchPattern = "%" + searchString.ToLower() + "%";
-
                 issuesQuery = issuesQuery.Where(i =>
                     SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
                     SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
@@ -385,13 +392,23 @@ namespace GuidanceTracker.Controllers
                     SqlFunctions.PatIndex(searchPattern, i.Lecturer.LastName.ToLower()) > 0);
             }
 
-            // Apply filter for issue type
             if (!string.IsNullOrEmpty(issueType))
             {
                 issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
             }
 
-            // Sorting
+            // --- Date range filter ---
+            if (DateTime.TryParse(startDate, out var start))
+            {
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt >= start);
+            }
+            if (DateTime.TryParse(endDate, out var end))
+            {
+                // If you want endDate to be inclusive, add a day
+                end = end.Date.AddDays(1).AddTicks(-1);
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt <= end);
+            }
+
             if (sortOrder == "newest")
             {
                 issuesQuery = issuesQuery.OrderByDescending(i => i.CreatedAt);
@@ -401,15 +418,20 @@ namespace GuidanceTracker.Controllers
                 issuesQuery = issuesQuery.OrderBy(i => i.CreatedAt);
             }
 
-            // Execute the query and return the results
             var issues = issuesQuery.ToList();
             return View(issues);
         }
 
 
 
+
         //View Archived Issues
-        public ActionResult ArchivedIssues(string sortOrder, string issueType, string searchString)
+        // new signature
+        public ActionResult ArchivedIssues(string sortOrder,
+                                   string issueType,
+                                   string searchString,
+                                   string startDate,
+                                   string endDate)
         {
             var issuesQuery = db.Issues
                 .Include("Lecturer")
@@ -420,7 +442,6 @@ namespace GuidanceTracker.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 var searchPattern = "%" + searchString.ToLower() + "%";
-
                 issuesQuery = issuesQuery.Where(i =>
                     SqlFunctions.PatIndex(searchPattern, i.Student.FirstName.ToLower()) > 0 ||
                     SqlFunctions.PatIndex(searchPattern, i.Student.LastName.ToLower()) > 0 ||
@@ -431,6 +452,18 @@ namespace GuidanceTracker.Controllers
             if (!string.IsNullOrEmpty(issueType))
             {
                 issuesQuery = issuesQuery.Where(i => i.IssueTitle.ToString() == issueType);
+            }
+
+            // --- Date range filter (new) ---
+            if (DateTime.TryParse(startDate, out var start))
+            {
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt >= start);
+            }
+            if (DateTime.TryParse(endDate, out var end))
+            {
+                // Make end inclusive
+                end = end.Date.AddDays(1).AddTicks(-1);
+                issuesQuery = issuesQuery.Where(i => i.CreatedAt <= end);
             }
 
             if (sortOrder == "newest")
@@ -445,6 +478,8 @@ namespace GuidanceTracker.Controllers
             var issues = issuesQuery.ToList();
             return View(issues);
         }
+
+
 
         public List<Appointment> GetAppointments(string studentId)
         {
@@ -691,6 +726,38 @@ namespace GuidanceTracker.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
+        [Authorize(Roles = "GuidanceTeacher, Lecturer")]
+        [HttpGet]
+        public JsonResult GetUserIssues()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var commentedIssueIds = db.Comments
+                .Where(c => c.UserId == userId)
+                .Select(c => c.IssueId);
+
+            var issues = db.Issues
+                .Include(i => i.Student)
+                .Where(i =>
+                    i.LecturerId == userId ||
+                    i.GuidanceTeacherId == userId ||
+                    commentedIssueIds.Contains(i.IssueId))
+                .OrderByDescending(i => i.CreatedAt)
+                .ToList()
+                .Select(i => new
+                {
+                    IssueId = i.IssueId,
+                    IssueTitle = i.IssueTitle.ToString(),
+                    CreatedAt = i.CreatedAt.ToString("yyyy-MM-dd"),
+                    StudentName = i.Student.FirstName + " " + i.Student.LastName,
+                    IssueStatus = i.IssueStatus.ToString()
+                })
+                .ToList();
+
+            return Json(issues, JsonRequestBehavior.AllowGet);
+        }
+
 
         /// <summary>
         /// karina: method to add to an existing issue for lecturers

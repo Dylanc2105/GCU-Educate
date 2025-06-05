@@ -68,6 +68,7 @@ namespace GuidanceTracker.Controllers
             return View(students);
         }
 
+
         [Authorize(Roles = "CurriculumHead")]
         // GET: Lecturer/Create
         // Displays the form to create a new lecturer
@@ -85,22 +86,23 @@ namespace GuidanceTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+              
+                string generatedPassword = GenerateUniqueNumber(); 
+
                 // Create a new Lecturer user based on the ViewModel data
                 var lecturerUser = new Lecturer
                 {
-                    UserName = model.Email, // Email is commonly used as the UserName for login
+                    UserName = model.Email, // Email is used as the UserName 
                     Email = model.Email,
                     FirstName = model.FirstName,
                     EmailConfirmed = true, // Assuming email is confirmed upon creation
                     LastName = model.LastName,
-                    Street = model.Street,
-                    City = model.City,
-                    Postcode = model.Postcode,
-                    RegistredAt = DateTime.UtcNow // Set the registration date to the current UTC time
+                    RegistredAt = DateTime.UtcNow, // Set the registration date to the current UTC time
+                    MustChangePassword = true
                 };
 
-                // Attempt to create the user in the ASP.NET Identity system with the provided password
-                var result = await UserManager.CreateAsync(lecturerUser, model.Password);
+                // Attempt to create the user in the ASP.NET Identity system with the generated password
+                var result = await UserManager.CreateAsync(lecturerUser, generatedPassword);
 
                 if (result.Succeeded)
                 {
@@ -110,7 +112,7 @@ namespace GuidanceTracker.Controllers
                     if (roleResult.Succeeded)
                     {
                         // Set a success message to display on the next view
-                        TempData["Message"] = "Lecturer created successfully!";
+                        TempData["Message"] = $"Lecturer '{lecturerUser.FirstName} {lecturerUser.LastName}' created successfully with generated password: {generatedPassword}";
                         // Redirect to the dashboard
                         return RedirectToAction("EnrollmentAcademicOperationsCenter", "CurriculumHead");
                     }
@@ -119,7 +121,7 @@ namespace GuidanceTracker.Controllers
                         // If role assignment fails, add errors to ModelState
                         AddErrors(roleResult);
                         // Optionally, you might want to delete the user if role assignment fails
-                        // await UserManager.DeleteAsync(lecturerUser);
+                        await UserManager.DeleteAsync(lecturerUser); // Delete user if role assignment fails
                     }
                 }
                 else
@@ -132,6 +134,7 @@ namespace GuidanceTracker.Controllers
             // If ModelState is not valid or user/role creation failed, re-display the form with errors
             return View(model);
         }
+
 
 
         // GET: Lecturer/UploadExcel
@@ -168,7 +171,7 @@ namespace GuidanceTracker.Controllers
                     {
                         using (var package = new ExcelPackage(model.ExcelFile.InputStream))
                         {
-                            ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming data is in the first worksheet
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // data is in the first worksheet
                             int rowCount = worksheet.Dimension.Rows;
 
                             // Map column headers to their indices dynamically
@@ -183,8 +186,8 @@ namespace GuidanceTracker.Controllers
                                 }
                             }
 
-                            // Define expected headers for lecturers (case-insensitive check)
-                            var expectedHeaders = new List<string> { "Email", "Password", "FirstName", "LastName", "Street", "City", "Postcode" };
+                            // Define expected headers for lecturers (only Email, FirstName, LastName)
+                            var expectedHeaders = new List<string> { "Email", "FirstName", "LastName" };
                             foreach (var header in expectedHeaders)
                             {
                                 if (!headerMap.ContainsKey(header))
@@ -200,14 +203,13 @@ namespace GuidanceTracker.Controllers
                                 return RedirectToAction("UploadExcel"); // Redirect to show errors
                             }
 
-                            // Assuming the first row is a header, start from row 2
+                            // the first row is a header, start from row 2
                             for (int row = 2; row <= rowCount; row++)
                             {
                                 // Skip entirely empty rows
                                 if (worksheet.Cells[row, 1].Text?.Trim() == "" &&
-                                    worksheet.Cells[row, 2].Text?.Trim() == "" &&
-                                    worksheet.Cells[row, 3].Text?.Trim() == "" &&
-                                    worksheet.Cells[row, 4].Text?.Trim() == "")
+                                        worksheet.Cells[row, 2].Text?.Trim() == "" &&
+                                        worksheet.Cells[row, 3].Text?.Trim() == "") // Check only the required fields
                                 {
                                     continue;
                                 }
@@ -216,19 +218,14 @@ namespace GuidanceTracker.Controllers
                                 {
                                     // Read data from Excel columns using mapped headers
                                     var email = worksheet.Cells[row, headerMap["Email"]]?.Text?.Trim();
-                                    var password = worksheet.Cells[row, headerMap["Password"]]?.Text?.Trim();
                                     var firstName = worksheet.Cells[row, headerMap["FirstName"]]?.Text?.Trim();
                                     var lastName = worksheet.Cells[row, headerMap["LastName"]]?.Text?.Trim();
-                                    var street = headerMap.ContainsKey("Street") ? worksheet.Cells[row, headerMap["Street"]]?.Text?.Trim() : null;
-                                    var city = headerMap.ContainsKey("City") ? worksheet.Cells[row, headerMap["City"]]?.Text?.Trim() : null;
-                                    var postcode = headerMap.ContainsKey("Postcode") ? worksheet.Cells[row, headerMap["Postcode"]]?.Text?.Trim() : null;
-
 
                                     // Basic validation for required fields from Excel
-                                    if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) ||
+                                    if (string.IsNullOrEmpty(email) ||
                                         string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
                                     {
-                                        errorMessages.Add($"Row {row}: Missing required data (Email, Password, First Name, Last Name). Skipping.");
+                                        errorMessages.Add($"Row {row}: Missing required data (Email, First Name, Last Name). Skipping.");
                                         continue;
                                     }
 
@@ -239,6 +236,9 @@ namespace GuidanceTracker.Controllers
                                         continue;
                                     }
 
+                                    // Generate password using the existing method
+                                    string generatedPassword = GenerateUniqueNumber(); 
+
                                     // Create a new Lecturer user
                                     var lecturerUser = new Lecturer
                                     {
@@ -246,15 +246,16 @@ namespace GuidanceTracker.Controllers
                                         Email = email,
                                         FirstName = firstName,
                                         LastName = lastName,
-                                        Street = street,
-                                        City = city,
-                                        Postcode = postcode,
+                                        // Address fields are no longer expected from Excel
+                                        Street = null,
+                                        City = null,
+                                        Postcode = null,
                                         RegistredAt = DateTime.UtcNow,
                                         EmailConfirmed = true // Confirm email by default for uploaded users
                                     };
 
                                     // Attempt to create the user
-                                    var createResult = await UserManager.CreateAsync(lecturerUser, password);
+                                    var createResult = await UserManager.CreateAsync(lecturerUser, generatedPassword);
 
                                     if (createResult.Succeeded)
                                     {
@@ -262,13 +263,13 @@ namespace GuidanceTracker.Controllers
                                         var roleResult = await UserManager.AddToRoleAsync(lecturerUser.Id, "Lecturer");
                                         if (roleResult.Succeeded)
                                         {
-                                            successMessages.Add($"Successfully created lecturer: {firstName} {lastName} ({email})");
+                                            successMessages.Add($"Successfully created lecturer: {firstName} {lastName} ({email}) with generated password.");
                                         }
                                         else
                                         {
                                             errorMessages.Add($"Row {row}: Failed to assign role for {email}. Errors: {string.Join(", ", roleResult.Errors)}");
-                                            // Optionally, delete the user if role assignment fails
-                                            await UserManager.DeleteAsync(lecturerUser); // Delete user if role assignment fails
+                                            // Delete the user if role assignment fails
+                                            await UserManager.DeleteAsync(lecturerUser);
                                         }
                                     }
                                     else
@@ -319,6 +320,7 @@ namespace GuidanceTracker.Controllers
             return View(model);
         }
 
+
         // GET: Lecturer/DownloadLecturerTemplate
         /// <summary>
         /// Provides an Excel template file for lecturer data upload.
@@ -331,17 +333,13 @@ namespace GuidanceTracker.Controllers
             {
                 var worksheet = package.Workbook.Worksheets.Add("Lecturer Data");
 
-                // Set headers for the template
+                // Set headers for the template (only Email, FirstName, LastName)
                 worksheet.Cells[1, 1].Value = "Email";
-                worksheet.Cells[1, 2].Value = "Password";
-                worksheet.Cells[1, 3].Value = "FirstName";
-                worksheet.Cells[1, 4].Value = "LastName";
-                worksheet.Cells[1, 5].Value = "Street";
-                worksheet.Cells[1, 6].Value = "City";
-                worksheet.Cells[1, 7].Value = "Postcode";
+                worksheet.Cells[1, 2].Value = "FirstName";
+                worksheet.Cells[1, 3].Value = "LastName";
 
                 // Apply some basic styling to the header row
-                using (var range = worksheet.Cells[1, 1, 1, 7])
+                using (var range = worksheet.Cells[1, 1, 1, 3]) // Adjusted range to 3 columns
                 {
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
@@ -358,6 +356,25 @@ namespace GuidanceTracker.Controllers
                 string excelName = $"LecturerUploadTemplate-{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx";
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
             }
+        }
+
+
+        [Authorize(Roles = "CurriculumHead")]
+        // Helper method to generate a unique student number
+        private string GenerateUniqueNumber()
+        {
+            string newStudentNumber;
+            // Loop until a unique number is found
+            do
+            {
+                Random rand = new Random();
+                string randomNumber = rand.Next(10000000, 99999999).ToString(); // 8-digit random number
+                newStudentNumber = randomNumber;
+
+            }
+            while (db.Students.Any(s => s.StudentNumber == newStudentNumber));
+
+            return newStudentNumber;
         }
 
 

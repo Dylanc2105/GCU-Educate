@@ -482,9 +482,13 @@
     <Content Include="Content\kendo\2025.1.227\material-sky-dark.css" />
     <Content Include="Content\kendo\2025.1.227\material-sky.css" />
     <Content Include="Content\kendo\2025.1.227\material-smoke.css" />
+    <Content Include="Content\Style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\coatOfArms.svg" />
+    <Content Include="Images\favicon16white.svg" />
+    <Content Include="Images\favicon16x16old.svg" />
     <Content Include="Images\GTLogo.png" />
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />
@@ -509,8 +513,11 @@
     <None Include="Properties\PublishProfiles\GuidanceTracker20250227222444 - Web Deploy.pubxml" />
     <Content Include="Images\Icons\calendar.svg" />
     <Content Include="Images\Icons\feedback.svg" />
+    <Content Include="Images\Icons\guidance.png" />
+    <Content Include="Images\Icons\head.png" />
     <Content Include="Images\Icons\home.svg" />
     <Content Include="Images\Icons\issues.svg" />
+    <Content Include="Images\Icons\lecture.png" />
     <Content Include="Images\Icons\Logo-Purple.png" />
     <Content Include="Images\Icons\Logo-stacked.png" />
     <Content Include="Images\Icons\Logo-white.png" />
@@ -523,7 +530,9 @@
     <Content Include="Images\Icons\OTHER\archived.svg" />
     <Content Include="Images\Icons\OTHER\createIssue.svg" />
     <Content Include="Images\Icons\OTHER\inProgress.svg" />
+    <Content Include="Images\Icons\OTHER\inProgressWhite.svg" />
     <Content Include="Images\Icons\OTHER\new.svg" />
+    <Content Include="Images\Icons\OTHER\newWhite.svg" />
     <Content Include="Images\Icons\OTHER\studentHub.svg" />
     <Content Include="Images\Icons\posts.svg" />
     <Content Include="Images\Icons\PURPLE\calendarToday.svg" />
@@ -535,6 +544,7 @@
     <Content Include="Images\Icons\PURPLE\myVoice.svg" />
     <Content Include="Images\Icons\PURPLE\posts.svg" />
     <Content Include="Images\Icons\PURPLE\requestAppointment.svg" />
+    <Content Include="Images\Icons\PURPLE\scroll-purple.svg" />
     <Content Include="Images\Icons\PURPLE\settings.svg" />
     <Content Include="Images\Icons\PURPLE\student.svg" />
     <Content Include="Images\Icons\settings.svg" />
@@ -2696,7 +2706,6 @@
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbackDetails.cshtml" />
     <Content Include="Views\SimpleFeedback\ViewSimpleFeedbacks.cshtml" />
     <Content Include="Views\Student\RequestAppointment.cshtml" />
-    <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Notification\_NotificationDropdown.cshtml" />
     <Content Include="Views\Appointment\CreateAppointmentWithIssue.cshtml" />
     <Content Include="Views\Student\UpcomingAppoinments.cshtml" />
@@ -2724,6 +2733,9 @@
     <Content Include="Views\Classes\UploadClasses.cshtml" />
     <Content Include="Views\Student\Create.cshtml" />
     <Content Include="Views\Student\UploadStudents.cshtml" />
+    <Content Include="Views\Message\Index.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Post\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

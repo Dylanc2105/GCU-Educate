@@ -16,6 +16,9 @@
 
     .posts-dashboard {
         padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
 
     .dashboard-title {
@@ -109,7 +112,6 @@
 
     .action-button {
         display: block;
-        width: 100%;
         background-color: var(--primary-color);
         color: white;
         border: none;
@@ -122,7 +124,7 @@
     }
 
         .action-button:hover {
-            background-color: var(--primary-hover);
+            background-color: #985BAF;
             color: white;
             text-decoration: none;
         }
@@ -160,6 +162,25 @@
         text-align: center;
         border-radius: 4px;
     }
+
+    .back-button {
+        display: inline-block;
+        margin: 20px 0 0 0;
+        background-color: transparent;
+        color: #7F3D98;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid #7F3D98;
+        cursor: pointer;
+    }
+
+        .back-button:hover {
+            background-color: #7F3D98;
+            text-decoration: none;
+            color: white;
+        }
 </style>
 
 <div class="posts-dashboard">
@@ -169,7 +190,7 @@
         </div>
         <div class="col-md-4 text-right">
             <a href="@Url.Action("CreateNewPost", "Post")" class="action-button">
-                Create New Post
+                + Create New
             </a>
         </div>
     </div>
@@ -218,4 +239,5 @@
             <div class="section-count">Total Posts: @Model.Count()</div>
         }
     </div>
+    <a href="@Url.Action("ViewPosts", "Post")" class="back-button">← Back to Posts Dashboard</a>
 </div>

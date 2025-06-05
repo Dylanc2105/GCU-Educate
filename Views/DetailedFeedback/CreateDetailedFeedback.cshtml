@@ -101,1187 +101,1281 @@
         border-radius: 5px;
         margin-bottom: 20px;
     }
+
+    .btn-back {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-back:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+    .btn-purple {
+        background-color: #7F3D98;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-purple:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-main-header {
+        background-color: white !important;
+        color: #7F3D98 !important;
+        padding: 20px 30px;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .title-section {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .main-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        color: #7F3D98;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .button-section {
+        flex-shrink: 0;
+    }
+
+    .card-main-header {
+        background-color: white;
+        color: #7F3D98;
+        padding: 20px 30px;
+    }
 </style>
 
-<div class="container mt-4 mb-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h2>Detailed Feedback Form</h2>
-            <p class="text-muted">Your feedback is valuable for improving teaching and learning.</p>
+<div class="main-card">
+    <div class="card-main-header">
+        <div class="header-content">
+            <div class="title-section">
+                <h2 class="main-title">Detailed Feedback Form</h2>
+                <p class="text-muted">Your feedback is valuable for improving teaching and learning.</p>
+            </div>
+            <div class="button-section">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
         </div>
-        <div class="col-auto">
-            <a href="javascript:history.back()" class="btn" style="background-color: #f2e9ff; color: #7b2cbf; border-color: #7b2cbf;">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-        </div>
+    </div>
+
+    <div class="card-body">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <!-- Hidden fields -->
+            @Html.HiddenFor(model => model.RequestId)
+            @Html.HiddenFor(model => model.FeedbackId)
+            @Html.HiddenFor(model => model.ClassId)
+            @Html.HiddenFor(model => model.StudentId)
+            @Html.HiddenFor(model => model.CreatorId)
+            @Html.HiddenFor(model => model.IsSubmitted)
+            @Html.HiddenFor(model => model.FeedbackDate)
+
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Course Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Course</label>
+                                <p class="form-control-static">@Model.Course</p>
+                                @Html.HiddenFor(model => model.Course)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Class</label>
+                                <p class="form-control-static">@Model.Class</p>
+                                @Html.HiddenFor(model => model.Class)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Learning Experience Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Current Learning Experience</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Yes/No Questions for Current Learning Experience -->
+                    <div class="yes-no-container">
+                        <label>Is the course currently meeting your expectations? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="MeetsExpectations_Yes" name="MeetsExpectations" value="true" @(Model.MeetsExpectations == true ? "checked" : "") required />
+                                <label for="MeetsExpectations_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="MeetsExpectations_No" name="MeetsExpectations" value="false" @(Model.MeetsExpectations == false ? "checked" : "") />
+                                <label for="MeetsExpectations_No">No</label>
+                            </div>
+                        </div>
+                        <div id="MeetsExpectationsNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.MeetsExpectationsNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Would you recommend this course to others at this stage? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="WouldRecommend_Yes" name="WouldRecommend" value="true" @(Model.WouldRecommend == true ? "checked" : "") required />
+                                <label for="WouldRecommend_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="WouldRecommend_No" name="WouldRecommend" value="false" @(Model.WouldRecommend == false ? "checked" : "") />
+                                <label for="WouldRecommend_No">No</label>
+                            </div>
+                        </div>
+                        <div id="WouldRecommendNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.WouldRecommendNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the current workload manageable? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="WorkloadManageable_Yes" name="WorkloadManageable" value="true" @(Model.WorkloadManageable == true ? "checked" : "") required />
+                                <label for="WorkloadManageable_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="WorkloadManageable_No" name="WorkloadManageable" value="false" @(Model.WorkloadManageable == false ? "checked" : "") />
+                                <label for="WorkloadManageable_No">No</label>
+                            </div>
+                        </div>
+                        <div id="WorkloadManageableNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.WorkloadManageableNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Learning Experience: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningExperienceKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningExperienceKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Learning Experience: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningExperienceStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningExperienceStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Learning Experience: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningExperienceImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningExperienceImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Learning Experience:</label>
+                                @Html.TextAreaFor(model => model.LearningExperienceComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Experience Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Current Learning Experience Rating: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="learning-exp-@i" name="LearningExperienceRating" value="@i" @(Model.LearningExperienceRating == i ? "checked" : "") required />
+                                        <label for="learning-exp-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.LearningExperienceRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teaching & Learning Methods Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Teaching & Learning Methods</h3>
+                </div>
+                <div class="card-body">
+                    <div class="section-box">
+                        <p><strong>Discussion points:</strong> Consider how your lecturer:</p>
+                        <ul>
+                            <li>Prepares for lessons</li>
+                            <li>Explains material</li>
+                            <li>Answers questions</li>
+                            <li>Shows concern for student learning</li>
+                            <li>Adjusts pace appropriately</li>
+                        </ul>
+                    </div>
+
+                    <!-- Yes/No Questions for Teaching & Learning Methods -->
+                    <div class="yes-no-container">
+                        <label>Are concepts being presented in a clear and organised manner? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="ConceptsPresented_Yes" name="ConceptsPresented" value="true" @(Model.ConceptsPresented == true ? "checked" : "") required />
+                                <label for="ConceptsPresented_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="ConceptsPresented_No" name="ConceptsPresented" value="false" @(Model.ConceptsPresented == false ? "checked" : "") />
+                                <label for="ConceptsPresented_No">No</label>
+                            </div>
+                        </div>
+                        <div id="ConceptsPresentedNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ConceptsPresentedNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are learning materials being made available? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="MaterialsAvailable_Yes" name="MaterialsAvailable" value="true" @(Model.MaterialsAvailable == true ? "checked" : "") required />
+                                <label for="MaterialsAvailable_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="MaterialsAvailable_No" name="MaterialsAvailable" value="false" @(Model.MaterialsAvailable == false ? "checked" : "") />
+                                <label for="MaterialsAvailable_No">No</label>
+                            </div>
+                        </div>
+                        <div id="MaterialsAvailableNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.MaterialsAvailableNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the teaching approach accommodating different learning styles in the class? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="AccommodatesStyles_Yes" name="AccommodatesStyles" value="true" @(Model.AccommodatesStyles == true ? "checked" : "") required />
+                                <label for="AccommodatesStyles_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="AccommodatesStyles_No" name="AccommodatesStyles" value="false" @(Model.AccommodatesStyles == false ? "checked" : "") />
+                                <label for="AccommodatesStyles_No">No</label>
+                            </div>
+                        </div>
+                        <div id="AccommodatesStylesNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AccommodatesStylesNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the lecturer responsive to questions and clarification requests? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="LecturerResponsive_Yes" name="LecturerResponsive" value="true" @(Model.LecturerResponsive == true ? "checked" : "") required />
+                                <label for="LecturerResponsive_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="LecturerResponsive_No" name="LecturerResponsive" value="false" @(Model.LecturerResponsive == false ? "checked" : "") />
+                                <label for="LecturerResponsive_No">No</label>
+                            </div>
+                        </div>
+                        <div id="LecturerResponsiveNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.LecturerResponsiveNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Learning & Teaching: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningTeachingKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningTeachingKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Learning & Teaching: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningTeachingStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningTeachingStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Learning & Teaching: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.LearningTeachingImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.LearningTeachingImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Learning & Teaching:</label>
+                                @Html.TextAreaFor(model => model.LearningTeachingComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning & Teaching Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Learning & Teaching Rating: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="learning-teaching-@i" name="LearningTeachingRating" value="@i" @(Model.LearningTeachingRating == i ? "checked" : "") required />
+                                        <label for="learning-teaching-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.LearningTeachingRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment & Progress Tracking Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Assessment & Progress Tracking</h3>
+                </div>
+                <div class="card-body">
+                    <div class="section-box">
+                        <p><strong>Discussion points:</strong></p>
+                        <ul>
+                            <li>Understanding of assessment requirements</li>
+                            <li>Timeliness and quality of feedback</li>
+                            <li>Alignment of assessments with course content</li>
+                            <li>Time provided for assignments</li>
+                            <li>Fairness of marking</li>
+                        </ul>
+                    </div>
+
+                    <!-- Yes/No Questions for Assessment -->
+                    <div class="yes-no-container">
+                        <label>Are you confident about upcoming assessments? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="AssessmentConfidence_Yes" name="AssessmentConfidence" value="true" @(Model.AssessmentConfidence == true ? "checked" : "") required />
+                                <label for="AssessmentConfidence_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="AssessmentConfidence_No" name="AssessmentConfidence" value="false" @(Model.AssessmentConfidence == false ? "checked" : "") />
+                                <label for="AssessmentConfidence_No">No</label>
+                            </div>
+                        </div>
+                        <div id="AssessmentConfidenceNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AssessmentConfidenceNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is feedback being returned promptly? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="TimelyFeedback_Yes" name="TimelyFeedback" value="true" @(Model.TimelyFeedback == true ? "checked" : "") required />
+                                <label for="TimelyFeedback_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="TimelyFeedback_No" name="TimelyFeedback" value="false" @(Model.TimelyFeedback == false ? "checked" : "") />
+                                <label for="TimelyFeedback_No">No</label>
+                            </div>
+                        </div>
+                        <div id="TimelyFeedbackNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.TimelyFeedbackNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the feedback specific enough to help you improve? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="SpecificFeedback_Yes" name="SpecificFeedback" value="true" @(Model.SpecificFeedback == true ? "checked" : "") required />
+                                <label for="SpecificFeedback_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="SpecificFeedback_No" name="SpecificFeedback" value="false" @(Model.SpecificFeedback == false ? "checked" : "") />
+                                <label for="SpecificFeedback_No">No</label>
+                            </div>
+                        </div>
+                        <div id="SpecificFeedbackNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.SpecificFeedbackNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Do the assessments align with what's being taught in class? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="AssessmentsAligned_Yes" name="AssessmentsAligned" value="true" @(Model.AssessmentsAligned == true ? "checked" : "") required />
+                                <label for="AssessmentsAligned_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="AssessmentsAligned_No" name="AssessmentsAligned" value="false" @(Model.AssessmentsAligned == false ? "checked" : "") />
+                                <label for="AssessmentsAligned_No">No</label>
+                            </div>
+                        </div>
+                        <div id="AssessmentsAlignedNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AssessmentsAlignedNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is sufficient time being provided to complete assigned work? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="SufficientTime_Yes" name="SufficientTime" value="true" @(Model.SufficientTime == true ? "checked" : "") required />
+                                <label for="SufficientTime_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="SufficientTime_No" name="SufficientTime" value="false" @(Model.SufficientTime == false ? "checked" : "") />
+                                <label for="SufficientTime_No">No</label>
+                            </div>
+                        </div>
+                        <div id="SufficientTimeNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.SufficientTimeNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Assessment & Progress: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.AssessmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.AssessmentKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Assessment & Progress: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.AssessmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.AssessmentStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Assessment & Progress: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.AssessmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.AssessmentImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Assessment & Progress:</label>
+                                @Html.TextAreaFor(model => model.AssessmentComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assessment Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Assessment & Progress Rating: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="assessment-@i" name="AssessmentRating" value="@i" @(Model.AssessmentRating == i ? "checked" : "") required />
+                                        <label for="assessment-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.AssessmentRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Resources & Environment Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Learning Resources & Environment</h3>
+                </div>
+                <div class="card-body">
+                    <div class="section-box">
+                        <p><strong>Discussion points:</strong></p>
+                        <ul>
+                            <li>Accessibility of course materials</li>
+                            <li>Organization of the Canvas platform</li>
+                            <li>Classroom suitability and equipment</li>
+                            <li>Supplementary resources for challenging topics</li>
+                            <li>Access to specialized equipment and library resources</li>
+                        </ul>
+                    </div>
+
+                    <!-- Yes/No Questions for Resources & Environment -->
+                    <div class="yes-no-container">
+                        <label>Are the required materials easily accessible? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="MaterialsAccessible_Yes" name="MaterialsAccessible" value="true" @(Model.MaterialsAccessible == true ? "checked" : "") required />
+                                <label for="MaterialsAccessible_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="MaterialsAccessible_No" name="MaterialsAccessible" value="false" @(Model.MaterialsAccessible == false ? "checked" : "") />
+                                <label for="MaterialsAccessible_No">No</label>
+                            </div>
+                        </div>
+                        <div id="MaterialsAccessibleNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.MaterialsAccessibleNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the Canvas organised in a helpful way? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="PlatformOrganised_Yes" name="PlatformOrganised" value="true" @(Model.PlatformOrganised == true ? "checked" : "") required />
+                                <label for="PlatformOrganised_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="PlatformOrganised_No" name="PlatformOrganised" value="false" @(Model.PlatformOrganised == false ? "checked" : "") />
+                                <label for="PlatformOrganised_No">No</label>
+                            </div>
+                        </div>
+                        <div id="PlatformOrganisedNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.PlatformOrganisedNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the necessary equipment available and working properly? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="EquipmentWorking_Yes" name="EquipmentWorking" value="true" @(Model.EquipmentWorking == true ? "checked" : "") required />
+                                <label for="EquipmentWorking_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="EquipmentWorking_No" name="EquipmentWorking" value="false" @(Model.EquipmentWorking == false ? "checked" : "") />
+                                <label for="EquipmentWorking_No">No</label>
+                            </div>
+                        </div>
+                        <div id="EquipmentWorkingNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.EquipmentWorkingNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are additional resources being provided for topics you find challenging? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="SupplementaryResources_Yes" name="SupplementaryResources" value="true" @(Model.SupplementaryResources == true ? "checked" : "") required />
+                                <label for="SupplementaryResources_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="SupplementaryResources_No" name="SupplementaryResources" value="false" @(Model.SupplementaryResources == false ? "checked" : "") />
+                                <label for="SupplementaryResources_No">No</label>
+                            </div>
+                        </div>
+                        <div id="SupplementaryResourcesNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.SupplementaryResourcesNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Do you have sufficient access to specialised equipment needed for current units? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="SpecializedEquipment_Yes" name="SpecializedEquipment" value="true" @(Model.SpecializedEquipment == true ? "checked" : "") required />
+                                <label for="SpecializedEquipment_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="SpecializedEquipment_No" name="SpecializedEquipment" value="false" @(Model.SpecializedEquipment == false ? "checked" : "") />
+                                <label for="SpecializedEquipment_No">No</label>
+                            </div>
+                        </div>
+                        <div id="SpecializedEquipmentNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.SpecializedEquipmentNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are library resources adequate? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="LibraryResources_Yes" name="LibraryResources" value="true" @(Model.LibraryResources == true ? "checked" : "") required />
+                                <label for="LibraryResources_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="LibraryResources_No" name="LibraryResources" value="false" @(Model.LibraryResources == false ? "checked" : "") />
+                                <label for="LibraryResources_No">No</label>
+                            </div>
+                        </div>
+                        <div id="LibraryResourcesNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.LibraryResourcesNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Resources & Learning Environment: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.ResourcesKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.ResourcesKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Resources & Learning Environment: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.ResourcesStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.ResourcesStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Resources & Learning Environment: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.ResourcesImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.ResourcesImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Resources & Learning Environment:</label>
+                                @Html.TextAreaFor(model => model.ResourcesComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resources Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Resources & Learning Environment Rating: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="resources-@i" name="ResourcesRating" value="@i" @(Model.ResourcesRating == i ? "checked" : "") required />
+                                        <label for="resources-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ResourcesRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication & Support Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Communication & Support</h3>
+                </div>
+                <div class="card-body">
+                    <div class="section-box">
+                        <p><strong>Discussion points:</strong></p>
+                        <ul>
+                            <li>Staff responsiveness</li>
+                            <li>Availability of additional help</li>
+                            <li>Accommodations for students with specific needs</li>
+                            <li>Clear points of contact</li>
+                        </ul>
+                    </div>
+
+                    <!-- Yes/No Questions for Communication & Support -->
+                    <div class="yes-no-container">
+                        <label>Are staff responding to queries in a timely manner? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="StaffResponsive_Yes" name="StaffResponsive" value="true" @(Model.StaffResponsive == true ? "checked" : "") required />
+                                <label for="StaffResponsive_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="StaffResponsive_No" name="StaffResponsive" value="false" @(Model.StaffResponsive == false ? "checked" : "") />
+                                <label for="StaffResponsive_No">No</label>
+                            </div>
+                        </div>
+                        <div id="StaffResponsiveNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.StaffResponsiveNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is additional help available when needed? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="AdditionalHelpAvailable_Yes" name="AdditionalHelpAvailable" value="true" @(Model.AdditionalHelpAvailable == true ? "checked" : "") required />
+                                <label for="AdditionalHelpAvailable_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="AdditionalHelpAvailable_No" name="AdditionalHelpAvailable" value="false" @(Model.AdditionalHelpAvailable == false ? "checked" : "") />
+                                <label for="AdditionalHelpAvailable_No">No</label>
+                            </div>
+                        </div>
+                        <div id="AdditionalHelpAvailableNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AdditionalHelpAvailableNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are accommodations being provided for students who require them? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="AccommodationsProvided_Yes" name="AccommodationsProvided" value="true" @(Model.AccommodationsProvided == true ? "checked" : "") required />
+                                <label for="AccommodationsProvided_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="AccommodationsProvided_No" name="AccommodationsProvided" value="false" @(Model.AccommodationsProvided == false ? "checked" : "") />
+                                <label for="AccommodationsProvided_No">No</label>
+                            </div>
+                        </div>
+                        <div id="AccommodationsProvidedNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.AccommodationsProvidedNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is it clear who to approach with specific questions or concerns? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="ClearPointsOfContact_Yes" name="ClearPointsOfContact" value="true" @(Model.ClearPointsOfContact == true ? "checked" : "") required />
+                                <label for="ClearPointsOfContact_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="ClearPointsOfContact_No" name="ClearPointsOfContact" value="false" @(Model.ClearPointsOfContact == false ? "checked" : "") />
+                                <label for="ClearPointsOfContact_No">No</label>
+                            </div>
+                        </div>
+                        <div id="ClearPointsOfContactNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ClearPointsOfContactNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Support Effectiveness: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SupportEffectivenesssKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SupportEffectivenesssKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Support Effectiveness: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SupportEffectivenessStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SupportEffectivenessStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Support Effectiveness: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SupportEffectivenessImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SupportEffectivenessImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Support Effectiveness:</label>
+                                @Html.TextAreaFor(model => model.SupportEffectivenessComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Effectiveness Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Current support effectiveness: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="support-@i" name="SupportEffectivenessRating" value="@i" @(Model.SupportEffectivenessRating == i ? "checked" : "") required />
+                                        <label for="support-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SupportEffectivenessRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Development Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Skills Development</h3>
+                </div>
+                <div class="card-body">
+                    <div class="section-box">
+                        <p><strong>Discussion points:</strong></p>
+                        <ul>
+                            <li>Development of critical thinking skills</li>
+                            <li>Enhancement of problem-solving abilities</li>
+                            <li>Acquisition of practical career skills</li>
+                            <li>Improvement of communication abilities</li>
+                            <li>Development of research skills</li>
+                        </ul>
+                    </div>
+
+                    <!-- Yes/No Questions for Skills Development -->
+                    <div class="yes-no-container">
+                        <label>Are you developing critical thinking skills in this course? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="DevelopingCriticalThinking_Yes" name="DevelopingCriticalThinking" value="true" @(Model.DevelopingCriticalThinking == true ? "checked" : "") required />
+                                <label for="DevelopingCriticalThinking_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="DevelopingCriticalThinking_No" name="DevelopingCriticalThinking" value="false" @(Model.DevelopingCriticalThinking == false ? "checked" : "") />
+                                <label for="DevelopingCriticalThinking_No">No</label>
+                            </div>
+                        </div>
+                        <div id="DevelopingCriticalThinkingNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.DevelopingCriticalThinkingNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are you enhancing your problem-solving abilities through the coursework? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="EnhancingProblemSolving_Yes" name="EnhancingProblemSolving" value="true" @(Model.EnhancingProblemSolving == true ? "checked" : "") required />
+                                <label for="EnhancingProblemSolving_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="EnhancingProblemSolving_No" name="EnhancingProblemSolving" value="false" @(Model.EnhancingProblemSolving == false ? "checked" : "") />
+                                <label for="EnhancingProblemSolving_No">No</label>
+                            </div>
+                        </div>
+                        <div id="EnhancingProblemSolvingNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.EnhancingProblemSolvingNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are you gaining practical skills relevant to your intended career? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="GainingPracticalSkills_Yes" name="GainingPracticalSkills" value="true" @(Model.GainingPracticalSkills == true ? "checked" : "") required />
+                                <label for="GainingPracticalSkills_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="GainingPracticalSkills_No" name="GainingPracticalSkills" value="false" @(Model.GainingPracticalSkills == false ? "checked" : "") />
+                                <label for="GainingPracticalSkills_No">No</label>
+                            </div>
+                        </div>
+                        <div id="GainingPracticalSkillsNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.GainingPracticalSkillsNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Is the course helping improve your communication abilities? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="ImprovingCommunication_Yes" name="ImprovingCommunication" value="true" @(Model.ImprovingCommunication == true ? "checked" : "") required />
+                                <label for="ImprovingCommunication_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="ImprovingCommunication_No" name="ImprovingCommunication" value="false" @(Model.ImprovingCommunication == false ? "checked" : "") />
+                                <label for="ImprovingCommunication_No">No</label>
+                            </div>
+                        </div>
+                        <div id="ImprovingCommunicationNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.ImprovingCommunicationNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="yes-no-container">
+                        <label>Are your research skills developing through the current assignments? <span class="text-danger">*</span></label>
+                        <div class="yes-no-options">
+                            <div class="yes-no-option">
+                                <input type="radio" id="DevelopingResearchSkills_Yes" name="DevelopingResearchSkills" value="true" @(Model.DevelopingResearchSkills == true ? "checked" : "") required />
+                                <label for="DevelopingResearchSkills_Yes">Yes</label>
+                            </div>
+                            <div class="yes-no-option">
+                                <input type="radio" id="DevelopingResearchSkills_No" name="DevelopingResearchSkills" value="false" @(Model.DevelopingResearchSkills == false ? "checked" : "") />
+                                <label for="DevelopingResearchSkills_No">No</label>
+                            </div>
+                        </div>
+                        <div id="DevelopingResearchSkillsNotes_Container" class="explanation-box">
+                            <label>Please explain why: <span class="text-danger">*</span></label>
+                            @Html.TextAreaFor(model => model.DevelopingResearchSkillsNotes, new { @class = "form-control", rows = 3 })
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Key Issues with Skills Development: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SkillsDevelopmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SkillsDevelopmentKeyIssues, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Strengths in Skills Development: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SkillsDevelopmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SkillsDevelopmentStrengths, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Suggested Improvements for Skills Development: <span class="text-danger">*</span></label>
+                                @Html.TextAreaFor(model => model.SkillsDevelopmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
+                                @Html.ValidationMessageFor(model => model.SkillsDevelopmentImprovements, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Additional Comments on Skills Development:</label>
+                                @Html.TextAreaFor(model => model.SkillsDevelopmentComments, new { @class = "form-control", rows = 5 })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Development Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Current skills development progress: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="skills-@i" name="SkillsDevelopmentRating" value="@i" @(Model.SkillsDevelopmentRating == i ? "checked" : "") required />
+                                        <label for="skills-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Comments Section -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #7F3D98; color: white !important;">
+                    <h3 class="card-title">Overall Comments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>What are the best features of this course/unit? <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.BestFeatures, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.BestFeatures, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>What areas could be improved? <span class="text-danger">*</span></label>
+                        @Html.TextAreaFor(model => model.AreasForImprovement, new { @class = "form-control", rows = 5, required = "required" })
+                        @Html.ValidationMessageFor(model => model.AreasForImprovement, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Overall Rating Section -->
+                    <div class="form-group mt-4">
+                        <label>Overall Rating: <span class="text-danger">*</span></label>
+                        <div class="rating-container">
+                            <div class="rating-circles">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <div class="rating-option">
+                                        <input type="radio" id="overall-@i" name="OverallRating" value="@i" @(Model.OverallRating == i ? "checked" : "") required />
+                                        <label for="overall-@i" class="rating-circle">@i</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="rating-labels">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.OverallRating, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-center mb-5">
+                <button type="submit" class="btn-purple">
+                    <i class="fas fa-paper-plane"></i> Submit Feedback
+                </button>
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        }
     </div>
 </div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
 
-    <!-- Hidden fields -->
-    @Html.HiddenFor(model => model.RequestId)
-    @Html.HiddenFor(model => model.FeedbackId)
-    @Html.HiddenFor(model => model.ClassId)
-    @Html.HiddenFor(model => model.StudentId)
-    @Html.HiddenFor(model => model.CreatorId)
-    @Html.HiddenFor(model => model.IsSubmitted)
-    @Html.HiddenFor(model => model.FeedbackDate)
+            <script>
+                $(document).ready(function () {
+                    // Function to handle the display of explanation text areas based on Yes/No selection
+                    function toggleExplanationFields() {
+                        // List of all Yes/No question fields
+                        const yesNoFields = [
+                            'MeetsExpectations',
+                            'WouldRecommend',
+                            'WorkloadManageable',
+                            'ConceptsPresented',
+                            'MaterialsAvailable',
+                            'AccommodatesStyles',
+                            'LecturerResponsive',
+                            'AssessmentConfidence',
+                            'TimelyFeedback',
+                            'SpecificFeedback',
+                            'AssessmentsAligned',
+                            'SufficientTime',
+                            'MaterialsAccessible',
+                            'PlatformOrganised',
+                            'EquipmentWorking',
+                            'SupplementaryResources',
+                            'SpecializedEquipment',
+                            'LibraryResources',
+                            'StaffResponsive',
+                            'AdditionalHelpAvailable',
+                            'AccommodationsProvided',
+                            'ClearPointsOfContact',
+                            'DevelopingCriticalThinking',
+                            'EnhancingProblemSolving',
+                            'GainingPracticalSkills',
+                            'ImprovingCommunication',
+                            'DevelopingResearchSkills'
+                        ];
 
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Course Information</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Course</label>
-                        <p class="form-control-static">@Model.Course</p>
-                        @Html.HiddenFor(model => model.Course)
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Class</label>
-                        <p class="form-control-static">@Model.Class</p>
-                        @Html.HiddenFor(model => model.Class)
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        // For each field, check if 'No' is selected and show/hide the explanation box accordingly
+                        yesNoFields.forEach(function (field) {
+                            const noRadio = $(`input[name="${field}"][value="false"]`);
+                            const explanationContainer = $(`#${field}Notes_Container`);
 
-    <!-- Current Learning Experience Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Current Learning Experience</h3>
-        </div>
-        <div class="card-body">
-            <!-- Yes/No Questions for Current Learning Experience -->
-            <div class="yes-no-container">
-                <label>Is the course currently meeting your expectations? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="MeetsExpectations_Yes" name="MeetsExpectations" value="true" @(Model.MeetsExpectations == true ? "checked" : "") required />
-                        <label for="MeetsExpectations_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="MeetsExpectations_No" name="MeetsExpectations" value="false" @(Model.MeetsExpectations == false ? "checked" : "") />
-                        <label for="MeetsExpectations_No">No</label>
-                    </div>
-                </div>
-                <div id="MeetsExpectationsNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.MeetsExpectationsNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
+                            // Set initial state
+                            if (noRadio.is(':checked')) {
+                                explanationContainer.show();
+                                explanationContainer.find('textarea').prop('required', true);
+                            } else {
+                                explanationContainer.hide();
+                                explanationContainer.find('textarea').prop('required', false);
+                            }
 
-            <div class="yes-no-container">
-                <label>Would you recommend this course to others at this stage? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="WouldRecommend_Yes" name="WouldRecommend" value="true" @(Model.WouldRecommend == true ? "checked" : "") required />
-                        <label for="WouldRecommend_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="WouldRecommend_No" name="WouldRecommend" value="false" @(Model.WouldRecommend == false ? "checked" : "") />
-                        <label for="WouldRecommend_No">No</label>
-                    </div>
-                </div>
-                <div id="WouldRecommendNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.WouldRecommendNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the current workload manageable? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="WorkloadManageable_Yes" name="WorkloadManageable" value="true" @(Model.WorkloadManageable == true ? "checked" : "") required />
-                        <label for="WorkloadManageable_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="WorkloadManageable_No" name="WorkloadManageable" value="false" @(Model.WorkloadManageable == false ? "checked" : "") />
-                        <label for="WorkloadManageable_No">No</label>
-                    </div>
-                </div>
-                <div id="WorkloadManageableNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.WorkloadManageableNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Learning Experience: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningExperienceKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningExperienceKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Learning Experience: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningExperienceStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningExperienceStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Learning Experience: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningExperienceImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningExperienceImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Learning Experience:</label>
-                        @Html.TextAreaFor(model => model.LearningExperienceComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Learning Experience Rating Section -->
-            <div class="form-group mt-4">
-                <label>Current Learning Experience Rating: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="learning-exp-@i" name="LearningExperienceRating" value="@i" @(Model.LearningExperienceRating == i ? "checked" : "") required />
-                                <label for="learning-exp-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.LearningExperienceRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Teaching & Learning Methods Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Teaching & Learning Methods</h3>
-        </div>
-        <div class="card-body">
-            <div class="section-box">
-                <p><strong>Discussion points:</strong> Consider how your lecturer:</p>
-                <ul>
-                    <li>Prepares for lessons</li>
-                    <li>Explains material</li>
-                    <li>Answers questions</li>
-                    <li>Shows concern for student learning</li>
-                    <li>Adjusts pace appropriately</li>
-                </ul>
-            </div>
-
-            <!-- Yes/No Questions for Teaching & Learning Methods -->
-            <div class="yes-no-container">
-                <label>Are concepts being presented in a clear and organised manner? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="ConceptsPresented_Yes" name="ConceptsPresented" value="true" @(Model.ConceptsPresented == true ? "checked" : "") required />
-                        <label for="ConceptsPresented_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="ConceptsPresented_No" name="ConceptsPresented" value="false" @(Model.ConceptsPresented == false ? "checked" : "") />
-                        <label for="ConceptsPresented_No">No</label>
-                    </div>
-                </div>
-                <div id="ConceptsPresentedNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.ConceptsPresentedNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are learning materials being made available? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="MaterialsAvailable_Yes" name="MaterialsAvailable" value="true" @(Model.MaterialsAvailable == true ? "checked" : "") required />
-                        <label for="MaterialsAvailable_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="MaterialsAvailable_No" name="MaterialsAvailable" value="false" @(Model.MaterialsAvailable == false ? "checked" : "") />
-                        <label for="MaterialsAvailable_No">No</label>
-                    </div>
-                </div>
-                <div id="MaterialsAvailableNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.MaterialsAvailableNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the teaching approach accommodating different learning styles in the class? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="AccommodatesStyles_Yes" name="AccommodatesStyles" value="true" @(Model.AccommodatesStyles == true ? "checked" : "") required />
-                        <label for="AccommodatesStyles_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="AccommodatesStyles_No" name="AccommodatesStyles" value="false" @(Model.AccommodatesStyles == false ? "checked" : "") />
-                        <label for="AccommodatesStyles_No">No</label>
-                    </div>
-                </div>
-                <div id="AccommodatesStylesNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.AccommodatesStylesNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the lecturer responsive to questions and clarification requests? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="LecturerResponsive_Yes" name="LecturerResponsive" value="true" @(Model.LecturerResponsive == true ? "checked" : "") required />
-                        <label for="LecturerResponsive_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="LecturerResponsive_No" name="LecturerResponsive" value="false" @(Model.LecturerResponsive == false ? "checked" : "") />
-                        <label for="LecturerResponsive_No">No</label>
-                    </div>
-                </div>
-                <div id="LecturerResponsiveNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.LecturerResponsiveNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Learning & Teaching: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningTeachingKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningTeachingKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Learning & Teaching: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningTeachingStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningTeachingStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Learning & Teaching: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.LearningTeachingImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.LearningTeachingImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Learning & Teaching:</label>
-                        @Html.TextAreaFor(model => model.LearningTeachingComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Learning & Teaching Rating Section -->
-            <div class="form-group mt-4">
-                <label>Learning & Teaching Rating: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="learning-teaching-@i" name="LearningTeachingRating" value="@i" @(Model.LearningTeachingRating == i ? "checked" : "") required />
-                                <label for="learning-teaching-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.LearningTeachingRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Assessment & Progress Tracking Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Assessment & Progress Tracking</h3>
-        </div>
-        <div class="card-body">
-            <div class="section-box">
-                <p><strong>Discussion points:</strong></p>
-                <ul>
-                    <li>Understanding of assessment requirements</li>
-                    <li>Timeliness and quality of feedback</li>
-                    <li>Alignment of assessments with course content</li>
-                    <li>Time provided for assignments</li>
-                    <li>Fairness of marking</li>
-                </ul>
-            </div>
-
-            <!-- Yes/No Questions for Assessment -->
-            <div class="yes-no-container">
-                <label>Are you confident about upcoming assessments? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="AssessmentConfidence_Yes" name="AssessmentConfidence" value="true" @(Model.AssessmentConfidence == true ? "checked" : "") required />
-                        <label for="AssessmentConfidence_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="AssessmentConfidence_No" name="AssessmentConfidence" value="false" @(Model.AssessmentConfidence == false ? "checked" : "") />
-                        <label for="AssessmentConfidence_No">No</label>
-                    </div>
-                </div>
-                <div id="AssessmentConfidenceNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.AssessmentConfidenceNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is feedback being returned promptly? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="TimelyFeedback_Yes" name="TimelyFeedback" value="true" @(Model.TimelyFeedback == true ? "checked" : "") required />
-                        <label for="TimelyFeedback_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="TimelyFeedback_No" name="TimelyFeedback" value="false" @(Model.TimelyFeedback == false ? "checked" : "") />
-                        <label for="TimelyFeedback_No">No</label>
-                    </div>
-                </div>
-                <div id="TimelyFeedbackNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.TimelyFeedbackNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the feedback specific enough to help you improve? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="SpecificFeedback_Yes" name="SpecificFeedback" value="true" @(Model.SpecificFeedback == true ? "checked" : "") required />
-                        <label for="SpecificFeedback_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="SpecificFeedback_No" name="SpecificFeedback" value="false" @(Model.SpecificFeedback == false ? "checked" : "") />
-                        <label for="SpecificFeedback_No">No</label>
-                    </div>
-                </div>
-                <div id="SpecificFeedbackNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.SpecificFeedbackNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Do the assessments align with what's being taught in class? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="AssessmentsAligned_Yes" name="AssessmentsAligned" value="true" @(Model.AssessmentsAligned == true ? "checked" : "") required />
-                        <label for="AssessmentsAligned_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="AssessmentsAligned_No" name="AssessmentsAligned" value="false" @(Model.AssessmentsAligned == false ? "checked" : "") />
-                        <label for="AssessmentsAligned_No">No</label>
-                    </div>
-                </div>
-                <div id="AssessmentsAlignedNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.AssessmentsAlignedNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is sufficient time being provided to complete assigned work? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="SufficientTime_Yes" name="SufficientTime" value="true" @(Model.SufficientTime == true ? "checked" : "") required />
-                        <label for="SufficientTime_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="SufficientTime_No" name="SufficientTime" value="false" @(Model.SufficientTime == false ? "checked" : "") />
-                        <label for="SufficientTime_No">No</label>
-                    </div>
-                </div>
-                <div id="SufficientTimeNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.SufficientTimeNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Assessment & Progress: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.AssessmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.AssessmentKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Assessment & Progress: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.AssessmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.AssessmentStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Assessment & Progress: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.AssessmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.AssessmentImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Assessment & Progress:</label>
-                        @Html.TextAreaFor(model => model.AssessmentComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assessment Rating Section -->
-            <div class="form-group mt-4">
-                <label>Assessment & Progress Rating: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="assessment-@i" name="AssessmentRating" value="@i" @(Model.AssessmentRating == i ? "checked" : "") required />
-                                <label for="assessment-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.AssessmentRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Learning Resources & Environment Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Learning Resources & Environment</h3>
-        </div>
-        <div class="card-body">
-            <div class="section-box">
-                <p><strong>Discussion points:</strong></p>
-                <ul>
-                    <li>Accessibility of course materials</li>
-                    <li>Organization of the Canvas platform</li>
-                    <li>Classroom suitability and equipment</li>
-                    <li>Supplementary resources for challenging topics</li>
-                    <li>Access to specialized equipment and library resources</li>
-                </ul>
-            </div>
-
-            <!-- Yes/No Questions for Resources & Environment -->
-            <div class="yes-no-container">
-                <label>Are the required materials easily accessible? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="MaterialsAccessible_Yes" name="MaterialsAccessible" value="true" @(Model.MaterialsAccessible == true ? "checked" : "") required />
-                        <label for="MaterialsAccessible_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="MaterialsAccessible_No" name="MaterialsAccessible" value="false" @(Model.MaterialsAccessible == false ? "checked" : "") />
-                        <label for="MaterialsAccessible_No">No</label>
-                    </div>
-                </div>
-                <div id="MaterialsAccessibleNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.MaterialsAccessibleNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the Canvas organised in a helpful way? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="PlatformOrganised_Yes" name="PlatformOrganised" value="true" @(Model.PlatformOrganised == true ? "checked" : "") required />
-                        <label for="PlatformOrganised_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="PlatformOrganised_No" name="PlatformOrganised" value="false" @(Model.PlatformOrganised == false ? "checked" : "") />
-                        <label for="PlatformOrganised_No">No</label>
-                    </div>
-                </div>
-                <div id="PlatformOrganisedNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.PlatformOrganisedNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the necessary equipment available and working properly? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="EquipmentWorking_Yes" name="EquipmentWorking" value="true" @(Model.EquipmentWorking == true ? "checked" : "") required />
-                        <label for="EquipmentWorking_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="EquipmentWorking_No" name="EquipmentWorking" value="false" @(Model.EquipmentWorking == false ? "checked" : "") />
-                        <label for="EquipmentWorking_No">No</label>
-                    </div>
-                </div>
-                <div id="EquipmentWorkingNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.EquipmentWorkingNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are additional resources being provided for topics you find challenging? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="SupplementaryResources_Yes" name="SupplementaryResources" value="true" @(Model.SupplementaryResources == true ? "checked" : "") required />
-                        <label for="SupplementaryResources_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="SupplementaryResources_No" name="SupplementaryResources" value="false" @(Model.SupplementaryResources == false ? "checked" : "") />
-                        <label for="SupplementaryResources_No">No</label>
-                    </div>
-                </div>
-                <div id="SupplementaryResourcesNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.SupplementaryResourcesNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Do you have sufficient access to specialised equipment needed for current units? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="SpecializedEquipment_Yes" name="SpecializedEquipment" value="true" @(Model.SpecializedEquipment == true ? "checked" : "") required />
-                        <label for="SpecializedEquipment_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="SpecializedEquipment_No" name="SpecializedEquipment" value="false" @(Model.SpecializedEquipment == false ? "checked" : "") />
-                        <label for="SpecializedEquipment_No">No</label>
-                    </div>
-                </div>
-                <div id="SpecializedEquipmentNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.SpecializedEquipmentNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are library resources adequate? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="LibraryResources_Yes" name="LibraryResources" value="true" @(Model.LibraryResources == true ? "checked" : "") required />
-                        <label for="LibraryResources_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="LibraryResources_No" name="LibraryResources" value="false" @(Model.LibraryResources == false ? "checked" : "") />
-                        <label for="LibraryResources_No">No</label>
-                    </div>
-                </div>
-                <div id="LibraryResourcesNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.LibraryResourcesNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Resources & Learning Environment: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.ResourcesKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.ResourcesKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Resources & Learning Environment: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.ResourcesStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.ResourcesStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Resources & Learning Environment: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.ResourcesImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.ResourcesImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Resources & Learning Environment:</label>
-                        @Html.TextAreaFor(model => model.ResourcesComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resources Rating Section -->
-            <div class="form-group mt-4">
-                <label>Resources & Learning Environment Rating: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="resources-@i" name="ResourcesRating" value="@i" @(Model.ResourcesRating == i ? "checked" : "") required />
-                                <label for="resources-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.ResourcesRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Communication & Support Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Communication & Support</h3>
-        </div>
-        <div class="card-body">
-            <div class="section-box">
-                <p><strong>Discussion points:</strong></p>
-                <ul>
-                    <li>Staff responsiveness</li>
-                    <li>Availability of additional help</li>
-                    <li>Accommodations for students with specific needs</li>
-                    <li>Clear points of contact</li>
-                </ul>
-            </div>
-
-            <!-- Yes/No Questions for Communication & Support -->
-            <div class="yes-no-container">
-                <label>Are staff responding to queries in a timely manner? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="StaffResponsive_Yes" name="StaffResponsive" value="true" @(Model.StaffResponsive == true ? "checked" : "") required />
-                        <label for="StaffResponsive_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="StaffResponsive_No" name="StaffResponsive" value="false" @(Model.StaffResponsive == false ? "checked" : "") />
-                        <label for="StaffResponsive_No">No</label>
-                    </div>
-                </div>
-                <div id="StaffResponsiveNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.StaffResponsiveNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is additional help available when needed? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="AdditionalHelpAvailable_Yes" name="AdditionalHelpAvailable" value="true" @(Model.AdditionalHelpAvailable == true ? "checked" : "") required />
-                        <label for="AdditionalHelpAvailable_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="AdditionalHelpAvailable_No" name="AdditionalHelpAvailable" value="false" @(Model.AdditionalHelpAvailable == false ? "checked" : "") />
-                        <label for="AdditionalHelpAvailable_No">No</label>
-                    </div>
-                </div>
-                <div id="AdditionalHelpAvailableNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.AdditionalHelpAvailableNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are accommodations being provided for students who require them? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="AccommodationsProvided_Yes" name="AccommodationsProvided" value="true" @(Model.AccommodationsProvided == true ? "checked" : "") required />
-                        <label for="AccommodationsProvided_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="AccommodationsProvided_No" name="AccommodationsProvided" value="false" @(Model.AccommodationsProvided == false ? "checked" : "") />
-                        <label for="AccommodationsProvided_No">No</label>
-                    </div>
-                </div>
-                <div id="AccommodationsProvidedNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.AccommodationsProvidedNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is it clear who to approach with specific questions or concerns? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="ClearPointsOfContact_Yes" name="ClearPointsOfContact" value="true" @(Model.ClearPointsOfContact == true ? "checked" : "") required />
-                        <label for="ClearPointsOfContact_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="ClearPointsOfContact_No" name="ClearPointsOfContact" value="false" @(Model.ClearPointsOfContact == false ? "checked" : "") />
-                        <label for="ClearPointsOfContact_No">No</label>
-                    </div>
-                </div>
-                <div id="ClearPointsOfContactNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.ClearPointsOfContactNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Support Effectiveness: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SupportEffectivenesssKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SupportEffectivenesssKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Support Effectiveness: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SupportEffectivenessStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SupportEffectivenessStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Support Effectiveness: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SupportEffectivenessImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SupportEffectivenessImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Support Effectiveness:</label>
-                        @Html.TextAreaFor(model => model.SupportEffectivenessComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Support Effectiveness Rating Section -->
-            <div class="form-group mt-4">
-                <label>Current support effectiveness: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="support-@i" name="SupportEffectivenessRating" value="@i" @(Model.SupportEffectivenessRating == i ? "checked" : "") required />
-                                <label for="support-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.SupportEffectivenessRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Skills Development Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Skills Development</h3>
-        </div>
-        <div class="card-body">
-            <div class="section-box">
-                <p><strong>Discussion points:</strong></p>
-                <ul>
-                    <li>Development of critical thinking skills</li>
-                    <li>Enhancement of problem-solving abilities</li>
-                    <li>Acquisition of practical career skills</li>
-                    <li>Improvement of communication abilities</li>
-                    <li>Development of research skills</li>
-                </ul>
-            </div>
-
-            <!-- Yes/No Questions for Skills Development -->
-            <div class="yes-no-container">
-                <label>Are you developing critical thinking skills in this course? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="DevelopingCriticalThinking_Yes" name="DevelopingCriticalThinking" value="true" @(Model.DevelopingCriticalThinking == true ? "checked" : "") required />
-                        <label for="DevelopingCriticalThinking_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="DevelopingCriticalThinking_No" name="DevelopingCriticalThinking" value="false" @(Model.DevelopingCriticalThinking == false ? "checked" : "") />
-                        <label for="DevelopingCriticalThinking_No">No</label>
-                    </div>
-                </div>
-                <div id="DevelopingCriticalThinkingNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.DevelopingCriticalThinkingNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are you enhancing your problem-solving abilities through the coursework? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="EnhancingProblemSolving_Yes" name="EnhancingProblemSolving" value="true" @(Model.EnhancingProblemSolving == true ? "checked" : "") required />
-                        <label for="EnhancingProblemSolving_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="EnhancingProblemSolving_No" name="EnhancingProblemSolving" value="false" @(Model.EnhancingProblemSolving == false ? "checked" : "") />
-                        <label for="EnhancingProblemSolving_No">No</label>
-                    </div>
-                </div>
-                <div id="EnhancingProblemSolvingNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.EnhancingProblemSolvingNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are you gaining practical skills relevant to your intended career? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="GainingPracticalSkills_Yes" name="GainingPracticalSkills" value="true" @(Model.GainingPracticalSkills == true ? "checked" : "") required />
-                        <label for="GainingPracticalSkills_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="GainingPracticalSkills_No" name="GainingPracticalSkills" value="false" @(Model.GainingPracticalSkills == false ? "checked" : "") />
-                        <label for="GainingPracticalSkills_No">No</label>
-                    </div>
-                </div>
-                <div id="GainingPracticalSkillsNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.GainingPracticalSkillsNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Is the course helping improve your communication abilities? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="ImprovingCommunication_Yes" name="ImprovingCommunication" value="true" @(Model.ImprovingCommunication == true ? "checked" : "") required />
-                        <label for="ImprovingCommunication_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="ImprovingCommunication_No" name="ImprovingCommunication" value="false" @(Model.ImprovingCommunication == false ? "checked" : "") />
-                        <label for="ImprovingCommunication_No">No</label>
-                    </div>
-                </div>
-                <div id="ImprovingCommunicationNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.ImprovingCommunicationNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="yes-no-container">
-                <label>Are your research skills developing through the current assignments? <span class="text-danger">*</span></label>
-                <div class="yes-no-options">
-                    <div class="yes-no-option">
-                        <input type="radio" id="DevelopingResearchSkills_Yes" name="DevelopingResearchSkills" value="true" @(Model.DevelopingResearchSkills == true ? "checked" : "") required />
-                        <label for="DevelopingResearchSkills_Yes">Yes</label>
-                    </div>
-                    <div class="yes-no-option">
-                        <input type="radio" id="DevelopingResearchSkills_No" name="DevelopingResearchSkills" value="false" @(Model.DevelopingResearchSkills == false ? "checked" : "") />
-                        <label for="DevelopingResearchSkills_No">No</label>
-                    </div>
-                </div>
-                <div id="DevelopingResearchSkillsNotes_Container" class="explanation-box">
-                    <label>Please explain why: <span class="text-danger">*</span></label>
-                    @Html.TextAreaFor(model => model.DevelopingResearchSkillsNotes, new { @class = "form-control", rows = 3 })
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Key Issues with Skills Development: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SkillsDevelopmentKeyIssues, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentKeyIssues, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Strengths in Skills Development: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SkillsDevelopmentStrengths, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentStrengths, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Suggested Improvements for Skills Development: <span class="text-danger">*</span></label>
-                        @Html.TextAreaFor(model => model.SkillsDevelopmentImprovements, new { @class = "form-control", rows = 5, required = "required" })
-                        @Html.ValidationMessageFor(model => model.SkillsDevelopmentImprovements, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Additional Comments on Skills Development:</label>
-                        @Html.TextAreaFor(model => model.SkillsDevelopmentComments, new { @class = "form-control", rows = 5 })
-                    </div>
-                </div>
-            </div>
-
-            <!-- Skills Development Rating Section -->
-            <div class="form-group mt-4">
-                <label>Current skills development progress: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="skills-@i" name="SkillsDevelopmentRating" value="@i" @(Model.SkillsDevelopmentRating == i ? "checked" : "") required />
-                                <label for="skills-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.SkillsDevelopmentRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <!-- Overall Comments Section -->
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #7F3D98; color: white;">
-            <h3 class="card-title">Overall Comments</h3>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label>What are the best features of this course/unit? <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.BestFeatures, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.BestFeatures, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <label>What areas could be improved? <span class="text-danger">*</span></label>
-                @Html.TextAreaFor(model => model.AreasForImprovement, new { @class = "form-control", rows = 5, required = "required" })
-                @Html.ValidationMessageFor(model => model.AreasForImprovement, "", new { @class = "text-danger" })
-            </div>
-
-            <!-- Overall Rating Section -->
-            <div class="form-group mt-4">
-                <label>Overall Rating: <span class="text-danger">*</span></label>
-                <div class="rating-container">
-                    <div class="rating-circles">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <div class="rating-option">
-                                <input type="radio" id="overall-@i" name="OverallRating" value="@i" @(Model.OverallRating == i ? "checked" : "") required />
-                                <label for="overall-@i" class="rating-circle">@i</label>
-                            </div>
-                        }
-                    </div>
-                    <div class="rating-labels">
-                        <span>Poor</span>
-                        <span>Excellent</span>
-                    </div>
-                </div>
-                @Html.ValidationMessageFor(model => model.OverallRating, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group text-center mb-5">
-        <button type="submit" class="btn btn-lg" style="background-color: #7F3D98; color: white;">
-            <i class="fas fa-paper-plane"></i> Submit Feedback
-        </button>
-        <a href="@Url.Action("StudentDash", "Student")" class="btn btn-lg btn-outline-secondary">
-            <i class="fas fa-times"></i> Cancel
-        </a>
-    </div>
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-
-    <script>
-        $(document).ready(function () {
-            // Function to handle the display of explanation text areas based on Yes/No selection
-            function toggleExplanationFields() {
-                // List of all Yes/No question fields
-                const yesNoFields = [
-                    'MeetsExpectations',
-                    'WouldRecommend',
-                    'WorkloadManageable',
-                    'ConceptsPresented',
-                    'MaterialsAvailable',
-                    'AccommodatesStyles',
-                    'LecturerResponsive',
-                    'AssessmentConfidence',
-                    'TimelyFeedback',
-                    'SpecificFeedback',
-                    'AssessmentsAligned',
-                    'SufficientTime',
-                    'MaterialsAccessible',
-                    'PlatformOrganised',
-                    'EquipmentWorking',
-                    'SupplementaryResources',
-                    'SpecializedEquipment',
-                    'LibraryResources',
-                    'StaffResponsive',
-                    'AdditionalHelpAvailable',
-                    'AccommodationsProvided',
-                    'ClearPointsOfContact',
-                    'DevelopingCriticalThinking',
-                    'EnhancingProblemSolving',
-                    'GainingPracticalSkills',
-                    'ImprovingCommunication',
-                    'DevelopingResearchSkills'
-                ];
-
-                // For each field, check if 'No' is selected and show/hide the explanation box accordingly
-                yesNoFields.forEach(function (field) {
-                    const noRadio = $(`input[name="${field}"][value="false"]`);
-                    const explanationContainer = $(`#${field}Notes_Container`);
-
-                    // Set initial state
-                    if (noRadio.is(':checked')) {
-                        explanationContainer.show();
-                        explanationContainer.find('textarea').prop('required', true);
-                    } else {
-                        explanationContainer.hide();
-                        explanationContainer.find('textarea').prop('required', false);
+                            // Add change event to all radio buttons in this group
+                            $(`input[name="${field}"]`).change(function () {
+                                if (noRadio.is(':checked')) {
+                                    explanationContainer.slideDown();
+                                    explanationContainer.find('textarea').prop('required', true);
+                                } else {
+                                    explanationContainer.slideUp();
+                                    explanationContainer.find('textarea').prop('required', false);
+                                    // Clear the textarea when switching back to 'Yes'
+                                    explanationContainer.find('textarea').val('');
+                                }
+                            });
+                        });
                     }
 
-                    // Add change event to all radio buttons in this group
-                    $(`input[name="${field}"]`).change(function () {
-                        if (noRadio.is(':checked')) {
-                            explanationContainer.slideDown();
-                            explanationContainer.find('textarea').prop('required', true);
-                        } else {
-                            explanationContainer.slideUp();
-                            explanationContainer.find('textarea').prop('required', false);
-                            // Clear the textarea when switching back to 'Yes'
-                            explanationContainer.find('textarea').val('');
+                    // Initialize the explanation fields
+                    toggleExplanationFields();
+
+                    // Custom validation to ensure required fields are not empty
+                    $("form").submit(function (e) {
+                        var isValid = true;
+
+                        // Check textarea validation
+                        $("textarea[required]").each(function () {
+                            if ($.trim($(this).val()) === '') {
+                                $(this).addClass("input-validation-error");
+                                $(this).next(".text-danger").text("This field is required.");
+                                isValid = false;
+                            }
+                        });
+
+                        // Check radio button validation for yes/no questions
+                        const yesNoFields = [
+                            'MeetsExpectations',
+                            'WouldRecommend',
+                            'WorkloadManageable',
+                            'ConceptsPresented',
+                            'MaterialsAvailable',
+                            'AccommodatesStyles',
+                            'LecturerResponsive',
+                            'AssessmentConfidence',
+                            'TimelyFeedback',
+                            'SpecificFeedback',
+                            'AssessmentsAligned',
+                            'SufficientTime',
+                            'MaterialsAccessible',
+                            'PlatformOrganised',
+                            'EquipmentWorking',
+                            'SupplementaryResources',
+                            'SpecializedEquipment',
+                            'LibraryResources',
+                            'StaffResponsive',
+                            'AdditionalHelpAvailable',
+                            'AccommodationsProvided',
+                            'ClearPointsOfContact',
+                            'DevelopingCriticalThinking',
+                            'EnhancingProblemSolving',
+                            'GainingPracticalSkills',
+                            'ImprovingCommunication',
+                            'DevelopingResearchSkills'
+                        ];
+
+                        // Validate yes/no fields
+                        yesNoFields.forEach(function (field) {
+                            if ($(`input[name="${field}"]:checked`).length === 0) {
+                                $(`input[name="${field}"]`).first().parent().parent().after('<span class="text-danger">Please select Yes or No.</span>');
+                                isValid = false;
+                            }
+                        });
+
+                        // Check rating validation
+                        [
+                            'LearningExperienceRating',
+                            'LearningTeachingRating',
+                            'AssessmentRating',
+                            'ResourcesRating',
+                            'SupportEffectivenessRating',
+                            'SkillsDevelopmentRating',
+                            'OverallRating'
+                        ].forEach(function (ratingGroup) {
+                            if ($('input[name="' + ratingGroup + '"]:checked').length === 0) {
+                                $('#' + ratingGroup.toLowerCase().replace('rating', '') + '-1').parent().parent().parent().find('.text-danger').text("Please select a rating.");
+                                isValid = false;
+                            }
+                        });
+
+                        if (!isValid) {
+                            e.preventDefault();
+                            // Scroll to the first error
+                            $('html, body').animate({
+                                scrollTop: $(".input-validation-error:first, .text-danger:visible:first").offset().top - 100
+                            }, 200);
                         }
                     });
+
+                    // Rating circle visual feedback
+                    $('.rating-circle').click(function () {
+                        var group = $(this).closest('.rating-circles');
+                        group.find('.rating-circle').removeClass('selected');
+                        $(this).addClass('selected');
+                    });
+
+                    // Initialize with any pre-selected ratings
+                    $('.rating-option input[type="radio"]:checked').each(function () {
+                        $(this).next('.rating-circle').addClass('selected');
+                    });
                 });
-            }
-
-            // Initialize the explanation fields
-            toggleExplanationFields();
-
-            // Custom validation to ensure required fields are not empty
-            $("form").submit(function (e) {
-                var isValid = true;
-
-                // Check textarea validation
-                $("textarea[required]").each(function () {
-                    if ($.trim($(this).val()) === '') {
-                        $(this).addClass("input-validation-error");
-                        $(this).next(".text-danger").text("This field is required.");
-                        isValid = false;
-                    }
-                });
-
-                // Check radio button validation for yes/no questions
-                const yesNoFields = [
-                    'MeetsExpectations',
-                    'WouldRecommend',
-                    'WorkloadManageable',
-                    'ConceptsPresented',
-                    'MaterialsAvailable',
-                    'AccommodatesStyles',
-                    'LecturerResponsive',
-                    'AssessmentConfidence',
-                    'TimelyFeedback',
-                    'SpecificFeedback',
-                    'AssessmentsAligned',
-                    'SufficientTime',
-                    'MaterialsAccessible',
-                    'PlatformOrganised',
-                    'EquipmentWorking',
-                    'SupplementaryResources',
-                    'SpecializedEquipment',
-                    'LibraryResources',
-                    'StaffResponsive',
-                    'AdditionalHelpAvailable',
-                    'AccommodationsProvided',
-                    'ClearPointsOfContact',
-                    'DevelopingCriticalThinking',
-                    'EnhancingProblemSolving',
-                    'GainingPracticalSkills',
-                    'ImprovingCommunication',
-                    'DevelopingResearchSkills'
-                ];
-
-                // Validate yes/no fields
-                yesNoFields.forEach(function (field) {
-                    if ($(`input[name="${field}"]:checked`).length === 0) {
-                        $(`input[name="${field}"]`).first().parent().parent().after('<span class="text-danger">Please select Yes or No.</span>');
-                        isValid = false;
-                    }
-                });
-
-                // Check rating validation
-                [
-                    'LearningExperienceRating',
-                    'LearningTeachingRating',
-                    'AssessmentRating',
-                    'ResourcesRating',
-                    'SupportEffectivenessRating',
-                    'SkillsDevelopmentRating',
-                    'OverallRating'
-                ].forEach(function (ratingGroup) {
-                    if ($('input[name="' + ratingGroup + '"]:checked').length === 0) {
-                        $('#' + ratingGroup.toLowerCase().replace('rating', '') + '-1').parent().parent().parent().find('.text-danger').text("Please select a rating.");
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
-                    e.preventDefault();
-                    // Scroll to the first error
-                    $('html, body').animate({
-                        scrollTop: $(".input-validation-error:first, .text-danger:visible:first").offset().top - 100
-                    }, 200);
-                }
-            });
-
-            // Rating circle visual feedback
-            $('.rating-circle').click(function () {
-                var group = $(this).closest('.rating-circles');
-                group.find('.rating-circle').removeClass('selected');
-                $(this).addClass('selected');
-            });
-
-            // Initialize with any pre-selected ratings
-            $('.rating-option input[type="radio"]:checked').each(function () {
-                $(this).next('.rating-circle').addClass('selected');
-            });
-        });
-    </script>
-}
+            </script>
+        }

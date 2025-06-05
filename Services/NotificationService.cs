@@ -106,7 +106,7 @@ namespace GuidanceTracker.Services
 
         /// Notifies each guidance teacher only once per class that a lecturer
         /// has raised one or more issues for students in that class.
-        public void NotifyGuidanceForClassIssues(List<string> studentIds, string raisedByUserId)
+        public void NotifyGuidanceForClassIssues(List<string> studentIds, string raisedByUserId, int issueId)
         {
             var user = _db.Users.Find(raisedByUserId);
             if (user == null) return;
@@ -133,7 +133,7 @@ namespace GuidanceTracker.Services
                     UserId = g.GuidanceTeacherId,
                     Type = NotificationType.Issue,
                     Message = $"{fullName} raised a new issue for Class {g.ClassName}",
-                    RedirectUrl = "/Issue/Index",
+                    RedirectUrl = $"/Issue/ViewIssue/{issueId}",
                     CreatedAt = DateTime.Now,
                     IsRead = false
                 });

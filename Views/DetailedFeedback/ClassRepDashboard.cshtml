@@ -2,170 +2,238 @@
     ViewBag.Title = "Class Representative Dashboard";
 }
 
-<div class="container mt-5">
-    <!-- Header -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="h2 text-dark mb-2">Class Representative Dashboard</h1>
-            <h4 class="text-muted">@ViewBag.ClassName</h4>
+<div class="main-card">
+    <div class="card-header-main">
+        <div class="header-content">
+            <div class="title-section">
+                <h2 class="card-title">Class Representative Dashboard</h2>
+                <p class="text-muted">@ViewBag.ClassName</p>
+            </div>
+            <div class="button-section">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
         </div>
     </div>
-
-    @if (ViewBag.ShowCompletionMessage == true)
-    {
-        <!-- Show completion message when no active request -->
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
-                    <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
-                        <h4 class="mb-0 text-center" style="color: #28a745;">
-                            <i class="fas fa-check-circle mr-2"></i>Class Feedback Submitted!
-                        </h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <p class="mb-3">Your class feedback was successfully submitted on <strong>@ViewBag.SubmissionDate</strong>.</p>
-                            <p class="text-muted mb-0">The aggregated results and class discussion have been sent to your guidance teacher/curriculum head for review.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    else
-    {
-        <!-- Status Card -->
-        <div class="row justify-content-center mb-4">
-            <div class="col-lg-10">
-                <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
-                    <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
-                        <h4 class="mb-0 text-center" style="color: #7F3D98;">
-                            <i class="fas fa-chart-bar mr-2"></i>Feedback Collection Status
-                        </h4>
-                    </div>
-                    <div class="card-body p-4">
-                        @if (ViewBag.PendingCount > 0)
-                        {
-                            <!-- New Request Alert -->
-                            <div class="alert border-0 mb-4" style="background-color: #fff3cd; color: #856404;">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-exclamation-triangle mr-3" style="color: #ffc107;"></i>
-                                    <div>
-                                        <strong>New Feedback Request!</strong><br />
-                                        <small>A new feedback request has been received. Your previous submission was completed, but now there are new students to collect feedback from.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        <!-- Stats Row -->
-                        <div class="row mb-4">
-                            <div class="col-md-4 text-center">
-                                <div class="p-3 rounded" style="background-color: white;">
-                                    <h3 class="mb-1" style="color: #7F3D98;">@ViewBag.TotalStudents</h3>
-                                    <p class="text-muted mb-0">Total Students</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <div class="p-3 rounded" style="background-color: white;">
-                                    <h3 class="mb-1" style="color: #28a745;">@ViewBag.SubmittedCount</h3>
-                                    <p class="text-muted mb-0">Submitted</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <div class="p-3 rounded" style="background-color: white;">
-                                    <h3 class="mb-1" style="color: #ffc107;">@ViewBag.PendingCount</h3>
-                                    <p class="text-muted mb-0">Pending</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (ViewBag.AllSubmitted)
-                        {
-                            <!-- All Complete Alert -->
-                            <div class="alert border-0 mb-4" style="background-color: #d4edda; color: #155724;">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-check-circle mr-3" style="color: #28a745;"></i>
-                                    <div>
-                                        <strong>All Feedback Collected!</strong><br />
-                                        <small>All students in your class have submitted their feedback. You can now review the aggregated results and create the class summary.</small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-center">
-                                <a href="@Url.Action("ReviewAggregatedFeedback", "DetailedFeedback")"
-                                   class="btn btn-lg border-0 text-white px-4 py-3" style="background-color: #28a745;">
-                                    <i class="fas fa-eye mr-2"></i>Review Aggregated Results
-                                </a>
-                            </div>
-                        }
-                        else
-                        {
-                            <!-- In Progress Alert -->
-                            <div class="alert border-0 mb-4" style="background-color: #d1ecf1; color: #0c5460;">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-clock mr-3" style="color: #17a2b8;"></i>
-                                    <div>
-                                        <strong>Collection in Progress</strong><br />
-                                        <small>Waiting for @ViewBag.PendingCount more student(s) to submit their feedback. You'll be able to review the aggregated results once all submissions are received.</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-muted text-center mb-0">
-                                <small><i class="fas fa-info-circle mr-1"></i>Note: Individual responses are kept private. You'll only see the combined class results.</small>
-                            </p>
-
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        if (ViewBag.SubmittedCount > 0 && !ViewBag.AllSubmitted)
+    <div class="card-body">
+        @if (ViewBag.ShowCompletionMessage == true)
         {
-            <!-- What's Next Card -->
+            <!-- Show completion message when no active request -->
             <div class="row justify-content-center">
-                <div class="col-lg-10">
+                <div class="col-lg-8">
                     <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
                         <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
-                            <h4 class="mb-0 text-center" style="color: #7F3D98;">What happens next?</h4>
+                            <h4 class="mb-0 text-center" style="color: #28a745;">
+                                <i class="fas fa-check-circle mr-2"></i>Class Feedback Submitted!
+                            </h4>
                         </div>
                         <div class="card-body p-4">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
-                                             style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">1</div>
-                                        <p class="mb-0 text-dark">All students submit their individual feedback</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
-                                             style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">2</div>
-                                        <p class="mb-0 text-dark">You review the aggregated class results (no individual responses shown)</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
-                                             style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">3</div>
-                                        <p class="mb-0 text-dark">Lead a class discussion about the results</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
-                                             style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">4</div>
-                                        <p class="mb-0 text-dark">Add class comments and submit the final summary</p>
-                                    </div>
-                                </div>
+                            <div class="text-center">
+                                <p class="mb-3">Your class feedback was successfully submitted on <strong>@ViewBag.SubmissionDate</strong>.</p>
+                                <p class="text-muted mb-0">The aggregated results and class discussion have been sent to your guidance teacher/curriculum head for review.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
-    }
+        else
+        {
+            <!-- Status Card -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                        <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                            <h4 class="mb-0 text-center" style="color: #7F3D98;">
+                                <i class="fas fa-chart-bar mr-2"></i>Feedback Collection Status
+                            </h4>
+                        </div>
+                        <div class="card-body p-4">
+                            @if (ViewBag.PendingCount > 0)
+                            {
+                                <!-- New Request Alert -->
+                                <div class="alert border-0 mb-4" style="background-color: #fff3cd; color: #856404;">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle mr-3" style="color: #ffc107;"></i>
+                                        <div>
+                                            <strong>New Feedback Request!</strong><br />
+                                            <small>A new feedback request has been received. Your previous submission was completed, but now there are new students to collect feedback from.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Stats Row -->
+                            <div class="row mb-4">
+                                <div class="col-md-4 text-center">
+                                    <div class="p-3 rounded" style="background-color: white;">
+                                        <h3 class="mb-1" style="color: #7F3D98;">@ViewBag.TotalStudents</h3>
+                                        <p class="text-muted mb-0">Total Students</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="p-3 rounded" style="background-color: white;">
+                                        <h3 class="mb-1" style="color: #28a745;">@ViewBag.SubmittedCount</h3>
+                                        <p class="text-muted mb-0">Submitted</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="p-3 rounded" style="background-color: white;">
+                                        <h3 class="mb-1" style="color: #ffc107;">@ViewBag.PendingCount</h3>
+                                        <p class="text-muted mb-0">Pending</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (ViewBag.AllSubmitted)
+                            {
+                                <!-- All Complete Alert -->
+                                <div class="alert border-0 mb-4" style="background-color: #d4edda; color: #155724;">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle mr-3" style="color: #28a745;"></i>
+                                        <div>
+                                            <strong>All Feedback Collected!</strong><br />
+                                            <small>All students in your class have submitted their feedback. You can now review the aggregated results and create the class summary.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <a href="@Url.Action("ReviewAggregatedFeedback", "DetailedFeedback")"
+                                        class="btn btn-lg border-0 text-white px-4 py-3" style="background-color: #28a745;">
+                                        <i class="fas fa-eye mr-2"></i>Review Aggregated Results
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- In Progress Alert -->
+                                <div class="alert border-0 mb-4" style="background-color: #d1ecf1; color: #0c5460;">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock mr-3" style="color: #17a2b8;"></i>
+                                        <div>
+                                            <strong>Collection in Progress</strong><br />
+                                            <small>Waiting for @ViewBag.PendingCount more student(s) to submit their feedback. You'll be able to review the aggregated results once all submissions are received.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-muted text-center mb-0">
+                                    <small><i class="fas fa-info-circle mr-1"></i>Note: Individual responses are kept private. You'll only see the combined class results.</small>
+                                </p>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            if (ViewBag.SubmittedCount > 0 && !ViewBag.AllSubmitted)
+            {
+                <!-- What's Next Card -->
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                            <div class="card-header border-bottom-0 py-4" style="background-color: #f1f3f4;">
+                                <h4 class="mb-0 text-center" style="color: #7F3D98;">What happens next?</h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                    style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">1</div>
+                                            <p class="mb-0 text-dark">All students submit their individual feedback</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                    style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">2</div>
+                                            <p class="mb-0 text-dark">You review the aggregated class results (no individual responses shown)</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                    style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">3</div>
+                                            <p class="mb-0 text-dark">Lead a class discussion about the results</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                    style="width: 30px; height: 30px; background-color: #7F3D98; color: white; font-size: 14px;">4</div>
+                                            <p class="mb-0 text-dark">Add class comments and submit the final summary</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 </div>
+
+<style>
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header-main {
+        background-color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        color: #7F3D98;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+    .title-section {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .btn-back {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .btn-back:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
+</style>

@@ -3,14 +3,30 @@
 }
 
 <style>
-    body {
-        background-color: #f5f5f5;
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
-    .dashboard-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px;
+    .card-header {
+        background-color: white;
+        color: #7F3D98;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 30px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .card-body {
+        padding: 30px;
     }
 
     .dashboard-card {
@@ -121,110 +137,113 @@
     }
 </style>
 
-<div class="dashboard-container">
-    <!-- Header -->
-    <div class="mb-5">
-        <h1 class="h2 text-dark mb-2">Feedback Dashboard</h1>
-        <p class="text-muted">Submit and manage your feedback</p>
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">Feedback Dashboard</h2>
     </div>
-
-    <!-- Main Section - Side by Side -->
-    <div class="row">
-        <!-- Simple Feedback -->
-        <div class="col-lg-6">
-            <div class="dashboard-card">
-                <h4 class="dashboard-header">
-                    <i class="fas fa-comment"></i>Simple Feedback
-                </h4>
-                <div class="dashboard-content">
-                    <a href="@Url.Action("CreateSimpleFeedback", "SimpleFeedback")" class="dashboard-item">
-                        <div class="dashboard-item-content">
-                            <h6>Create New Simple Feedback</h6>
-                            <small>Submit quick feedback about a unit</small>
-                        </div>
-                    </a>
-                    <a href="@Url.Action("ViewSimpleFeedbacks", "SimpleFeedback")" class="dashboard-item">
-                        <div class="dashboard-item-content">
-                            <h6>View My Simple Feedback</h6>
-                            <small>See your submitted feedback</small>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    <div class="card-body">
+        <div class="mb-5">
+            <p class="intro-text">Submit and manage your feedback</p>
         </div>
 
-        @if (User.IsInRole("Student"))
-        {
-            <!-- Detailed Feedback -->
+        <!-- Main Section - Side by Side -->
+        <div class="row">
+            <!-- Simple Feedback -->
             <div class="col-lg-6">
                 <div class="dashboard-card">
                     <h4 class="dashboard-header">
-                        <i class="fas fa-file-alt"></i>Detailed Feedback
+                        <i class="fas fa-comment"></i>Simple Feedback
                     </h4>
                     <div class="dashboard-content">
-                        @if (ViewBag.HasDetailedFeedbackRequest == true)
-                        {
-                            <a href="@Url.Action("CreateDetailedFeedback", "DetailedFeedback", new { requestId = ViewBag.FirstRequestId })" class="dashboard-item">
-                                <div class="dashboard-item-content">
-                                    <h6>Complete Detailed Feedback</h6>
-                                    <small>New feedback form to complete</small>
-                                </div>
-                                <span class="badge-new">New</span>
-                            </a>
-                        }
-                        <a href="@Url.Action("ViewSentDetailedFeedbacks", "DetailedFeedback")" class="dashboard-item">
+                        <a href="@Url.Action("CreateSimpleFeedback", "SimpleFeedback")" class="dashboard-item">
                             <div class="dashboard-item-content">
-                                <h6>View My Detailed Feedback</h6>
+                                <h6>Create New Simple Feedback</h6>
+                                <small>Submit quick feedback about a unit</small>
+                            </div>
+                        </a>
+                        <a href="@Url.Action("ViewSimpleFeedbacks", "SimpleFeedback")" class="dashboard-item">
+                            <div class="dashboard-item-content">
+                                <h6>View My Simple Feedback</h6>
                                 <small>See your submitted feedback</small>
                             </div>
                         </a>
                     </div>
                 </div>
             </div>
-        }
-    </div>
 
-    <!-- Class Representative Section -->
-    @if (User.IsInRole("Student"))
-    {
-        if (ViewBag.IsClassRep == true)
+            @if (User.IsInRole("Student"))
+            {
+                <!-- Detailed Feedback -->
+                <div class="col-lg-6">
+                    <div class="dashboard-card">
+                        <h4 class="dashboard-header">
+                            <i class="fas fa-file-alt"></i>Detailed Feedback
+                        </h4>
+                        <div class="dashboard-content">
+                            @if (ViewBag.HasDetailedFeedbackRequest == true)
+                            {
+                                <a href="@Url.Action("CreateDetailedFeedback", "DetailedFeedback", new { requestId = ViewBag.FirstRequestId })" class="dashboard-item">
+                                    <div class="dashboard-item-content">
+                                        <h6>Complete Detailed Feedback</h6>
+                                        <small>New feedback form to complete</small>
+                                    </div>
+                                    <span class="badge-new">New</span>
+                                </a>
+                            }
+                            <a href="@Url.Action("ViewSentDetailedFeedbacks", "DetailedFeedback")" class="dashboard-item">
+                                <div class="dashboard-item-content">
+                                    <h6>View My Detailed Feedback</h6>
+                                    <small>See your submitted feedback</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    
+        <!-- Class Representative Section -->
+        @if (User.IsInRole("Student"))
         {
-            <div class="dashboard-card">
-                <h4 class="dashboard-header">
-                    <i class="fas fa-users"></i>Class Representative
-                </h4>
-                <div class="dashboard-content">
-                    <a href="@Url.Action("ClassRepDashboard", "DetailedFeedback")" class="dashboard-item">
-                        <div class="dashboard-item-content">
-                            <h5>Class Rep Dashboard</h5>
-                            <small>
+            if (ViewBag.IsClassRep == true)
+            {
+                <div class="dashboard-card">
+                    <h4 class="dashboard-header">
+                        <i class="fas fa-users"></i>Class Representative
+                    </h4>
+                    <div class="dashboard-content">
+                        <a href="@Url.Action("ClassRepDashboard", "DetailedFeedback")" class="dashboard-item">
+                            <div class="dashboard-item-content">
+                                <h5>Class Rep Dashboard</h5>
+                                <small>
+                                    @if (ViewBag.HasPendingClassFeedback == true)
+                                    {
+                                        <span>Review aggregated class feedback and lead class discussion</span>
+                                    }
+                                    else if (ViewBag.HasSubmittedClassFeedback == true)
+                                    {
+                                        <span>View class feedback collection status and submitted results</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Monitor class feedback collection progress</span>
+                                    }
+                                </small>
+                            </div>
+                            <div>
                                 @if (ViewBag.HasPendingClassFeedback == true)
                                 {
-                                    <span>Review aggregated class feedback and lead class discussion</span>
+                                    <span class="status-badge badge-warning">Action Required</span>
                                 }
-                                else if (ViewBag.HasSubmittedClassFeedback == true)
+                                else if (ViewBag.HasSubmittedClassFeedback == true && ViewBag.HasPendingClassFeedback == false)
                                 {
-                                    <span>View class feedback collection status and submitted results</span>
+                                    <span class="status-badge badge-success">Completed</span>
                                 }
-                                else
-                                {
-                                    <span>Monitor class feedback collection progress</span>
-                                }
-                            </small>
-                        </div>
-                        <div>
-                            @if (ViewBag.HasPendingClassFeedback == true)
-                            {
-                                <span class="status-badge badge-warning">Action Required</span>
-                            }
-                            else if (ViewBag.HasSubmittedClassFeedback == true && ViewBag.HasPendingClassFeedback == false)
-                            {
-                                <span class="status-badge badge-success">Completed</span>
-                            }
-                        </div>
-                    </a>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         }
-    }
+    </div>
 </div>

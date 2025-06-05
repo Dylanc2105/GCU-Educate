@@ -1,0 +1,25 @@
+﻿@model GuidanceTracker.Models.Post
+
+@{
+    ViewBag.Title = "Post Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title">@Model.Title</h3>
+            <p class="card-text mt-3">@Model.Content</p>
+
+            <hr />
+            <div class="d-flex justify-content-between text-muted">
+                <small>Posted by: @Model.Author.UserName</small>
+                <small>@Model.PostDate.ToString("MMM dd, yyyy h:mm tt")</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="@Url.Action("ViewPosts", "Post")" class="btn btn-secondary">Return to View Posts</a>
+    </div>
+</div>

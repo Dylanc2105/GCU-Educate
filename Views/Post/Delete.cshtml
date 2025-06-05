@@ -15,7 +15,12 @@
     }
 
     .delete-container {
-        padding: 20px;
+        max-width: 1000px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
     }
 
     .delete-card {
@@ -25,11 +30,21 @@
         padding: 20px;
         margin-bottom: 30px;
     }
+    .card-body {
+        padding: 30px;
+    }
+
+    .card-header {
+        background-color: #7F3D98;
+        color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
 
     .delete-title {
-        color: var(--primary-color);
-        font-size: 28px;
-        margin-bottom: 10px;
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0;
     }
 
     .delete-subtitle {
@@ -106,68 +121,73 @@
 </style>
 
 <div class="delete-container">
-    <h1 class="delete-title">Delete Post</h1>
-    <h3 class="delete-subtitle">Are you sure you want to delete this post?</h3>
+    <div class="card-header">
+        <h1 class="delete-title">Delete Post</h1>
+    </div>
 
-    <div class="delete-card">
-        <h4 class="post-section-title">Post Details</h4>
+    
+    <div class="card-body">
+        <h3 class="delete-subtitle">Are you sure you want to delete this post?</h3>
+        <div class="delete-card">
+            <h4 class="post-section-title">Post Details</h4>
 
-        <div class="post-details">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="detail-label">Title</div>
+            <div class="post-details">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="detail-label">Title</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="detail-value">@Model.Title</div>
+                    </div>
                 </div>
-                <div class="col-md-9">
-                    <div class="detail-value">@Model.Title</div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="detail-label">Content</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="post-content-box">@Model.Content</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="detail-label">Posted By</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="detail-value">@Model.Author.FirstName @Model.Author.LastName</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="detail-label">Date Posted</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="detail-value">@Model.PostDate.ToString("MMMM dd, yyyy - h:mm tt")</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="detail-label">Visibility</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="detail-value">@Model.Visibility</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="detail-label">Content</div>
-                </div>
-                <div class="col-md-9">
-                    <div class="post-content-box">@Model.Content</div>
-                </div>
-            </div>
+            <p class="warning-text">This action cannot be undone. All post data will be permanently deleted.</p>
 
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="detail-label">Posted By</div>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-actions">
+                    <button type="submit" class="action-button-delete">Delete Post</button>
+                    <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button-cancel">Cancel</a>
                 </div>
-                <div class="col-md-9">
-                    <div class="detail-value">@Model.Author.FirstName @Model.Author.LastName</div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="detail-label">Date Posted</div>
-                </div>
-                <div class="col-md-9">
-                    <div class="detail-value">@Model.PostDate.ToString("MMMM dd, yyyy - h:mm tt")</div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="detail-label">Visibility</div>
-                </div>
-                <div class="col-md-9">
-                    <div class="detail-value">@Model.Visibility</div>
-                </div>
-            </div>
+            }
         </div>
-
-        <p class="warning-text">This action cannot be undone. All post data will be permanently deleted.</p>
-
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            <div class="form-actions">
-                <button type="submit" class="action-button-delete">Delete Post</button>
-                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button-cancel">Cancel</a>
-            </div>
-        }
     </div>
 </div>

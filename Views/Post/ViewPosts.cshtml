@@ -14,8 +14,17 @@
     }
 
     .posts-dashboard {
-        padding: 20px;
+        padding: 30px;
         background-color: white;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-title {
+        font-size: 30px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 20px;
     }
 
 
@@ -30,7 +39,7 @@
     .section-title {
         font-size: 22px;
         font-weight: bold;
-        color: black;
+        color: var(--primary-color);
         margin-bottom: 15px;
         text-align: center;
     }
@@ -82,6 +91,7 @@
         color: var(--text-light);
     }
 
+
     .quick-actions {
         background-color: white;
         border-radius: 10px;
@@ -89,25 +99,42 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
     }
-
-    .action-button {
-        display: block;
+    .quick-btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         width: 100%;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        text-align: center;
-        text-decoration: none;
-        transition: background-color 0.2s;
+        gap: 14px;
     }
 
-        .action-button:hover {
-            background-color: var(--primary-hover);
-            color: white;
-            text-decoration: none;
+    .action-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 320px;
+        padding: 12px 20px;
+        background: #7F3D98;
+        border: 1.2px solid #7F3D98;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1em;
+        text-decoration: none;
+        transition: background 0.18s, color 0.18s;
+        box-shadow: 0 1px 6px #e7d0fa34;
+    }
+        .action-button img {
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .action-button:hover,
+        .action-button:focus {
+            background: #985BAF;
+            color: #fff
         }
 
     .section-count {
@@ -167,9 +194,11 @@
                 {
                     foreach (var post in Model)
                     {
-                        <div class="post-item">
-                            <div class="post-content-wrapper">
-                                <div class="post-title">@post.Title
+                        <a href="@Url.Action("Details", "Post", new { id = post.PostId })" class="text-decoration-none">
+                            <div class="post-item">
+                                <div class="post-content-wrapper">
+                                    <div class="post-title">
+                                        @post.Title
                                     @if (!ViewBag.ReadPostIds.Contains(post.PostId))
                                     {
                                         <span class="badge bg-new">New</span>
@@ -191,18 +220,22 @@
                                 </div>
                             </div>
                         </div>
-                    }
+                    </a>
 
-                    <div class="section-count">Total Posts: @Model.Count()</div>
                 }
+
+                <div class="section-count">Total Posts: @Model.Count()</div>
+            }
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="quick-actions">
                 <div class="section-title">Quick Actions</div>
-                <a href="@Url.Action("CreateNewPost", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New</a>
-                <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/allIssues.svg" /> View My Posts</a>
+                <div class="quick-btn-group">
+                    <a href="@Url.Action("CreateNewPost", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/createIssue.svg" /> Create New</a>
+                    <a href="@Url.Action("ViewMyPosts", "Post")" class="action-button"><img src="~/Images/Icons/OTHER/allIssues.svg" /> View My Posts</a>
+                </div>
             </div>
         </div>
     </div>

@@ -5,29 +5,47 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="mb-3">All Notifications</h2>
-
-<!-- Mark all as read button -->
-<form method="post" action="/Notification/MarkAllAsRead" class="mb-3">
-    <button type="submit" class="btn btn-sm" style="background-color: #7F3D98; color: white;">
-        Mark All as Read
-    </button>
-</form>
-
-<!-- Grouped notifications -->
-@foreach (var group in Model)
-{
-    <h5 class="text-muted">@group.Key</h5>
-
-    foreach (var notification in group.Value)
-    {
-        <div id="notification-@notification.Id" class="dropdown-item d-flex justify-content-between @(notification.IsRead ? "" : "font-weight-bold")">
-            <a href="javascript:void(0);" onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')" class="flex-grow-1 text-truncate">
-                @notification.Message
-            </a>
-            <small class="text-muted ml-2" style="white-space: nowrap;">
-                @notification.CreatedAt.ToString("h:mm tt")
-            </small>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">All Notifications</h4>
+            <form method="post" action="/Notification/MarkAllAsRead" class="mb-0">
+                <button type="submit" class="btn btn-sm" style="background-color: #7F3D98; color: white;">
+                    Mark All as Read
+                </button>
+            </form>
         </div>
-    }
-}
+
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <p class="text-muted">You have no notifications.</p>
+            }
+            else
+            {
+                foreach (var group in Model)
+                {
+                    <div class="mb-4">
+                        <h6 class="text-muted">@group.Key</h6>
+                        <ul class="list-group">
+                            @foreach (var notification in group.Value)
+                            {
+                                var readClass = notification.IsRead ? "" : "fw-bold"; 
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="javascript:void(0);"
+                                       onclick="markAsRead('@notification.Id', '@notification.RedirectUrl')"
+                                       class="flex-grow-1 text-decoration-none text-dark @readClass">
+                                        @notification.Message
+                                    </a>
+                                    <small class="text-muted ml-3" style="white-space: nowrap;">
+                                        @notification.CreatedAt.ToString("h:mm tt")
+                                    </small>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

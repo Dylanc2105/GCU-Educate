@@ -14,6 +14,7 @@ namespace GuidanceTracker.Models
 
         public GuidanceTrackerDbContext():base("guidanceTrackerDB", throwIfV1Schema: false)
         {
+            //Database.SetInitializer<GuidanceTrackerDbContext>(null);
             Database.SetInitializer(new DatabaseInitializer());
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<GuidanceTrackerDbContext, Migrations.Configuration>());
         }

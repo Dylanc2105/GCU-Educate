@@ -1,3 +1,5 @@
+using GuidanceTracker.Models;
+using Microsoft.AspNet.Identity;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -21,5 +23,26 @@ namespace GuidanceTracker
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_AcquireRequestState(object sender, EventArgs e)
+        {
+            var context = HttpContext.Current;
+            if (context?.User?.Identity?.IsAuthenticated ?? false)
+            {
+                using (var db = new GuidanceTrackerDbContext())
+                {
+                    var userId = context.User.Identity.GetUserId();
+                    var user = db.Users.FirstOrDefault(u => u.Id == userId);
+
+                    if (user != null)
+                    {
+                        user.LastSeen = DateTime.UtcNow;
+                        db.SaveChanges();
+                    }
+                }
+            }
+        }
+
+
     }
 }

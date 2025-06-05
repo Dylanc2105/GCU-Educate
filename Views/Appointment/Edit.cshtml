@@ -3,111 +3,159 @@
     ViewBag.Title = "Edit Appointment";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Edit Appointment</h3>
-                </div>
-                <div class="panel-body">
-                    @using (Html.BeginForm())
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        @Html.HiddenFor(model => model.AppointmentId)
-                        @Html.HiddenFor(model => model.StudentId)
-                        @Html.HiddenFor(model => model.GuidanceSessionId)
-                        @Html.HiddenFor(model => model.AppointmentDate)
-                        @Html.HiddenFor(model => model.AppointmentStatus)
-                        @Html.HiddenFor(model => model.IssueId)
+<div class="main-card">
+    <div class="card-header">
+        <h2 class="card-title">Edit Appointment</h2>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.AppointmentId)
+            @Html.HiddenFor(model => model.StudentId)
+            @Html.HiddenFor(model => model.GuidanceSessionId)
+            @Html.HiddenFor(model => model.AppointmentDate)
+            @Html.HiddenFor(model => model.AppointmentStatus)
+            @Html.HiddenFor(model => model.IssueId)
 
-                        <div class="form-group">
-                            <strong>Student:</strong>
-                            <div class="form-control-static">
-                                @Model.StudentName
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <strong>Meeting type:</strong>
-                            @if (Model.IssueId == null)
-                            {
-                                <p>Progress Meeting</p>
-                            }
-                            else
-                            {
-                                <p>Meeting about issue: @Model.IssueDescription</p>
-                            }
-                        </div>
-
-                        <div class="form-group">
-                            <strong>Appointment Date:</strong>
-                            <div class="form-control-static">
-                                @Model.AppointmentDate.ToShortDateString()
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <strong>Appointment Status:</strong>
-                            <div class="form-control-static">
-                                @Model.AppointmentStatus.ToString()
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <strong>Room:</strong>
-                            @Html.EditorFor(model => model.Room, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Room, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group">
-                            <strong>Time Slot:</strong>
-                            @Html.DropDownListFor(model => model.StartTime,
-                                          new SelectList(Model.AvailableTimeSlots, "StartTime", "DisplayText", Model.StartTime),
-                                          new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
-                        </div>
-                        <br />
-                        <div class="form-group">
-                            <strong>Appointment Notes:</strong>
-                            @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control", rows = 4 })
-                            @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
-                        </div>
-                        <br />
-                        <div class="form-group">
-                            <input type="submit" value="Save Changes" class="btn btn-back" />
-                            <p></p>
-                            <p>
-                                @Html.ActionLink("Back to Dashboard", "GuidanceTeacherDash", "GuidanceTeacher", null, new { @class = "btn btn-back" })
-                            </p>
-                        </div>
-                    }
+            <div class="form-group">
+                <strong>Student:</strong>
+                <div class="form-control-static">
+                    @Model.StudentName
                 </div>
             </div>
-        </div>
+            <div class="form-group">
+                <strong>Meeting type:</strong>
+                @if (Model.IssueId == null)
+                {
+                    <p>Progress Meeting</p>
+                }
+                else
+                {
+                    <p>Meeting about issue: @Model.IssueDescription</p>
+                }
+            </div>
+
+            <div class="form-group">
+                <strong>Appointment Date:</strong>
+                <div class="form-control-static">
+                    @Model.AppointmentDate.ToShortDateString()
+                </div>
+            </div>
+
+            <div class="form-group">
+                <strong>Appointment Status:</strong>
+                <div class="form-control-static">
+                    @Model.AppointmentStatus.ToString()
+                </div>
+            </div>
+
+            <div class="form-group">
+                <strong>Room:</strong>
+                @Html.EditorFor(model => model.Room, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Room, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Time Slot:</strong>
+                @Html.DropDownListFor(model => model.StartTime,
+                              new SelectList(Model.AvailableTimeSlots, "StartTime", "DisplayText", Model.StartTime),
+                              new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                <strong>Appointment Notes:</strong>
+                @Html.TextAreaFor(model => model.AppointmentNotes, new { @class = "form-control", rows = 4 })
+                @Html.ValidationMessageFor(model => model.AppointmentNotes, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn-purple" />
+                <p></p>
+                <p>
+                    <a href="javascript:history.back()" class="btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </p>
+                
+            </div>
+        }
     </div>
 </div>
 
 
 <style>
-    .btn-back {
-        background: #7F3D98;
+    .main-card {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
-    .btn {
+    .card-header {
+        background-color: #7F3D98;
+        color: white;
+        padding: 20px 30px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+
+
+    .btn-purple {
+        background-color: #7F3D98;
         color: white;
         border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
+        border-radius: 6px;
+        padding: 10px 20px;
         cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         font-size: 14px;
-        transition: background-color 0.3s ease; /* Optional: Add a smooth transition */
     }
 
-    .btn-back:hover {
-        background-color: #5c2b70; /* A darker shade of your original purple */
-        color: white;
+        .btn-purple:hover {
+            background-color: #985BAF;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-outline {
+        background-color: transparent;
+        color: #7F3D98;
+        border: 2px solid #7F3D98;
+        border-radius: 6px;
+        padding: 8px 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
     }
+
+        .btn-outline:hover {
+            background-color: #7F3D98;
+            color: white;
+            text-decoration: none;
+        }
 </style>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
