@@ -108,6 +108,7 @@ namespace GuidanceTracker.Models
             Student student27 = null;
             Student student28 = null;
             Student student29 = null;
+            Student student35 = null;
             Student financeStudent2 = null;
             //create guidance teacher
             //first check if admin exists in db
@@ -2124,7 +2125,7 @@ namespace GuidanceTracker.Models
 
             if (userManager.FindByName("student35@email.com") == null)
             {
-                student29 = new Student
+                student35 = new Student
                 {
                     UserName = "student35@email.com",
                     Email = "student35@email.com",
@@ -2139,8 +2140,8 @@ namespace GuidanceTracker.Models
                     ClassId = classes2.ClassId,
                     StudentNumber = "42000144"
                 };
-                userManager.Create(student29, "123");
-                userManager.AddToRole(student29.Id, "Student");
+                userManager.Create(student35, "123");
+                userManager.AddToRole(student35.Id, "Student");
             }
 
 
